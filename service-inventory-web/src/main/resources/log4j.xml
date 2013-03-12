@@ -34,7 +34,7 @@
 		<level value="debug" />
 	</logger>
 	-->
-	<logger name="com.tmn.serviceinventory">
+	<logger name="th.co.truemoney.serviceinventory">
 		<level value="debug" />
 	</logger>
 	

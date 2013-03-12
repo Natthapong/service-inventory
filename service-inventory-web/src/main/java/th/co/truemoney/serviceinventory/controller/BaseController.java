@@ -31,6 +31,10 @@ public class BaseController {
 	public @ResponseBody ErrorBean handleAllExceptions(Exception exception, 
 			WebRequest request, HttpServletResponse response) {	
 		
+		logger.debug("==========================================");
+		logger.debug(exception.getMessage(), exception);
+		logger.debug("==========================================");
+		
 		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		ErrorBean error = new ErrorBean(Integer.toString(HttpServletResponse.SC_INTERNAL_SERVER_ERROR), "INTERNAL_SERVER_ERROR");
 		error.setErrorNamespace(ServiceInventoryException.NAMESPACE);

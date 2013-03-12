@@ -1,8 +1,8 @@
 package th.co.truemoney.serviceinventory.controller;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,13 +12,12 @@ import org.springframework.web.context.request.WebRequest;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
 @Controller
 public class TmnProfileController extends BaseController {
 	
-	private static Logger logger = Logger.getLogger(TmnProfileController.class);
-
 	@Autowired
 	private TmnProfileService tmnProfileService;
 	
@@ -32,13 +31,18 @@ public class TmnProfileController extends BaseController {
 		@RequestParam String clientIP,
 		WebRequest request)
 			throws SignonServiceException {
-		logger.debug(login.getUsername());
-		logger.debug(channelID);
-		logger.debug(deviceID);
-		logger.debug(deviceType);
-		logger.debug(deviceVersion);
-		logger.debug(clientIP);		
 		return tmnProfileService.login(login, channelID, deviceID, deviceType, deviceVersion, clientIP);
 	}
+	
+	@RequestMapping(value = "/getprofile/{accesstoken}/{checksum}", method = RequestMethod.GET)
+	public @ResponseBody TmnProfile getTruemoneyProfile(
+		@PathVariable String accesstoken,
+		@PathVariable String checksum,
+		@RequestParam Integer channelID,
+		WebRequest request)
+			throws SignonServiceException {
+		return tmnProfileService.getTruemoneyProfile(accesstoken, checksum, channelID);
+	}
+	
 	
 }

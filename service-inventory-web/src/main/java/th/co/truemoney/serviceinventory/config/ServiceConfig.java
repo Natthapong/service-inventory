@@ -11,8 +11,8 @@ import org.springframework.core.io.Resource;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
-import th.co.truemoney.serviceinventory.ewallet.proxy.profile.client.TmnProfileSoapEndPointProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.security.client.TmnSecuritySoapEndPointProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.endpoint.TmnProfileSoapEndPointProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.endpoint.TmnSecuritySoapEndPointProxy;
 
 @Configuration
 @ComponentScan(basePackages = "th.co.truemoney.serviceinventory")

@@ -14,10 +14,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.security.TmnSecurityProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.security.impl.TmnSecurityProxyImpl;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.impl.TmnSecurityProxyImpl;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.stub.TmnProfileStubbed;
 
