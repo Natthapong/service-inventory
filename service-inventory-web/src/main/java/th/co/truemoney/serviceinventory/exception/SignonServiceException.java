@@ -2,7 +2,7 @@ package th.co.truemoney.serviceinventory.exception;
 
 import javax.servlet.http.HttpServletResponse;
 
-import th.co.truemoney.serviceinventory.common.domain.ServiceResponse;
+import th.co.truemoney.serviceinventory.bean.ErrorBean;
 
 public class SignonServiceException extends BaseException {
 	
@@ -23,12 +23,10 @@ public class SignonServiceException extends BaseException {
 	}
 	
 	@Override
-	public ServiceResponse<Object> handleExceptions(BaseException e, HttpServletResponse response) {
+	public ErrorBean handleExceptions(BaseException e, HttpServletResponse response) {
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		ServiceResponse<Object> error = new ServiceResponse<Object>();
-		error.setResponseCode(e.getCode());
-		error.setResponseDesc(e.getDescription());
-		error.setResponseNamespace(e.getNamespace());
+		ErrorBean error = new ErrorBean(e.getCode(), e.getDescription());
+		error.setErrorNamespace(e.getNamespace());
 		return error;
 	}
 

@@ -2,7 +2,7 @@ package th.co.truemoney.serviceinventory.exception;
 
 import javax.servlet.http.HttpServletResponse;
 
-import th.co.truemoney.serviceinventory.common.domain.ServiceResponse;
+import th.co.truemoney.serviceinventory.bean.ErrorBean;
 
 public abstract class BaseException extends RuntimeException {
 
@@ -12,7 +12,7 @@ public abstract class BaseException extends RuntimeException {
 	private String description;
 	private String namespace;
 	
-	public abstract ServiceResponse<Object> handleExceptions(BaseException e, HttpServletResponse response);
+	public abstract ErrorBean handleExceptions(BaseException e, HttpServletResponse response);
 	
 	public BaseException() {
 		super();

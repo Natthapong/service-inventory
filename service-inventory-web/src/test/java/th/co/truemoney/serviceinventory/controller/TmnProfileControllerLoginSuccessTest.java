@@ -5,10 +5,12 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,69 +22,56 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import th.co.truemoney.serviceinventory.common.domain.ServiceRequest;
-import th.co.truemoney.serviceinventory.common.domain.ServiceResponse;
 import th.co.truemoney.serviceinventory.config.TestServiceConfig;
 import th.co.truemoney.serviceinventory.config.TestWebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
-import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = { TestWebConfig.class, TestServiceConfig.class })
 public class TmnProfileControllerLoginSuccessTest {
 
+	private MockMvc mockMvc;
+	
 	@Autowired
 	private WebApplicationContext wac;
 
 	@Autowired
 	private TmnProfileService tmnProfileServiceMock;
+	
+	@Before
+	public void setup() {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
+	}
 
+	@After
+	public void tierDown() {
+		reset(this.tmnProfileServiceMock);
+	}
+	
 	@Test
-	public void shouldLoginSuccess() throws Exception {	
+	public void shouldLoginSuccess() throws Exception {		
 		
-		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
+		//given
+		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);	
+		
+		when(this.tmnProfileServiceMock.login(any(Login.class), any(Integer.class), 
+				any(String.class), 
+				any(String.class), 
+				any(String.class), 
+				any(String.class)))
+				.thenReturn("8e48e03be057319f40621fe9bcd123f750f6df1d");
 		
 		ObjectMapper mapper = new ObjectMapper();
-		
-		Login login = new Login();
-		login.setUsername("mali@hotmail.com");
-		login.setPassword("0000");
-		
-		ServiceRequest<Login> serviceRequest = new ServiceRequest<Login>();
-		serviceRequest.setRequestTransactionID(Long.toString(System.currentTimeMillis()));
-		serviceRequest.setBody(login);
-		
-		TmnProfile tmnProfile = new TmnProfile("SjdfgkIDF", "tmnid0001");
-		tmnProfile.setFullname("Mali Colt");
-		tmnProfile.setEwalletBalance("30000.00");
-
-		ServiceResponse<TmnProfile> serviceResponse = new ServiceResponse<TmnProfile>(
-				ServiceInventoryException.NAMESPACE, 
-				ServiceInventoryException.Code.SUCCESS, 
-				"Success");
-		serviceResponse.setBody(tmnProfile);
-		
-		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);	
-				
-		reset(this.tmnProfileServiceMock);
-		
-		when(this.tmnProfileServiceMock.login(any(Login.class))).thenReturn(serviceResponse);
-		
-		mockMvc.perform(post("/login")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsBytes(serviceRequest)))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.responseCode").value("0"))
-			.andExpect(jsonPath("$.responseDesc").value("Success"))
-			.andExpect(jsonPath("$.responseNamespace").value("TMN-SERVICE-INVENTORY"))
-			.andExpect(jsonPath("$.body.sessionID").value("SjdfgkIDF"))
-			.andExpect(jsonPath("$.body.truemoneyID").value("tmnid0001"))
-			.andExpect(jsonPath("$.body.fullname").value("Mali Colt"))
-			.andExpect(jsonPath("$.body.ewalletBalance").value("30000.00"))
-			.andDo(print());		
+		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
+		this.mockMvc.perform(post("/login?channelID=41&deviceID=1AB&deviceType=iphone&deviceVersion=6.1&clientIP=192.168.1.1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsBytes(login)))
+				.andExpect(status().isOk())
+				.andExpect(content().string("8e48e03be057319f40621fe9bcd123f750f6df1d"))
+				.andDo(print());
 		
 	}
+	
 }
