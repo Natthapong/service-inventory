@@ -1,41 +1,30 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
-public class TmnProfile {
+import java.io.Serializable;
+
+public class TmnProfile implements Serializable {
 	
-	private String sessionID;
-	private String truemoneyID;
+	private static final long serialVersionUID = 8341135419244797163L;
 	private String fullname;
-	private String ewalletBalance;
 	private String mobileno;
+	private String balance;
+	private String type;
+	private String status;
 	
-	public TmnProfile(String sessionID, String truemoneyID) {
-		this.sessionID = sessionID;
-		this.truemoneyID = truemoneyID;
+	public TmnProfile() {
+		
 	}
 	
-	public String getSessionID() {
-		return sessionID;
+	public TmnProfile(String fullname, String balance) {
+		this.fullname = fullname;
+		this.balance = balance;
 	}
-	public void setSessionID(String sessionID) {
-		this.sessionID = sessionID;
-	}
-	public String getTruemoneyID() {
-		return truemoneyID;
-	}
-	public void setTruemoneyID(String truemoneyID) {
-		this.truemoneyID = truemoneyID;
-	}
+	
 	public String getFullname() {
 		return fullname;
 	}
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
-	}
-	public String getEwalletBalance() {
-		return ewalletBalance;
-	}
-	public void setEwalletBalance(String ewalletBalance) {
-		this.ewalletBalance = ewalletBalance;
 	}
 	public String getMobileno() {
 		return mobileno;
@@ -43,5 +32,23 @@ public class TmnProfile {
 	public void setMobileno(String mobileno) {
 		this.mobileno = mobileno;
 	}
-			
+	public String getBalance() {
+		return balance;
+	}
+	public void setBalance(String balance) {
+		this.balance = balance;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}	
+	
 }
