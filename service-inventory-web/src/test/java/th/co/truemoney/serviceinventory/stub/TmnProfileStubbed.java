@@ -2,12 +2,12 @@ package th.co.truemoney.serviceinventory.stub;
 
 import java.rmi.RemoteException;
 
+import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class TmnProfileStubbed {
 	
@@ -93,8 +93,8 @@ public class TmnProfileStubbed {
 		return authenticateResponse;
 	}
 	
-	public static Exception createFailedThrowServiceInventoryException() {
-		return new ServiceInventoryException("error code", "error description", "error namespace");
+	public static Exception createFailedThrowEwalletException() {
+		return new EwalletException("error code", "error namespace");
 	}
 
 	public static Exception createFailedThrowRemoteException() {

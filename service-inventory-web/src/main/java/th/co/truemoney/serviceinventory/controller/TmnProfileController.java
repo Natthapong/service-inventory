@@ -6,17 +6,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
-import th.co.truemoney.serviceinventory.common.domain.ServiceRequest;
-import th.co.truemoney.serviceinventory.common.domain.ServiceResponse;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
-import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
-@SuppressWarnings("rawtypes")
 @Controller
 public class TmnProfileController extends BaseController {
 	
@@ -26,29 +23,23 @@ public class TmnProfileController extends BaseController {
 	private TmnProfileService tmnProfileService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse<TmnProfile> login(
-		@RequestBody ServiceRequest<Login> serviceRequest,	WebRequest request)
-			throws ServiceInventoryException {
-		Login login = serviceRequest.getBody();
-		logger.debug("request trans id = "+serviceRequest.getRequestTransactionID());
-		logger.debug("username = "+login.getUsername());
-		return tmnProfileService.login(login);
-	}
-	
-	@RequestMapping(value = "/extend", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse extend(
-		@RequestBody ServiceRequest<TmnProfile> serviceRequest, WebRequest request)
-			throws ServiceInventoryException {
-		TmnProfile tmnProfile = serviceRequest.getBody();
-		return tmnProfileService.extend(tmnProfile);
-	}
-	
-	@RequestMapping(value = "/logout", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse logout(
-		@RequestBody ServiceRequest<TmnProfile> serviceRequest, WebRequest request)
-			throws ServiceInventoryException {
-		TmnProfile tmnProfile = serviceRequest.getBody();
-		return tmnProfileService.logout(tmnProfile);
+	public @ResponseBody String login(
+		@RequestBody Login login, 
+		@RequestParam Integer channelID,
+		@RequestParam String deviceID,
+		@RequestParam String deviceType,
+		@RequestParam String deviceVersion,
+		@RequestParam String clientIP,
+		WebRequest request)
+			throws SignonServiceException {
+		logger.debug(login.getUsername());
+		logger.debug(login.getHashPassword());
+		logger.debug(channelID);
+		logger.debug(deviceID);
+		logger.debug(deviceType);
+		logger.debug(deviceVersion);
+		logger.debug(clientIP);		
+		return tmnProfileService.login(login, channelID, deviceID, deviceType, deviceVersion, clientIP);
 	}
 	
 }

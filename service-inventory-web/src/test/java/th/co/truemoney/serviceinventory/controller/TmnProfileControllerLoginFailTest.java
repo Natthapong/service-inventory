@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import th.co.truemoney.serviceinventory.common.domain.ServiceRequest;
 import th.co.truemoney.serviceinventory.config.TestServiceConfig;
 import th.co.truemoney.serviceinventory.config.TestWebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
@@ -32,44 +33,50 @@ import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 @ContextConfiguration(classes = { TestWebConfig.class, TestServiceConfig.class })
 public class TmnProfileControllerLoginFailTest {
 
+	private MockMvc mockMvc;
+	
 	@Autowired
 	private WebApplicationContext wac;
 
 	@Autowired
 	private TmnProfileService tmnProfileServiceMock;
 	
+	@Before
+	public void setup() {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
+	}
+
+	@After
+	public void tierDown() {
+		reset(this.tmnProfileServiceMock);
+	}
+	
 	@Test
 	public void shouldLoginFail() throws Exception {
 		
-		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
+		//given
+		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);	
 		
-		ObjectMapper mapper = new ObjectMapper();
-		
-		Login login = new Login();
-		login.setUsername("mali@hotmail.com");
-		login.setPassword("0000");
-		
-		ServiceRequest<Login> serviceRequest = new ServiceRequest<Login>();
-		serviceRequest.setRequestTransactionID(Long.toString(System.currentTimeMillis()));
-		serviceRequest.setBody(login);
-
-		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);
-		
-		reset(this.tmnProfileServiceMock);
-		
-		when(this.tmnProfileServiceMock.login(any(Login.class))).thenThrow(
+		when(this.tmnProfileServiceMock.login(any(Login.class), 
+				any(Integer.class),
+				any(String.class),
+				any(String.class),
+				any(String.class),
+				any(String.class))).thenThrow(
 				new SignonServiceException(
 						"1", 
 						"error description",
 						"error namespace"));
 		
-		mockMvc.perform(post("/login")
+		ObjectMapper mapper = new ObjectMapper();
+		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
+		this.mockMvc.perform(post("/login?channelID=41&deviceID=1AB&deviceType=iphone&deviceVersion=6.1&clientIP=192.168.1.1")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(serviceRequest)))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$.responseCode").value("1"))
-				.andExpect(jsonPath("$.responseDesc").value("error description"))
-				.andExpect(jsonPath("$.responseNamespace").value("error namespace"))
+				.content(mapper.writeValueAsBytes(login)))
+				.andExpect(status().isUnauthorized())	
+				.andExpect(jsonPath("$.errorCode").value("1"))
+				.andExpect(jsonPath("$.errorDescription").value("error description"))
+				.andExpect(jsonPath("$.errorNamespace").value("error namespace"))
 				.andDo(print());	
 		
 	}
