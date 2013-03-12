@@ -33,21 +33,11 @@ public class TmnProfileController extends BaseController {
 		WebRequest request)
 			throws SignonServiceException {
 		logger.debug(login.getUsername());
-		logger.debug(login.getHashPassword());
 		logger.debug(channelID);
 		logger.debug(deviceID);
 		logger.debug(deviceType);
 		logger.debug(deviceVersion);
-		logger.debug(clientIP);
-		
-		System.out.println(login.getUsername());
-		System.out.println(login.getHashPassword());
-		System.out.println(channelID);
-		System.out.println(deviceID);
-		System.out.println(deviceType);
-		System.out.println(deviceVersion);
-		System.out.println(clientIP);
-		
+		logger.debug(clientIP);		
 		return tmnProfileService.login(login, channelID, deviceID, deviceType, deviceVersion, clientIP);
 	}
 	
