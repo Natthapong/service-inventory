@@ -16,6 +16,7 @@ import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.endpoint.TmnProfileSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.endpoint.TmnSecuritySoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 
 @Configuration
@@ -27,8 +28,6 @@ public class TestServiceConfig {
 	
 	@Value( "${tmnsecurity.endpoint}")
 	private String tmnSecuritySoapEndpoint;
-	
-	public AccessTokenMemoryRepository accessTokenMemoryRepository;
 	
 	@Bean @Scope("singleton")
 	public TmnProfileService getTmnProfileService() {
@@ -59,9 +58,14 @@ public class TestServiceConfig {
 		return tmnSecuritySoapEndpoint;
 	}
 	
-	@Bean @Qualifier("AccessTokenMemoryRepository")
+	@Bean @Qualifier("accessTokenMemoryRepository")
 	public AccessTokenRepository getAccessTokenMemoryRepository() {
-		return accessTokenMemoryRepository;
+		return new AccessTokenMemoryRepository();
+	}
+
+	@Bean @Qualifier("accessTokenRedisRepository")
+	public AccessTokenRepository getAccessTokenRedisRepository() {
+		return new AccessTokenRedisRepository();
 	}
 	
 	@Bean
