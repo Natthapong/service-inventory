@@ -79,5 +79,12 @@ public class LoginServiceImpl implements LoginService {
 		return null;
 	}
 
+	@Override
+	public void logout(Integer channelId, String token)
+			throws ServiceInventoryException {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }
