@@ -71,13 +71,13 @@ public class LoginServiceImpl implements LoginService {
 			HttpEntity<BaseServiceRequestBean> entity = new HttpEntity<BaseServiceRequestBean>(
 					baseServiceRequestBean, headers);
 
-			ResponseEntity<BaseServiceResponseBean> result = restTemplate.exchange(
+			ResponseEntity<String> result = restTemplate.exchange(
 					url_login, HttpMethod.POST, entity,
-					BaseServiceResponseBean.class);
+					String.class);
 			
-			BaseServiceResponseBean bodyResponse = result.getBody();
+			String bodyResponse = result.getBody();
 			
-			return bodyResponse.getAccessToken();
+			return bodyResponse;
 			
 		} catch (HttpClientErrorException e) {
 			return null;

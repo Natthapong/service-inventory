@@ -102,17 +102,16 @@ public class TestLoginService {
 		LoginServiceImpl loginService = new LoginServiceImpl();
 		RestTemplate restTemplate = mock(RestTemplate.class);
 		
-		BaseServiceResponseBean baseServiceResponseBean = new BaseServiceResponseBean();
-		baseServiceResponseBean.setAccessToken("12345");
+		String accessToken = "12345";
 
-		ResponseEntity<BaseServiceResponseBean> responseBean = new ResponseEntity<BaseServiceResponseBean>(
-				baseServiceResponseBean, HttpStatus.OK);
+		ResponseEntity<String> responseBean = new ResponseEntity<String>(
+				accessToken, HttpStatus.OK);
 
 		when(
 				restTemplate.exchange(
 						eq(devConfigBean.getPathDevUrl("/login")),
 						eq(HttpMethod.POST), any(HttpEntity.class),
-						eq(BaseServiceResponseBean.class))).thenReturn(
+						eq(String.class))).thenReturn(
 				responseBean);
 
 		loginService.setRestTemplate(restTemplate);
