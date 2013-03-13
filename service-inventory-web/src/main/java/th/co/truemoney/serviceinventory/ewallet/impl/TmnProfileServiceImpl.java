@@ -28,7 +28,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	private static Logger logger = Logger.getLogger(TmnProfileServiceImpl.class);
 	
-	@Autowired @Qualifier("AccessTokenMemoryRepository")
+	@Autowired @Qualifier("accessTokenMemoryRepository")
 	private AccessTokenRepository accessTokenRepo;
 	
 	@Autowired
@@ -50,12 +50,13 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 					login.getUsername(),
 					channelID);
 			
-			accessTokenRepo.save(accessToken);
-			
 			// add session id and mapping access token into redis
 			logger.info("Access token created: " + accessToken);
-
-			return accessToken.getAccessTokenId();			
+			
+			accessTokenRepo.save(accessToken);
+			
+			return accessToken.getAccessTokenId();	
+			
 		} catch (EwalletException e) {
 			throw new SignonServiceException(e.getCode(), 
 				"tmnSecurityProxy.signon response: " + e.getCode(), e.getNamespace());

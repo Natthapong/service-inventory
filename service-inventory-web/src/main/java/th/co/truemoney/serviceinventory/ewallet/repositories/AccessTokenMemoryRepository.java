@@ -1,14 +1,17 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.springframework.stereotype.Component;
+import org.apache.log4j.Logger;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 
-@Component
 public class AccessTokenMemoryRepository implements AccessTokenRepository {
+	
+	private static Logger logger = Logger.getLogger(AccessTokenMemoryRepository.class);
 	
 	public static HashMap<String, AccessToken> map = new LinkedHashMap<String, AccessToken>();
 
@@ -16,5 +19,17 @@ public class AccessTokenMemoryRepository implements AccessTokenRepository {
 	public void save(AccessToken token) {
 		map.put(token.getAccessTokenId(), token);
 	}
+	
+	@Override
+	public AccessToken getAccessToken(String accessTokenId) {
+		return map.get(accessTokenId);
+	}
 
+	public void dump() {
+	  Collection<AccessToken> collection = map.values();
+	  for (Iterator<AccessToken> iterator = collection.iterator(); iterator.hasNext();) {
+		AccessToken accessToken = (AccessToken) iterator.next();
+		logger.debug("accessToken: "+accessToken.toString());
+	  }
+	}
 }

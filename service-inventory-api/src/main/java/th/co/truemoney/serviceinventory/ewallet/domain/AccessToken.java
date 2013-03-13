@@ -3,7 +3,7 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 import java.util.UUID;
 
-import com.google.common.base.Objects;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class AccessToken implements Serializable {
 	
@@ -68,7 +68,13 @@ public class AccessToken implements Serializable {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).toString();
+		return new ToStringBuilder(this)
+			.append("accessTokenId: ", this.accessTokenId)
+			.append("sessioinId: ", sessionId)
+			.append("truemoneyId: ", truemoneyId)
+			.append("username: ", username)
+			.append("channelId: ", channelId)
+			.toString();
 	}
 	
 	public static AccessToken generateNewToken(String sessionId, String truemoneyId, String username, Integer channelId) {
