@@ -10,5 +10,5 @@ public interface LoginService {
 
 	public String login(SigninBean signinBean) throws ServiceInventoryException;
 	public ResponseBean<TmnProfile> getProfile(RequestBean requestBean) throws ServiceInventoryException;
-	
+	public void logout(Integer channelId, String token) throws ServiceInventoryException;
 }
