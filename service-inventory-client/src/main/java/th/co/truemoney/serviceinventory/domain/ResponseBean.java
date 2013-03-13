@@ -1,58 +1,37 @@
 package th.co.truemoney.serviceinventory.domain;
 
 public class ResponseBean<T> {
-	
-	private String code;
-	private String messageTh;
-	private String messageEn;
-	private T data;		
-	
+
+	private String accessToken;
+	private T data;
+
 	public ResponseBean() {
-		
+
 	}
-	
-	public ResponseBean(String code, String messageEn) {
+
+	public ResponseBean(String accessToken) {
 		super();
-		this.code = code;
-		this.messageEn = messageEn;
+		this.accessToken = accessToken;
 	}
-	
-	public ResponseBean(String code, String messageTh, String messageEn) {
+
+	public ResponseBean(String accessToken, T data) {
 		super();
-		this.code = code;
-		this.messageTh = messageTh;
-		this.messageEn = messageEn;
-	}
-	
-	public ResponseBean(String code, String messageTh, String messageEn, T data) {
-		super();
-		this.code = code;
-		this.messageTh = messageTh;
-		this.messageEn = messageEn;
+		this.accessToken = accessToken;
 		this.data = data;
 	}
-	
-	public String getCode() {
-		return code;
+
+	public String getAccessToken() {
+		return accessToken;
 	}
-	public void setCode(String code) {
-		this.code = code;
+
+	public void setAccessToken(String code) {
+		this.accessToken = code;
 	}
-	public String getMessageTh() {
-		return messageTh;
-	}
-	public void setMessageTh(String messageTh) {
-		this.messageTh = messageTh;
-	}
-	public String getMessageEn() {
-		return messageEn;
-	}
-	public void setMessageEn(String messageEn) {
-		this.messageEn = messageEn;
-	}
+
 	public T getData() {
 		return data;
 	}
+
 	public void setData(T data) {
 		this.data = data;
 	}

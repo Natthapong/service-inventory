@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.domain.DevConfigBean;
 import th.co.truemoney.serviceinventory.service.LoginService;
+import th.co.truemoney.serviceinventory.service.impl.LoginServiceImpl;
 
 
 @Configuration
@@ -19,7 +20,7 @@ public class TestServiceConfig {
 	
 	@Bean
 	public LoginService getVerifyService() {
-		return Mockito.mock(LoginService.class);
+		return Mockito.mock(LoginServiceImpl.class);
 	}
 	
 	@Bean
