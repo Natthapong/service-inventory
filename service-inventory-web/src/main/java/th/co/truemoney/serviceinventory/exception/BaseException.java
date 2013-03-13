@@ -17,7 +17,7 @@ public abstract class BaseException extends RuntimeException {
 	public BaseException() {
 		super();
 	}
-
+	
 	public BaseException(String code, String description) {
 		this.code = code;
 		this.description = description;

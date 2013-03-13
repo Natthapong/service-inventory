@@ -1,13 +1,15 @@
 package th.co.truemoney.serviceinventory.stub;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.rmi.RemoteException;
 
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.GetBasicProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.AuthenticateResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.CreateSessionResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.StandardBizResponse;
 
 public class TmnProfileStubbed {
 	
@@ -31,7 +33,7 @@ public class TmnProfileStubbed {
 		GetBasicProfileResponse stubbedProfileResponse = new GetBasicProfileResponse();
 		stubbedProfileResponse.setResultCode("0");
 		stubbedProfileResponse.setFullName("Mali Colt");
-		stubbedProfileResponse.setEwalletBalance("30000.00");
+		stubbedProfileResponse.setEwalletBalance(new BigDecimal("30000.00").setScale(2, RoundingMode.HALF_UP));
 		stubbedProfileResponse.setProfileType("C");		
 		return stubbedProfileResponse;
 	}
@@ -48,7 +50,7 @@ public class TmnProfileStubbed {
 		GetBasicProfileResponse basicProfileResponse = new GetBasicProfileResponse();
 		basicProfileResponse.setResultCode("0");
 		basicProfileResponse.setFullName("Mali Colt");
-		basicProfileResponse.setEwalletBalance("30000.00");
+		basicProfileResponse.setEwalletBalance(new BigDecimal("30000.00").setScale(2, RoundingMode.HALF_UP));
 		basicProfileResponse.setProfileType("D");	
 		return basicProfileResponse;
 	}
@@ -93,15 +95,14 @@ public class TmnProfileStubbed {
 		return authenticateResponse;
 	}
 	
-	public static Exception createFailedThrowEwalletException() {
-		return new EwalletException("error code", "error namespace");
-	}
-
 	public static Exception createFailedThrowRemoteException() {
 		return new RemoteException();
 	}
 
-
+	public static Exception createFailedThrowEwalletException() {
+		EwalletException e = new EwalletException("error code", "error namespace");
+		return e;
+	}
 
 }
 

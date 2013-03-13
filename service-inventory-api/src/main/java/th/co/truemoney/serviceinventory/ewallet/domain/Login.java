@@ -9,9 +9,9 @@ public class Login implements Serializable {
 	private String hashPassword;
 	
 	public Login() {
-		
+		super();
 	}
-	
+
 	public Login(String username, String hashPassword) {
 		this.username = username;
 		this.hashPassword = hashPassword;

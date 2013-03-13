@@ -1,21 +1,22 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class TmnProfile implements Serializable {
 	
 	private static final long serialVersionUID = 8341135419244797163L;
 	private String fullname;
 	private String mobileno;
-	private String balance;
+	private BigDecimal balance;
 	private String type;
-	private String status;
+	private Integer status;
 	
 	public TmnProfile() {
-		
+		super();
 	}
 	
-	public TmnProfile(String fullname, String balance) {
+	public TmnProfile(String fullname, BigDecimal balance) {
 		this.fullname = fullname;
 		this.balance = balance;
 	}
@@ -32,10 +33,10 @@ public class TmnProfile implements Serializable {
 	public void setMobileno(String mobileno) {
 		this.mobileno = mobileno;
 	}
-	public String getBalance() {
+	public BigDecimal getBalance() {
 		return balance;
 	}
-	public void setBalance(String balance) {
+	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
 	public String getType() {
@@ -44,10 +45,10 @@ public class TmnProfile implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}	
 	
