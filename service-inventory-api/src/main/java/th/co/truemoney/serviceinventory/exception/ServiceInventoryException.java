@@ -1,31 +1,47 @@
 package th.co.truemoney.serviceinventory.exception;
 
-public abstract class ServiceInventoryException extends RuntimeException {
+public class ServiceInventoryException extends RuntimeException {
 	
 	private static final long serialVersionUID = 3961433822995791383L;
 	
-	private String code;
-	private String description;
-	private String namespace;
+	private String errorCode;
+	private String errorDescription;
+	private String errorNamespace;
 	
-	public String getCode() {
-		return code;
+	public ServiceInventoryException() {
 	}
-	public void setCode(String code) {
-		this.code = code;
+	
+	public ServiceInventoryException(String errorCode, String errorDescription, String errorNamespace) {
+		this.errorCode = errorCode;
+		this.errorDescription = errorDescription;
+		this.errorNamespace = errorNamespace;
 	}
-	public String getDescription() {
-		return description;
+
+	public String getErrorCode() {
+		return errorCode;
 	}
-	public void setDescription(String description) {
-		this.description = description;
+
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
 	}
-	public String getNamespace() {
-		return namespace;
+
+	public String getErrorDescription() {
+		return errorDescription;
 	}
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
+
+	public void setErrorDescription(String errorDescription) {
+		this.errorDescription = errorDescription;
 	}
+
+	public String getErrorNamespace() {
+		return errorNamespace;
+	}
+
+	public void setErrorNamespace(String errorNamespace) {
+		this.errorNamespace = errorNamespace;
+	}
+	
+	
 	
 	
 }
