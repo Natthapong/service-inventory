@@ -15,6 +15,8 @@ import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.endpoint.TmnProfileSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.endpoint.TmnSecuritySoapEndPointProxy;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 
 @Configuration
 @ComponentScan(basePackages = "th.co.truemoney.serviceinventory")
@@ -25,6 +27,8 @@ public class TestServiceConfig {
 	
 	@Value( "${tmnsecurity.endpoint}")
 	private String tmnSecuritySoapEndpoint;
+	
+	public AccessTokenMemoryRepository accessTokenMemoryRepository;
 	
 	@Bean @Scope("singleton")
 	public TmnProfileService getTmnProfileService() {
@@ -53,6 +57,11 @@ public class TestServiceConfig {
 	@Bean @Qualifier("tmnSecuritySoapEndPoint")
 	public String getTrueMoneySecuritySoapEndpoint() {
 		return tmnSecuritySoapEndpoint;
+	}
+	
+	@Bean @Qualifier("AccessTokenMemoryRepository")
+	public AccessTokenRepository getAccessTokenMemoryRepository() {
+		return accessTokenMemoryRepository;
 	}
 	
 	@Bean

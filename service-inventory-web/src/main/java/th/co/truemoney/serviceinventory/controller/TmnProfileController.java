@@ -22,16 +22,10 @@ public class TmnProfileController extends BaseController {
 	private TmnProfileService tmnProfileService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public @ResponseBody String login(
-		@RequestBody Login login, 
-		@RequestParam Integer channelID,
-		@RequestParam String deviceID,
-		@RequestParam String deviceType,
-		@RequestParam String deviceVersion,
-		@RequestParam String clientIP,
-		WebRequest request)
+	public @ResponseBody String login(@RequestBody Login login, @RequestParam Integer channelID)
 			throws SignonServiceException {
-		return tmnProfileService.login(login, channelID, deviceID, deviceType, deviceVersion, clientIP);
+		
+		return tmnProfileService.login(channelID, login);
 	}
 	
 	@RequestMapping(value = "/getprofile/{accesstoken}/{checksum}", method = RequestMethod.GET)

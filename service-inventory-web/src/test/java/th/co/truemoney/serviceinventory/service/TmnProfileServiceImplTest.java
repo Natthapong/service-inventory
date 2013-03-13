@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,6 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityPro
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.impl.TmnSecurityProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.stub.TmnProfileStubbed;
 
@@ -27,12 +29,15 @@ public class TmnProfileServiceImplTest {
 	private TmnProfileServiceImpl tmnProfileServiceImpl;	
 	private TmnSecurityProxy tmnSecurityProxyMock;	
 	
+	
+	
 	@Before
 	public void setup() {
 		this.tmnProfileServiceImpl = new TmnProfileServiceImpl();
 		this.tmnSecurityProxyMock = Mockito.mock(TmnSecurityProxyImpl.class);
 
 		this.tmnProfileServiceImpl.setTmnSecurityProxy(tmnSecurityProxyMock);
+		this.tmnProfileServiceImpl.setAccessTokenRepository(new AccessTokenMemoryRepository());
 	}
 	
 	@Test
@@ -45,10 +50,10 @@ public class TmnProfileServiceImplTest {
 		
 		//when
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		String result = this.tmnProfileServiceImpl.login(login, 41, "1AB", "iphone", "6.1", "192.168.1.1");
+		String result = this.tmnProfileServiceImpl.login(41, login);
 
 		//then
-		assertEquals(result, "8e48e03be057319f40621fe9bcd123f750f6df1d");
+		assertNotNull(result);
 
 	}
 	
@@ -63,7 +68,7 @@ public class TmnProfileServiceImplTest {
 		try {
 
 			Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-			this.tmnProfileServiceImpl.login(login, 41, "1AB", "iphone", "6.1", "192.168.1.1");
+			this.tmnProfileServiceImpl.login(41, login);
 			Assert.fail();
 		} catch (SignonServiceException ex) {
 			assertEquals("error code", ex.getCode());

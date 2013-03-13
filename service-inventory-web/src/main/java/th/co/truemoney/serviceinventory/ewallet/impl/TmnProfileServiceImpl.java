@@ -4,8 +4,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
+import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
@@ -17,13 +19,17 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.Standar
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
-import th.co.truemoney.serviceinventory.util.AccessTokenUtil;
 
 public class TmnProfileServiceImpl implements TmnProfileService {
 
 	private static Logger logger = Logger.getLogger(TmnProfileServiceImpl.class);
+	
+	@Autowired @Qualifier("AccessTokenMemoryRepository")
+	private AccessTokenRepository accessTokenRepo;
 	
 	@Autowired
 	private TmnSecurityProxy tmnSecurityProxy;
@@ -32,28 +38,24 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	private TmnProfileProxy tmnProfileProxy;
 		
 	@Override
-	public String login(Login login, Integer channelID, String deviceID, 
-			String deviceType, String deviceVersion, String clientIP) 
+	public String login(Integer channelID, Login login) 
 				throws SignonServiceException {
 		try {
 			// Create Request ID
-			SignonRequest signonRequest = new SignonRequest();
-			signonRequest.setInitiator(login.getUsername());
-			signonRequest.setPin(login.getHashPassword());
-			signonRequest.setChannelId(channelID);
-			
+			SignonRequest signonRequest = createSignOnRequest(channelID, login);
 			SignonResponse signonResponse = this.tmnSecurityProxy.signon(signonRequest);
+
+			AccessToken accessToken = AccessToken.generateNewToken(signonResponse.getSessionId(), 
+					signonResponse.getTmnId(), 
+					login.getUsername(),
+					channelID);
 			
-			String accessToken = this.createAccessToken(login.getUsername(), channelID, 
-					deviceID, deviceType, deviceVersion, clientIP, signonResponse.getSessionId());
+			accessTokenRepo.save(accessToken);
 			
 			// add session id and mapping access token into redis
-			logger.debug("session ID: "+signonResponse.getSessionId());
-			logger.debug("tmn ID: "+ signonResponse.getTmnId());		
-			logger.debug("username: "+login.getUsername());
+			logger.info("Access token created: " + accessToken);
 
-			return accessToken;
-			
+			return accessToken.getAccessTokenId();			
 		} catch (EwalletException e) {
 			throw new SignonServiceException(e.getCode(), 
 				"tmnSecurityProxy.signon response: " + e.getCode(), e.getNamespace());
@@ -63,6 +65,15 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		}
 	}
 		
+	private SignonRequest createSignOnRequest(Integer channelID, Login login) {
+		SignonRequest signonRequest = new SignonRequest();
+		signonRequest.setInitiator(login.getUsername());
+		signonRequest.setPin(login.getHashPassword());
+		signonRequest.setChannelId(channelID);
+		
+		return signonRequest;
+	}
+
 	@Override
 	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum, Integer channelID) 
 			throws ServiceInventoryException {
@@ -96,10 +107,9 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	public void setTmnSecurityProxy(TmnSecurityProxy tmnSecurityProxy) {
 		this.tmnSecurityProxy = tmnSecurityProxy;
 	}
-	
-	public String createAccessToken(String username, Integer channelID, String deviceID, 
-			String deviceType, String deviceVersion, String clientIP, String utibaSessionID) {
-		return AccessTokenUtil.generateToken(username, channelID, deviceID, deviceType, deviceVersion, clientIP, utibaSessionID);
-	}
 
+	public void setAccessTokenRepository(AccessTokenMemoryRepository accessTokenMemoryRepository) {
+		this.accessTokenRepo = accessTokenMemoryRepository;		
+	}
+	
 }

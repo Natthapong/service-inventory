@@ -56,21 +56,17 @@ public class TmnProfileControllerLoginSuccessTest {
 		//given
 		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);	
 		
-		when(this.tmnProfileServiceMock.login(any(Login.class), any(Integer.class), 
-				any(String.class), 
-				any(String.class), 
-				any(String.class), 
-				any(String.class)))
+		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class)))
 				.thenReturn("8e48e03be057319f40621fe9bcd123f750f6df1d");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		this.mockMvc.perform(post("/login?channelID=41&deviceID=1AB&deviceType=iphone&deviceVersion=6.1&clientIP=192.168.1.1")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(login)))
-				.andExpect(status().isOk())
-				.andExpect(content().string("8e48e03be057319f40621fe9bcd123f750f6df1d"))
-				.andDo(print());
+		this.mockMvc.perform(post("/login?channelID=41")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(login)))
+			.andExpect(status().isOk())
+			.andExpect(content().string("8e48e03be057319f40621fe9bcd123f750f6df1d"))
+			.andDo(print());
 		
 	}
 	

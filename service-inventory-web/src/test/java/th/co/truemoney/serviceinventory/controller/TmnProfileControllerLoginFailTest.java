@@ -57,12 +57,7 @@ public class TmnProfileControllerLoginFailTest {
 		//given
 		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);	
 		
-		when(this.tmnProfileServiceMock.login(any(Login.class), 
-				any(Integer.class),
-				any(String.class),
-				any(String.class),
-				any(String.class),
-				any(String.class))).thenThrow(
+		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class))).thenThrow(
 				new SignonServiceException(
 						"1", 
 						"error description",
@@ -70,14 +65,14 @@ public class TmnProfileControllerLoginFailTest {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		this.mockMvc.perform(post("/login?channelID=41&deviceID=1AB&deviceType=iphone&deviceVersion=6.1&clientIP=192.168.1.1")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(login)))
-				.andExpect(status().isUnauthorized())	
-				.andExpect(jsonPath("$.errorCode").value("1"))
-				.andExpect(jsonPath("$.errorDescription").value("error description"))
-				.andExpect(jsonPath("$.errorNamespace").value("error namespace"))
-				.andDo(print());	
+		this.mockMvc.perform(post("/login?channelID=41")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(login)))
+			.andExpect(status().isUnauthorized())	
+			.andExpect(jsonPath("$.errorCode").value("1"))
+			.andExpect(jsonPath("$.errorDescription").value("error description"))
+			.andExpect(jsonPath("$.errorNamespace").value("error namespace"))
+			.andDo(print());	
 		
 	}
 		
