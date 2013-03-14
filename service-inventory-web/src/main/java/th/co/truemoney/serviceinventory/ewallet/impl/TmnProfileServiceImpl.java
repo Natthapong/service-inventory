@@ -122,5 +122,10 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		
 		return signonRequest;
 	}
+
+	@Override
+	public void Logout(String accessToken, Integer ChannelID) {
+		
+	}
 	
 }
