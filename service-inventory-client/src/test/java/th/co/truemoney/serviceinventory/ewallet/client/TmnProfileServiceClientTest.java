@@ -26,7 +26,9 @@ public class TmnProfileServiceClientTest {
 			client.login(41, null);
 			fail();
 		} catch(ServiceInventoryException e){
-			
+			assertEquals("500", e.getErrorCode());
+			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
+			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
 		}
 		
 	}
