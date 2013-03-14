@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +27,18 @@ public class SourceOfFundServiceClient implements SourceOfFundService {
 	@Autowired
 	private HttpHeaders headers;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<DirectDebit> getDirectDebitSources(Integer channelID, String username, String accessToken) {
 
-		HttpEntity<List<DirectDebit>> requestEntity = new HttpEntity<List<DirectDebit>>(headers);
+		HttpEntity<DirectDebit[]> requestEntity = new HttpEntity<DirectDebit[]>(headers);
 
-		ResponseEntity<List> responseEntity = restTemplate.exchange(
+		ResponseEntity<DirectDebit[]> responseEntity = restTemplate.exchange(
 				environmentConfig.getUserDirectDebitSourceOfFundsUrl(),
-					HttpMethod.GET, requestEntity, List.class, "username", channelID, accessToken);
+					HttpMethod.GET, requestEntity, DirectDebit[].class, username, channelID, accessToken);
 		
-		List<DirectDebit> directDebits = responseEntity.getBody();
+		DirectDebit[] directDebits = responseEntity.getBody();
 		
-		return directDebits;
+		return Arrays.asList(directDebits);
 	}
 
 }
