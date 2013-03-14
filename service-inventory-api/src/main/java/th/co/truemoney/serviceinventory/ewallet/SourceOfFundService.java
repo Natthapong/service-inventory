@@ -6,6 +6,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 
 public interface SourceOfFundService {
 	
-	public List<DirectDebit> getDirectDebitSources(Integer ChannelID, String accessToken);	  
+	public List<DirectDebit> getDirectDebitSources(Integer channelId, String username, String accessToken);	  
 	
 }

@@ -8,8 +8,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 public class SourceOfFundServiceImpl implements SourceOfFundService {
 
 	@Override
-	public List<DirectDebit> getDirectDebitSources(Integer ChannelID,
-			String accessToken) {
+	public List<DirectDebit> getDirectDebitSources(Integer channelId, String username, String accessToken) {
 		return null;
 	}
 
