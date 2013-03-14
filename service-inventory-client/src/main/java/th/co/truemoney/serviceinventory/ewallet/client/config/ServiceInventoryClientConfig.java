@@ -4,28 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
+
 @Configuration
-public class SpringConfig {
+@ComponentScan(basePackages="th.co.truemoney.serviceinventory.ewallet.client")
+public class ServiceInventoryClientConfig {
 	
 	@Bean
-	public RestTemplate getRestTemplate() {
+	public RestTemplate restTemplate() {
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setErrorHandler(new ServiceInventoryExceptionResponseErrorHandler());
 		return restTemplate;
 	}
 	
 	@Bean
-	public EnvironmentConfig getDefaultEnvironment() {
-		return new DevEnvironmentConfig();
-	}
-	
-	@Bean
-	public HttpHeaders getDefaultHttpHeaders() {
+	public HttpHeaders defaultHttpHeaders() {
 		HttpHeaders headers = new HttpHeaders();
 		
 		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
