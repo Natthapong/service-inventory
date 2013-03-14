@@ -9,12 +9,12 @@ public class DevEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getLoginUrl() {
-		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet/login?channelID={channelID}";
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet/login?channelId={channelId}";
 	}
 
 	@Override
 	public String getUserDirectDebitSourceOfFundsUrl() {
-		return "https://dev.truemoney.co.th/service-inventory-web/v1/{username}/source-of-fund/direct-debits?channelID={channelID}&accessToken={accessToken}";
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/user/{username}/source-of-fund/direct-debits?channelId={channelId}&accessToken={accessToken}";
 	}
 
 }

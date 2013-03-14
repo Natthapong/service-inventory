@@ -35,16 +35,16 @@ import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 public class TmnProfileControllerLoginFailTest {
 
 	private MockMvc mockMvc;
-	
+
 	@Autowired
 	private WebApplicationContext wac;
 
 	@Autowired
 	private TmnProfileService tmnProfileServiceMock;
-	
+
 	@Before
 	public void setup() {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);
 	}
 
@@ -52,27 +52,27 @@ public class TmnProfileControllerLoginFailTest {
 	public void tierDown() {
 		reset(this.tmnProfileServiceMock);
 	}
-	
+
 	@Test
 	public void shouldLoginFail() throws Exception {
-		
+
 		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class))).thenThrow(
 				new SignonServiceException(
-						"1", 
+						"1",
 						"error description",
 						"error namespace"));
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		this.mockMvc.perform(post("/ewallet/login?channelID=41")
+		this.mockMvc.perform(post("/ewallet/login?channelId=41")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(login)))
-			.andExpect(status().isUnauthorized())	
+			.andExpect(status().isUnauthorized())
 			.andExpect(jsonPath("$.errorCode").value("1"))
 			.andExpect(jsonPath("$.errorDescription").value("error description"))
 			.andExpect(jsonPath("$.errorNamespace").value("error namespace"))
-			.andDo(print());	
-		
+			.andDo(print());
+
 	}
-		
+
 }

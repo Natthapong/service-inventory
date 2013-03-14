@@ -6,14 +6,14 @@ public class RequestBean {
 	private String deviceID;
 	private String deviceType;
 	private String deviceVersion;
-	private String channelID;
+	private String channelId;
 	private String clientIP;
-	
+
 	public RequestBean() {
 	}
-	
+
 	public RequestBean(String accessToken, String username, String deviceID,
-			String deviceType, String deviceVersion, String channelID,
+			String deviceType, String deviceVersion, String channelId,
 			String clientIP) {
 		super();
 		this.accessToken = accessToken;
@@ -21,7 +21,7 @@ public class RequestBean {
 		this.deviceID = deviceID;
 		this.deviceType = deviceType;
 		this.deviceVersion = deviceVersion;
-		this.channelID = channelID;
+		this.channelId = channelId;
 		this.clientIP = clientIP;
 	}
 
@@ -65,12 +65,12 @@ public class RequestBean {
 		this.deviceVersion = deviceVersion;
 	}
 
-	public String getChannelID() {
-		return channelID;
+	public String getChannelId() {
+		return channelId;
 	}
 
-	public void setChannelID(String channelID) {
-		this.channelID = channelID;
+	public void setChannelId(String channelId) {
+		this.channelId = channelId;
 	}
 
 	public String getClientIP() {

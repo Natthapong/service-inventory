@@ -35,13 +35,13 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 public class SourceOfFundControllerSuccessTest {
 
 	private MockMvc mockMvc;
-	
+
 	@Autowired
 	private WebApplicationContext wac;
 
 	@Autowired
 	private SourceOfFundService sourceOfFundServiceMock;
-	
+
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
@@ -52,19 +52,19 @@ public class SourceOfFundControllerSuccessTest {
 	public void tierDown() {
 		reset(this.sourceOfFundServiceMock);
 	}
-	
+
 	@Test
 	public void shouldSuccess() throws Exception {
-		
-		//given 
+
+		//given
 		when(sourceOfFundServiceMock.getDirectDebitSources(anyInt(), anyString(), anyString()))
 			.thenReturn(new ArrayList<DirectDebit>());
-		
-		this.mockMvc.perform(get("/{username}/source-of-fund/direct-debits?channelID=41&accessToken=e6701de94fdda4347a3d31ec5c892ccadc88b847", "user1.test.v1@gmail.com")
+
+		this.mockMvc.perform(get("/user/{username}/source-of-fund/direct-debits?channelId=41&accessToken=e6701de94fdda4347a3d31ec5c892ccadc88b847", "user1.test.v1@gmail.com")
 			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())	
-			.andDo(print());	
-		
+			.andExpect(status().isOk())
+			.andDo(print());
+
 	}
-		
+
 }

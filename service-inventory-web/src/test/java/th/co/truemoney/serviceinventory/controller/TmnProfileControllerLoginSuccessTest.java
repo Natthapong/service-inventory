@@ -34,39 +34,39 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 public class TmnProfileControllerLoginSuccessTest {
 
 	private MockMvc mockMvc;
-	
+
 	@Autowired
 	private WebApplicationContext wac;
 
 	@Autowired
 	private TmnProfileService tmnProfileServiceMock;
-	
+
 	@Before
 	public void setup() {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
-		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);	
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);
 	}
 
 	@After
 	public void tierDown() {
 		reset(this.tmnProfileServiceMock);
 	}
-	
+
 	@Test
-	public void shouldLoginSuccess() throws Exception {		
-		
+	public void shouldLoginSuccess() throws Exception {
+
 		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class)))
 				.thenReturn("8e48e03be057319f40621fe9bcd123f750f6df1d");
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		this.mockMvc.perform(post("/ewallet/login?channelID=41")
+		this.mockMvc.perform(post("/ewallet/login?channelId=41")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(login)))
 			.andExpect(status().isOk())
 			.andExpect(content().string("8e48e03be057319f40621fe9bcd123f750f6df1d"))
 			.andDo(print());
-		
+
 	}
-	
+
 }

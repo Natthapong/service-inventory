@@ -15,30 +15,30 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 
 @Service
 public class TmnProfileServiceClient implements TmnProfileService {
-	
+
 	@Autowired
 	RestTemplate restTemplate;
-	
+
 	@Autowired
 	private EnvironmentConfig environmentConfig;
-	
+
 	@Autowired
 	private HttpHeaders headers;
 
 	@Override
-	public String login(Integer channelID, Login login) {
-		
+	public String login(Integer channelId, Login login) {
+
 		HttpEntity<Login> requestEntity = new HttpEntity<Login>(login, headers);
-		
-		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLoginUrl(), HttpMethod.POST, requestEntity, String.class, channelID);
-		
+
+		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLoginUrl(), HttpMethod.POST, requestEntity, String.class, channelId);
+
 		String accessToken = responseEntity.getBody();
-		
+
 		return accessToken;
 	}
 
 	@Override
-	public TmnProfile getTruemoneyProfile(Integer channelID,
+	public TmnProfile getTruemoneyProfile(Integer channelId,
 			String accesstoken, String checksum) {
 		// TODO Auto-generated method stub
 		return null;
@@ -47,7 +47,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	@Override
 	public void logout(Integer ChannelID, String accessToken) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 }

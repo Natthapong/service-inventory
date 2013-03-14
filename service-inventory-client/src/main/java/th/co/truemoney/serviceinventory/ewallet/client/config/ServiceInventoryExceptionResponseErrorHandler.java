@@ -21,16 +21,21 @@ public class ServiceInventoryExceptionResponseErrorHandler extends DefaultRespon
 
 	public void handleError(ClientHttpResponse response) throws IOException {
 		HttpStatus statusCode = getHttpStatusCode(response);
-		
+
 		if (statusCode.series() == Series.CLIENT_ERROR || statusCode.series() == Series.SERVER_ERROR) {
-			ObjectMapper objectMapper = new ObjectMapper();
-			ServiceInventoryException exception = objectMapper.readValue(getResponseBody(response), ServiceInventoryException.class);
-			throw exception;
+
+			try {
+				ObjectMapper objectMapper = new ObjectMapper();
+				ServiceInventoryException exception = objectMapper.readValue(getResponseBody(response), ServiceInventoryException.class);
+				throw exception;
+			} catch(Exception e) {
+				throw new BadErrorFormatException("cannot parse error json: ", e);
+			}
 		} else {
 			throw new RestClientException("Unknown status code [" + statusCode + "]");
 		}
 	}
-	
+
 	private HttpStatus getHttpStatusCode(ClientHttpResponse response) throws IOException {
 		HttpStatus statusCode;
 		try {
@@ -42,7 +47,7 @@ public class ServiceInventoryExceptionResponseErrorHandler extends DefaultRespon
 		}
 		return statusCode;
 	}
-	
+
 	private byte[] getResponseBody(ClientHttpResponse response) {
 		try {
 			InputStream responseBody = response.getBody();

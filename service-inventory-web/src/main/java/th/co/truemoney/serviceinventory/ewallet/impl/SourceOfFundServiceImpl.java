@@ -20,7 +20,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.SourceC
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-@Service
 public class SourceOfFundServiceImpl implements SourceOfFundService {
 
 	private static Logger logger = Logger.getLogger(SourceOfFundServiceImpl.class);

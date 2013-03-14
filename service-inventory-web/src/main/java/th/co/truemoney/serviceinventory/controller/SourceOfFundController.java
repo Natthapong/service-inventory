@@ -17,22 +17,22 @@ import th.co.truemoney.serviceinventory.exception.ValidateException;
 
 @Controller
 public class SourceOfFundController extends BaseController {
-	
+
 	@Autowired
 	private SourceOfFundService sourceOfFundService;
-	
-	@RequestMapping(value = "/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
+
+	@RequestMapping(value = "/user/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
 	public @ResponseBody List<DirectDebit> listDirectDebitSources(
 		@PathVariable String username,
-		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		@RequestParam(value = "channelId", defaultValue="-1") Integer channelId,
 		@RequestParam(value = "accessToken", defaultValue="") String accessToken)
 			throws ServiceInventoryException {
-		if (channelID == -1) {
-			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
+		if (channelId == -1) {
+			throw new ValidateException("-1", "Validate error: channelId is null or empty.");
 		} else if (accessToken == null || accessToken.equals("")) {
 			throw new ValidateException("-1", "Validate error: accessToken is null or empty.");
 		}
-		return sourceOfFundService.getDirectDebitSources(channelID, username, accessToken);
+		return sourceOfFundService.getDirectDebitSources(channelId, username, accessToken);
 	}
-	
+
 }

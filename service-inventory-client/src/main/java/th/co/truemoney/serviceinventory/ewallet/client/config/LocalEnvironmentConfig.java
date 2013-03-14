@@ -10,12 +10,12 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getLoginUrl() {
-		return "http://localhost:8585/service-inventory-web/v1/ewallet/login?channelID={channelID}";
+		return "http://localhost:8585/service-inventory-web/v1/ewallet/login?channelId={channelId}";
 	}
 
 	@Override
 	public String getUserDirectDebitSourceOfFundsUrl() {
-		return "http://localhost:8585/service-inventory-web/v1/{username}/source-of-fund/direct-debits?channelID={channelID}&accessToken={accessToken}";
+		return "http://localhost:8585/service-inventory-web/v1/user/{username}/source-of-fund/direct-debits?channelId={channelId}&accessToken={accessToken}";
 	}
 
 }
