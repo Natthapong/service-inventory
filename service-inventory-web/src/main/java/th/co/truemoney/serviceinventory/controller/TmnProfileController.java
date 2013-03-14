@@ -22,7 +22,7 @@ public class TmnProfileController extends BaseController {
 	private TmnProfileService tmnProfileService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public @ResponseBody String login(@RequestBody Login login, @RequestParam Integer channelID)
+	public @ResponseBody String login(@RequestParam Integer channelID, @RequestBody Login login)
 			throws SignonServiceException {
 		
 		return tmnProfileService.login(channelID, login);
@@ -30,12 +30,12 @@ public class TmnProfileController extends BaseController {
 	
 	@RequestMapping(value = "/getprofile/{accesstoken}/{checksum}", method = RequestMethod.GET)
 	public @ResponseBody TmnProfile getTruemoneyProfile(
+		@RequestParam Integer channelID,
 		@PathVariable String accesstoken,
 		@PathVariable String checksum,
-		@RequestParam Integer channelID,
 		WebRequest request)
 			throws SignonServiceException {
-		return tmnProfileService.getTruemoneyProfile(accesstoken, checksum, channelID);
+		return tmnProfileService.getTruemoneyProfile(channelID, accesstoken, checksum);
 	}
 	
 	

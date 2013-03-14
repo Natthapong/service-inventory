@@ -38,15 +38,16 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum,
-			Integer channelID) {
+	public TmnProfile getTruemoneyProfile(Integer channelID,
+			String accesstoken, String checksum) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void Logout(String accessToken, Integer ChannelID) {
+	public void logout(Integer ChannelID, String accessToken) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 }

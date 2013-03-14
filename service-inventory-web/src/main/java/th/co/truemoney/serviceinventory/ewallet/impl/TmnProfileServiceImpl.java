@@ -67,7 +67,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum, Integer channelID) 
+	public TmnProfile getTruemoneyProfile(Integer channelID, String accesstoken, String checksum) 
 			throws ServiceInventoryException {
 		try {
 			String sessionID = "";
@@ -93,11 +93,11 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public void Logout(String accessToken, Integer ChannelID) {
+	public void logout(Integer ChannelID, String accessToken) {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
 		this.tmnProfileProxy = tmnProfileProxy;
 	}
@@ -118,5 +118,5 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		
 		return signonRequest;
 	}
-	
+
 }
