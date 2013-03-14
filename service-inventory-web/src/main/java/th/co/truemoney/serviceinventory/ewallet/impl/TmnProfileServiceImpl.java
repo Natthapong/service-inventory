@@ -1,7 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
@@ -10,7 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebitSource;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
@@ -68,13 +65,6 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 				e.getMessage(), e.getNamespace());
 		}
 	}
-			
-	@Override
-	public List<DirectDebitSource> getDirectDebitSources(Integer ChannelID,
-			String accessToken) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum, Integer channelID) 
@@ -102,6 +92,12 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		}
 	}
 
+	@Override
+	public void Logout(String accessToken, Integer ChannelID) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
 		this.tmnProfileProxy = tmnProfileProxy;
 	}

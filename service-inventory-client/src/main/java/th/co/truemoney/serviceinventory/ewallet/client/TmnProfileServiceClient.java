@@ -1,7 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EnvironmentConfig;
-import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebitSource;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 
@@ -47,10 +44,9 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public List<DirectDebitSource> getDirectDebitSources(Integer ChannelID,
-			String accessToken) {
+	public void Logout(String accessToken, Integer ChannelID) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
-	
+
 }
