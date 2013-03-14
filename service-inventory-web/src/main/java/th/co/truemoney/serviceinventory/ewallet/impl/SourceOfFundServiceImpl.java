@@ -7,9 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
@@ -27,23 +24,23 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class SourceOfFundServiceImpl implements SourceOfFundService {
 
 	private static Logger logger = Logger.getLogger(SourceOfFundServiceImpl.class);
-	
-	@Autowired @Qualifier("accessTokenMemoryRepository")
+
+	@Autowired
 	private AccessTokenRepository accessTokenRepo;
-	
+
 	@Autowired
 	private TmnProfileProxy tmnProfileProxy;
-	
+
 	@Override
-	public List<DirectDebit> getDirectDebitSources(Integer channelId, String username, String accessTokenId) 
+	public List<DirectDebit> getDirectDebitSources(Integer channelId, String username, String accessTokenId)
 			throws ServiceInventoryException {
-		try {			
+		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenId);
 			logger.debug("retrieve access Token: "+accessToken.toString());
-			
-			List<DirectDebit> directDebitList = null;	
+
+			List<DirectDebit> directDebitList = null;
 			ListSourceRequest listSourceRequest = createListSourceRequest(channelId, accessToken.getTruemoneyId(), accessToken.getSessionId());
-			ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(listSourceRequest);			
+			ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(listSourceRequest);
 			SourceContext[] sourceContexts = listSourceResponse.getSourceList();
 			if (sourceContexts != null && sourceContexts.length > 0) {
 				directDebitList = new ArrayList<DirectDebit>();
@@ -58,14 +55,14 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 					}
 					directDebitList.add(directDebit);
 				}
-			}			
-			
-			return directDebitList;			
+			}
+
+			return directDebitList;
 		} catch (EwalletException e) {
-			throw new ServiceInventoryException(e.getCode(), 
+			throw new ServiceInventoryException(e.getCode(),
 				"tmnSecurityProxy.listSource response: " + e.getCode(), e.getNamespace());
 		} catch (ServiceUnavailableException e) {
-			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE), 
+			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
 				e.getMessage(), e.getNamespace());
 		}
 	}
@@ -73,14 +70,14 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
 		this.tmnProfileProxy = tmnProfileProxy;
 	}
-	
+
 	private ListSourceRequest createListSourceRequest(Integer channelId, String truemoneyId, String sessionId) {
 		ListSourceRequest listSourceRequest = new ListSourceRequest();
 		listSourceRequest.setChannelId(channelId);
 		SecurityContext securityContext = new SecurityContext(sessionId, truemoneyId);
 		listSourceRequest.setSecurityContext(securityContext);
-		
+
 		return listSourceRequest;
 	}
-	
+
 }
