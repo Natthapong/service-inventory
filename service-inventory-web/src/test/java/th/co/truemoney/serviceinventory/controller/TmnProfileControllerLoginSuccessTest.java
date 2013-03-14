@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -23,13 +24,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import th.co.truemoney.serviceinventory.config.TestServiceConfig;
-import th.co.truemoney.serviceinventory.config.TestWebConfig;
+import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { TestWebConfig.class, TestServiceConfig.class })
+@ContextConfiguration(classes = { WebConfig.class, TestServiceConfig.class })
+@ActiveProfiles("local")
 public class TmnProfileControllerLoginSuccessTest {
 
 	private MockMvc mockMvc;
@@ -54,7 +56,7 @@ public class TmnProfileControllerLoginSuccessTest {
 	@Test
 	public void shouldLoginSuccess() throws Exception {		
 		
-		//given		
+		//given
 		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class)))
 				.thenReturn("8e48e03be057319f40621fe9bcd123f750f6df1d");
 		

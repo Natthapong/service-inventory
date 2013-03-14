@@ -13,8 +13,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -23,14 +26,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import th.co.truemoney.serviceinventory.config.TestServiceConfig;
-import th.co.truemoney.serviceinventory.config.TestWebConfig;
+import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { TestWebConfig.class, TestServiceConfig.class })
+@ContextConfiguration(classes = { TestServiceConfig.class })
+@ActiveProfiles("local")
 public class TmnProfileControllerLoginFailTest {
 
 	private MockMvc mockMvc;
@@ -55,7 +59,7 @@ public class TmnProfileControllerLoginFailTest {
 	@Test
 	public void shouldLoginFail() throws Exception {
 		
-		//given		
+		//given
 		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class))).thenThrow(
 				new SignonServiceException(
 						"1", 

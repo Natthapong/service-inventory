@@ -15,18 +15,15 @@ import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.endpoint.TmnProfileSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.endpoint.TmnSecuritySoapEndPointProxy;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 
 @Configuration
 @ComponentScan(basePackages = "th.co.truemoney.serviceinventory") 
-public class ServiceConfig {
+public class ProductionServiceConfig {
 	
-	@Value( "${tmnprofile.endpoint}")
+	@Value("${tmnprofile.endpoint}")
 	private String tmnProfileSoapEndpoint;
 	
-	@Value( "${tmnsecurity.endpoint}")
+	@Value("${tmnsecurity.endpoint}")
 	private String tmnSecuritySoapEndpoint;
 		
 	@Bean
@@ -40,14 +37,14 @@ public class ServiceConfig {
 	}
 	
 	@Bean
-	public TmnProfileSoapEndPointProxy getTmnProfileSoapEndPointProxy() {
+	public TmnProfileSoapEndPointProxy tmnProfileSoapEndPointProxy() {
 		TmnProfileSoapEndPointProxy endPointProxy = new TmnProfileSoapEndPointProxy(getTrueMoneyProfileSoapEndpoint());
 		endPointProxy.setTimeout(10000);
 		return endPointProxy;
 	}
 	
 	@Bean
-	public TmnSecuritySoapEndPointProxy getTmnSecuritySoapEndPointProxy() {
+	public TmnSecuritySoapEndPointProxy tmnSecuritySoapEndPointProxy() {
 		TmnSecuritySoapEndPointProxy endPointProxy = new TmnSecuritySoapEndPointProxy(getTrueMoneySecuritySoapEndpoint());
 		endPointProxy.setTimeout(10000);
 		return endPointProxy;
@@ -61,16 +58,6 @@ public class ServiceConfig {
 	@Bean @Qualifier("tmnSecuritySoapEndPoint")
 	public String getTrueMoneySecuritySoapEndpoint() {
 		return tmnSecuritySoapEndpoint;
-	}
-
-	@Bean @Qualifier("accessTokenMemoryRepository")
-	public AccessTokenRepository getAccessTokenMemoryRepository() {
-		return new AccessTokenMemoryRepository();
-	}
-
-	@Bean @Qualifier("accessTokenRedisRepository")
-	public AccessTokenRepository getAccessTokenRedisRepository() {
-		return new AccessTokenRedisRepository();
 	}
 
 	@Bean

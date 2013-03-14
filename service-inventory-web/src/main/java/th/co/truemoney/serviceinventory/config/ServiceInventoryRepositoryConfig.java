@@ -3,7 +3,6 @@ package th.co.truemoney.serviceinventory.config;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -11,10 +10,9 @@ import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@ComponentScan(basePackages = "th.co.truemoney.serviceinventory.dao")
-public class AppConfig {
+public class ServiceInventoryRepositoryConfig {
 	
-	private static Logger logger = Logger.getLogger(AppConfig.class);
+	private static Logger logger = Logger.getLogger(ServiceInventoryRepositoryConfig.class);
 
 	@Value( "${redis.host}")
 	private String redisHost;
