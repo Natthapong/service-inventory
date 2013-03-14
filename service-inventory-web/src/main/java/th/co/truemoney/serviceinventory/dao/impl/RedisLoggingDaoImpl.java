@@ -16,7 +16,7 @@ public class RedisLoggingDaoImpl implements RedisLoggingDao {
 	
 	@Override
 	public void addData(String key, String value, Long expired) {
-		redisTemplate.opsForValue().set(key, value, expired.longValue(), TimeUnit.MILLISECONDS);
+		redisTemplate.opsForValue().set(key, value, expired.longValue(), TimeUnit.MINUTES);
 	}
 
 	@Override

@@ -15,9 +15,9 @@ import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.endpoint.TmnProfileSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.endpoint.TmnSecuritySoapEndPointProxy;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 
 @Configuration
 @ComponentScan(basePackages = "th.co.truemoney.serviceinventory")

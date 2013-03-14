@@ -19,7 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityPro
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.impl.TmnSecurityProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.stub.TmnProfileStubbed;
 

@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.ewallet.repositories;
+package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import org.apache.log4j.Logger;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 
 public class AccessTokenMemoryRepository implements AccessTokenRepository {
 	
