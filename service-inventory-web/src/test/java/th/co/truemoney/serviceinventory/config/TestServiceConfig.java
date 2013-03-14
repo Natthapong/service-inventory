@@ -7,17 +7,17 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
+import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.endpoint.TmnProfileSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.endpoint.TmnSecuritySoapEndPointProxy;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 
 @Configuration
 @ComponentScan(basePackages = "th.co.truemoney.serviceinventory")
@@ -29,9 +29,14 @@ public class TestServiceConfig {
 	@Value( "${tmnsecurity.endpoint}")
 	private String tmnSecuritySoapEndpoint;
 	
-	@Bean @Scope("singleton")
-	public TmnProfileService getTmnProfileService() {
+	@Bean @Scope("singleton") @Primary
+	public TmnProfileService tmnProfileServiceMock() {
 		return Mockito.mock(TmnProfileServiceImpl.class);
+	}
+	
+	@Bean @Scope("singleton")
+	public SourceOfFundService getSourceOfFundService() {
+		return Mockito.mock(SourceOfFundServiceImpl.class);
 	}
 	
 	@Bean
@@ -58,15 +63,6 @@ public class TestServiceConfig {
 		return tmnSecuritySoapEndpoint;
 	}
 	
-	@Bean @Qualifier("accessTokenMemoryRepository")
-	public AccessTokenRepository getAccessTokenMemoryRepository() {
-		return new AccessTokenMemoryRepository();
-	}
-
-	@Bean @Qualifier("accessTokenRedisRepository")
-	public AccessTokenRepository getAccessTokenRedisRepository() {
-		return new AccessTokenRedisRepository();
-	}
 	
 	@Bean
 	public static PropertyPlaceholderConfigurer properties(){

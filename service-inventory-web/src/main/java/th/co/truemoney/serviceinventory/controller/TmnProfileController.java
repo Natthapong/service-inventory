@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
@@ -16,26 +15,26 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
 @Controller
+@RequestMapping(value="/ewallet")
 public class TmnProfileController extends BaseController {
 	
 	@Autowired
 	private TmnProfileService tmnProfileService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public @ResponseBody String login(@RequestBody Login login, @RequestParam Integer channelID)
+	public @ResponseBody String login(@RequestParam Integer channelID, @RequestBody Login login)
 			throws SignonServiceException {
 		
 		return tmnProfileService.login(channelID, login);
 	}
 	
-	@RequestMapping(value = "/getprofile/{accesstoken}/{checksum}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getprofile", method = RequestMethod.GET)
 	public @ResponseBody TmnProfile getTruemoneyProfile(
-		@PathVariable String accesstoken,
-		@PathVariable String checksum,
 		@RequestParam Integer channelID,
-		WebRequest request)
+		@PathVariable String accesstoken,
+		@PathVariable String checksum)
 			throws SignonServiceException {
-		return tmnProfileService.getTruemoneyProfile(accesstoken, checksum, channelID);
+		return tmnProfileService.getTruemoneyProfile(channelID, accesstoken, checksum);
 	}
 	
 	

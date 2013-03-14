@@ -1,7 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EnvironmentConfig;
-import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebitSource;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 
@@ -33,7 +30,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		
 		HttpEntity<Login> requestEntity = new HttpEntity<Login>(login, headers);
 		
-		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLoginUrl(), HttpMethod.POST, requestEntity, String.class);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLoginUrl(), HttpMethod.POST, requestEntity, String.class, channelID);
 		
 		String accessToken = responseEntity.getBody();
 		
@@ -41,20 +38,14 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum,
-			Integer channelID) {
-		return null;
-	}
-
-	@Override
-	public List<DirectDebitSource> getDirectDebitSources(Integer ChannelID,
-			String accessToken) {
+	public TmnProfile getTruemoneyProfile(Integer channelID,
+			String accesstoken, String checksum) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void logout(String accessToken, Integer ChannelID) {
+	public void logout(Integer ChannelID, String accessToken) {
 		// TODO Auto-generated method stub
 		
 	}

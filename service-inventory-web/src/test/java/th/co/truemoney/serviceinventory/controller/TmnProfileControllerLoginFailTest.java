@@ -13,8 +13,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -23,14 +26,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import th.co.truemoney.serviceinventory.config.TestServiceConfig;
-import th.co.truemoney.serviceinventory.config.TestWebConfig;
+import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { TestWebConfig.class, TestServiceConfig.class })
+@ContextConfiguration(classes = { TestServiceConfig.class })
+@ActiveProfiles("local")
 public class TmnProfileControllerLoginFailTest {
 
 	private MockMvc mockMvc;
@@ -44,6 +48,7 @@ public class TmnProfileControllerLoginFailTest {
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
+		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);
 	}
 
 	@After
@@ -55,8 +60,6 @@ public class TmnProfileControllerLoginFailTest {
 	public void shouldLoginFail() throws Exception {
 		
 		//given
-		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);	
-		
 		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class))).thenThrow(
 				new SignonServiceException(
 						"1", 
@@ -65,7 +68,7 @@ public class TmnProfileControllerLoginFailTest {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		this.mockMvc.perform(post("/login?channelID=41")
+		this.mockMvc.perform(post("/ewallet/login?channelID=41")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(login)))
 			.andExpect(status().isUnauthorized())	

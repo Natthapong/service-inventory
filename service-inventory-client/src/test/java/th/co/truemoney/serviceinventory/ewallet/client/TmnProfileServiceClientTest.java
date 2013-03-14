@@ -21,7 +21,7 @@ public class TmnProfileServiceClientTest {
 	@Autowired
 	TmnProfileServiceClient client;
 
-	@Test 
+	@Test @Ignore
 	public void shouldFail() {
 		
 		try {
