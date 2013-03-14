@@ -16,7 +16,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.endpoint.TmnSe
 @Configuration
 @ComponentScan("th.co.truemoney.serviceinventory.ewallet.proxy")
 @Profile("dev")
-public class DevProxyConfig {
+public class TestDevProxyConfig {
 	
 	@Value("${tmnprofile.endpoint}")
 	private String tmnProfileSoapEndpoint;

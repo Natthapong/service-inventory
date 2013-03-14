@@ -8,6 +8,14 @@ public abstract class BaseException extends RuntimeException {
 
 	private static final long serialVersionUID = -5871887802915224160L;
 	
+	public static final String NAMESPACE = "TMN-SERVICE-INVENTORY";
+	
+	public static class Code  {
+		public static final String SUCCESS = "0";		
+		public static final String INVALID_PROFILE_TYPE = "10000";
+		public static final String DATASOURCE_NOT_FOUND = "90000";
+	}
+	
 	private String code;
 	private String description;
 	private String namespace;

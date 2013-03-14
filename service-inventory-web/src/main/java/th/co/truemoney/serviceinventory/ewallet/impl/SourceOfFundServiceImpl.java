@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -25,7 +26,7 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 
 	private static Logger logger = Logger.getLogger(SourceOfFundServiceImpl.class);
 	
-	@Autowired
+	@Autowired @Qualifier("accessTokenMemoryRepository")
 	private AccessTokenRepository accessTokenRepo;
 	
 	@Autowired

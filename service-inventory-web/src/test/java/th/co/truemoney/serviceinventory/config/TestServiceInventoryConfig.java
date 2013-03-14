@@ -12,8 +12,8 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 
 @Configuration
-public class TestServiceConfig {
-
+public class TestServiceInventoryConfig {
+	
 	@Bean @Scope("singleton") @Primary
 	public TmnProfileService tmnProfileServiceMock() {
 		return Mockito.mock(TmnProfileService.class);
@@ -28,5 +28,5 @@ public class TestServiceConfig {
 	public AccessTokenRepository accessTokenRepo() {
 		return new AccessTokenMemoryRepository();
 	}
-	
+
 }

@@ -13,6 +13,7 @@ import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
+import th.co.truemoney.serviceinventory.exception.ValidateException;
 
 @Controller
 @RequestMapping(value="/ewallet")
@@ -22,9 +23,11 @@ public class TmnProfileController extends BaseController {
 	private TmnProfileService tmnProfileService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public @ResponseBody String login(@RequestParam Integer channelID, @RequestBody Login login)
+	public @ResponseBody String login(@RequestParam(value = "channelID", defaultValue="-1") Integer channelID, @RequestBody Login login)
 			throws SignonServiceException {
-		
+		if (channelID == -1) {
+			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
+		}
 		return tmnProfileService.login(channelID, login);
 	}
 	

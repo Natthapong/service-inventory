@@ -7,11 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
-import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
-import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
-import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.CreateTmnProfileRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.CreateTmnProfileResponse;
@@ -26,8 +22,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.Create
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.StandardBizResponse;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 
 
 @Configuration

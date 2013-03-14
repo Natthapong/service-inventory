@@ -22,14 +22,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import th.co.truemoney.serviceinventory.config.TestServiceConfig;
+import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { WebConfig.class, TestServiceConfig.class })
+@ContextConfiguration(classes = { WebConfig.class, TestServiceInventoryConfig.class })
 public class TmnProfileControllerLoginSuccessTest {
 
 	private MockMvc mockMvc;
@@ -43,6 +43,7 @@ public class TmnProfileControllerLoginSuccessTest {
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
+		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);	
 	}
 
 	@After
@@ -53,7 +54,6 @@ public class TmnProfileControllerLoginSuccessTest {
 	@Test
 	public void shouldLoginSuccess() throws Exception {		
 		
-		//given
 		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class)))
 				.thenReturn("8e48e03be057319f40621fe9bcd123f750f6df1d");
 		

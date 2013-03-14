@@ -2,7 +2,6 @@ package th.co.truemoney.serviceinventory.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,11 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ValidateException;
 
 @Controller
 public class SourceOfFundController extends BaseController {
-	
-	private static Logger logger = Logger.getLogger(SourceOfFundController.class);
 	
 	@Autowired
 	private SourceOfFundService sourceOfFundService;
@@ -26,12 +24,14 @@ public class SourceOfFundController extends BaseController {
 	@RequestMapping(value = "/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
 	public @ResponseBody List<DirectDebit> listDirectDebitSources(
 		@PathVariable String username,
-		@RequestParam Integer channelID,
-		@RequestParam String accessToken)
+		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		@RequestParam(value = "accessToken", defaultValue="") String accessToken)
 			throws ServiceInventoryException {
-		logger.debug("username : "+ username);
-		logger.debug("channelID : "+channelID);
-		logger.debug("accessToken: "+accessToken);
+		if (channelID == -1) {
+			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
+		} else if (accessToken == null || accessToken.equals("")) {
+			throw new ValidateException("-1", "Validate error: accessToken is null or empty.");
+		}
 		return sourceOfFundService.getDirectDebitSources(channelID, username, accessToken);
 	}
 	

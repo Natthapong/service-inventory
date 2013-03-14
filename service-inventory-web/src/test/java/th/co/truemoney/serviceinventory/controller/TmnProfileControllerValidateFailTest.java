@@ -5,7 +5,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -26,12 +25,11 @@ import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
-import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = { WebConfig.class, TestServiceInventoryConfig.class })
-public class TmnProfileControllerLoginFailTest {
+public class TmnProfileControllerValidateFailTest {
 
 	private MockMvc mockMvc;
 	
@@ -55,22 +53,17 @@ public class TmnProfileControllerLoginFailTest {
 	@Test
 	public void shouldLoginFail() throws Exception {
 		
-		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class))).thenThrow(
-				new SignonServiceException(
-						"1", 
-						"error description",
-						"error namespace"));
+		//given		
+		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class)))
+				.thenReturn("8e48e03be057319f40621fe9bcd123f750f6df1d");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		this.mockMvc.perform(post("/ewallet/login?channelID=41")
+		this.mockMvc.perform(post("/ewallet/login")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(login)))
-			.andExpect(status().isUnauthorized())	
-			.andExpect(jsonPath("$.errorCode").value("1"))
-			.andExpect(jsonPath("$.errorDescription").value("error description"))
-			.andExpect(jsonPath("$.errorNamespace").value("error namespace"))
-			.andDo(print());	
+			.andExpect(status().isBadRequest())
+			.andDo(print());
 		
 	}
 		
