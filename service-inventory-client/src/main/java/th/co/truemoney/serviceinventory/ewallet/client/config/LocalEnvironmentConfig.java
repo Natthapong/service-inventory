@@ -10,7 +10,7 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getLoginUrl() {
-		return "http://localhost:8585/service-inventory-web/v1/ewallet/login";
+		return "http://localhost:8585/service-inventory-web/v1/ewallet/login?channelID={channelID}";
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
@@ -30,7 +31,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { WebConfig.class, TestServiceInventoryConfig.class })
+@ContextConfiguration(classes = { WebConfig.class, TestServiceInventoryConfig.class, TestRedisConfig.class })
 public class SourceOfFundControllerSuccessTest {
 
 	private MockMvc mockMvc;
