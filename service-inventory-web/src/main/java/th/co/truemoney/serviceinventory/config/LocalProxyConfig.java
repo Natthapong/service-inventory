@@ -3,14 +3,21 @@ package th.co.truemoney.serviceinventory.config;
 import java.math.BigDecimal;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
+import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
+import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
+import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
+import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.CreateTmnProfileRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.CreateTmnProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.GetBasicProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.ListSourceRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.ListSourceResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.AuthenticateRequest;
@@ -19,13 +26,14 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.Create
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.StandardBizResponse;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 
 
 @Configuration
-@ComponentScan(basePackages = "th.co.truemoney.serviceinventory") 
 @Profile("local")
-public class LocalServiceConfig {
-		
+public class LocalProxyConfig {
+	
 	@Bean @Primary
 	public TmnProfileProxy stubTmnProfileProxy() {
 		return new TmnProfileProxy() {
@@ -39,6 +47,20 @@ public class LocalServiceConfig {
 						new BigDecimal(50.0d),
 						"customer", 
 						1);
+			}
+
+			@Override
+			public CreateTmnProfileResponse createTmnProfile(
+					CreateTmnProfileRequest createTmnProfileRequest)
+					throws EwalletException {
+				return new CreateTmnProfileResponse("1", "0", "namespace", new String[] {"key"}, new String[] {"value"}, "123123");
+			}
+
+			@Override
+			public ListSourceResponse listSource(
+					ListSourceRequest listSourceRequest)
+					throws EwalletException {
+				return null;
 			}
 		};
 	}
@@ -79,5 +101,4 @@ public class LocalServiceConfig {
 			}
 		};
 	}
-	
 }

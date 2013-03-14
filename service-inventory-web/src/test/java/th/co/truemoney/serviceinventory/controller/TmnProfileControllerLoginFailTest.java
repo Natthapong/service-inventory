@@ -13,11 +13,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -33,8 +30,7 @@ import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { TestServiceConfig.class })
-@ActiveProfiles("local")
+@ContextConfiguration(classes = { WebConfig.class, TestServiceConfig.class})
 public class TmnProfileControllerLoginFailTest {
 
 	private MockMvc mockMvc;
@@ -48,7 +44,6 @@ public class TmnProfileControllerLoginFailTest {
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
-		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);
 	}
 
 	@After

@@ -6,14 +6,10 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 
-@Component
-@Profile("dev")
 public class AccessTokenMemoryRepository implements AccessTokenRepository {
 	
 	private static Logger logger = Logger.getLogger(AccessTokenMemoryRepository.class);

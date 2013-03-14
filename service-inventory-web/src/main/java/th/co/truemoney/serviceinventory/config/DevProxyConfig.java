@@ -6,35 +6,23 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
-import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
-import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
-import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.endpoint.TmnProfileSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.endpoint.TmnSecuritySoapEndPointProxy;
 
 @Configuration
-@ComponentScan(basePackages = "th.co.truemoney.serviceinventory") 
-public class ProductionServiceConfig {
+@ComponentScan("th.co.truemoney.serviceinventory.ewallet.proxy")
+@Profile("dev")
+public class DevProxyConfig {
 	
 	@Value("${tmnprofile.endpoint}")
 	private String tmnProfileSoapEndpoint;
 	
 	@Value("${tmnsecurity.endpoint}")
 	private String tmnSecuritySoapEndpoint;
-		
-	@Bean
-	public TmnProfileService getTmnProfileService() {
-		return new TmnProfileServiceImpl();
-	}
-	
-	@Bean
-	public SourceOfFundService getSourceOfFundService() {
-		return new SourceOfFundServiceImpl();
-	}
 	
 	@Bean
 	public TmnProfileSoapEndPointProxy tmnProfileSoapEndPointProxy() {
@@ -61,10 +49,10 @@ public class ProductionServiceConfig {
 	}
 
 	@Bean
-	public static PropertyPlaceholderConfigurer properties(){
+	public static PropertyPlaceholderConfigurer endPointsProperties(){
 	  PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
 	  Resource[] resources = new ClassPathResource[ ]
-	    { new ClassPathResource( "application.properties" ) };
+	    { new ClassPathResource( "endpoints.properties" ) };
 	  ppc.setLocations( resources );
 	  ppc.setIgnoreUnresolvablePlaceholders( true );
 	  return ppc;

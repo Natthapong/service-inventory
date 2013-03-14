@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -31,7 +30,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = { WebConfig.class, TestServiceConfig.class })
-@ActiveProfiles("local")
 public class TmnProfileControllerLoginSuccessTest {
 
 	private MockMvc mockMvc;
@@ -45,7 +43,6 @@ public class TmnProfileControllerLoginSuccessTest {
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
-		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);	
 	}
 
 	@After

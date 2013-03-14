@@ -1,32 +1,30 @@
 package th.co.truemoney.serviceinventory.config;
 
-import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Scope;
 
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
+import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
+import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 
 @Configuration
-public class TestServiceConfig {
-
-	@Bean @Scope("singleton") @Primary
-	public TmnProfileService tmnProfileServiceMock() {
-		return Mockito.mock(TmnProfileService.class);
+public class ServiceInventoryConfig {
+	
+	@Bean
+	public TmnProfileService getTmnProfileService() {
+		return new TmnProfileServiceImpl();
 	}
 	
-	@Bean @Scope("singleton")
+	@Bean
 	public SourceOfFundService getSourceOfFundService() {
-		return Mockito.mock(SourceOfFundService.class);
+		return new SourceOfFundServiceImpl();
 	}
 	
 	@Bean
 	public AccessTokenRepository accessTokenRepo() {
 		return new AccessTokenMemoryRepository();
 	}
-	
 }
