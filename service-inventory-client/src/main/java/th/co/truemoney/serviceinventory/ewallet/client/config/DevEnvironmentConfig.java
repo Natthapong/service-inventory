@@ -9,7 +9,7 @@ public class DevEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getLoginUrl() {
-		return "https://dev.truemoney.co.th/service-inventory-web/v1/login";
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet/login";
 	}
 
 }
