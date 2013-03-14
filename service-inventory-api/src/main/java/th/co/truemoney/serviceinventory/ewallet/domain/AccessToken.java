@@ -70,10 +70,10 @@ public class AccessToken implements Serializable {
 	public String toString() {
 		return new ToStringBuilder(this)
 			.append("accessTokenId: ", this.accessTokenId)
-			.append("sessioinId: ", sessionId)
-			.append("truemoneyId: ", truemoneyId)
-			.append("username: ", username)
-			.append("channelId: ", channelId)
+			.append("sessioinId: ", this.sessionId)
+			.append("truemoneyId: ", this.truemoneyId)
+			.append("username: ", this.username)
+			.append("channelId: ", this.channelId)
 			.toString();
 	}
 	
