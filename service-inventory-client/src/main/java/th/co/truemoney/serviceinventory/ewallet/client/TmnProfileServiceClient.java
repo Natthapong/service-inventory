@@ -30,7 +30,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		
 		HttpEntity<Login> requestEntity = new HttpEntity<Login>(login, headers);
 		
-		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLoginUrl(), HttpMethod.POST, requestEntity, String.class);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLoginUrl(), HttpMethod.POST, requestEntity, String.class, channelID);
 		
 		String accessToken = responseEntity.getBody();
 		
