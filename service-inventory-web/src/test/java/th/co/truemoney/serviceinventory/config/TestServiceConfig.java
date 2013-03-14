@@ -11,7 +11,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
+import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.endpoint.TmnProfileSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.endpoint.TmnSecuritySoapEndPointProxy;
@@ -32,6 +34,11 @@ public class TestServiceConfig {
 	@Bean @Scope("singleton")
 	public TmnProfileService getTmnProfileService() {
 		return Mockito.mock(TmnProfileServiceImpl.class);
+	}
+	
+	@Bean @Scope("singleton")
+	public SourceOfFundService getSourceOfFundService() {
+		return Mockito.mock(SourceOfFundServiceImpl.class);
 	}
 	
 	@Bean

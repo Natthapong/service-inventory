@@ -1,14 +1,15 @@
 package th.co.truemoney.serviceinventory.controller;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import java.util.ArrayList;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,13 +25,14 @@ import org.springframework.web.context.WebApplicationContext;
 
 import th.co.truemoney.serviceinventory.config.TestServiceConfig;
 import th.co.truemoney.serviceinventory.config.TestWebConfig;
-import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
-import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
+import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = { TestWebConfig.class, TestServiceConfig.class })
-public class TmnProfileControllerLoginSuccessTest {
+public class SourceOfFundControllerSuccessTest {
 
 	private MockMvc mockMvc;
 	
@@ -38,35 +40,31 @@ public class TmnProfileControllerLoginSuccessTest {
 	private WebApplicationContext wac;
 
 	@Autowired
-	private TmnProfileService tmnProfileServiceMock;
+	private SourceOfFundService sourceOfFundServiceMock;
 	
 	@Before
 	public void setup() {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
-		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);	
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+		this.sourceOfFundServiceMock = wac.getBean(SourceOfFundServiceImpl.class);
 	}
 
 	@After
 	public void tierDown() {
-		reset(this.tmnProfileServiceMock);
+		reset(this.sourceOfFundServiceMock);
 	}
 	
 	@Test
-	public void shouldLoginSuccess() throws Exception {		
+	public void shouldSuccess() throws Exception {
 		
-		//given		
-		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class)))
-				.thenReturn("8e48e03be057319f40621fe9bcd123f750f6df1d");
+		//given 
+		when(sourceOfFundServiceMock.getDirectDebitSources(anyInt(), anyString(), anyString()))
+			.thenReturn(new ArrayList<DirectDebit>());
 		
-		ObjectMapper mapper = new ObjectMapper();
-		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		this.mockMvc.perform(post("/ewallet/login?channelID=41")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsBytes(login)))
-			.andExpect(status().isOk())
-			.andExpect(content().string("8e48e03be057319f40621fe9bcd123f750f6df1d"))
-			.andDo(print());
+		this.mockMvc.perform(get("/{username}/source-of-fund/direct-debits?channelID=41&accessToken=e6701de94fdda4347a3d31ec5c892ccadc88b847", "user1.test.v1@gmail.com")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())	
+			.andDo(print());	
 		
 	}
-	
+		
 }

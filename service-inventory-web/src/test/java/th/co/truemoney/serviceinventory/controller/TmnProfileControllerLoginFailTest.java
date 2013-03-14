@@ -44,6 +44,7 @@ public class TmnProfileControllerLoginFailTest {
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
+		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);
 	}
 
 	@After
@@ -54,9 +55,7 @@ public class TmnProfileControllerLoginFailTest {
 	@Test
 	public void shouldLoginFail() throws Exception {
 		
-		//given
-		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);	
-		
+		//given		
 		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class))).thenThrow(
 				new SignonServiceException(
 						"1", 
