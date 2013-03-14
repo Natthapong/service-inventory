@@ -14,6 +14,6 @@ public interface TmnProfileService {
 	
 	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum, Integer channelID);
 	
-	public void Logout(String accessToken,Integer ChannelID);
+	public void logout(String accessToken,Integer ChannelID);
 }
 

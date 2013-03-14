@@ -52,5 +52,11 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void logout(String accessToken, Integer ChannelID) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
