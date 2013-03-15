@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -26,7 +27,7 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 
 	private static Logger logger = Logger.getLogger(SourceOfFundServiceImpl.class);
 
-	@Autowired
+	@Autowired @Qualifier("accessTokenMemoryRepository")
 	private AccessTokenRepository accessTokenRepo;
 	
 	@Autowired 
@@ -52,7 +53,10 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 					SourceContext sourceContext = sourceContexts[i];
 					String[] sourceDetail = sourceContext.getSourceDetail();
 					DirectDebit directDebit = null;
-					if (sourceDetail != null && sourceDetail.length > 0) {						
+					if (sourceDetail != null && sourceDetail.length > 0) {	
+						logger.debug("sourceId: "+sourceContext.getSourceId());
+						logger.debug("bankcode: "+sourceDetail[0]);
+						logger.debug("accountNumber: "+sourceDetail[1]);
 						directDebit = directDebitConfig.getBankDetail(sourceDetail[0] != null ? sourceDetail[0] : "");
 						if (directDebit != null) {
 							directDebit.setSourceId(sourceContext.getSourceId());

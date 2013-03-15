@@ -11,7 +11,6 @@ public class DirectDebit extends SourceOfFund implements Serializable {
 	private String bankCode;
 	private String bankNameEn;
 	private String bankNameTh;
-	private String bankLogoURL;
 	private String bankAccountNumber;
 	private String feeType;
 	private BigDecimal minTotalFee;
@@ -46,14 +45,6 @@ public class DirectDebit extends SourceOfFund implements Serializable {
 
 	public void setBankNameTh(String bankNameTh) {
 		this.bankNameTh = bankNameTh;
-	}
-
-	public String getBankLogoURL() {
-		return bankLogoURL;
-	}
-
-	public void setBankLogoURL(String bankLogoURL) {
-		this.bankLogoURL = bankLogoURL;
 	}
 
 	public String getBankAccountNumber() {
@@ -122,7 +113,6 @@ public class DirectDebit extends SourceOfFund implements Serializable {
 		.append("bankAccountNumber: ", this.bankAccountNumber)
 		.append("minAmount: ", this.minAmount)
 		.append("maxAmount: ", this.maxAmount)
-		.append("bankLogoURL: ", this.bankLogoURL)
 		.append("feeType: ", this.feeType)
 		.append("minTotalFee: ", this.minTotalFee)
 		.append("maxTotalFee: ", this.maxTotalFee)
