@@ -69,22 +69,22 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile getTruemoneyProfile(Integer channelId, String accesstoken, String checksum)
+	public TmnProfile getTruemoneyProfile(Integer channelId, String accessTokenId, String checksum)
 			throws ServiceInventoryException {
 		try {
-			String sessionID = "";
-			String truemoneyID = "";
-			SecurityContext securityContext = new SecurityContext(sessionID, truemoneyID);
+			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenId);
+			logger.debug("retrieve access Token: "+accessToken.toString());
+			
+			SecurityContext securityContext = new SecurityContext(accessToken.getSessionId(), accessToken.getTruemoneyId());
 			StandardBizRequest standardBizRequest = new StandardBizRequest();
 			standardBizRequest.setChannelId(channelId);
 			standardBizRequest.setSecurityContext(securityContext);
-			GetBasicProfileResponse profileResponse =
-				this.tmnProfileProxy.getBasicProfile(standardBizRequest);
+			GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
 			TmnProfile tmnProfile = new TmnProfile(profileResponse.getFullName(), profileResponse.getEwalletBalance());
 			tmnProfile.setMobileno(profileResponse.getMobile());
 			tmnProfile.setType(profileResponse.getProfileType());
 			tmnProfile.setStatus(profileResponse.getStatusId());
-			return new TmnProfile();
+			return tmnProfile;
 		} catch (EwalletException e) {
 			throw new SignonServiceException(e.getCode(),
 				"tmnProfileProxy.getBasicProfile response" + e.getCode(), e.getNamespace());

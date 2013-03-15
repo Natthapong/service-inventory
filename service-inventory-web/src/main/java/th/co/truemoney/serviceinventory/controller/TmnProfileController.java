@@ -14,6 +14,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.exception.ValidateException;
+import th.co.truemoney.serviceinventory.util.AccessTokenUtil;
 
 @Controller
 @RequestMapping(value="/ewallet")
@@ -37,6 +38,9 @@ public class TmnProfileController extends BaseController {
 		@PathVariable String accesstoken,
 		@PathVariable String checksum)
 			throws SignonServiceException {
+		if (!AccessTokenUtil.isValidCheckSum(checksum, accesstoken, accesstoken)) {
+			throw new ValidateException("-1", "Invalid checksum value");
+		}
 		return tmnProfileService.getTruemoneyProfile(channelId, accesstoken, checksum);
 	}
 
