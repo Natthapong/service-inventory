@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
@@ -52,15 +53,17 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 				for (int i=0; i<sourceContexts.length; i++) {
 					SourceContext sourceContext = sourceContexts[i];
 					String[] sourceDetail = sourceContext.getSourceDetail();
-					DirectDebit directDebit = null;
+					DirectDebit directDebit = new DirectDebit();
 					if (sourceDetail != null && sourceDetail.length > 0) {	
-						logger.debug("sourceId: "+sourceContext.getSourceId());
-						logger.debug("bankcode: "+sourceDetail[0]);
-						logger.debug("accountNumber: "+sourceDetail[1]);
-						directDebit = directDebitConfig.getBankDetail(sourceDetail[0] != null ? sourceDetail[0] : "");
-						if (directDebit != null) {
-							directDebit.setSourceId(sourceContext.getSourceId());
-							directDebit.setBankAccountNumber(sourceDetail[1] != null ? sourceDetail[1] : "");							
+						DirectDebitConfigBean directDebitConfigBean = directDebitConfig.getBankDetail(sourceDetail[0] != null ? sourceDetail[0].trim() : "");
+						if (directDebitConfigBean != null) {
+							directDebit.setSourceOfFundId(sourceContext.getSourceId());
+							directDebit.setBankCode(sourceDetail[0] != null ? sourceDetail[0].trim() : "");
+							directDebit.setBankAccountNumber(sourceDetail[0] != null ? sourceDetail[1].trim() : "");
+							directDebit.setBankNameEn(directDebitConfigBean.getBankNameEn());
+							directDebit.setBankNameTh(directDebitConfigBean.getBankNameTh());
+							directDebit.setMinAmount(directDebitConfigBean.getMinAmount());
+							directDebit.setMaxAmount(directDebitConfigBean.getMaxAmount());
 						}
 					}						
 					directDebitList.add(directDebit);

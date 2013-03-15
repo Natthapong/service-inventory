@@ -12,12 +12,8 @@ public class DirectDebit extends SourceOfFund implements Serializable {
 	private String bankNameEn;
 	private String bankNameTh;
 	private String bankAccountNumber;
-	private String feeType;
-	private BigDecimal minTotalFee;
-	private BigDecimal maxTotalFee;
 	private BigDecimal minAmount;
 	private BigDecimal maxAmount;
-	private BigDecimal feeValue;
 	
 	public DirectDebit() {
 		super();
@@ -55,30 +51,6 @@ public class DirectDebit extends SourceOfFund implements Serializable {
 		this.bankAccountNumber = bankAccountNumber;
 	}
 
-	public String getFeeType() {
-		return feeType;
-	}
-
-	public void setFeeType(String feeType) {
-		this.feeType = feeType;
-	}
-
-	public BigDecimal getMinTotalFee() {
-		return minTotalFee;
-	}
-
-	public void setMinTotalFee(BigDecimal minTotalFee) {
-		this.minTotalFee = minTotalFee;
-	}
-
-	public BigDecimal getMaxTotalFee() {
-		return maxTotalFee;
-	}
-
-	public void setMaxTotalFee(BigDecimal maxTotalFee) {
-		this.maxTotalFee = maxTotalFee;
-	}
-
 	public BigDecimal getMinAmount() {
 		return minAmount;
 	}
@@ -95,28 +67,16 @@ public class DirectDebit extends SourceOfFund implements Serializable {
 		this.maxAmount = maxAmount;
 	}
 
-	public BigDecimal getFeeValue() {
-		return feeValue;
-	}
-
-	public void setFeeValue(BigDecimal feeValue) {
-		this.feeValue = feeValue;
-	}
-
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
-		.append("sourceId : ", this.getSourceId())
+		.append("sourceId : ", this.getSourceOfFundId())
 		.append("bankCode: ", this.bankCode)
 		.append("bankNameEn: ", this.bankNameEn)
 		.append("bankNameTh: ", this.bankNameTh)
 		.append("bankAccountNumber: ", this.bankAccountNumber)
 		.append("minAmount: ", this.minAmount)
 		.append("maxAmount: ", this.maxAmount)
-		.append("feeType: ", this.feeType)
-		.append("minTotalFee: ", this.minTotalFee)
-		.append("maxTotalFee: ", this.maxTotalFee)
-		.append("feeValue: ", this.feeValue)								
 		.toString();
 	}
 	
