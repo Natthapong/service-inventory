@@ -28,7 +28,9 @@ public class ServiceInventoryExceptionResponseErrorHandler extends DefaultRespon
 				ObjectMapper objectMapper = new ObjectMapper();
 				ServiceInventoryException exception = objectMapper.readValue(getResponseBody(response), ServiceInventoryException.class);
 				throw exception;
-			} catch(Exception e) {
+			}catch(ServiceInventoryException e){
+				throw e;
+			}catch(Exception e) {
 				throw new BadErrorFormatException("cannot parse error json: ", e);
 			}
 		} else {
