@@ -43,7 +43,7 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenId);
 			logger.debug("retrieve access Token: "+accessToken.toString());
-
+			
 			List<DirectDebit> directDebitList = null;
 			ListSourceRequest listSourceRequest = createListSourceRequest(channelId, accessToken.getTruemoneyId(), accessToken.getSessionId());
 			ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(listSourceRequest);
