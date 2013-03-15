@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
@@ -18,6 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.ListSou
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.SourceContext;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class SourceOfFundServiceImpl implements SourceOfFundService {
@@ -26,6 +28,9 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 
 	@Autowired
 	private AccessTokenRepository accessTokenRepo;
+	
+	@Autowired 
+	private DirectDebitConfig directDebitConfig;	
 
 	@Autowired
 	private TmnProfileProxy tmnProfileProxy;
@@ -45,13 +50,15 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 				directDebitList = new ArrayList<DirectDebit>();
 				for (int i=0; i<sourceContexts.length; i++) {
 					SourceContext sourceContext = sourceContexts[i];
-					DirectDebit directDebit = new DirectDebit();
-					directDebit.setSourceId(sourceContext.getSourceId());
 					String[] sourceDetail = sourceContext.getSourceDetail();
-					if (sourceDetail != null && sourceDetail.length > 0) {
-						directDebit.setBankCode(sourceDetail[0] != null ? sourceDetail[0] : "");
-						directDebit.setBankAccountNumber(sourceDetail[1] != null ? sourceDetail[1] : "");
-					}
+					DirectDebit directDebit = null;
+					if (sourceDetail != null && sourceDetail.length > 0) {						
+						directDebit = directDebitConfig.getBankDetail(sourceDetail[0] != null ? sourceDetail[0] : "");
+						if (directDebit != null) {
+							directDebit.setSourceId(sourceContext.getSourceId());
+							directDebit.setBankAccountNumber(sourceDetail[1] != null ? sourceDetail[1] : "");							
+						}
+					}						
 					directDebitList.add(directDebit);
 				}
 			}

@@ -18,7 +18,7 @@ public class SignonServiceException extends BaseException {
 	
 	@Override
 	public ErrorBean handleExceptions(BaseException e, HttpServletResponse response) {
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		ErrorBean error = new ErrorBean(e.getCode(), e.getDescription());
 		error.setErrorNamespace(e.getNamespace() != null ? e.getNamespace() : NAMESPACE);
 		return error;

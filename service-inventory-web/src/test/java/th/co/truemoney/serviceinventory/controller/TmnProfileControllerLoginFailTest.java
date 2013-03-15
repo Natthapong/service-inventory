@@ -67,7 +67,7 @@ public class TmnProfileControllerLoginFailTest {
 		this.mockMvc.perform(post("/ewallet/login?channelId=41")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(login)))
-			.andExpect(status().isUnauthorized())
+			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.errorCode").value("1"))
 			.andExpect(jsonPath("$.errorDescription").value("error description"))
 			.andExpect(jsonPath("$.errorNamespace").value("error namespace"))

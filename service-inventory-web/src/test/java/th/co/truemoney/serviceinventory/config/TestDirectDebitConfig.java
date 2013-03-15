@@ -4,17 +4,17 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import th.co.truemoney.serviceinventory.ewallet.repositories.AddMoneyDirectDebitConfig;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AddMoneyDirectDebitConfigImpl;
+import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
 
 public class TestDirectDebitConfig {
 
 	@Test
 	public void testGetBankDetail() {
 		
-		AddMoneyDirectDebitConfig addMoneyDirectDebitconfig = new AddMoneyDirectDebitConfigImpl();
+		DirectDebitConfig addMoneyDirectDebitconfig = new DirectDebitConfigImpl();
 		
-		assertNotNull(addMoneyDirectDebitconfig.getBankDetail("bankcode001"));
+		assertNotNull(addMoneyDirectDebitconfig.getBankDetail("SCB"));
 	}
 
 }

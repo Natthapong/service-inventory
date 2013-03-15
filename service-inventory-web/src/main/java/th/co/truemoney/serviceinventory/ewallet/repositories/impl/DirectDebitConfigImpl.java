@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.ewallet.repositories;
+package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,19 +10,20 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
-import th.co.truemoney.serviceinventory.bean.AddMoneyBankDetail;
+import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 
-public class AddMoneyDirectDebitConfigImpl implements AddMoneyDirectDebitConfig {
+public class DirectDebitConfigImpl implements DirectDebitConfig {
 
-	private HashMap<String, AddMoneyBankDetail> bankConfigList;
+	private HashMap<String, DirectDebit> bankConfigList;
 
-	public AddMoneyDirectDebitConfigImpl() {
+	public DirectDebitConfigImpl() {
 		try {
 			JsonFactory factory = new JsonFactory();
 			ObjectMapper m = new ObjectMapper(factory);
 
-			TypeReference<HashMap<String, AddMoneyBankDetail>> typeRef;
-			typeRef = new TypeReference<HashMap<String, AddMoneyBankDetail>>() {
+			TypeReference<HashMap<String, DirectDebit>> typeRef;
+			typeRef = new TypeReference<HashMap<String, DirectDebit>>() {
 			};
 
 			bankConfigList = m.readValue(new File(
@@ -40,7 +41,7 @@ public class AddMoneyDirectDebitConfigImpl implements AddMoneyDirectDebitConfig 
 	}
 
 	@Override
-	public AddMoneyBankDetail getBankDetail(String bankCode) {
+	public DirectDebit getBankDetail(String bankCode) {
 		return bankConfigList.get(bankCode);
 	}
 
