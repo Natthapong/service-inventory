@@ -29,7 +29,7 @@ public class SourceOfFundServiceClientTest {
 	@Autowired
 	TmnProfileServiceClient client;
 	
-	@Before
+	@Before @Ignore
 	public void setup(){
 		client.login(41, new Login("user1.test.v1@gmail.com","e6701de94fdda4347a3d31ec5c892ccadc88b847"));
 	}
@@ -46,7 +46,7 @@ public class SourceOfFundServiceClientTest {
 		}
 	}
 
-	@Test
+	@Test @Ignore
 	public void shouldSuccess(){
 		List<DirectDebit> debits = sourceOfFundServiceClient.getDirectDebitSources(41, "user1.test.v1@gmail.com", "12345");
 		assertNotNull(debits);
