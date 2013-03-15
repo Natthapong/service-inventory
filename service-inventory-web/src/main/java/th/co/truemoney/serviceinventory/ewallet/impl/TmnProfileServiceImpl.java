@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
@@ -29,7 +30,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	private static Logger logger = Logger.getLogger(TmnProfileServiceImpl.class);
 
-	@Autowired
+	@Autowired @Qualifier("accessTokenMemoryRepository")
 	private AccessTokenRepository accessTokenRepo;
 
 	@Autowired
