@@ -4,6 +4,8 @@ import java.util.UUID;
 
 public class AccessTokenUtil {
 
+	private static final String SALT = "5dc77d2e2310519a97aae050d85bec6870b4651a63447f02dfc936814067dd45a2f90e3c662f016f20dad45a2760739860af7ae92b3de00c2fd557ecbc3cc0d5";
+	
 	public static String generateToken(String username, Integer channelId, String deviceID,
 			String deviceType, String deviceVersion, String clientIP, String utibaSessionID) {
 		String salt = UUID.randomUUID().toString();
@@ -12,11 +14,9 @@ public class AccessTokenUtil {
 				clientIP, salt), utibaSessionID);
 	}
 
-	public static boolean isValidCheckSum(String data,String token){
-		if(data.equals(token)){
-			return true;
-		}
-		return false;
+	public static boolean isValidCheckSum(String checksum, String data, String accessToken){
+		String localChecksum = EncryptUtil.buildHmacSignature(accessToken, data+SALT);
+		return localChecksum.toLowerCase().equals(checksum);	
 	}
 
 }

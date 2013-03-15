@@ -14,6 +14,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.CreateT
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.ListSourceRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.ListSourceResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.SourceContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.AuthenticateRequest;
@@ -54,7 +55,10 @@ public class LocalProxyConfig {
 			public ListSourceResponse listSource(
 					ListSourceRequest listSourceRequest)
 					throws EwalletException {
-				return null;
+				
+				SourceContext[] sourceContext = new SourceContext[1];
+				sourceContext[0] = new SourceContext("3","type",new String[] {"SCB","TMB","BBL"});
+				return new ListSourceResponse("1", "2", "namespace", new String[] {"key"}, new String[] {"value"}, sourceContext);
 			}
 		};
 	}
@@ -95,4 +99,5 @@ public class LocalProxyConfig {
 			}
 		};
 	}
+	
 }

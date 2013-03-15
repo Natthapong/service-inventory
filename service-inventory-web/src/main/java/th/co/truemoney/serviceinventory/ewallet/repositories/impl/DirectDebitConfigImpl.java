@@ -1,33 +1,36 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.springframework.core.io.ClassPathResource;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 
 public class DirectDebitConfigImpl implements DirectDebitConfig {
 
-	private HashMap<String, DirectDebit> bankConfigList;
+	private static Logger logger = Logger.getLogger(DirectDebitConfigImpl.class);
+
+	private HashMap<String, DirectDebitConfigBean> bankConfigList;
 
 	public DirectDebitConfigImpl() {
 		try {
 			JsonFactory factory = new JsonFactory();
 			ObjectMapper m = new ObjectMapper(factory);
 
-			TypeReference<HashMap<String, DirectDebit>> typeRef;
-			typeRef = new TypeReference<HashMap<String, DirectDebit>>() {
+			TypeReference<HashMap<String, DirectDebitConfigBean>> typeRef;
+			typeRef = new TypeReference<HashMap<String, DirectDebitConfigBean>>() {
 			};
+			ClassPathResource resource = new ClassPathResource("addmoney/directdebit.json");
+			bankConfigList = m.readValue(resource.getFile(), typeRef);
 
-			bankConfigList = m.readValue(new File(
-					"src/main/resources/addmoney/directdebit.json"), typeRef);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,7 +44,8 @@ public class DirectDebitConfigImpl implements DirectDebitConfig {
 	}
 
 	@Override
-	public DirectDebit getBankDetail(String bankCode) {
+	public DirectDebitConfigBean getBankDetail(String bankCode) {
+		logger.debug("direct debit config size: "+bankConfigList.size());
 		return bankConfigList.get(bankCode);
 	}
 

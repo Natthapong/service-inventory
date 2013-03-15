@@ -5,18 +5,18 @@ import java.io.Serializable;
 public abstract class SourceOfFund implements Serializable {
 
 	private static final long serialVersionUID = 9157552125582604595L;
-	private String sourceId;
+	private String sourceOfFundId;
 	
 	public SourceOfFund() {
 		super();
 	}
 
-	public String getSourceId() {
-		return sourceId;
+	public String getSourceOfFundId() {
+		return sourceOfFundId;
 	}
 
-	public void setSourceId(String sourceId) {
-		this.sourceId = sourceId;
+	public void setSourceOfFundId(String sourceOfFundId) {
+		this.sourceOfFundId = sourceOfFundId;
 	}
-	
+
 }

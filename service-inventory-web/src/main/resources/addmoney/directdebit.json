@@ -3,7 +3,6 @@
     {
         "bankNameTh" : "ธนาคารกรุงเทพ",
         "bankNameEn" : "Bangkok Bank",
-        "bankLogoURL" : "http://secure.truemoney-dev.com/m/tmn_webview/images/normal/Bank-bk-2.png",
         "minAmount" : 300.00,
         "maxAmount" : 3000.00,
         "feeValue" : 12.00,
@@ -15,7 +14,6 @@
     {
         "bankNameTh" : "ธนาคารกรุงไทย",
         "bankNameEn" : "Krungthai Bank",
-        "bankLogoURL" : "http://secure.truemoney-dev.com/m/tmn_webview/images/normal/Bank-ktb-2.png",
         "minAmount" : 300.00,
         "maxAmount" : 30000.00,
         "feeValue" : 3.00,
@@ -27,7 +25,6 @@
     {
         "bankNameTh" : "ธนาคารกรุงศรีอยุธยา",
         "bankNameEn" : "Bank of Ayudhya",
-        "bankLogoURL" : "http://secure.truemoney-dev.com/m/tmn_webview/images/normal/Bank-ks-2.png",
         "minAmount" : 300.00,
         "maxAmount" : 3000.00,
         "feeValue" : 10.00,
@@ -39,7 +36,6 @@
     {
         "bankNameTh" : "ธนาคารไทยพาณิชย์",
         "bankNameEn" : "The Siam Commercial Bank",
-        "bankLogoURL" : "http://secure.truemoney-dev.com/m/tmn_webview/images/normal/Bank-SCB-2.png",
         "minAmount" : 300.00,
         "maxAmount" : 3000.00,
         "feeValue" : 20.00,
