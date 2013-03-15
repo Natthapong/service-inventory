@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -9,6 +8,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.springframework.core.io.ClassPathResource;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
@@ -25,9 +25,8 @@ public class DirectDebitConfigImpl implements DirectDebitConfig {
 			TypeReference<HashMap<String, DirectDebit>> typeRef;
 			typeRef = new TypeReference<HashMap<String, DirectDebit>>() {
 			};
-
-			bankConfigList = m.readValue(new File(
-					"src/main/resources/addmoney/directdebit.json"), typeRef);
+			ClassPathResource resource = new ClassPathResource("addmoney/directdebit.json");
+			bankConfigList = m.readValue(resource.getFile(), typeRef);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
