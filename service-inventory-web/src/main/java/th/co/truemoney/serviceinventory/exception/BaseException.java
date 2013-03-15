@@ -14,6 +14,7 @@ public abstract class BaseException extends RuntimeException {
 		public static final String SUCCESS = "0";		
 		public static final String INVALID_PROFILE_TYPE = "10000";
 		public static final String DATASOURCE_NOT_FOUND = "90000";
+		public static final String ACCESS_TOKEN_NOT_FOUND = "90001";
 	}
 	
 	private String code;
