@@ -48,9 +48,10 @@ public class SourceOfFundServiceClientTest {
 
 	@Test
 	public void shouldSuccess(){
-		List<DirectDebit> debits = sourceOfFundServiceClient.getDirectDebitSources(41, "user1.test.v1@gmail.com", "2b509120-05f9-4412-8d95-747549857489");
+		List<DirectDebit> debits = sourceOfFundServiceClient.getDirectDebitSources(41, "user1.test.v1@gmail.com", "12345");
 		assertNotNull(debits);
-		System.out.println(debits.size());
+		assertEquals(1, debits.size());
+		assertEquals("SCB", debits.get(0).getBankCode());
 	}
 
 }
