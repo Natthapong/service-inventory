@@ -3,8 +3,6 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.ewallet.TopUpQuote;
-
 public class TopUpOrder implements Serializable {
 
 	private static final long serialVersionUID = 2325219087645032462L;

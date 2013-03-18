@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.ewallet;
+package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

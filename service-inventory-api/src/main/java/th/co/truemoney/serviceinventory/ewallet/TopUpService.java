@@ -3,6 +3,7 @@ package th.co.truemoney.serviceinventory.ewallet;
 import java.math.BigDecimal;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 
 public interface TopUpService {
