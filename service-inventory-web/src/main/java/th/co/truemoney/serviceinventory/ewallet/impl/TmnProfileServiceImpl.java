@@ -69,12 +69,14 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile getTruemoneyProfile(Integer channelId, String accessTokenId, String checksum)
+	public TmnProfile getTruemoneyProfile(String accessTokenId, String checksum)
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenId);
 			logger.debug("retrieve access Token: "+accessToken.toString());
-			
+
+			Integer channelId = accessToken.getChannelId();
+
 			SecurityContext securityContext = new SecurityContext(accessToken.getSessionId(), accessToken.getTruemoneyId());
 			StandardBizRequest standardBizRequest = new StandardBizRequest();
 			standardBizRequest.setChannelId(channelId);
@@ -95,7 +97,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public void logout(Integer ChannelID, String accessToken) {
+	public void logout(String accessToken) {
 		// TODO Auto-generated method stub
 
 	}

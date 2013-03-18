@@ -30,20 +30,22 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 
 	@Autowired @Qualifier("accessTokenMemoryRepository")
 	private AccessTokenRepository accessTokenRepo;
-	
-	@Autowired 
-	private DirectDebitConfig directDebitConfig;	
+
+	@Autowired
+	private DirectDebitConfig directDebitConfig;
 
 	@Autowired
 	private TmnProfileProxy tmnProfileProxy;
 
 	@Override
-	public List<DirectDebit> getDirectDebitSources(Integer channelId, String username, String accessTokenId)
+	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenId)
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenId);
 			logger.debug("retrieve access Token: "+accessToken.toString());
-			
+
+			Integer channelId = accessToken.getChannelId();
+
 			List<DirectDebit> directDebitList = null;
 			ListSourceRequest listSourceRequest = createListSourceRequest(channelId, accessToken.getTruemoneyId(), accessToken.getSessionId());
 			ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(listSourceRequest);
@@ -54,7 +56,7 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 					SourceContext sourceContext = sourceContexts[i];
 					String[] sourceDetail = sourceContext.getSourceDetail();
 					DirectDebit directDebit = new DirectDebit();
-					if (sourceDetail != null && sourceDetail.length > 0) {	
+					if (sourceDetail != null && sourceDetail.length > 0) {
 						DirectDebitConfigBean directDebitConfigBean = directDebitConfig.getBankDetail(sourceDetail[0] != null ? sourceDetail[0].trim() : "");
 						if (directDebitConfigBean != null) {
 							directDebit.setSourceOfFundId(sourceContext.getSourceId());
@@ -65,7 +67,7 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 							directDebit.setMinAmount(directDebitConfigBean.getMinAmount());
 							directDebit.setMaxAmount(directDebitConfigBean.getMaxAmount());
 						}
-					}						
+					}
 					directDebitList.add(directDebit);
 				}
 			}
