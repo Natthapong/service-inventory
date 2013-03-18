@@ -7,8 +7,8 @@ public interface TmnProfileService {
 
 	public String login(Integer channelId, Login login);
 
-	public TmnProfile getTruemoneyProfile(Integer channelId, String accesstoken, String checksum);
+	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum);
 
-	public void logout(Integer ChannelID, String accessToken);
+	public void logout(String accessToken);
 }
 
