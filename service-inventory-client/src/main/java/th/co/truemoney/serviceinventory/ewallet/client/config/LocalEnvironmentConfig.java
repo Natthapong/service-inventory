@@ -27,5 +27,35 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 	public String getCreateTopUpQuoteFromDirectDebitUrl() {
 		return "http://localhost:8585/service-inventory-web/v1/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
 	}
+	
+	@Override
+	public String getCreateTopUpQuoteFromDirectDebitUrl() {
+		return "http://localhost:8585/service-inventory-web/v1/directdebit/{sof-id}/quote?accessToken={accessToken}";
+	}
 
+	@Override
+	public String getTopUpQuoteDetailsUrl() {
+		return "http://localhost:8585/service-inventory-web/v1/top-up/quote/{quoteId}";
+	}
+
+	@Override
+	public String getRequestPlaceOrder() {
+		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}?accessToken={accessToken}";
+	}
+
+	@Override
+	public String getConfirmPlaceOrderUrl() {
+		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}/confirm?accessToken={accessToken}";
+	}
+
+	@Override
+	public String getTopUpOrderStatusUrl() {
+		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}/status?accessToken={accessToken}";
+	}
+
+	@Override
+	public String getTopUpOrderDetailsUrl() {
+		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}?accessToken={accessToken}";
+	}
+	
 }
