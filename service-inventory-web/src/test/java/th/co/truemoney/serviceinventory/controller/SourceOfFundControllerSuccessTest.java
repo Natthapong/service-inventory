@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.controller;
 
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -57,7 +56,7 @@ public class SourceOfFundControllerSuccessTest {
 	public void shouldSuccess() throws Exception {
 
 		//given
-		when(sourceOfFundServiceMock.getDirectDebitSources(anyInt(), anyString(), anyString()))
+		when(sourceOfFundServiceMock.getUserDirectDebitSources(anyString(), anyString()))
 			.thenReturn(new ArrayList<DirectDebit>());
 
 		this.mockMvc.perform(get("/user/{username}/source-of-fund/direct-debits?channelId=41&accessToken=e6701de94fdda4347a3d31ec5c892ccadc88b847", "user1.test.v1@gmail.com")

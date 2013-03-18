@@ -34,14 +34,13 @@ public class TmnProfileController extends BaseController {
 
 	@RequestMapping(value = "/getprofile/{accesstoken}/{checksum}", method = RequestMethod.GET)
 	public @ResponseBody TmnProfile getTruemoneyProfile(
-		@RequestParam Integer channelId,
 		@PathVariable String accesstoken,
 		@PathVariable String checksum)
 			throws SignonServiceException {
 		if (!AccessTokenUtil.isValidCheckSum(checksum, accesstoken, accesstoken)) {
 			throw new ValidateException("-1", "Invalid checksum value");
 		}
-		return tmnProfileService.getTruemoneyProfile(channelId, accesstoken, checksum);
+		return tmnProfileService.getTruemoneyProfile(accesstoken, checksum);
 	}
 
 
