@@ -6,6 +6,7 @@ public abstract class SourceOfFund implements Serializable {
 
 	private static final long serialVersionUID = 9157552125582604595L;
 	private String sourceOfFundId;
+	private String sourceOfFundType;
 	
 	public SourceOfFund() {
 		super();
@@ -19,4 +20,13 @@ public abstract class SourceOfFund implements Serializable {
 		this.sourceOfFundId = sourceOfFundId;
 	}
 
+	public String getSourceOfFundType() {
+		return sourceOfFundType;
+	}
+
+	public void setSourceOfFundType(String sourceOfFundType) {
+		this.sourceOfFundType = sourceOfFundType;
+	}
+
+	
 }

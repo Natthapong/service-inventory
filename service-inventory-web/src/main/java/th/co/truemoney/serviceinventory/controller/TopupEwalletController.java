@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.controller;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,31 +9,31 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import th.co.truemoney.serviceinventory.ewallet.TmnDirectDebitService;
-import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebitOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebitOrderResult;
+import th.co.truemoney.serviceinventory.ewallet.TopUpService;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ValidateException;
 
 @Controller
 @RequestMapping(value = "/directdebit")
-public class TmnDirectDebitController extends BaseController {
+public class TopupEwalletController extends BaseController {
 
-	private TmnDirectDebitService tmnDirectDebitService;
+	private TopUpService topupService;
 
 	@RequestMapping(value = "/verify", method = RequestMethod.POST)
 	public @ResponseBody
-	DirectDebitOrderResult verify(
-			@RequestParam(value = "channelID", defaultValue = "-1") Integer channelID,
+	TopUpQuote verify(
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-			@RequestBody DirectDebitOrder directDebitOrder)
+			@RequestBody String sourceOfFundID,
+			@RequestBody String bankCode,
+			@RequestBody BigDecimal amount)
 			throws ServiceInventoryException {
 		
-		if (channelID == -1 || "".equals(accessTokenID)) {
+		if ("".equals(accessTokenID)){
 			throw new ValidateException("-1",
-					"Validate error: channelId is null or empty.");
+					"Validate error: accessTokenID is null or empty.");
 		}
 
-		return tmnDirectDebitService.verify(channelID, accessTokenID, directDebitOrder);
+		return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, amount, accessTokenID);
 	}
 }

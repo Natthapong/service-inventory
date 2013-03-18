@@ -12,9 +12,12 @@ import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
+import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
 
 @Configuration
 @ComponentScan("th.co.truemoney.serviceinventory.dao")
@@ -40,6 +43,16 @@ public class ServiceInventoryConfig {
     @Bean @Qualifier("accessTokenRedisRepository")
     public AccessTokenRepository getAccessTokenRedisRepository() {
         return new AccessTokenRedisRepository();
+    }
+    
+    @Bean @Qualifier("orderMemoryRepository")
+    public OrderRepository getOrderMemoryRepository() {
+    	return new OrderMemoryRepository();
+    }
+    
+    @Bean
+    public SourceOfFundRepository sourceOfFundRepo() {
+    	return new SourceOfFundRepository();
     }
     
     @Bean 

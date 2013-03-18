@@ -1,9 +1,8 @@
-package th.co.truemoney.serviceinventory.ewallet;
+package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
 
 public class TopUpQuote implements Serializable {
 
