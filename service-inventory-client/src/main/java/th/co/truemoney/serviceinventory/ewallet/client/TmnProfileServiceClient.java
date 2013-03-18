@@ -37,7 +37,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		return accessToken;
 	}
 
-	@Override
+	@Override 
 	public TmnProfile getTruemoneyProfile(Integer channelId,
 			String accesstoken, String checksum) {
 		
