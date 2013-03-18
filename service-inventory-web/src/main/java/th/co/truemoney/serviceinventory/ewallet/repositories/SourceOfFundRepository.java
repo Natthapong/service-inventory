@@ -28,21 +28,17 @@ public class SourceOfFundRepository {
 	
 	public DirectDebit getUserDirectDebitSourceById(String sourceOfFundId, String truemoneyId, Integer channelId, String sessionId) {
 		List<DirectDebit> directDebitSources = getUserDirectDebitSources(truemoneyId, channelId, sessionId);
-		
 		for (DirectDebit dd : directDebitSources) {
 			if (dd.getSourceOfFundId().equals(sourceOfFundId)) {
 				return dd;
 			}
-		}
-		
+		}		
 		throw new ServiceInventoryException("404", "source of fund not found : " + sourceOfFundId);
 	}
 	
 	public List<DirectDebit> getUserDirectDebitSources(String truemoneyId, Integer channelId, String sessionId)
 			throws ServiceInventoryException {
 		try {
-
-
 			List<DirectDebit> directDebitList = null;
 			ListSourceRequest listSourceRequest = createListSourceRequest(channelId, truemoneyId, sessionId);
 			ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(listSourceRequest);
@@ -69,11 +65,10 @@ public class SourceOfFundRepository {
 					directDebitList.add(directDebit);
 				}
 			}
-
 			return directDebitList;
 		} catch (EwalletException e) {
 			throw new ServiceInventoryException(e.getCode(),
-				"tmnSecurityProxy.listSource response: " + e.getCode(), e.getNamespace());
+				"tmnProfileProxy.listSource response: " + e.getCode(), e.getNamespace());
 		} catch (ServiceUnavailableException e) {
 			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
 				e.getMessage(), e.getNamespace());

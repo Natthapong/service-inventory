@@ -15,6 +15,7 @@ import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
+import th.co.truemoney.serviceinventory.exception.BaseException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class SourceOfFundServiceImpl implements SourceOfFundService {
@@ -32,11 +33,9 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenId);
-			
 			if (accessToken == null) {
-				throw new ServiceInventoryException("90001", "access token not found");
+				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessToken is expired or not found.");
 			}
-			
 			logger.debug("retrieve access Token: "+accessToken.toString());
 
 			String truemoneyId = accessToken.getTruemoneyId();
