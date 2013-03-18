@@ -12,6 +12,8 @@ import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
@@ -47,7 +49,7 @@ public class TopupServiceImpl implements TopUpService {
 	private OrderRepository orderRepo;
 
 	@Override
-	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundId, BigDecimal amount, String accessTokenID) {
+	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundId, QuoteRequest quoteRequest, String accessTokenID) {
 		
 		// --- Get Account Detail from accessToken ---//
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
@@ -60,7 +62,7 @@ public class TopupServiceImpl implements TopUpService {
 		
 		// --- Connect to Ewallet Client to verify amount on this ewallet-account ---//
 		try {
-			StandardMoneyResponse verifyResponse = verifyTopupEwallet(amount, accessToken.getChannelId(), sofDetail.getSourceOfFundType());
+			StandardMoneyResponse verifyResponse = verifyTopupEwallet(quoteRequest.getAmount(), accessToken.getChannelId(), sofDetail.getSourceOfFundType());
 			
 		} catch (EwalletException e) {
 			throw new ServiceInventoryException(e.getCode(), "verify add money fail.", e.getNamespace());
@@ -74,7 +76,7 @@ public class TopupServiceImpl implements TopUpService {
 
 		FeeUtil feeUtil = new FeeUtil();
 		BigDecimal totalFee = feeUtil.calculateFee(
-				amount, bankConfig.getFeeValue(),
+				quoteRequest.getAmount(), bankConfig.getFeeValue(),
 				bankConfig.getFeeType(), bankConfig.getMinTotalFee(),
 				bankConfig.getMaxTotalFee());
 
@@ -122,10 +124,9 @@ public class TopupServiceImpl implements TopUpService {
 	}
 
 	@Override
-	public void confirmPlaceOrder(String topUpOrderId, String otpString,
-			String accessToken) {
+	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp, String accessToken) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override

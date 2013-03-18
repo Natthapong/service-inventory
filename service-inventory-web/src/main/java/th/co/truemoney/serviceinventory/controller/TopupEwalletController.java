@@ -20,20 +20,23 @@ public class TopupEwalletController extends BaseController {
 
 	private TopUpService topupService;
 
-	@RequestMapping(value = "/verify", method = RequestMethod.POST)
+	@RequestMapping(value = "/quote", method = RequestMethod.POST)
 	public @ResponseBody
 	TopUpQuote verify(
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 			@RequestBody String sourceOfFundID,
-			@RequestBody String bankCode,
 			@RequestBody BigDecimal amount)
 			throws ServiceInventoryException {
+		
 		
 		if ("".equals(accessTokenID)){
 			throw new ValidateException("-1",
 					"Validate error: accessTokenID is null or empty.");
 		}
 
-		return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, amount, accessTokenID);
+		System.out.println(sourceOfFundID);
+		System.out.println(amount);
+		return null;
+		//return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, amount, accessTokenID);
 	}
 }
