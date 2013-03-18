@@ -13,7 +13,9 @@ public class TopUpOrder implements Serializable {
 	private String username;
 	private BigDecimal amount;
 	private BigDecimal topUpFee;
+	private String otpReferenceCode;
 	private TopUpStatus status = TopUpStatus.ORDER_PLACED;
+	private TopUpConfirmationInfo confirmationInfo;
 
 	public TopUpOrder() {
 	}
@@ -39,6 +41,10 @@ public class TopUpOrder implements Serializable {
 
 	public SourceOfFund getSourceOfFund() {
 		return sourceOfFund;
+	}
+	
+	public void setSourceOfFund(SourceOfFund sourceOfFund) {
+		this.sourceOfFund = sourceOfFund;
 	}
 
 	public String getAccessToken() {
@@ -81,4 +87,20 @@ public class TopUpOrder implements Serializable {
 		this.status = status;
 	}
 
+	public String getOtpReferenceCode() {
+		return otpReferenceCode;
+	}
+
+	public void setOtpReferenceCode(String otpReferenceCode) {
+		this.otpReferenceCode = otpReferenceCode;
+	}
+
+	public TopUpConfirmationInfo getConfirmationInfo() {
+		return confirmationInfo;
+	}
+
+	public void setConfirmationInfo(TopUpConfirmationInfo confirmationInfo) {
+		this.confirmationInfo = confirmationInfo;
+	}
+		
 }
