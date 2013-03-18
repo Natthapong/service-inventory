@@ -12,6 +12,7 @@ import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
 public class TmnProfileServiceClient implements TmnProfileService {
@@ -26,7 +27,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	private HttpHeaders headers;
 
 	@Override
-	public String login(Integer channelId, Login login) {
+	public String login(Integer channelId, Login login) throws ServiceInventoryException {
 
 		HttpEntity<Login> requestEntity = new HttpEntity<Login>(login, headers);
 
@@ -38,7 +39,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 	
 	@Override
-	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum) {
+	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum) throws ServiceInventoryException {
 
 		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(headers);
 
@@ -52,7 +53,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public void logout(String accessToken) {
+	public void logout(String accessToken) throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		
 	}

@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.EnvironmentConfig;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class TmnTopupServiceClient {
 	
@@ -17,11 +18,11 @@ public class TmnTopupServiceClient {
 	@Autowired
 	private HttpHeaders headers;
 
-	public void verify(Integer channelId,String accesstoken, String checksum){
+	public void verify(Integer channelId,String accesstoken, String checksum) throws ServiceInventoryException {
 		
 	}
 	
-	public void order(Integer channelId,String accesstoken, String checksum){
+	public void order(Integer channelId,String accesstoken, String checksum) throws ServiceInventoryException {
 
 	}
 	

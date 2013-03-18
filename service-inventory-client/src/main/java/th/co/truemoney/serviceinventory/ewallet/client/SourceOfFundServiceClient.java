@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
 public class SourceOfFundServiceClient implements SourceOfFundService {
@@ -29,7 +30,7 @@ public class SourceOfFundServiceClient implements SourceOfFundService {
 
 	@Override
 	public List<DirectDebit> getUserDirectDebitSources(String username,
-			String accessToken) {
+			String accessToken) throws ServiceInventoryException {
 		HttpEntity<DirectDebit[]> requestEntity = new HttpEntity<DirectDebit[]>(headers);
 
 		ResponseEntity<DirectDebit[]> responseEntity = restTemplate.exchange(
