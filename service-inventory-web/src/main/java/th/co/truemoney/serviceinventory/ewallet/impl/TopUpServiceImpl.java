@@ -29,7 +29,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundReposit
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.util.FeeUtil;
 
-public class TopupServiceImpl implements TopUpService {
+public class TopUpServiceImpl implements TopUpService {
 
 	@Autowired
 	@Qualifier("accessTokenMemoryRepository")

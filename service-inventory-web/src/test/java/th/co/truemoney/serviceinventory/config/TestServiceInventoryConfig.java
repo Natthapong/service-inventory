@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Scope;
 
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
+import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
@@ -26,6 +27,11 @@ public class TestServiceInventoryConfig {
 	@Bean @Scope("singleton")
 	public SourceOfFundService getSourceOfFundService() {
 		return Mockito.mock(SourceOfFundService.class);
+	}
+	
+	@Bean
+	public TopUpService mockTopUpService() {
+		return Mockito.mock(TopUpService.class);
 	}
 	
     @Bean @Qualifier("accessTokenMemoryRepository")

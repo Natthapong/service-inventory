@@ -7,9 +7,11 @@ import org.springframework.context.annotation.Configuration;
 
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
+import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
+import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
@@ -32,6 +34,11 @@ public class ServiceInventoryConfig {
 	public SourceOfFundService getSourceOfFundService() {
 		return new SourceOfFundServiceImpl();
 	}
+	
+	@Bean
+    public TopUpService getTopUpService() {
+    	return new TopUpServiceImpl();
+    }
 
     @Bean @Qualifier("accessTokenMemoryRepository")
     public AccessTokenRepository getAccessTokenMemoryRepository() {
