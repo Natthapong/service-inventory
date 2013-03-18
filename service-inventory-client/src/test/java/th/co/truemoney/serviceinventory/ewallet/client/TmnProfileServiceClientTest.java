@@ -43,7 +43,6 @@ public class TmnProfileServiceClientTest {
 	String SALT = "5dc77d2e2310519a97aae050d85bec6870b4651a63447f02dfc936814067dd45a2f90e3c662f016f20dad45a2760739860af7ae92b3de00c2fd557ecbc3cc0d5";
 
 	@Test
-	@Ignore
 	public void shouldFail() {
 
 		try {
@@ -58,10 +57,9 @@ public class TmnProfileServiceClientTest {
 	}
 
 	@Test
-	@Ignore
 	public void getUserProfile() {
 		try {
-			TmnProfile tmnProfile = client.getTruemoneyProfile(41, "12345",
+			TmnProfile tmnProfile = client.getTruemoneyProfile("12345",
 					EncryptUtil.buildHmacSignature("12345", "12345" + SALT));
 			assertNotNull(tmnProfile);
 			assertEquals("Firstname lastname", tmnProfile.getFullname());
@@ -72,9 +70,9 @@ public class TmnProfileServiceClientTest {
 		}
 	}
 
-	@Test @Ignore
+	@Test 
 	public void checkUserProfileUrl() {
-		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/getprofile/{accesstoken}/{checksum}?channelId={channelId}";
+		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/getprofile/{accesstoken}/{checksum}";
 		String checkSum = EncryptUtil.buildHmacSignature("12345", "12345"
 				+ SALT);
 		try {
@@ -85,11 +83,11 @@ public class TmnProfileServiceClientTest {
 			when(
 					restTemplate.exchange(eq(url), eq(HttpMethod.GET),
 							any(HttpEntity.class), eq(TmnProfile.class), eq("12345"),
-							eq(checkSum), eq(41))).thenReturn(responseEntity);
+							eq(checkSum))).thenReturn(responseEntity);
 			
 			this.client.restTemplate = restTemplate;
 			
-			TmnProfile tmnProfile = client.getTruemoneyProfile(41, "12345", checkSum);
+			TmnProfile tmnProfile = client.getTruemoneyProfile("12345", checkSum);
 			assertNotNull(tmnProfile);
 			
 		} catch (ServiceInventoryException e) {

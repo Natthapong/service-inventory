@@ -36,16 +36,15 @@ public class TmnProfileServiceClient implements TmnProfileService {
 
 		return accessToken;
 	}
+	
+	@Override
+	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum) {
 
-	@Override 
-	public TmnProfile getTruemoneyProfile(Integer channelId,
-			String accesstoken, String checksum) {
-		
 		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(headers);
 
 		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(
 				environmentConfig.getUserProfileUrl(),
-					HttpMethod.GET, requestEntity, TmnProfile.class, accesstoken, checksum, channelId);
+					HttpMethod.GET, requestEntity, TmnProfile.class, accesstoken, checksum);
 		
 		TmnProfile tmnProfile = responseEntity.getBody();
 		
@@ -53,7 +52,8 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public void logout(Integer ChannelID, String accessToken) {
+	public void logout(String accessToken) {
+		// TODO Auto-generated method stub
 		
 	}
 

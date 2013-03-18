@@ -31,7 +31,8 @@ public class ServiceInventoryExceptionResponseErrorHandler extends DefaultRespon
 			}catch(ServiceInventoryException e){
 				throw e;
 			}catch(Exception e) {
-				throw new BadErrorFormatException("cannot parse error json: ", e);
+				//throw new BadErrorFormatException("cannot parse error json: ", e);
+				e.printStackTrace();
 			}
 		} else {
 			throw new RestClientException("Unknown status code [" + statusCode + "]");

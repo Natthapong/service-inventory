@@ -25,18 +25,11 @@ public class SourceOfFundServiceClientTest {
 
 	@Autowired
 	SourceOfFundServiceClient sourceOfFundServiceClient;
-	@Autowired
-	TmnProfileServiceClient client;
 	
-	@Before @Ignore
-	public void setup(){
-		client.login(41, new Login("user1.test.v1@gmail.com","e6701de94fdda4347a3d31ec5c892ccadc88b847"));
-	}
-	
-	@Test @Ignore
+	@Test 
 	public void shouldFail() {
 		try{
-			sourceOfFundServiceClient.getDirectDebitSources(41, "mart", "1234");
+			sourceOfFundServiceClient.getUserDirectDebitSources("mart", "1234");
 			fail();
 		}catch(ServiceInventoryException e){
 			assertEquals("500", e.getErrorCode());
@@ -45,9 +38,9 @@ public class SourceOfFundServiceClientTest {
 		}
 	}
 
-	@Test @Ignore
+	@Test 
 	public void shouldSuccess(){
-		List<DirectDebit> debits = sourceOfFundServiceClient.getDirectDebitSources(41, "user1.test.v1@gmail.com", "12345");
+		List<DirectDebit> debits = sourceOfFundServiceClient.getUserDirectDebitSources("user1.test.v1@gmail.com", "12345");
 		assertNotNull(debits);
 		assertEquals(1, debits.size());
 		assertEquals("SCB", debits.get(0).getBankCode());
