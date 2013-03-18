@@ -42,7 +42,7 @@ public class TmnProfileServiceClientTest {
 
 	String SALT = "5dc77d2e2310519a97aae050d85bec6870b4651a63447f02dfc936814067dd45a2f90e3c662f016f20dad45a2760739860af7ae92b3de00c2fd557ecbc3cc0d5";
 
-	@Test
+	@Test @Ignore
 	public void shouldFail() {
 
 		try {
@@ -56,7 +56,7 @@ public class TmnProfileServiceClientTest {
 
 	}
 
-	@Test
+	@Test @Ignore
 	public void getUserProfile() {
 		try {
 			TmnProfile tmnProfile = client.getTruemoneyProfile("12345",
@@ -70,7 +70,7 @@ public class TmnProfileServiceClientTest {
 		}
 	}
 
-	@Test 
+	@Test @Ignore
 	public void checkUserProfileUrl() {
 		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/getprofile/{accesstoken}/{checksum}";
 		String checkSum = EncryptUtil.buildHmacSignature("12345", "12345"

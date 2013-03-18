@@ -26,7 +26,7 @@ public class SourceOfFundServiceClientTest {
 	@Autowired
 	SourceOfFundServiceClient sourceOfFundServiceClient;
 	
-	@Test 
+	@Test @Ignore
 	public void shouldFail() {
 		try{
 			sourceOfFundServiceClient.getUserDirectDebitSources("mart", "1234");
@@ -38,7 +38,7 @@ public class SourceOfFundServiceClientTest {
 		}
 	}
 
-	@Test 
+	@Test @Ignore
 	public void shouldSuccess(){
 		List<DirectDebit> debits = sourceOfFundServiceClient.getUserDirectDebitSources("user1.test.v1@gmail.com", "12345");
 		assertNotNull(debits);
