@@ -32,7 +32,7 @@ public class TmnProfileController extends BaseController {
 		return tmnProfileService.login(channelId, login);
 	}
 
-	@RequestMapping(value = "/getprofile", method = RequestMethod.GET)
+	@RequestMapping(value = "/getprofile/{accesstoken}/{checksum}", method = RequestMethod.GET)
 	public @ResponseBody TmnProfile getTruemoneyProfile(
 		@RequestParam Integer channelId,
 		@PathVariable String accesstoken,
