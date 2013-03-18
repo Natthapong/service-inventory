@@ -5,18 +5,19 @@ import java.math.BigDecimal;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface TopUpService {
 
-	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundId, BigDecimal amount, String accessToken);
+	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundId, BigDecimal amount, String accessToken) throws ServiceInventoryException;
 
-	public TopUpQuote getTopUpQuoteDetails(String quoteId, String accessToken);
+	public TopUpQuote getTopUpQuoteDetails(String quoteId, String accessToken) throws ServiceInventoryException;
 
-	public TopUpOrder requestPlaceOrder(String quoteId, String accessToken);
+	public TopUpOrder requestPlaceOrder(String quoteId, String accessToken) throws ServiceInventoryException;
 
-	public void confirmPlaceOrder(String topUpOrderId, String otpString, String accessToken);
+	public void confirmPlaceOrder(String topUpOrderId, String otpString, String accessToken) throws ServiceInventoryException;
 
-	public TopUpStatus getTopUpOrderStatus(String topUpOrderId, String accessToken);
+	public TopUpStatus getTopUpOrderStatus(String topUpOrderId, String accessToken) throws ServiceInventoryException;
 
-	public TopUpOrder getTopUpOrderDetails(String topUpOrderId, String accessToken);
+	public TopUpOrder getTopUpOrderDetails(String topUpOrderId, String accessToken) throws ServiceInventoryException;
 }

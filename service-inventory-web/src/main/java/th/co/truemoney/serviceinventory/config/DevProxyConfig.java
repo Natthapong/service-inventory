@@ -58,12 +58,12 @@ public class DevProxyConfig {
 	public String getTrueMoneySecuritySoapEndpoint() {
 		return tmnSecuritySoapEndpoint;
 	}
-	
+
 	@Bean @Qualifier("ewalletSoapEndPoint")
 	public String getEwalletSoapEndpoint() {
 		return ewalletSoapEndpoint;
 	}
-
+	
 	@Bean
 	public static PropertyPlaceholderConfigurer endPointsProperties(){
 	  PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
