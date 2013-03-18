@@ -28,13 +28,13 @@ public class SourceOfFundServiceClient implements SourceOfFundService {
 	private HttpHeaders headers;
 
 	@Override
-	public List<DirectDebit> getDirectDebitSources(Integer channelId, String username, String accessToken) {
-
+	public List<DirectDebit> getUserDirectDebitSources(String username,
+			String accessToken) {
 		HttpEntity<DirectDebit[]> requestEntity = new HttpEntity<DirectDebit[]>(headers);
 
 		ResponseEntity<DirectDebit[]> responseEntity = restTemplate.exchange(
 				environmentConfig.getUserDirectDebitSourceOfFundsUrl(),
-					HttpMethod.GET, requestEntity, DirectDebit[].class, username, channelId, accessToken);
+					HttpMethod.GET, requestEntity, DirectDebit[].class, username, accessToken);
 
 		DirectDebit[] directDebits = responseEntity.getBody();
 

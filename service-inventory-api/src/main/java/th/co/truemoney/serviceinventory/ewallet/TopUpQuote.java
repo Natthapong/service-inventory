@@ -1,13 +1,14 @@
-package th.co.truemoney.serviceinventory.ewallet.domain;
+package th.co.truemoney.serviceinventory.ewallet;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.ewallet.TopUpQuote;
+import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
 
-public class TopUpOrder implements Serializable {
+public class TopUpQuote implements Serializable {
 
-	private static final long serialVersionUID = 2325219087645032462L;
+
+	private static final long serialVersionUID = 2372537225330036311L;
 
 	private String id;
 	private SourceOfFund sourceOfFund;
@@ -15,21 +16,6 @@ public class TopUpOrder implements Serializable {
 	private String username;
 	private BigDecimal amount;
 	private BigDecimal topUpFee;
-	private TopUpStatus status = TopUpStatus.ORDER_PLACED;
-
-	public TopUpOrder() {
-	}
-
-	public TopUpOrder(TopUpQuote quote) {
-		this.id = quote.getId();
-		this.sourceOfFund = quote.getSourceOfFund();
-		this.accessToken = quote.getAccessToken();
-		this.username = quote.getUsername();
-		this.amount = quote.getAmount();
-		this.topUpFee = quote.getTopUpFee();
-
-		this.status = TopUpStatus.ORDER_PLACED;
-	}
 
 	public String getId() {
 		return id;
@@ -74,13 +60,4 @@ public class TopUpOrder implements Serializable {
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
-
-	public TopUpStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(TopUpStatus status) {
-		this.status = status;
-	}
-
 }
