@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.endpoint.EwalletSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.endpoint.TmnProfileSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.endpoint.TmnSecuritySoapEndPointProxy;
 
@@ -23,6 +24,9 @@ public class DevProxyConfig {
 	
 	@Value("${tmnsecurity.endpoint}")
 	private String tmnSecuritySoapEndpoint;
+	
+	@Value( "${ewalletsoap.endpoint}")
+	private String ewalletSoapEndpoint;
 	
 	@Bean
 	public TmnProfileSoapEndPointProxy tmnProfileSoapEndPointProxy() {
@@ -38,6 +42,13 @@ public class DevProxyConfig {
 		return endPointProxy;
 	}
 	
+	@Bean
+	public EwalletSoapEndPointProxy getEwalletSoapEndPointProxy() {
+		EwalletSoapEndPointProxy endPointProxy = new EwalletSoapEndPointProxy(getEwalletSoapEndpoint());
+		endPointProxy.setTimeout(5000);
+		return endPointProxy;
+	}	
+	
 	@Bean @Qualifier("tmnProfileSoapEndPoint")
 	public String getTrueMoneyProfileSoapEndpoint() {
 		return tmnProfileSoapEndpoint;
@@ -48,6 +59,11 @@ public class DevProxyConfig {
 		return tmnSecuritySoapEndpoint;
 	}
 
+	@Bean @Qualifier("ewalletSoapEndPoint")
+	public String getEwalletSoapEndpoint() {
+		return ewalletSoapEndpoint;
+	}
+	
 	@Bean
 	public static PropertyPlaceholderConfigurer endPointsProperties(){
 	  PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
