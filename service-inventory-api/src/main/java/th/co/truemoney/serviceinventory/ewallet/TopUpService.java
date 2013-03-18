@@ -7,11 +7,15 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 
 public interface TopUpService {
 
-	public TopUpOrder createOrderFromDirectDebit(String sourceOfFundId, BigDecimal amount, String accessToken);
+	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundId, BigDecimal amount, String accessToken);
 
-	public TopUpOrder placeOrder(String topupOrderId, String accessToken);
+	public TopUpQuote getTopUpQuoteDetails(String quoteId, String accessToken);
 
-	public TopUpStatus getOrderStatus(String topupOrderId, String accessToken);
+	public TopUpOrder requestPlaceOrder(String quoteId, String accessToken);
 
-	public TopUpOrder getTopupOrderDetails(String topupOrderId, String accessToken);
+	public void confirmPlaceOrder(String topUpOrderId, String otpString, String accessToken);
+
+	public TopUpStatus getTopUpOrderStatus(String topUpOrderId, String accessToken);
+
+	public TopUpOrder getTopUpOrderDetails(String topUpOrderId, String accessToken);
 }
