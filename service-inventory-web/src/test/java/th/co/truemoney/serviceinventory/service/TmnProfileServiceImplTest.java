@@ -15,6 +15,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.impl.TmnProfileProxyImpl;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.impl.TmnSecurityProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonRequest;
@@ -28,15 +31,16 @@ public class TmnProfileServiceImplTest {
 
 	private TmnProfileServiceImpl tmnProfileServiceImpl;	
 	private TmnSecurityProxy tmnSecurityProxyMock;	
-	
-	
+	private TmnProfileProxy tmnProfileProxyMock;	
 	
 	@Before
 	public void setup() {
 		this.tmnProfileServiceImpl = new TmnProfileServiceImpl();
 		this.tmnSecurityProxyMock = Mockito.mock(TmnSecurityProxyImpl.class);
-
+		this.tmnProfileProxyMock = Mockito.mock(TmnProfileProxyImpl.class);
+		
 		this.tmnProfileServiceImpl.setTmnSecurityProxy(tmnSecurityProxyMock);
+		this.tmnProfileServiceImpl.setTmnProfileProxy(tmnProfileProxyMock);
 		this.tmnProfileServiceImpl.setAccessTokenRepository(new AccessTokenMemoryRepository());
 	}
 	
@@ -45,8 +49,12 @@ public class TmnProfileServiceImplTest {
 		
 		//given
 		SignonResponse stubbedSignonResponse = TmnProfileStubbed.createSuccessStubbedSignonResponse();
+		
+		GetBasicProfileResponse stubbedProfileResponse = TmnProfileStubbed.createSuccessStubbedProfileResponse();
 
 		when(tmnSecurityProxyMock.signon(Mockito.any(SignonRequest.class))).thenReturn(stubbedSignonResponse);	
+		
+		when(tmnProfileProxyMock.getBasicProfile(Mockito.any(th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.StandardBizRequest.class))).thenReturn(stubbedProfileResponse);	
 		
 		//when
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");

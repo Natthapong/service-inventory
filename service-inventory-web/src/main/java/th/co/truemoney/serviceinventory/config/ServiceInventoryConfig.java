@@ -5,20 +5,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.impl.OTPServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
+import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
 
 @Configuration
@@ -40,6 +44,11 @@ public class ServiceInventoryConfig {
     	return new TopUpServiceImpl();
     }
 
+	@Bean
+    public OTPService getOtpService() {
+    	return new OTPServiceImpl();
+    }
+	
     @Bean @Qualifier("accessTokenMemoryRepository")
     public AccessTokenRepository getAccessTokenMemoryRepository() {
     	AccessTokenMemoryRepository accessTokenMemoryRepository = new AccessTokenMemoryRepository();
@@ -67,4 +76,8 @@ public class ServiceInventoryConfig {
     	return new DirectDebitConfigImpl();
     }
 
+    @Bean @Qualifier("otpMemoryRepository")
+    public OTPRepository getOTPMemoryRepository() {
+    	return new OTPMemoryRepository();
+    }
 }

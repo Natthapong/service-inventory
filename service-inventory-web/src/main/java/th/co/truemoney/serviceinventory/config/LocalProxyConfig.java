@@ -65,8 +65,10 @@ public class LocalProxyConfig {
 					ListSourceRequest listSourceRequest)
 					throws EwalletException {
 				
-				SourceContext[] sourceContext = new SourceContext[1];
-				sourceContext[0] = new SourceContext("3","type",new String[] {"SCB","TMB","BBL"});
+				SourceContext[] sourceContext = new SourceContext[3];
+				sourceContext[0] = new SourceContext("1","type",new String[] {"SCB","xxxx1234"});
+				sourceContext[1] = new SourceContext("2","type",new String[] {"KTB","xxxx5678"});
+				sourceContext[2] = new SourceContext("3","type",new String[] {"BBL","xxxx9101"});
 				return new ListSourceResponse("1", "2", "namespace", new String[] {"key"}, new String[] {"value"}, sourceContext);
 			}
 		};

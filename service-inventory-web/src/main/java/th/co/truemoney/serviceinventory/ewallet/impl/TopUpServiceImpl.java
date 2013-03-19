@@ -148,17 +148,18 @@ public class TopUpServiceImpl implements TopUpService {
 		
 		logger.debug("retrieve access Token: "+accessToken.toString());
 		
-		OTP otp = otpService.send(accessToken.getMobileno());
-		logger.debug("otp : "+otp.toString());	
+		String otpReferenceCode = otpService.send(accessToken.getMobileno());
+		logger.debug("otpReferenceCode : "+otpReferenceCode);	
 		
-		TopUpOrder topUpOrder = createTopupOrderFromQuote(quoteID);
+		TopUpOrder topUpOrder = createTopupOrderFromQuote(quoteID, otpReferenceCode);
 		
 		return topUpOrder;			
 	}
 
-	private TopUpOrder createTopupOrderFromQuote(String quoteID) {
+	private TopUpOrder createTopupOrderFromQuote(String quoteID, String otpReferenceCode) {
 		TopUpOrder topUpOrder = new TopUpOrder(orderRepo.getTopUpQuote(quoteID));
 		topUpOrder.setStatus(TopUpStatus.AWAITING_CONFIRM);
+		topUpOrder.setOtpReferenceCode(otpReferenceCode);
 		orderRepo.saveTopUpOrder(topUpOrder);
 		return topUpOrder;		
 	}

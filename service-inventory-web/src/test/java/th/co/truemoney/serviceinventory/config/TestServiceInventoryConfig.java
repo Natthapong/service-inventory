@@ -8,12 +8,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 
+import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
 
 @Configuration
 @ComponentScan("th.co.truemoney.serviceinventory.dao")
@@ -34,6 +37,11 @@ public class TestServiceInventoryConfig {
 		return Mockito.mock(TopUpService.class);
 	}
 	
+	@Bean @Scope("singleton")
+	public OTPService getOTPService() {
+		return Mockito.mock(OTPService.class);
+	}
+	
     @Bean @Qualifier("accessTokenMemoryRepository")
     public AccessTokenRepository getAccessTokenMemoryRepository() {
         return new AccessTokenMemoryRepository();
@@ -44,4 +52,9 @@ public class TestServiceInventoryConfig {
         return new AccessTokenRedisRepository();
     }
 
+    @Bean @Qualifier("otpMemoryRepository")
+    public OTPRepository getOTPMemoryRepository() {
+    	return new OTPMemoryRepository();
+    }
+    
 }

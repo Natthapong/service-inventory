@@ -4,12 +4,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import th.co.truemoney.serviceinventory.bean.OTPBean;
 import th.co.truemoney.serviceinventory.ewallet.OTPService;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
-import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.util.RandomUtil;
 
@@ -26,21 +25,21 @@ public class OTPServiceImpl implements OTPService {
 	private String smsSender;
 
 	@Autowired 
-	private OrderRepository orderRepository;
+	private OTPRepository otpRepository;
 	
 	@Override
-	public OTP send(String mobileno) throws ServiceInventoryException {
+	public String send(String mobileno) throws ServiceInventoryException {
 		try {
-			OTP otp = new OTP(mobileno, RandomUtil.genRandomNumber(6), RandomUtil.genRandomString(4));
+			OTPBean otpBean = new OTPBean(mobileno, RandomUtil.genRandomNumber(6), RandomUtil.genRandomString(4));
 			logger.debug("==============================");
-			logger.debug("mobileno = "+otp.getMobileno());
-			logger.debug("otp = "+otp.getOtpString());
-			logger.debug("refCode = "+otp.getOtpReferenceCode());
+			logger.debug("mobileno = "+otpBean.getMobileno());
+			logger.debug("otp = "+otpBean.getOtpString());
+			logger.debug("refCode = "+otpBean.getOtpReferenceCode());
 			logger.debug("==============================");
-			SmsRequest smsRequest = new SmsRequest(smsSender, mobileno, OTP_MESSAGE+otp.getOtpString());
-			SmsResponse smsResponse = smsProxyImpl.send(smsRequest);
-			logger.debug("smsResponse: "+smsResponse.toString());
-			return otp;
+			SmsRequest smsRequest = new SmsRequest(smsSender, mobileno, OTP_MESSAGE+otpBean.getOtpString());
+			smsProxyImpl.send(smsRequest);
+			otpRepository.saveOTP(otpBean);
+			return otpBean.getOtpReferenceCode();
 		} catch (Exception e) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");			
 		} 
