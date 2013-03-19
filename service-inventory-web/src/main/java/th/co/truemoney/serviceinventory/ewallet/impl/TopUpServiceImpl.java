@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -27,6 +29,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.util.EncryptUtil;
 import th.co.truemoney.serviceinventory.util.FeeUtil;
 
 public class TopUpServiceImpl implements TopUpService {
@@ -47,7 +50,12 @@ public class TopUpServiceImpl implements TopUpService {
 	@Autowired
 	@Qualifier("orderMemoryRepository")
 	private OrderRepository orderRepo;
+	
+	@Autowired	
+	private AsyncService asyncService;
 
+    private static final Logger logger = LoggerFactory.getLogger(TopUpServiceImpl.class);
+    
 	@Override
 	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundId, QuoteRequest quoteRequest, String accessTokenID) {
 		
@@ -125,8 +133,18 @@ public class TopUpServiceImpl implements TopUpService {
 
 	@Override
 	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp, String accessToken) {
-		// TODO Auto-generated method stub
-		return null;
+		logger.debug("processing "+topUpOrderId);
+		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(topUpOrderId);		
+		
+		String localChecksum = EncryptUtil.buildHmacSignature(accessToken, topUpOrder.toString()+accessToken);
+		if(otp.getChecksum().equals(localChecksum)) {
+			AccessToken accessTokenObj = accessTokenRepo.getAccessToken(accessToken);
+			topUpOrder.setStatus(TopUpStatus.PROCESSING);
+			orderRepo.saveTopUpOrder(topUpOrder);
+			asyncService.topUpUtibaEwallet(topUpOrder, accessTokenObj);			
+		}
+				
+		return topUpOrder;
 	}
 
 	@Override
@@ -141,6 +159,46 @@ public class TopUpServiceImpl implements TopUpService {
 			String accessToken) {
 		// TODO Auto-generated method stub
 		return null;
+	}	
+	
+	public EwalletSoapProxy getEwalletProxy() {
+		return ewalletProxy;
+	}
+
+	public void setEwalletProxy(EwalletSoapProxy ewalletProxy) {
+		this.ewalletProxy = ewalletProxy;
+	}
+
+	public OrderRepository getOrderRepo() {
+		return orderRepo;
+	}
+
+	public void setOrderRepo(OrderRepository orderRepo) {
+		this.orderRepo = orderRepo;
+	}
+
+	public SourceOfFundRepository getSofRepo() {
+		return sofRepo;
+	}
+
+	public void setSofRepo(SourceOfFundRepository sofRepo) {
+		this.sofRepo = sofRepo;
+	}
+
+	public AsyncService getAsyncService() {
+		return asyncService;
+	}
+
+	public void setAsyncService(AsyncService asyncService) {
+		this.asyncService = asyncService;
+	}
+
+	public AccessTokenRepository getAccessTokenRepo() {
+		return accessTokenRepo;
+	}
+
+	public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
+		this.accessTokenRepo = accessTokenRepo;
 	}
 
 }
