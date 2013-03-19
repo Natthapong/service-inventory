@@ -26,13 +26,9 @@ public class ServiceInventoryExceptionResponseErrorHandler extends DefaultRespon
 
 			try {
 				ObjectMapper objectMapper = new ObjectMapper();
-				ServiceInventoryException exception = objectMapper.readValue(getResponseBody(response), ServiceInventoryException.class);
-				throw exception;
-			}catch(ServiceInventoryException e){
-				throw e;
-			}catch(Exception e) {
-				//throw new BadErrorFormatException("cannot parse error json: ", e);
-				e.printStackTrace();
+				throw objectMapper.readValue(getResponseBody(response), ServiceInventoryException.class);
+			} catch (Exception e) {
+				throw new ServiceInventoryException("503", "Service Not Available", "TMN-PRODUCT");
 			}
 		} else {
 			throw new RestClientException("Unknown status code [" + statusCode + "]");
