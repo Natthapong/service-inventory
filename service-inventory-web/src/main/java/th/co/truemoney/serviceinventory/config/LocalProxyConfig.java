@@ -8,6 +8,11 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
+import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.AddMoneyRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.GetBalanceResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.StandardMoneyResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.CreateTmnProfileRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.CreateTmnProfileResponse;
@@ -97,6 +102,37 @@ public class LocalProxyConfig {
 					AuthenticateRequest authenticateRequest) throws EwalletException {
 				return new AuthenticateResponse("1", "0", "namespace", new String[] {"key"}, new String[] {"value"}, "trueMoneyId");
 			}
+		};
+	}
+	
+	@Bean @Primary
+	public EwalletSoapProxy stubEwalletSoapProxy() {
+		return new EwalletSoapProxy() {
+
+			@Override
+			public StandardMoneyResponse verifyAddMoney(
+					VerifyAddMoneyRequest verifyAddMoneyRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public StandardMoneyResponse addMoney(
+					AddMoneyRequest addMoneyRequest) throws EwalletException {
+				// TODO Auto-generated method stub
+				//Thread.sleep(1000);
+				return null;
+			}
+
+			@Override
+			public GetBalanceResponse getBalance(
+					th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.StandardBizRequest standardBizRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
 		};
 	}
 	
