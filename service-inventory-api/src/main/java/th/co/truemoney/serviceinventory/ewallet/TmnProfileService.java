@@ -6,10 +6,10 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface TmnProfileService {
 
-	public String login(Integer channelId, Login login) throws ServiceInventoryException;
+	public String login(Integer channelID, Login login) throws ServiceInventoryException;
 
-	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum) throws ServiceInventoryException;
+	public TmnProfile getTruemoneyProfile(String accessTokenID, String checksum) throws ServiceInventoryException;
 
-	public void logout(String accessToken) throws ServiceInventoryException;
+	public void logout(String accessTokenID) throws ServiceInventoryException;
 }
 

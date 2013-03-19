@@ -2,7 +2,7 @@ package th.co.truemoney.serviceinventory.domain.proxy;
 
 public class BaseServiceResponseBean<T> {
 	
-	private String accessToken;
+	private String accessTokenID;
 	private String fullname;
 	private Double currentBalance;
 	private T body;
@@ -18,12 +18,12 @@ public class BaseServiceResponseBean<T> {
 		this.body = body;
 	}
 
-	public String getAccessToken() {
-		return accessToken;
+	public String getAccessTokenID() {
+		return accessTokenID;
 	}
 
-	public void setAccessToken(String token) {
-		this.accessToken = token;
+	public void setAccessTokenID(String token) {
+		this.accessTokenID = token;
 	}
 
 	public String getFullname() {

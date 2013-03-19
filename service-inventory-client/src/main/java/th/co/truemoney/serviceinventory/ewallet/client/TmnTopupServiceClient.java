@@ -18,11 +18,11 @@ public class TmnTopupServiceClient {
 	@Autowired
 	private HttpHeaders headers;
 
-	public void verify(Integer channelId,String accesstoken, String checksum) throws ServiceInventoryException {
+	public void verify(Integer channelID, String accesstokenID, String checksum) throws ServiceInventoryException {
 		
 	}
 	
-	public void order(Integer channelId,String accesstoken, String checksum) throws ServiceInventoryException {
+	public void order(Integer channelID, String accesstokenID, String checksum) throws ServiceInventoryException {
 
 	}
 	

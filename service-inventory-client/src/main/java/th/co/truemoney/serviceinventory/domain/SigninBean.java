@@ -2,7 +2,7 @@ package th.co.truemoney.serviceinventory.domain;
 
 public class SigninBean {
 	
-	private Integer channelId;
+	private Integer channelID;
 	
 	private String userName;
 	
@@ -24,12 +24,12 @@ public class SigninBean {
 		this.password = password;
 	}
 
-	public Integer getChannelId() {
-		return channelId;
+	public Integer getChannelID() {
+		return channelID;
 	}
 
-	public void setChannelId(Integer channelId) {
-		this.channelId = channelId;
+	public void setChannelID(Integer channelID) {
+		this.channelID = channelID;
 	}
 
 }

@@ -7,5 +7,6 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface SourceOfFundService {
 
-	public List<DirectDebit> getUserDirectDebitSources(String username, String accessToken) throws ServiceInventoryException;
+	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenID) throws ServiceInventoryException;
+	
 }

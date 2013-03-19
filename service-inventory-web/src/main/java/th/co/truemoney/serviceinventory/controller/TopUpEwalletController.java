@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ValidateException;
@@ -26,14 +27,21 @@ public class TopUpEwalletController extends BaseController {
 	public @ResponseBody
 	TopUpQuote createTopUpQuoteFromDirectDebit(
 			@PathVariable String sourceOfFundID,
-			@RequestParam(value = "accessTokenId", defaultValue = "") String accessTokenId,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 			@RequestBody QuoteRequest quoteRequest)
 			throws ServiceInventoryException {
-		if ("".equals(accessTokenId)) {
+		if ("".equals(accessTokenID)) {
 			throw new ValidateException("-1",
 					"Validate error: accessTokenID is null or empty.");
 		}
-		return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quoteRequest, accessTokenId);
+		return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quoteRequest, accessTokenID);
 	}
 	
+	@RequestMapping(value = "/top-up/order/{quoteID}", method = RequestMethod.POST)
+	public @ResponseBody TopUpOrder requestPlaceOrder(@PathVariable String quoteID, 
+			@RequestParam String accessTokenID) 
+		throws ServiceInventoryException {
+		
+		return null;
+	}
 }

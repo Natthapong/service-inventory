@@ -2,30 +2,30 @@ package th.co.truemoney.serviceinventory.domain;
 
 public class ResponseBean<T> {
 
-	private String accessToken;
+	private String accessTokenID;
 	private T data;
 
 	public ResponseBean() {
 
 	}
 
-	public ResponseBean(String accessToken) {
+	public ResponseBean(String accessTokenID) {
 		super();
-		this.accessToken = accessToken;
+		this.accessTokenID = accessTokenID;
 	}
 
-	public ResponseBean(String accessToken, T data) {
+	public ResponseBean(String accessTokenID, T data) {
 		super();
-		this.accessToken = accessToken;
+		this.accessTokenID = accessTokenID;
 		this.data = data;
 	}
 
-	public String getAccessToken() {
-		return accessToken;
+	public String getAccessTokenID() {
+		return accessTokenID;
 	}
 
-	public void setAccessToken(String code) {
-		this.accessToken = code;
+	public void setAccessTokenID(String code) {
+		this.accessTokenID = code;
 	}
 
 	public T getData() {

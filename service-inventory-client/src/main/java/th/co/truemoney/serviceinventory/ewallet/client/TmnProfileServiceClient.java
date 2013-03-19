@@ -27,11 +27,11 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	private HttpHeaders headers;
 
 	@Override
-	public String login(Integer channelId, Login login) throws ServiceInventoryException {
+	public String login(Integer channelID, Login login) throws ServiceInventoryException {
 
 		HttpEntity<Login> requestEntity = new HttpEntity<Login>(login, headers);
 
-		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLoginUrl(), HttpMethod.POST, requestEntity, String.class, channelId);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLoginUrl(), HttpMethod.POST, requestEntity, String.class, channelID);
 
 		String accessToken = responseEntity.getBody();
 
@@ -39,13 +39,13 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 	
 	@Override
-	public TmnProfile getTruemoneyProfile(String accesstoken, String checksum) throws ServiceInventoryException {
+	public TmnProfile getTruemoneyProfile(String accesstokenID, String checksum) throws ServiceInventoryException {
 
 		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(headers);
 
 		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(
 				environmentConfig.getUserProfileUrl(),
-					HttpMethod.GET, requestEntity, TmnProfile.class, accesstoken, checksum);
+					HttpMethod.GET, requestEntity, TmnProfile.class, accesstokenID, checksum);
 		
 		TmnProfile tmnProfile = responseEntity.getBody();
 		
@@ -53,9 +53,8 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public void logout(String accessToken) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		
+	public void logout(String accessTokenID) throws ServiceInventoryException {
+		// TODO Auto-generated method stub		
 	}
 
 }
