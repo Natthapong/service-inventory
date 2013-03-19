@@ -8,10 +8,10 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
-import th.co.truemoney.serviceinventory.ewallet.client.config.EnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
+import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.util.EncryptUtil;
@@ -29,31 +29,35 @@ import th.co.truemoney.serviceinventory.util.EncryptUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class })
 @ActiveProfiles(profiles = "local")
+@Category(IntegrationTest.class)
 public class TmnProfileServiceClientTest {
 
 	@Autowired
 	TmnProfileServiceClient client;
 
-	@Autowired
-	private EnvironmentConfig environmentConfig;
-
-	@Autowired
-	private HttpHeaders headers;
-
 	String SALT = "5dc77d2e2310519a97aae050d85bec6870b4651a63447f02dfc936814067dd45a2f90e3c662f016f20dad45a2760739860af7ae92b3de00c2fd557ecbc3cc0d5";
 
-	@Test @Ignore
-	public void shouldFail() {
+	@Test
+	public void wrongUserNameShouldFail() {
 
 		try {
-			client.login(41, null);
+			client.login(41, new Login("randomUsername", "hackypassword"));
 			fail();
 		} catch (ServiceInventoryException e) {
-			assertEquals("500", e.getErrorCode());
-			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
-			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
+			assertEquals("503", e.getErrorCode());
+			assertEquals("Service Not Available", e.getErrorDescription());
+			assertEquals("TMN-PRODUCT", e.getErrorNamespace());
 		}
+	}
 
+	@Test
+	public void correctUsernameAndPasswordWillProduceAccessToken() {
+
+		try {
+			client.login(41, TestData.createSuccessLogin());
+		} catch (ServiceInventoryException e) {
+			fail("should not throw exception");
+		}
 	}
 
 	@Test @Ignore
@@ -84,12 +88,12 @@ public class TmnProfileServiceClientTest {
 					restTemplate.exchange(eq(url), eq(HttpMethod.GET),
 							any(HttpEntity.class), eq(TmnProfile.class), eq("12345"),
 							eq(checkSum))).thenReturn(responseEntity);
-			
+
 			this.client.restTemplate = restTemplate;
-			
+
 			TmnProfile tmnProfile = client.getTruemoneyProfile("12345", checkSum);
 			assertNotNull(tmnProfile);
-			
+
 		} catch (ServiceInventoryException e) {
 			assertEquals("500", e.getErrorCode());
 			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
