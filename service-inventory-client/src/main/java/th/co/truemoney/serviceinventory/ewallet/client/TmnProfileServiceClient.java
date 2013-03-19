@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +30,10 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	@Override
 	public String login(Integer channelID, Login login) throws ServiceInventoryException {
 
+		Validate.notNull(channelID, "channel id is required");
+		Validate.notNull(login, "login bean is required");
+
+
 		HttpEntity<Login> requestEntity = new HttpEntity<Login>(login, headers);
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLoginUrl(), HttpMethod.POST, requestEntity, String.class, channelID);
@@ -37,7 +42,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 
 		return accessToken;
 	}
-	
+
 	@Override
 	public TmnProfile getTruemoneyProfile(String accesstokenID, String checksum) throws ServiceInventoryException {
 
@@ -46,15 +51,15 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(
 				environmentConfig.getUserProfileUrl(),
 					HttpMethod.GET, requestEntity, TmnProfile.class, accesstokenID, checksum);
-		
+
 		TmnProfile tmnProfile = responseEntity.getBody();
-		
+
 		return tmnProfile;
 	}
 
 	@Override
 	public void logout(String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 
 }
