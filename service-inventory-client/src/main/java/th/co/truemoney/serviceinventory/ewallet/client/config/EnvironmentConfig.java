@@ -4,4 +4,5 @@ public interface EnvironmentConfig {
 	String getLoginUrl();
 	String getUserDirectDebitSourceOfFundsUrl();
 	String getUserProfileUrl();
+	String getCreateTopUpQuoteFromDirectDebitUrl();
 }

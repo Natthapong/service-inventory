@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -32,6 +33,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.util.EncryptUtil;
 import th.co.truemoney.serviceinventory.util.FeeUtil;
 
+@Service
 public class TopUpServiceImpl implements TopUpService {
 
 	@Autowired
@@ -57,7 +59,7 @@ public class TopUpServiceImpl implements TopUpService {
     private static final Logger logger = LoggerFactory.getLogger(TopUpServiceImpl.class);
     
 	@Override
-	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundId, QuoteRequest quoteRequest, String accessTokenID) {
+	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID, QuoteRequest quoteRequest, String accessTokenID) {
 		
 		// --- Get Account Detail from accessToken ---//
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
@@ -66,11 +68,19 @@ public class TopUpServiceImpl implements TopUpService {
 			throw new ServiceInventoryException("90001", "AccessToken not found.");
 
 		// --- get SOF List ---//
-		DirectDebit sofDetail = getSourceOfFund(sourceOfFundId, accessToken);
+		DirectDebit sofDetail = getSourceOfFund(sourceOfFundID, accessToken);
+		
+		BigDecimal amount = quoteRequest.getAmount();
+		BigDecimal minAmount = sofDetail.getMinAmount();
+		BigDecimal maxAmount = sofDetail.getMaxAmount();
+		if (amount.compareTo(minAmount) < 0)
+			throw new ServiceInventoryException("20001", "amount less than min amount.");
+		if (amount.compareTo(maxAmount) > 0)
+			throw new ServiceInventoryException("20002", "amount most than max amount.");
 		
 		// --- Connect to Ewallet Client to verify amount on this ewallet-account ---//
 		try {
-			StandardMoneyResponse verifyResponse = verifyTopupEwallet(quoteRequest.getAmount(), accessToken.getChannelId(), sofDetail.getSourceOfFundType());
+			StandardMoneyResponse verifyResponse = verifyTopupEwallet(quoteRequest.getAmount(), accessToken.getChannelID(), sofDetail.getSourceOfFundType());
 			
 		} catch (EwalletException e) {
 			throw new ServiceInventoryException(e.getCode(), "verify add money fail.", e.getNamespace());
@@ -92,41 +102,47 @@ public class TopUpServiceImpl implements TopUpService {
 		// --- Generate Order ID ---//
 		TopUpQuote topupQuote = new TopUpQuote();
 		String orderID = UUID.randomUUID().toString();
-		topupQuote.setId(orderID);
-		topupQuote.setAccessToken(accessTokenID);
+		topupQuote.setID(orderID);
+		topupQuote.setAccessTokenID(accessTokenID);
+		topupQuote.setUsername(accessToken.getUsername());
+		topupQuote.setAmount(amount);
 		topupQuote.setTopUpFee(totalFee);
+		topupQuote.setSourceOfFund(sofDetail);
+		
 
 		orderRepo.saveTopUpQuote(topupQuote);
 
 		return topupQuote;
 	}
 
-	private StandardMoneyResponse verifyTopupEwallet(BigDecimal amount, Integer channelId, String sofType) {
+	private StandardMoneyResponse verifyTopupEwallet(BigDecimal amount, Integer channelID, String sofType) {
 		VerifyAddMoneyRequest request = new VerifyAddMoneyRequest();
 		request.setAmount(amount);
-		request.setChannelId(channelId);
+		request.setChannelId(channelID);
 		request.setSourceType(sofType);
 		
 		return ewalletProxy.verifyAddMoney(request);
 	}
 
-	private DirectDebit getSourceOfFund(String sourceOfFundId, AccessToken accessToken) {
-		String truemoneyId = accessToken.getTruemoneyId();
-		Integer channelId = accessToken.getChannelId();
-		String sessionId = accessToken.getSessionId();
+	private DirectDebit getSourceOfFund(String sourceOfFundID, AccessToken accessToken) {
+		String truemoneyID = accessToken.getTruemoneyID();
+		Integer channelID = accessToken.getChannelID();
+		String sessionID = accessToken.getSessionID();
 		
-		DirectDebit sofDetail = sofRepo.getUserDirectDebitSourceById(sourceOfFundId, truemoneyId, channelId, sessionId);
+		DirectDebit sofDetail = sofRepo.getUserDirectDebitSourceByID(sourceOfFundID, truemoneyID, channelID, sessionID);
 		return sofDetail;
 	}
 
 	@Override
-	public TopUpQuote getTopUpQuoteDetails(String quoteId, String accessToken) {
+	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID)
+			throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TopUpOrder requestPlaceOrder(String quoteId, String accessToken) {
+	public TopUpOrder requestPlaceOrder(String quoteID, String accessTokenID)
+			throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -148,15 +164,15 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	@Override
-	public TopUpStatus getTopUpOrderStatus(String topUpOrderId,
-			String accessToken) {
+	public TopUpStatus getTopUpOrderStatus(String topUpOrderID,
+			String accessTokenID) throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TopUpOrder getTopUpOrderDetails(String topUpOrderId,
-			String accessToken) {
+	public TopUpOrder getTopUpOrderDetails(String topUpOrderID,
+			String accessTokenID) throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}	
@@ -201,4 +217,23 @@ public class TopUpServiceImpl implements TopUpService {
 		this.accessTokenRepo = accessTokenRepo;
 	}
 
+	public void setEWalletProxy(EwalletSoapProxy ewalletProxy) {
+		this.ewalletProxy = ewalletProxy;
+	}
+	
+	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepository) {
+		this.accessTokenRepo = accessTokenRepository;
+	}
+	
+	public void setSourceOfFundRepository(SourceOfFundRepository sofRepo) {
+		this.sofRepo = sofRepo;
+	}
+	
+	public void setDirectDebitConfig(DirectDebitConfig directDebitConfig) {
+		this.directDebitConfig = directDebitConfig;
+	}
+	
+	public void setOrderRepository(OrderRepository orderRepository) {
+		this.orderRepo = orderRepository;
+	}
 }

@@ -14,7 +14,7 @@ public class OrderMemoryRepository implements OrderRepository {
 	
 	@Override
 	public void saveTopUpQuote(TopUpQuote topupQuote) {
-		mapQuote.put(topupQuote.getId(), topupQuote);
+		mapQuote.put(topupQuote.getID(), topupQuote);
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class OrderMemoryRepository implements OrderRepository {
 	
 	@Override
 	public void saveTopUpOrder(TopUpOrder topupOrder) {
-		mapOrder.put(topupOrder.getId(), topupOrder);
+		mapOrder.put(topupOrder.getID(), topupOrder);
 	}
 
 	@Override

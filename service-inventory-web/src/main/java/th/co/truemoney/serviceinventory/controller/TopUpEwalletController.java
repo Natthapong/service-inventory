@@ -26,15 +26,23 @@ public class TopUpEwalletController extends BaseController {
 	public @ResponseBody
 	TopUpQuote createTopUpQuoteFromDirectDebit(
 			@PathVariable String sourceOfFundID,
-			@RequestParam(value = "accessTokenId", defaultValue = "") String accessTokenId,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 			@RequestBody QuoteRequest quoteRequest)
 			throws ServiceInventoryException {
-
-		if ("".equals(accessTokenId)) {
+		if ("".equals(accessTokenID)) {
 			throw new ValidateException("-1",
 					"Validate error: accessTokenID is null or empty.");
 		}
-
-		return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quoteRequest, accessTokenId);
+		
+		//--- checksum data ---//
+		/*
+		String checksum = quoteRequest.getChecksum();
+		String datasum = String.format("%s%s", sourceOfFundID, quoteRequest.getAmount().toString());
+		if (!AccessTokenUtil.isValidCheckSum(checksum, datasum, accessTokenId))
+			throw new ValidateException("-1",
+					"Validate error: invalid checksum.");
+		*/
+		
+		return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quoteRequest, accessTokenID);
 	}
 }

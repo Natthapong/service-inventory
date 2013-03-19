@@ -9,45 +9,46 @@ public class AccessToken implements Serializable {
 	
 	private static final long serialVersionUID = -1447834526746021542L;
 
-	private String accessTokenId;
-	private String sessionId;
-	private String truemoneyId;
+	private String accessTokenID;
+	private String sessionID;
+	private String truemoneyID;
 	private String username;
-	private Integer channelId;
+	private Integer channelID;
 	
 	public AccessToken() {
+		super();
 	}
 	
-	public AccessToken(String token, String sessionId, String truemoneyId, String username, Integer channelId) {
-		this.accessTokenId = token;
-		this.sessionId = sessionId;
-		this.truemoneyId = truemoneyId;
+	public AccessToken(String token, String sessionID, String truemoneyID, String username, Integer channelID) {
+		this.accessTokenID = token;
+		this.sessionID = sessionID;
+		this.truemoneyID = truemoneyID;
 		this.username = username;
-		this.channelId = channelId;
+		this.channelID = channelID;
 	}
 	
-	public String getAccessTokenId() {
-		return accessTokenId;
-	}
-	
-	public void setAccessTokenId(String accessTokenId) {
-		this.accessTokenId = accessTokenId;
-	}
-	
-	public String getSessionId() {
-		return sessionId;
-	}
-	
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
-	}
-	
-	public String getTruemoneyId() {
-		return truemoneyId;
+	public String getAccessTokenID() {
+		return accessTokenID;
 	}
 
-	public void setTruemoneyId(String truemoneyId) {
-		this.truemoneyId = truemoneyId;
+	public void setAccessTokenID(String accessTokenID) {
+		this.accessTokenID = accessTokenID;
+	}
+
+	public String getSessionID() {
+		return sessionID;
+	}
+
+	public void setSessionID(String sessionID) {
+		this.sessionID = sessionID;
+	}
+
+	public String getTruemoneyID() {
+		return truemoneyID;
+	}
+
+	public void setTruemoneyID(String truemoneyID) {
+		this.truemoneyID = truemoneyID;
 	}
 
 	public String getUsername() {
@@ -56,30 +57,30 @@ public class AccessToken implements Serializable {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}	
-	
-	public Integer getChannelId() {
-		return channelId;
 	}
 
-	public void setChannelId(Integer channelId) {
-		this.channelId = channelId;
+	public Integer getChannelID() {
+		return channelID;
+	}
+
+	public void setChannelID(Integer channelID) {
+		this.channelID = channelID;
 	}
 
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
-			.append("accessTokenId: ", this.accessTokenId)
-			.append("sessioinId: ", this.sessionId)
-			.append("truemoneyId: ", this.truemoneyId)
+			.append("accessTokenID: ", this.accessTokenID)
+			.append("sessionID: ", this.sessionID)
+			.append("truemoneyID: ", this.truemoneyID)
 			.append("username: ", this.username)
-			.append("channelId: ", this.channelId)
+			.append("channelID: ", this.channelID)
 			.toString();
 	}
 	
-	public static AccessToken generateNewToken(String sessionId, String truemoneyId, String username, Integer channelId) {
-		String accessToken = UUID.randomUUID().toString();		
-		return new AccessToken(accessToken, sessionId, truemoneyId, username, channelId);
+	public static AccessToken generateNewToken(String sessionID, String truemoneyID, String username, Integer channelID) {
+		String accessTokenID = UUID.randomUUID().toString();		
+		return new AccessToken(accessTokenID, sessionID, truemoneyID, username, channelID);
 	}
 	
 }

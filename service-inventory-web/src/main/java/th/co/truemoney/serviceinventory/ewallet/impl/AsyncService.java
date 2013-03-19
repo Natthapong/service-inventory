@@ -35,10 +35,10 @@ public class AsyncService {
 		logger.debug("call ewalletProxy");
 		AddMoneyRequest addMoneyRequest = new AddMoneyRequest();
 		addMoneyRequest.setAmount(topUpOrder.getAmount());
-		addMoneyRequest.setChannelId(accessToken.getChannelId());		
+		addMoneyRequest.setChannelId(accessToken.getChannelID());		
 		addMoneyRequest.setRequestTransactionId(topUpOrder.getConfirmationInfo().getTransactionID());
-		addMoneyRequest.setSecurityContext(new SecurityContext(accessToken.getSessionId(), accessToken.getTruemoneyId()));
-		addMoneyRequest.setSourceId(topUpOrder.getSourceOfFund().getSourceOfFundId());
+		addMoneyRequest.setSecurityContext(new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID()));
+		addMoneyRequest.setSourceId(topUpOrder.getSourceOfFund().getSourceOfFundID());
 		addMoneyRequest.setSourceType(topUpOrder.getSourceOfFund().getSourceOfFundType());
 		
 		StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);		

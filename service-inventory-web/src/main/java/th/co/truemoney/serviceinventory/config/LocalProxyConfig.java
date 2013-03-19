@@ -28,24 +28,25 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.Create
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.StandardBizResponse;
+import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
 
 @Configuration
 @Profile("local")
 public class LocalProxyConfig {
-	
+
 	@Bean @Primary
 	public TmnProfileProxy stubTmnProfileProxy() {
 		return new TmnProfileProxy() {
-			
+
 			@Override
 			public GetBasicProfileResponse getBasicProfile(
 					StandardBizRequest standardBizRequest) throws EwalletException {
 				return new GetBasicProfileResponse("1", "0", "namespace",
 						new String[] {"key"}, new String[] {"value"},
-						"Firstname lastname", "0891231234", 
+						"Firstname lastname", "0891231234",
 						new BigDecimal(50.0d),
-						"customer", 
+						"customer",
 						1);
 			}
 
@@ -60,43 +61,52 @@ public class LocalProxyConfig {
 			public ListSourceResponse listSource(
 					ListSourceRequest listSourceRequest)
 					throws EwalletException {
-				
+
 				SourceContext[] sourceContext = new SourceContext[1];
 				sourceContext[0] = new SourceContext("3","type",new String[] {"SCB","TMB","BBL"});
 				return new ListSourceResponse("1", "2", "namespace", new String[] {"key"}, new String[] {"value"}, sourceContext);
 			}
 		};
 	}
-	
+
 	@Bean @Primary
 	public TmnSecurityProxy stubTmnSecurityProxy() {
 		return new TmnSecurityProxy() {
-			
+
 			@Override
 			public StandardBizResponse terminateSession(
 					th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.StandardBizRequest standardBizRequest)
 					throws EwalletException {
 				return new StandardBizResponse("1", "0", "namespace", new String[] {"key"}, new String[] {"value"});
 			}
-			
+
 			@Override
 			public SignonResponse signon(SignonRequest signOnRequest)
 					throws EwalletException {
-				return new SignonResponse("1", "0", "namespace", new String[] {"key"}, new String[] {"value"}, "sessionId", "trueMoneyId");
+
+
+				String username = signOnRequest.getInitiator();
+				String password = signOnRequest.getPin();
+
+				if ("local@tmn.com".equals(username) &&  "password".equals(password)) {
+					return new SignonResponse("1", "0", "namespace", new String[] {"key"}, new String[] {"value"}, "sessionId", "trueMoneyId");
+				}
+
+				throw new SignonServiceException("500", "un authorize");
 			}
-			
+
 			@Override
 			public StandardBizResponse extendSession(
 					th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.StandardBizRequest standardBizRequest)
 					throws EwalletException {
 				return new StandardBizResponse("1", "0", "namespace", new String[] {"key"}, new String[] {"value"});
 			}
-			
+
 			@Override
 			public CreateSessionResponse createSession() throws EwalletException {
 				return new CreateSessionResponse("0", "namespace", "sessionId");
 			}
-			
+
 			@Override
 			public AuthenticateResponse authenticate(
 					AuthenticateRequest authenticateRequest) throws EwalletException {
@@ -104,25 +114,17 @@ public class LocalProxyConfig {
 			}
 		};
 	}
-	
+
+
 	@Bean @Primary
-	public EwalletSoapProxy stubEwalletSoapProxy() {
+	public EwalletSoapProxy stubEWalletSoapProxy() {
 		return new EwalletSoapProxy() {
 
 			@Override
 			public StandardMoneyResponse verifyAddMoney(
 					VerifyAddMoneyRequest verifyAddMoneyRequest)
 					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public StandardMoneyResponse addMoney(
-					AddMoneyRequest addMoneyRequest) throws EwalletException {
-				// TODO Auto-generated method stub
-				//Thread.sleep(1000);
-				return null;
+				return new StandardMoneyResponse("1234", "0", "namespce", new String[] {"key"}, new String[] {"value"}, "stub@local.com", new BigDecimal(100.00));
 			}
 
 			@Override
@@ -132,8 +134,13 @@ public class LocalProxyConfig {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
+			@Override
+			public StandardMoneyResponse addMoney(AddMoneyRequest addMoneyRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 	}
-	
 }

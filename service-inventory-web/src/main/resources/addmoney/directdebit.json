@@ -1,7 +1,7 @@
 {
     "BBL":
     {
-        "bankNameTh" : "ธนาคารกรุงเทพ",
+        "bankNameTh" : "กรุงเทพ",
         "bankNameEn" : "Bangkok Bank",
         "minAmount" : 300.00,
         "maxAmount" : 3000.00,
@@ -12,7 +12,7 @@
     },
     "KTB":
     {
-        "bankNameTh" : "ธนาคารกรุงไทย",
+        "bankNameTh" : "กรุงไทย",
         "bankNameEn" : "Krungthai Bank",
         "minAmount" : 300.00,
         "maxAmount" : 30000.00,
@@ -23,7 +23,7 @@
     },
     "BAY":
     {
-        "bankNameTh" : "ธนาคารกรุงศรีอยุธยา",
+        "bankNameTh" : "กรุงศรีอยุธยา",
         "bankNameEn" : "Bank of Ayudhya",
         "minAmount" : 300.00,
         "maxAmount" : 3000.00,
@@ -34,7 +34,7 @@
     },
     "SCB":
     {
-        "bankNameTh" : "ธนาคารไทยพาณิชย์",
+        "bankNameTh" : "ไทยพาณิชย์",
         "bankNameEn" : "The Siam Commercial Bank",
         "minAmount" : 300.00,
         "maxAmount" : 3000.00,

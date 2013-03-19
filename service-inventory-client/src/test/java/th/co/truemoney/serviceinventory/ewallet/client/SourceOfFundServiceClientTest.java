@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
-import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,7 +24,7 @@ public class SourceOfFundServiceClientTest {
 
 	@Autowired
 	SourceOfFundServiceClient sourceOfFundServiceClient;
-	
+
 	@Test @Ignore
 	public void shouldFail() {
 		try{

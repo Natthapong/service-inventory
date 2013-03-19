@@ -70,7 +70,7 @@ public class DirectDebit extends SourceOfFund implements Serializable {
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
-		.append("sourceId : ", this.getSourceOfFundId())
+		.append("sourceID : ", this.getSourceOfFundID())
 		.append("bankCode: ", this.bankCode)
 		.append("bankNameEn: ", this.bankNameEn)
 		.append("bankNameTh: ", this.bankNameTh)

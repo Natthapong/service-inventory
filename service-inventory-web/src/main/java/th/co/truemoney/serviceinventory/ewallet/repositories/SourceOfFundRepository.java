@@ -26,21 +26,21 @@ public class SourceOfFundRepository {
 	@Autowired
 	private DirectDebitConfig directDebitConfig;
 	
-	public DirectDebit getUserDirectDebitSourceById(String sourceOfFundId, String truemoneyId, Integer channelId, String sessionId) {
-		List<DirectDebit> directDebitSources = getUserDirectDebitSources(truemoneyId, channelId, sessionId);
+	public DirectDebit getUserDirectDebitSourceByID(String sourceOfFundID, String truemoneyID, Integer channelID, String sessionID) {
+		List<DirectDebit> directDebitSources = getUserDirectDebitSources(truemoneyID, channelID, sessionID);
 		for (DirectDebit dd : directDebitSources) {
-			if (dd.getSourceOfFundId().equals(sourceOfFundId)) {
+			if (dd.getSourceOfFundID().equals(sourceOfFundID)) {
 				return dd;
 			}
 		}		
-		throw new ServiceInventoryException("404", "source of fund not found : " + sourceOfFundId);
+		throw new ServiceInventoryException("404", "source of fund not found : " + sourceOfFundID);
 	}
 	
-	public List<DirectDebit> getUserDirectDebitSources(String truemoneyId, Integer channelId, String sessionId)
+	public List<DirectDebit> getUserDirectDebitSources(String truemoneyID, Integer channelID, String sessionID)
 			throws ServiceInventoryException {
 		try {
 			List<DirectDebit> directDebitList = null;
-			ListSourceRequest listSourceRequest = createListSourceRequest(channelId, truemoneyId, sessionId);
+			ListSourceRequest listSourceRequest = createListSourceRequest(channelID, truemoneyID, sessionID);
 			ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(listSourceRequest);
 			SourceContext[] sourceContexts = listSourceResponse.getSourceList();
 			if (sourceContexts != null && sourceContexts.length > 0) {
@@ -52,7 +52,7 @@ public class SourceOfFundRepository {
 					if (sourceDetail != null && sourceDetail.length > 0) {
 						DirectDebitConfigBean directDebitConfigBean = directDebitConfig.getBankDetail(sourceDetail[0] != null ? sourceDetail[0].trim() : "");
 						if (directDebitConfigBean != null) {
-							directDebit.setSourceOfFundId(sourceContext.getSourceId());
+							directDebit.setSourceOfFundID(sourceContext.getSourceId());
 							directDebit.setSourceOfFundType(sourceContext.getSourceType());
 							directDebit.setBankCode(sourceDetail[0] != null ? sourceDetail[0].trim() : "");
 							directDebit.setBankAccountNumber(sourceDetail[0] != null ? sourceDetail[1].trim() : "");
@@ -79,10 +79,10 @@ public class SourceOfFundRepository {
 		this.tmnProfileProxy = tmnProfileProxy;
 	}
 	
-	private ListSourceRequest createListSourceRequest(Integer channelId, String truemoneyId, String sessionId) {
+	private ListSourceRequest createListSourceRequest(Integer channelID, String truemoneyID, String sessionID) {
 		ListSourceRequest listSourceRequest = new ListSourceRequest();
-		listSourceRequest.setChannelId(channelId);
-		SecurityContext securityContext = new SecurityContext(sessionId, truemoneyId);
+		listSourceRequest.setChannelId(channelID);
+		SecurityContext securityContext = new SecurityContext(sessionID, truemoneyID);
 		listSourceRequest.setSecurityContext(securityContext);
 
 		return listSourceRequest;

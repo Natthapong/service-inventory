@@ -29,18 +29,18 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 	private SourceOfFundRepository sofRepo;
 
 	@Override
-	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenId)
+	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenID)
 			throws ServiceInventoryException {
 		try {
-			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenId);
+			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 			if (accessToken == null) {
-				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessToken is expired or not found.");
+				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
 			}
 			logger.debug("retrieve access Token: "+accessToken.toString());
 
-			String truemoneyId = accessToken.getTruemoneyId();
-			Integer channelId = accessToken.getChannelId();
-			String sessionId = accessToken.getSessionId();
+			String truemoneyId = accessToken.getTruemoneyID();
+			Integer channelId = accessToken.getChannelID();
+			String sessionId = accessToken.getSessionID();
 
 			List<DirectDebit> userDirectDebitSources = sofRepo.getUserDirectDebitSources(truemoneyId, channelId, sessionId);
 			

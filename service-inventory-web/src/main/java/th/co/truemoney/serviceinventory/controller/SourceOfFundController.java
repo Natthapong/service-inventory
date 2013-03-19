@@ -23,10 +23,9 @@ public class SourceOfFundController extends BaseController {
 	@RequestMapping(value = "/user/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
 	public @ResponseBody List<DirectDebit> listDirectDebitSources(
 		@PathVariable String username,
-		@RequestParam(value = "accessToken", defaultValue="") String accessToken)
+		@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID)
 			throws ServiceInventoryException {
-
-		return sourceOfFundService.getUserDirectDebitSources(username, accessToken);
+		return sourceOfFundService.getUserDirectDebitSources(username, accessTokenID);
 	}
 
 }

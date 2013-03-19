@@ -64,7 +64,7 @@ public class TmnProfileControllerLoginFailTest {
 
 		ObjectMapper mapper = new ObjectMapper();
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		this.mockMvc.perform(post("/ewallet/login?channelId=41")
+		this.mockMvc.perform(post("/ewallet/login?channelID=41")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(login)))
 			.andExpect(status().isBadRequest())
