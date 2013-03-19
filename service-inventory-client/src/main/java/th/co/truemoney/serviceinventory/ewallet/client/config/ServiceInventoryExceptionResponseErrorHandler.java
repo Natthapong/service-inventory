@@ -18,7 +18,9 @@ import org.springframework.web.client.UnknownHttpStatusCodeException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class ServiceInventoryExceptionResponseErrorHandler extends DefaultResponseErrorHandler {
-
+	
+	public static final ServiceInventoryException SERVICE_NOT_AVAILABLE = new ServiceInventoryException("503", "Service Not Available", "TMN-PRODUCT");
+	
 	public void handleError(ClientHttpResponse response) throws IOException {
 		HttpStatus statusCode = getHttpStatusCode(response);
 
@@ -27,8 +29,10 @@ public class ServiceInventoryExceptionResponseErrorHandler extends DefaultRespon
 			try {
 				ObjectMapper objectMapper = new ObjectMapper();
 				throw objectMapper.readValue(getResponseBody(response), ServiceInventoryException.class);
-			} catch (Exception e) {
-				throw new ServiceInventoryException("503", "Service Not Available", "TMN-PRODUCT");
+			} catch (ServiceInventoryException e1) {
+				throw e1;
+			} catch (IOException e2) {
+				throw SERVICE_NOT_AVAILABLE;
 			}
 		} else {
 			throw new RestClientException("Unknown status code [" + statusCode + "]");
