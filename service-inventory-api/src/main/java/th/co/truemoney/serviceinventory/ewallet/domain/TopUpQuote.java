@@ -27,6 +27,10 @@ public class TopUpQuote implements Serializable {
 	public SourceOfFund getSourceOfFund() {
 		return sourceOfFund;
 	}
+	
+	public void setSourceOfFund(SourceOfFund sourceOfFund) {
+		this.sourceOfFund = sourceOfFund;
+	}
 
 	public String getAccessToken() {
 		return accessToken;
