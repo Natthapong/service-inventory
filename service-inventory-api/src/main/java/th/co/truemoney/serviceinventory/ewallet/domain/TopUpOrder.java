@@ -14,7 +14,7 @@ public class TopUpOrder implements Serializable {
 	private BigDecimal amount;
 	private BigDecimal topUpFee;
 	private String otpReferenceCode;
-	private TopUpStatus status = TopUpStatus.ORDER_PLACED;
+	private TopUpStatus status = TopUpStatus.AWAITING_CONFIRM;
 	private TopUpConfirmationInfo confirmationInfo;
 
 	public TopUpOrder() {
@@ -29,7 +29,7 @@ public class TopUpOrder implements Serializable {
 		this.amount = quote.getAmount();
 		this.topUpFee = quote.getTopUpFee();
 
-		this.status = TopUpStatus.ORDER_PLACED;
+		this.status = TopUpStatus.AWAITING_CONFIRM;
 	}
 
 	public String getID() {

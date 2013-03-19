@@ -104,8 +104,7 @@ public class TopUpServiceImpl implements TopUpService {
 		topupQuote.setUsername(accessToken.getUsername());
 		topupQuote.setAmount(amount);
 		topupQuote.setTopUpFee(totalFee);
-		topupQuote.setSourceOfFund(sofDetail);
-		
+		topupQuote.setSourceOfFund(sofDetail);		
 
 		orderRepo.saveTopUpQuote(topupQuote);
 
@@ -140,14 +139,28 @@ public class TopUpServiceImpl implements TopUpService {
 	@Override
 	public TopUpOrder requestPlaceOrder(String quoteID, String accessTokenID)
 			throws ServiceInventoryException {
+		
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		
 		if (accessToken == null) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
 		}
+		
 		logger.debug("retrieve access Token: "+accessToken.toString());
+		
 		OTP otp = otpService.send(accessToken.getMobileno());
-		logger.debug("otp : "+otp.toString());		
-		return new TopUpOrder();			
+		logger.debug("otp : "+otp.toString());	
+		
+		TopUpOrder topUpOrder = createTopupOrderFromQuote(quoteID);
+		
+		return topUpOrder;			
+	}
+
+	private TopUpOrder createTopupOrderFromQuote(String quoteID) {
+		TopUpOrder topUpOrder = new TopUpOrder(orderRepo.getTopUpQuote(quoteID));
+		topUpOrder.setStatus(TopUpStatus.AWAITING_CONFIRM);
+		orderRepo.saveTopUpOrder(topUpOrder);
+		return topUpOrder;		
 	}
 
 	@Override
