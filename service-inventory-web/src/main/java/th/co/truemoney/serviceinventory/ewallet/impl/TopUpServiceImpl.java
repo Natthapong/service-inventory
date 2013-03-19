@@ -60,6 +60,14 @@ public class TopUpServiceImpl implements TopUpService {
 		// --- get SOF List ---//
 		DirectDebit sofDetail = getSourceOfFund(sourceOfFundId, accessToken);
 		
+		BigDecimal amount = quoteRequest.getAmount();
+		BigDecimal minAmount = sofDetail.getMinAmount();
+		BigDecimal maxAmount = sofDetail.getMaxAmount();
+		if (amount.compareTo(minAmount) < 0)
+			throw new ServiceInventoryException("60001", "amount less than min amount.");
+		if (amount.compareTo(maxAmount) > 0)
+			throw new ServiceInventoryException("60002", "amount most than max amount.");
+		
 		// --- Connect to Ewallet Client to verify amount on this ewallet-account ---//
 		try {
 			StandardMoneyResponse verifyResponse = verifyTopupEwallet(quoteRequest.getAmount(), accessToken.getChannelId(), sofDetail.getSourceOfFundType());
