@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -29,6 +30,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundReposit
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.util.FeeUtil;
 
+@Service
 public class TopUpServiceImpl implements TopUpService {
 
 	@Autowired
@@ -64,9 +66,9 @@ public class TopUpServiceImpl implements TopUpService {
 		BigDecimal minAmount = sofDetail.getMinAmount();
 		BigDecimal maxAmount = sofDetail.getMaxAmount();
 		if (amount.compareTo(minAmount) < 0)
-			throw new ServiceInventoryException("60001", "amount less than min amount.");
+			throw new ServiceInventoryException("20001", "amount less than min amount.");
 		if (amount.compareTo(maxAmount) > 0)
-			throw new ServiceInventoryException("60002", "amount most than max amount.");
+			throw new ServiceInventoryException("20002", "amount most than max amount.");
 		
 		// --- Connect to Ewallet Client to verify amount on this ewallet-account ---//
 		try {
@@ -158,4 +160,23 @@ public class TopUpServiceImpl implements TopUpService {
 		return null;
 	}
 
+	public void setEWalletProxy(EwalletSoapProxy ewalletProxy) {
+		this.ewalletProxy = ewalletProxy;
+	}
+	
+	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepository) {
+		this.accessTokenRepo = accessTokenRepository;
+	}
+	
+	public void setSourceOfFundRepository(SourceOfFundRepository sofRepo) {
+		this.sofRepo = sofRepo;
+	}
+	
+	public void setDirectDebitConfig(DirectDebitConfig directDebitConfig) {
+		this.directDebitConfig = directDebitConfig;
+	}
+	
+	public void setOrderRepository(OrderRepository orderRepository) {
+		this.orderRepo = orderRepository;
+	}
 }
