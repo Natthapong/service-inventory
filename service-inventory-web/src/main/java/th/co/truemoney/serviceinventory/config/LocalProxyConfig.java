@@ -143,11 +143,13 @@ public class LocalProxyConfig {
 			}
 
 			@Override
-			public StandardMoneyResponse addMoney(AddMoneyRequest addMoneyRequest)
-					throws EwalletException {
+			public StandardMoneyResponse addMoney(
+					AddMoneyRequest addMoneyRequest) throws EwalletException {
 				// TODO Auto-generated method stub
+				//Thread.sleep(1000);
 				return null;
 			}
+
 		};
 	}
 
@@ -184,5 +186,5 @@ public class LocalProxyConfig {
 						
 		};
 	}
-
+	
 }
