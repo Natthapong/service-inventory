@@ -18,12 +18,12 @@ public class AccessTokenMemoryRepository implements AccessTokenRepository {
 
 	@Override
 	public void save(AccessToken token) {
-		map.put(token.getAccessTokenId(), token);
+		map.put(token.getAccessTokenID(), token);
 	}
 	
 	@Override
-	public AccessToken getAccessToken(String accessTokenId) {
-		return map.get(accessTokenId);
+	public AccessToken getAccessToken(String accessTokenID) {
+		return map.get(accessTokenID);
 	}
 
 	public void dump() {

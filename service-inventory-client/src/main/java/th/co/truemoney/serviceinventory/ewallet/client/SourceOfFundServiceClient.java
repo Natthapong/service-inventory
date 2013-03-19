@@ -30,12 +30,12 @@ public class SourceOfFundServiceClient implements SourceOfFundService {
 
 	@Override
 	public List<DirectDebit> getUserDirectDebitSources(String username,
-			String accessToken) throws ServiceInventoryException {
+			String accessTokenID) throws ServiceInventoryException {
 		HttpEntity<DirectDebit[]> requestEntity = new HttpEntity<DirectDebit[]>(headers);
 
 		ResponseEntity<DirectDebit[]> responseEntity = restTemplate.exchange(
 				environmentConfig.getUserDirectDebitSourceOfFundsUrl(),
-					HttpMethod.GET, requestEntity, DirectDebit[].class, username, accessToken);
+					HttpMethod.GET, requestEntity, DirectDebit[].class, username, accessTokenID);
 
 		DirectDebit[] directDebits = responseEntity.getBody();
 

@@ -59,7 +59,7 @@ public class SourceOfFundControllerSuccessTest {
 		when(sourceOfFundServiceMock.getUserDirectDebitSources(anyString(), anyString()))
 			.thenReturn(new ArrayList<DirectDebit>());
 
-		this.mockMvc.perform(get("/user/{username}/source-of-fund/direct-debits?channelId=41&accessToken=e6701de94fdda4347a3d31ec5c892ccadc88b847", "user1.test.v1@gmail.com")
+		this.mockMvc.perform(get("/user/{username}/source-of-fund/direct-debits?channelID=41&accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "user1.test.v1@gmail.com")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(print());

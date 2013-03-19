@@ -29,7 +29,7 @@ public class TestServiceInventoryConfig {
 		return Mockito.mock(SourceOfFundService.class);
 	}
 	
-	@Bean
+	@Bean @Scope("singleton")
 	public TopUpService mockTopUpService() {
 		return Mockito.mock(TopUpService.class);
 	}
