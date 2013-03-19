@@ -11,10 +11,17 @@ public abstract class BaseException extends RuntimeException {
 	public static final String NAMESPACE = "TMN-SERVICE-INVENTORY";
 	
 	public static class Code  {		
-		public static final String SUCCESS = "0";			
+		//general error code
+		public static final String GENERAL_ERROR = "9999";
+		public static final String SEND_OTP_FAIL = "1000";
+		public static final String OTP_NOT_MATCH = "1001";
+				
 		//profile
 		public static final String INVALID_PROFILE_TYPE = "10000";
-		public static final String ACCESS_TOKEN_NOT_FOUND = "10001";	
+		public static final String ACCESS_TOKEN_NOT_FOUND = "10001";
+		
+		//list source of fund direct debit
+		
 	}
 	
 	private String code;

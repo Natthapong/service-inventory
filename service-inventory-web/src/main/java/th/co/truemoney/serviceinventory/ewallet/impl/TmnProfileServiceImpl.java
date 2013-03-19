@@ -47,9 +47,16 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			SignonRequest signonRequest = createSignOnRequest(channelID, login);
 			SignonResponse signonResponse = this.tmnSecurityProxy.signon(signonRequest);
 
+			SecurityContext securityContext = new SecurityContext(signonResponse.getSessionId(), signonResponse.getTmnId());
+			StandardBizRequest standardBizRequest = new StandardBizRequest();
+			standardBizRequest.setChannelId(channelID);
+			standardBizRequest.setSecurityContext(securityContext);
+			GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
+			
 			AccessToken accessToken = AccessToken.generateNewToken(signonResponse.getSessionId(),
 					signonResponse.getTmnId(),
 					login.getUsername(),
+					profileResponse.getMobile(),
 					channelID);
 
 			// add session id and mapping access token into redis

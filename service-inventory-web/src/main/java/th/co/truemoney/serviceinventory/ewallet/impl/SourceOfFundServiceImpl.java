@@ -38,11 +38,11 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 			}
 			logger.debug("retrieve access Token: "+accessToken.toString());
 
-			String truemoneyId = accessToken.getTruemoneyID();
-			Integer channelId = accessToken.getChannelID();
-			String sessionId = accessToken.getSessionID();
+			String truemoneyID = accessToken.getTruemoneyID();
+			Integer channelID = accessToken.getChannelID();
+			String sessionID = accessToken.getSessionID();
 
-			List<DirectDebit> userDirectDebitSources = sofRepo.getUserDirectDebitSources(truemoneyId, channelId, sessionId);
+			List<DirectDebit> userDirectDebitSources = sofRepo.getUserDirectDebitSources(truemoneyID, channelID, sessionID);
 			
 			return userDirectDebitSources;
 			

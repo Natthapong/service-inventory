@@ -39,7 +39,7 @@ public class SourceOfFundRepository {
 	public List<DirectDebit> getUserDirectDebitSources(String truemoneyID, Integer channelID, String sessionID)
 			throws ServiceInventoryException {
 		try {
-			List<DirectDebit> directDebitList = null;
+			List<DirectDebit> directDebitList = new ArrayList<DirectDebit>();
 			ListSourceRequest listSourceRequest = createListSourceRequest(channelID, truemoneyID, sessionID);
 			ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(listSourceRequest);
 			SourceContext[] sourceContexts = listSourceResponse.getSourceList();
@@ -64,7 +64,7 @@ public class SourceOfFundRepository {
 					}
 					directDebitList.add(directDebit);
 				}
-			}
+			} 
 			return directDebitList;
 		} catch (EwalletException e) {
 			throw new ServiceInventoryException(e.getCode(),
