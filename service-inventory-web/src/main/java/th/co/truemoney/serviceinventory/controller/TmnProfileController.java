@@ -27,7 +27,7 @@ public class TmnProfileController extends BaseController {
 	public @ResponseBody String login(@RequestParam(value = "channelID", defaultValue="-1") Integer channelID, @RequestBody Login login)
 			throws SignonServiceException {
 		if (channelID == -1) {
-			throw new ValidateException("-1", "Validate error: channelId is null or empty.");
+			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
 		}
 		return tmnProfileService.login(channelID, login);
 	}

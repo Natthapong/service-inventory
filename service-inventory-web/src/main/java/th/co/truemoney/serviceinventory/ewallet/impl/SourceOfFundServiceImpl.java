@@ -34,7 +34,7 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 			if (accessToken == null) {
-				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessToken is expired or not found.");
+				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
 			}
 			logger.debug("retrieve access Token: "+accessToken.toString());
 
