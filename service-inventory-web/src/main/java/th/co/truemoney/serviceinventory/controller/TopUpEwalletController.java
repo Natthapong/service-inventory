@@ -29,12 +29,11 @@ public class TopUpEwalletController extends BaseController {
 			@RequestParam(value = "accessTokenId", defaultValue = "") String accessTokenId,
 			@RequestBody QuoteRequest quoteRequest)
 			throws ServiceInventoryException {
-
 		if ("".equals(accessTokenId)) {
 			throw new ValidateException("-1",
 					"Validate error: accessTokenID is null or empty.");
 		}
-
 		return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quoteRequest, accessTokenId);
 	}
+	
 }
