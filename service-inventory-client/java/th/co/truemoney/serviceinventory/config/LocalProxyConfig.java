@@ -35,7 +35,6 @@ import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.firsthop.proxy.impl.SmsProxyImpl;
 
 
-
 @Configuration
 @Profile("local")
 public class LocalProxyConfig {
@@ -66,12 +65,9 @@ public class LocalProxyConfig {
 			public ListSourceResponse listSource(
 					ListSourceRequest listSourceRequest)
 					throws EwalletException {
-				
-				SourceContext[] sourceContext = new SourceContext[3];
-				sourceContext[0] = new SourceContext("1","type",new String[] {"SCB","xxxx1234"});
-				sourceContext[1] = new SourceContext("2","type",new String[] {"KTB","xxxx5678"});
-				sourceContext[2] = new SourceContext("3","type",new String[] {"BBL","xxxx9101"});
-				
+
+				SourceContext[] sourceContext = new SourceContext[1];
+				sourceContext[0] = new SourceContext("3","type",new String[] {"SCB","TMB","BBL"});
 				return new ListSourceResponse("1", "2", "namespace", new String[] {"key"}, new String[] {"value"}, sourceContext);
 			}
 		};
@@ -122,6 +118,7 @@ public class LocalProxyConfig {
 			}
 		};
 	}
+
 
 	@Bean @Primary
 	public EwalletSoapProxy stubEWalletSoapProxy() {
@@ -181,7 +178,8 @@ public class LocalProxyConfig {
 				
 				return new SmsProxyImpl().readXMLResponse(xmlResponse.toString());
 			}
-						
+			
+			
 		};
 	}
 
