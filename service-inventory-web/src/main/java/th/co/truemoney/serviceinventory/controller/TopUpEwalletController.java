@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ValidateException;
-import th.co.truemoney.serviceinventory.util.AccessTokenUtil;
 
 @Controller
 @RequestMapping(value = "/directdebit")
@@ -45,6 +43,6 @@ public class TopUpEwalletController extends BaseController {
 					"Validate error: invalid checksum.");
 		*/
 		
-		return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quoteRequest, accessTokenId);
+		return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quoteRequest, accessTokenID);
 	}
 }
