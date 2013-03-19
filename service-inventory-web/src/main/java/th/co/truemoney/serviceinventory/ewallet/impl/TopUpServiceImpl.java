@@ -37,8 +37,9 @@ import th.co.truemoney.serviceinventory.util.FeeUtil;
 @Service
 public class TopUpServiceImpl implements TopUpService {
 
-    private static final Logger logger = LoggerFactory.getLogger(TopUpServiceImpl.class);
-    	
+	private static final Logger logger = LoggerFactory
+			.getLogger(TopUpServiceImpl.class);
+
 	@Autowired
 	@Qualifier("accessTokenMemoryRepository")
 	private AccessTokenRepository accessTokenRepo;
@@ -57,40 +58,49 @@ public class TopUpServiceImpl implements TopUpService {
 	private OrderRepository orderRepo;
 
 	@Autowired
-	private OTPService otpService;
-
-	@Autowired	
 	private AsyncService asyncService;
 
+	@Autowired
+	private OTPService otpService;
 
 	@Override
-	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID, QuoteRequest quoteRequest, String accessTokenID) {
-		
+	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID,
+			QuoteRequest quoteRequest, String accessTokenID) {
+
 		// --- Get Account Detail from accessToken ---//
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-		
+
 		if (accessToken == null)
-			throw new ServiceInventoryException("90001", "AccessToken not found.");
+			throw new ServiceInventoryException("90001",
+					"AccessToken not found.");
 
 		// --- get SOF List ---//
 		DirectDebit sofDetail = getSourceOfFund(sourceOfFundID, accessToken);
-		
+
 		BigDecimal amount = quoteRequest.getAmount();
 		BigDecimal minAmount = sofDetail.getMinAmount();
 		BigDecimal maxAmount = sofDetail.getMaxAmount();
 		if (amount.compareTo(minAmount) < 0)
-			throw new ServiceInventoryException("20001", "amount less than min amount.");
+			throw new ServiceInventoryException("20001",
+					"amount less than min amount.");
 		if (amount.compareTo(maxAmount) > 0)
-			throw new ServiceInventoryException("20002", "amount most than max amount.");
-		
-		// --- Connect to Ewallet Client to verify amount on this ewallet-account ---//
+			throw new ServiceInventoryException("20002",
+					"amount most than max amount.");
+
+		// --- Connect to Ewallet Client to verify amount on this
+		// ewallet-account ---//
 		try {
-			StandardMoneyResponse verifyResponse = verifyTopupEwallet(quoteRequest.getAmount(), accessToken.getChannelID(), sofDetail.getSourceOfFundType());
-			
+			StandardMoneyResponse verifyResponse = verifyTopupEwallet(
+					quoteRequest.getAmount(), accessToken.getChannelID(),
+					sofDetail.getSourceOfFundType());
+
 		} catch (EwalletException e) {
-			throw new ServiceInventoryException(e.getCode(), "verify add money fail.", e.getNamespace());
+			throw new ServiceInventoryException(e.getCode(),
+					"verify add money fail.", e.getNamespace());
 		} catch (ServiceUnavailableException e) {
-			throw new ServiceInventoryException( Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE), e.getMessage(), e.getNamespace());
+			throw new ServiceInventoryException(
+					Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+					e.getMessage(), e.getNamespace());
 		}
 
 		// --- calculate total FEE ---//
@@ -98,11 +108,9 @@ public class TopUpServiceImpl implements TopUpService {
 				.getBankDetail(sofDetail.getBankCode());
 
 		FeeUtil feeUtil = new FeeUtil();
-		BigDecimal totalFee = feeUtil.calculateFee(
-				quoteRequest.getAmount(), bankConfig.getFeeValue(),
-				bankConfig.getFeeType(), bankConfig.getMinTotalFee(),
-				bankConfig.getMaxTotalFee());
-
+		BigDecimal totalFee = feeUtil.calculateFee(quoteRequest.getAmount(),
+				bankConfig.getFeeValue(), bankConfig.getFeeType(),
+				bankConfig.getMinTotalFee(), bankConfig.getMaxTotalFee());
 
 		// --- Generate Order ID ---//
 		TopUpQuote topupQuote = new TopUpQuote();
@@ -112,28 +120,31 @@ public class TopUpServiceImpl implements TopUpService {
 		topupQuote.setUsername(accessToken.getUsername());
 		topupQuote.setAmount(amount);
 		topupQuote.setTopUpFee(totalFee);
-		topupQuote.setSourceOfFund(sofDetail);		
+		topupQuote.setSourceOfFund(sofDetail);
 
 		orderRepo.saveTopUpQuote(topupQuote);
 
 		return topupQuote;
 	}
 
-	private StandardMoneyResponse verifyTopupEwallet(BigDecimal amount, Integer channelID, String sofType) {
+	private StandardMoneyResponse verifyTopupEwallet(BigDecimal amount,
+			Integer channelID, String sofType) {
 		VerifyAddMoneyRequest request = new VerifyAddMoneyRequest();
 		request.setAmount(amount);
 		request.setChannelId(channelID);
 		request.setSourceType(sofType);
-		
+
 		return ewalletProxy.verifyAddMoney(request);
 	}
 
-	private DirectDebit getSourceOfFund(String sourceOfFundID, AccessToken accessToken) {
+	private DirectDebit getSourceOfFund(String sourceOfFundID,
+			AccessToken accessToken) {
 		String truemoneyID = accessToken.getTruemoneyID();
 		Integer channelID = accessToken.getChannelID();
 		String sessionID = accessToken.getSessionID();
-		
-		DirectDebit sofDetail = sofRepo.getUserDirectDebitSourceByID(sourceOfFundID, truemoneyID, channelID, sessionID);
+
+		DirectDebit sofDetail = sofRepo.getUserDirectDebitSourceByID(
+				sourceOfFundID, truemoneyID, channelID, sessionID);
 		return sofDetail;
 	}
 
@@ -147,44 +158,51 @@ public class TopUpServiceImpl implements TopUpService {
 	@Override
 	public TopUpOrder requestPlaceOrder(String quoteID, String accessTokenID)
 			throws ServiceInventoryException {
-		
+
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-		
+
 		if (accessToken == null) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
+			throw new ServiceInventoryException(
+					ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
+					"AccessTokenID is expired or not found.");
 		}
-		
-		logger.debug("retrieve access Token: "+accessToken.toString());
-		
+
+		logger.debug("retrieve access Token: " + accessToken.toString());
+
 		String otpReferenceCode = otpService.send(accessToken.getMobileno());
-		logger.debug("otpReferenceCode : "+otpReferenceCode);	
-		
-		TopUpOrder topUpOrder = createTopupOrderFromQuote(quoteID, otpReferenceCode);
-		
-		return topUpOrder;			
+		logger.debug("otpReferenceCode : " + otpReferenceCode);
+
+		TopUpOrder topUpOrder = createTopupOrderFromQuote(quoteID,
+				otpReferenceCode);
+
+		return topUpOrder;
 	}
 
-	private TopUpOrder createTopupOrderFromQuote(String quoteID, String otpReferenceCode) {
+	private TopUpOrder createTopupOrderFromQuote(String quoteID,
+			String otpReferenceCode) {
 		TopUpOrder topUpOrder = new TopUpOrder(orderRepo.getTopUpQuote(quoteID));
 		topUpOrder.setStatus(TopUpStatus.AWAITING_CONFIRM);
 		topUpOrder.setOtpReferenceCode(otpReferenceCode);
 		orderRepo.saveTopUpOrder(topUpOrder);
-		return topUpOrder;		
+		return topUpOrder;
 	}
 
 	@Override
-	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp, String accessToken) {
-		logger.debug("processing "+topUpOrderId);
-		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(topUpOrderId);		
-		
-		String localChecksum = EncryptUtil.buildHmacSignature(accessToken, topUpOrder.toString()+accessToken);
-		if(otp.getChecksum().equals(localChecksum)) {
-			AccessToken accessTokenObj = accessTokenRepo.getAccessToken(accessToken);
+	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp,
+			String accessToken) {
+		logger.debug("processing " + topUpOrderId);
+		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(topUpOrderId);
+
+		String localChecksum = EncryptUtil.buildHmacSignature(accessToken,
+				topUpOrder.toString() + accessToken);
+		if (otp.getChecksum().equals(localChecksum)) {
+			AccessToken accessTokenObj = accessTokenRepo
+					.getAccessToken(accessToken);
 			topUpOrder.setStatus(TopUpStatus.PROCESSING);
 			orderRepo.saveTopUpOrder(topUpOrder);
-			asyncService.topUpUtibaEwallet(topUpOrder, accessTokenObj);			
+			asyncService.topUpUtibaEwallet(topUpOrder, accessTokenObj);
 		}
-				
+
 		return topUpOrder;
 	}
 
@@ -200,8 +218,8 @@ public class TopUpServiceImpl implements TopUpService {
 			String accessTokenID) throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
-	}	
-	
+	}
+
 	public EwalletSoapProxy getEwalletProxy() {
 		return ewalletProxy;
 	}
@@ -245,20 +263,22 @@ public class TopUpServiceImpl implements TopUpService {
 	public void setEWalletProxy(EwalletSoapProxy ewalletProxy) {
 		this.ewalletProxy = ewalletProxy;
 	}
-	
-	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepository) {
-		this.accessTokenRepo = accessTokenRepository;
+
+	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepo) {
+		this.accessTokenRepo = accessTokenRepo;
 	}
-	
-	public void setSourceOfFundRepository(SourceOfFundRepository sofRepo) {
-		this.sofRepo = sofRepo;
-	}
-	
+
 	public void setDirectDebitConfig(DirectDebitConfig directDebitConfig) {
 		this.directDebitConfig = directDebitConfig;
 	}
-	
-	public void setOrderRepository(OrderRepository orderRepository) {
-		this.orderRepo = orderRepository;
+
+	public void setSourceOfFundRepository(
+			SourceOfFundRepository sourceOfFundRepo) {
+		this.sofRepo = sourceOfFundRepo;
 	}
+
+	public void setOrderRepository(OrderRepository orderRepo) {
+		this.orderRepo = orderRepo;
+	}
+
 }
