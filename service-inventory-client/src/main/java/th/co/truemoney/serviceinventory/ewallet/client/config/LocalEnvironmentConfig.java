@@ -23,4 +23,9 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 		return "http://localhost:8585/service-inventory-web/v1/ewallet/getprofile/{accesstokenID}/{checksum}";
 	}
 
+	@Override
+	public String getCreateTopUpQuoteFromDirectDebitUrl() {
+		return "http://localhost:8585/service-inventory-web/v1/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
+	}
+
 }

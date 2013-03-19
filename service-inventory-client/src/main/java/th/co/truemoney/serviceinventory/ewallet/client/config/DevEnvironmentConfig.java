@@ -21,5 +21,10 @@ public class DevEnvironmentConfig implements EnvironmentConfig {
 	public String getUserProfileUrl() {
 		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet/getprofile/{accesstokenID}/{checksum}";
 	}
+
+	@Override
+	public String getCreateTopUpQuoteFromDirectDebitUrl() {
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
+	}
 	
 }
