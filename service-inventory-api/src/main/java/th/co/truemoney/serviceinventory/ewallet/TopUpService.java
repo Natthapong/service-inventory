@@ -9,16 +9,16 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface TopUpService {
 
-	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundId, QuoteRequest quoteRequest , String accessToken) throws ServiceInventoryException;
+	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID, QuoteRequest quoteRequest , String accessTokenID) throws ServiceInventoryException;
 
-	public TopUpQuote getTopUpQuoteDetails(String quoteId, String accessToken) throws ServiceInventoryException;
+	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID) throws ServiceInventoryException;
 
-	public TopUpOrder requestPlaceOrder(String quoteId, String accessToken) throws ServiceInventoryException;
+	public TopUpOrder requestPlaceOrder(String quoteID, String accessTokenID) throws ServiceInventoryException;
 
-	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp, String accessToken) throws ServiceInventoryException;
+	public TopUpOrder confirmPlaceOrder(String topUpOrderID, OTP otp, String accessTokenID) throws ServiceInventoryException;
 
-	public TopUpStatus getTopUpOrderStatus(String topUpOrderId, String accessToken) throws ServiceInventoryException;
+	public TopUpStatus getTopUpOrderStatus(String topUpOrderID, String accessTokenID) throws ServiceInventoryException;
 
-	public TopUpOrder getTopUpOrderDetails(String topUpOrderId, String accessToken) throws ServiceInventoryException;
+	public TopUpOrder getTopUpOrderDetails(String topUpOrderID, String accessTokenID) throws ServiceInventoryException;
 
 }

@@ -7,9 +7,9 @@ public class TopUpOrder implements Serializable {
 
 	private static final long serialVersionUID = 2325219087645032462L;
 
-	private String id;
+	private String ID;
 	private SourceOfFund sourceOfFund;
-	private String accessToken;
+	private String accessTokenID;
 	private String username;
 	private BigDecimal amount;
 	private BigDecimal topUpFee;
@@ -18,12 +18,13 @@ public class TopUpOrder implements Serializable {
 	private TopUpConfirmationInfo confirmationInfo;
 
 	public TopUpOrder() {
+		super();
 	}
 
 	public TopUpOrder(TopUpQuote quote) {
-		this.id = quote.getId();
+		this.ID = quote.getID();
 		this.sourceOfFund = quote.getSourceOfFund();
-		this.accessToken = quote.getAccessToken();
+		this.accessTokenID = quote.getAccessTokenID();
 		this.username = quote.getUsername();
 		this.amount = quote.getAmount();
 		this.topUpFee = quote.getTopUpFee();
@@ -31,12 +32,12 @@ public class TopUpOrder implements Serializable {
 		this.status = TopUpStatus.ORDER_PLACED;
 	}
 
-	public String getId() {
-		return id;
+	public String getID() {
+		return ID;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setID(String ID) {
+		this.ID = ID;
 	}
 
 	public SourceOfFund getSourceOfFund() {
@@ -47,12 +48,12 @@ public class TopUpOrder implements Serializable {
 		this.sourceOfFund = sourceOfFund;
 	}
 
-	public String getAccessToken() {
-		return accessToken;
+	public String getAccessTokenID() {
+		return accessTokenID;
 	}
 
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
+	public void setAccessTokenID(String accessTokenID) {
+		this.accessTokenID = accessTokenID;
 	}
 
 	public String getUsername() {

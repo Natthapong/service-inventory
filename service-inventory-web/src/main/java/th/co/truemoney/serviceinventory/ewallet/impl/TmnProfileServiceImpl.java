@@ -40,24 +40,24 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	private TmnProfileProxy tmnProfileProxy;
 
 	@Override
-	public String login(Integer channelId, Login login)
+	public String login(Integer channelID, Login login)
 				throws SignonServiceException {
 		try {
 			// Create Request ID
-			SignonRequest signonRequest = createSignOnRequest(channelId, login);
+			SignonRequest signonRequest = createSignOnRequest(channelID, login);
 			SignonResponse signonResponse = this.tmnSecurityProxy.signon(signonRequest);
 
 			AccessToken accessToken = AccessToken.generateNewToken(signonResponse.getSessionId(),
 					signonResponse.getTmnId(),
 					login.getUsername(),
-					channelId);
+					channelID);
 
 			// add session id and mapping access token into redis
 			logger.info("Access token created: " + accessToken);
 
 			accessTokenRepo.save(accessToken);
 
-			return accessToken.getAccessTokenId();
+			return accessToken.getAccessTokenID();
 
 		} catch (EwalletException e) {
 			throw new SignonServiceException(e.getCode(),
@@ -69,15 +69,15 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile getTruemoneyProfile(String accessTokenId, String checksum)
+	public TmnProfile getTruemoneyProfile(String accessTokenID, String checksum)
 			throws ServiceInventoryException {
 		try {
-			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenId);
+			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 			logger.debug("retrieve access Token: "+accessToken.toString());
 
-			Integer channelId = accessToken.getChannelId();
+			Integer channelId = accessToken.getChannelID();
 
-			SecurityContext securityContext = new SecurityContext(accessToken.getSessionId(), accessToken.getTruemoneyId());
+			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
 			StandardBizRequest standardBizRequest = new StandardBizRequest();
 			standardBizRequest.setChannelId(channelId);
 			standardBizRequest.setSecurityContext(securityContext);
@@ -114,11 +114,11 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		this.accessTokenRepo = accessTokenMemoryRepository;
 	}
 
-	private SignonRequest createSignOnRequest(Integer channelId, Login login) {
+	private SignonRequest createSignOnRequest(Integer channelID, Login login) {
 		SignonRequest signonRequest = new SignonRequest();
 		signonRequest.setInitiator(login.getUsername());
 		signonRequest.setPin(login.getHashPassword());
-		signonRequest.setChannelId(channelId);
+		signonRequest.setChannelId(channelID);
 
 		return signonRequest;
 	}

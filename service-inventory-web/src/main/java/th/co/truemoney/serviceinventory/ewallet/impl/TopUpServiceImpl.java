@@ -49,7 +49,7 @@ public class TopUpServiceImpl implements TopUpService {
 	private OrderRepository orderRepo;
 
 	@Override
-	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundId, QuoteRequest quoteRequest, String accessTokenID) {
+	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID, QuoteRequest quoteRequest, String accessTokenID) {
 		
 		// --- Get Account Detail from accessToken ---//
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
@@ -58,7 +58,7 @@ public class TopUpServiceImpl implements TopUpService {
 			throw new ServiceInventoryException("90001", "AccessToken not found.");
 
 		// --- get SOF List ---//
-		DirectDebit sofDetail = getSourceOfFund(sourceOfFundId, accessToken);
+		DirectDebit sofDetail = getSourceOfFund(sourceOfFundID, accessToken);
 		
 		BigDecimal amount = quoteRequest.getAmount();
 		BigDecimal minAmount = sofDetail.getMinAmount();
@@ -70,7 +70,7 @@ public class TopUpServiceImpl implements TopUpService {
 		
 		// --- Connect to Ewallet Client to verify amount on this ewallet-account ---//
 		try {
-			StandardMoneyResponse verifyResponse = verifyTopupEwallet(quoteRequest.getAmount(), accessToken.getChannelId(), sofDetail.getSourceOfFundType());
+			StandardMoneyResponse verifyResponse = verifyTopupEwallet(quoteRequest.getAmount(), accessToken.getChannelID(), sofDetail.getSourceOfFundType());
 			
 		} catch (EwalletException e) {
 			throw new ServiceInventoryException(e.getCode(), "verify add money fail.", e.getNamespace());
@@ -92,8 +92,8 @@ public class TopUpServiceImpl implements TopUpService {
 		// --- Generate Order ID ---//
 		TopUpQuote topupQuote = new TopUpQuote();
 		String orderID = UUID.randomUUID().toString();
-		topupQuote.setId(orderID);
-		topupQuote.setAccessToken(accessTokenID);
+		topupQuote.setID(orderID);
+		topupQuote.setAccessTokenID(accessTokenID);
 		topupQuote.setUsername(accessToken.getUsername());
 		topupQuote.setAmount(amount);
 		topupQuote.setTopUpFee(totalFee);
@@ -105,52 +105,55 @@ public class TopUpServiceImpl implements TopUpService {
 		return topupQuote;
 	}
 
-	private StandardMoneyResponse verifyTopupEwallet(BigDecimal amount, Integer channelId, String sofType) {
+	private StandardMoneyResponse verifyTopupEwallet(BigDecimal amount, Integer channelID, String sofType) {
 		VerifyAddMoneyRequest request = new VerifyAddMoneyRequest();
 		request.setAmount(amount);
-		request.setChannelId(channelId);
+		request.setChannelId(channelID);
 		request.setSourceType(sofType);
 		
 		return ewalletProxy.verifyAddMoney(request);
 	}
 
-	private DirectDebit getSourceOfFund(String sourceOfFundId, AccessToken accessToken) {
-		String truemoneyId = accessToken.getTruemoneyId();
-		Integer channelId = accessToken.getChannelId();
-		String sessionId = accessToken.getSessionId();
+	private DirectDebit getSourceOfFund(String sourceOfFundID, AccessToken accessToken) {
+		String truemoneyID = accessToken.getTruemoneyID();
+		Integer channelID = accessToken.getChannelID();
+		String sessionID = accessToken.getSessionID();
 		
-		DirectDebit sofDetail = sofRepo.getUserDirectDebitSourceById(sourceOfFundId, truemoneyId, channelId, sessionId);
+		DirectDebit sofDetail = sofRepo.getUserDirectDebitSourceByID(sourceOfFundID, truemoneyID, channelID, sessionID);
 		return sofDetail;
 	}
 
 	@Override
-	public TopUpQuote getTopUpQuoteDetails(String quoteId, String accessToken) {
+	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID)
+			throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TopUpOrder requestPlaceOrder(String quoteId, String accessToken) {
+	public TopUpOrder requestPlaceOrder(String quoteID, String accessTokenID)
+			throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp, String accessToken) {
+	public TopUpOrder confirmPlaceOrder(String topUpOrderID, OTP otp,
+			String accessTokenID) throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TopUpStatus getTopUpOrderStatus(String topUpOrderId,
-			String accessToken) {
+	public TopUpStatus getTopUpOrderStatus(String topUpOrderID,
+			String accessTokenID) throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TopUpOrder getTopUpOrderDetails(String topUpOrderId,
-			String accessToken) {
+	public TopUpOrder getTopUpOrderDetails(String topUpOrderID,
+			String accessTokenID) throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}

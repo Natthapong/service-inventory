@@ -113,7 +113,6 @@ public class LocalProxyConfig {
 			public StandardMoneyResponse verifyAddMoney(
 					VerifyAddMoneyRequest verifyAddMoneyRequest)
 					throws EwalletException {
-				// TODO Auto-generated method stub
 				return new StandardMoneyResponse("1234", "0", "namespce", new String[] {"key"}, new String[] {"value"}, "stub@local.com", new BigDecimal(100.00));
 			}
 			

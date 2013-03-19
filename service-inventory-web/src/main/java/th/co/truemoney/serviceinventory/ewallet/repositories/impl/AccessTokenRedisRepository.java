@@ -19,7 +19,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 	public void save(AccessToken token) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			redisLoggingDao.addData(token.getAccessTokenId(), mapper.writeValueAsString(token), 10L);
+			redisLoggingDao.addData(token.getAccessTokenID(), mapper.writeValueAsString(token), 10L);
 		} catch (Exception e) {
 			logger.error(e);
 		}

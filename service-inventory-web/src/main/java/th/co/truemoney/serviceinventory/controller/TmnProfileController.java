@@ -24,23 +24,23 @@ public class TmnProfileController extends BaseController {
 	private TmnProfileService tmnProfileService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public @ResponseBody String login(@RequestParam(value = "channelId", defaultValue="-1") Integer channelId, @RequestBody Login login)
+	public @ResponseBody String login(@RequestParam(value = "channelID", defaultValue="-1") Integer channelID, @RequestBody Login login)
 			throws SignonServiceException {
-		if (channelId == -1) {
+		if (channelID == -1) {
 			throw new ValidateException("-1", "Validate error: channelId is null or empty.");
 		}
-		return tmnProfileService.login(channelId, login);
+		return tmnProfileService.login(channelID, login);
 	}
 
-	@RequestMapping(value = "/getprofile/{accesstoken}/{checksum}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getprofile/{accessTokenID}/{checksum}", method = RequestMethod.GET)
 	public @ResponseBody TmnProfile getTruemoneyProfile(
-		@PathVariable String accesstoken,
+		@PathVariable String accessTokenID,
 		@PathVariable String checksum)
 			throws SignonServiceException {
-		if (!AccessTokenUtil.isValidCheckSum(checksum, accesstoken, accesstoken)) {
+		if (!AccessTokenUtil.isValidCheckSum(checksum, accessTokenID, accessTokenID)) {
 			throw new ValidateException("-1", "Invalid checksum value");
 		}
-		return tmnProfileService.getTruemoneyProfile(accesstoken, checksum);
+		return tmnProfileService.getTruemoneyProfile(accessTokenID, checksum);
 	}
 
 
