@@ -72,8 +72,7 @@ public class TopupServiceClientTest {
 			
 			assertNotNull(topUpQuote);
 		}catch(ServiceInventoryException e){
-			assertEquals("500", e.getErrorCode());
-			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
+			assertEquals("404", e.getErrorCode());
 			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
 		}
 	}
