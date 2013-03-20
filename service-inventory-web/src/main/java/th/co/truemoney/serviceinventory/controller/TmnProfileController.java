@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.controller;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,5 +45,15 @@ public class TmnProfileController extends BaseController {
 		return tmnProfileService.getTruemoneyProfile(accessTokenID, checksum);
 	}
 
+	@RequestMapping(value = "/getbalance/{accessTokenID}/{checksum}", method = RequestMethod.GET)
+	public @ResponseBody BigDecimal getBalance(
+		@PathVariable String accessTokenID,
+		@PathVariable String checksum)
+			throws SignonServiceException {
+		if (!AccessTokenUtil.isValidCheckSum(checksum, accessTokenID, accessTokenID)) {
+			throw new ValidateException("-1", "Invalid checksum value");
+		}
+		return tmnProfileService.getEwalletBalance(accessTokenID, checksum);
+	}
 
 }

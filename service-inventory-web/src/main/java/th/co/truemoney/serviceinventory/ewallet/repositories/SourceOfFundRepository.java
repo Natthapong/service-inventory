@@ -11,11 +11,11 @@ import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.ListSourceRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.ListSourceResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.SourceContext;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class SourceOfFundRepository {

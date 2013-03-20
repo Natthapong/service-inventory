@@ -15,13 +15,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.impl.TmnProfileProxyImpl;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.impl.TmnSecurityProxyImpl;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.stub.TmnProfileStubbed;
@@ -54,7 +54,7 @@ public class TmnProfileServiceImplTest {
 
 		when(tmnSecurityProxyMock.signon(Mockito.any(SignonRequest.class))).thenReturn(stubbedSignonResponse);	
 		
-		when(tmnProfileProxyMock.getBasicProfile(Mockito.any(th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.StandardBizRequest.class))).thenReturn(stubbedProfileResponse);	
+		when(tmnProfileProxyMock.getBasicProfile(Mockito.any(th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest.class))).thenReturn(stubbedProfileResponse);	
 		
 		//when
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");

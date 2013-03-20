@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
-import th.co.truemoney.serviceinventory.bean.OTPBean;
 import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -25,11 +24,10 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.StandardMoneyResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.VerifyAddMoneyRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
-import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -174,8 +172,7 @@ public class TopUpServiceImpl implements TopUpService {
 		String otpReferenceCode = otpService.send(accessToken.getMobileno());
 		logger.debug("otpReferenceCode : " + otpReferenceCode);
 
-		TopUpOrder topUpOrder = createTopupOrderFromQuote(quoteID,
-				otpReferenceCode);
+		TopUpOrder topUpOrder = createTopupOrderFromQuote(quoteID, otpReferenceCode);
 
 		return topUpOrder;
 	}

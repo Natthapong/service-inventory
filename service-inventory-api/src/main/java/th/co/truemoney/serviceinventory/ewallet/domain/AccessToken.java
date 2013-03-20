@@ -14,6 +14,7 @@ public class AccessToken implements Serializable {
 	private String truemoneyID;
 	private String username;
 	private String mobileno;
+	private String email;
 	private Integer channelID;
 
 	
@@ -21,12 +22,13 @@ public class AccessToken implements Serializable {
 		super();
 	}
 	
-	public AccessToken(String token, String sessionID, String truemoneyID, String username, String mobileno, Integer channelID) {
+	public AccessToken(String token, String sessionID, String truemoneyID, String username, String mobileno, String email, Integer channelID) {
 		this.accessTokenID = token;
 		this.sessionID = sessionID;
 		this.truemoneyID = truemoneyID;
 		this.username = username;
 		this.mobileno = mobileno;
+		this.email = email;
 		this.channelID = channelID;
 	}
 	
@@ -77,6 +79,14 @@ public class AccessToken implements Serializable {
 	public void setMobileno(String mobileno) {
 		this.mobileno = mobileno;
 	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	@Override
 	public String toString() {
@@ -86,13 +96,14 @@ public class AccessToken implements Serializable {
 			.append("truemoneyID: ", this.truemoneyID)
 			.append("username: ", this.username)
 			.append("mobileno: ", this.mobileno)
+			.append("email: ", this.email)
 			.append("channelID: ", this.channelID)
 			.toString();
 	}
 	
-	public static AccessToken generateNewToken(String sessionID, String truemoneyID, String username, String mobileno, Integer channelID) {
+	public static AccessToken generateNewToken(String sessionID, String truemoneyID, String username, String mobileno, String email, Integer channelID) {
 		String accessTokenID = UUID.randomUUID().toString();		
-		return new AccessToken(accessTokenID, sessionID, truemoneyID, username,  mobileno, channelID);
+		return new AccessToken(accessTokenID, sessionID, truemoneyID, username,  mobileno, email, channelID);
 	}
 	
 }

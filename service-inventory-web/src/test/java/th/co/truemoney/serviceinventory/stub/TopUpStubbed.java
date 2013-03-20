@@ -2,7 +2,7 @@ package th.co.truemoney.serviceinventory.stub;
 
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.StandardMoneyResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 
 public class TopUpStubbed {
 
