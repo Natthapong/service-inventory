@@ -8,7 +8,7 @@ public class TopUpOrder implements Serializable {
 	private static final long serialVersionUID = 2325219087645032462L;
 
 	private String ID;
-	private DirectDebit directDebit;
+	private SourceOfFund sourceOfFund;
 	private String accessTokenID;
 	private String username;
 	private BigDecimal amount;
@@ -23,7 +23,7 @@ public class TopUpOrder implements Serializable {
 
 	public TopUpOrder(TopUpQuote quote) {
 		this.ID = quote.getID();
-		this.directDebit = quote.getDirectDebit();
+		this.sourceOfFund = quote.getSourceOfFund();
 		this.accessTokenID = quote.getAccessTokenID();
 		this.username = quote.getUsername();
 		this.amount = quote.getAmount();
@@ -40,12 +40,12 @@ public class TopUpOrder implements Serializable {
 		this.ID = ID;
 	}
 
-	public DirectDebit getDirectDebit() {
-		return directDebit;
+	public SourceOfFund getSourceOfFund() {
+		return sourceOfFund;
 	}
 
-	public void setDirectDebit(DirectDebit directDebit) {
-		this.directDebit = directDebit;
+	public void setSourceOfFund(SourceOfFund sourceOfFund) {
+		this.sourceOfFund = sourceOfFund;
 	}
 
 	public String getAccessTokenID() {

@@ -127,7 +127,7 @@ public class TopUpServiceImpl implements TopUpService {
 		topupQuote.setUsername(accessToken.getUsername());
 		topupQuote.setAmount(amount);
 		topupQuote.setTopUpFee(totalFee);
-		topupQuote.setDirectDebit(sofDetail);
+		topupQuote.setSourceOfFund(sofDetail);
 
 		orderRepo.saveTopUpQuote(topupQuote);
 

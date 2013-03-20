@@ -38,8 +38,8 @@ public class AsyncService {
 		addMoneyRequest.setChannelId(accessToken.getChannelID());		
 		addMoneyRequest.setRequestTransactionId(topUpOrder.getConfirmationInfo().getTransactionID());
 		addMoneyRequest.setSecurityContext(new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID()));
-		addMoneyRequest.setSourceId(topUpOrder.getDirectDebit().getSourceOfFundID());
-		addMoneyRequest.setSourceType(topUpOrder.getDirectDebit().getSourceOfFundType());
+		addMoneyRequest.setSourceId(topUpOrder.getSourceOfFund().getSourceOfFundID());
+		addMoneyRequest.setSourceType(topUpOrder.getSourceOfFund().getSourceOfFundType());
 		
 		StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);		
 		
