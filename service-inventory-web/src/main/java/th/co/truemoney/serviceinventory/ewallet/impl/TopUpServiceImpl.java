@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
+import th.co.truemoney.serviceinventory.bean.OTPBean;
 import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -28,6 +29,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.Standa
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
+import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -188,19 +190,26 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	@Override
-	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp,
-			String accessToken) {
+	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp, String accessToken) throws ServiceInventoryException {
 		logger.debug("processing " + topUpOrderId);
 		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(topUpOrderId);
+		AccessToken accessTokenObj = accessTokenRepo.getAccessToken(accessToken);		
+		String otpString = otpService.getOTPString(accessTokenObj.getMobileno());
+		
+		if(otp.getOtpString().equals(otpString)){
+			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH,
+					"Invalide OTP.");
+		}
 
-		String localChecksum = EncryptUtil.buildHmacSignature(accessToken,
-				topUpOrder.toString() + accessToken);
+		String localChecksum = EncryptUtil.buildHmacSignature(accessToken, topUpOrder.toString() + accessToken);
 		if (otp.getChecksum().equals(localChecksum)) {
-			AccessToken accessTokenObj = accessTokenRepo
-					.getAccessToken(accessToken);
+			
 			topUpOrder.setStatus(TopUpStatus.PROCESSING);
 			orderRepo.saveTopUpOrder(topUpOrder);
 			asyncService.topUpUtibaEwallet(topUpOrder, accessTokenObj);
+		} else {
+			throw new ServiceInventoryException( ServiceInventoryException.Code.INVALID_CHECKSUM, 
+					"Invalide Checksum.");
 		}
 
 		return topUpOrder;
