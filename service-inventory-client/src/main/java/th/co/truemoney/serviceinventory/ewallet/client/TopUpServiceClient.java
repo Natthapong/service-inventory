@@ -6,8 +6,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -65,21 +63,20 @@ public class TopUpServiceClient implements TopUpService{
 		
 		return topUpOrder;
 	}
-	
-	@Override
-	public TopUpStatus getTopUpOrderStatus(String topupOrderId, String accessToken) {
-		return null;
-	}
-
 
 	@Override
-	public TopUpOrder getTopUpOrderDetails(String topUpOrderId,
+	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp,
 			String accessToken) throws ServiceInventoryException {
 		return null;
 	}
 
 	@Override
-	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp,
+	public TopUpStatus getTopUpOrderStatus(String topupOrderId, String accessToken) {
+		return null;
+	}
+	
+	@Override
+	public TopUpOrder getTopUpOrderDetails(String topUpOrderId,
 			String accessToken) throws ServiceInventoryException {
 		return null;
 	}

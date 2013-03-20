@@ -1,12 +1,23 @@
 package th.co.truemoney.serviceinventory.config;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.ClassPathResource;
 
+import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
+import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
@@ -28,6 +39,12 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyRespo
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
+import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
+import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
@@ -122,6 +139,45 @@ public class LocalProxyConfig {
 		};
 	}
 
+	@Bean @Primary
+	public SourceOfFundRepository stubSourceOfFundRepository(){
+		return new SourceOfFundRepository(){
+			public DirectDebit getUserDirectDebitSourceByID(String sourceOfFundID, String truemoneyID, Integer channelID, String sessionID) {
+				return new DirectDebit("SCB","Siam Commercial Bank","ไทยพาณิชย์","xxxx1234",new BigDecimal(30),new BigDecimal(5000));
+			}
+		};
+	}
+	
+	@Bean @Primary
+	public DirectDebitConfig stubDirectDebitConfig(){
+		return new DirectDebitConfigImpl(){
+			private HashMap<String, DirectDebitConfigBean> bankConfigList;
+			
+			public DirectDebitConfigBean getBankDetail(String bankCode) {
+				
+				try {
+					JsonFactory factory = new JsonFactory();
+					ObjectMapper m = new ObjectMapper(factory);
+
+					TypeReference<HashMap<String, DirectDebitConfigBean>> typeRef;
+					typeRef = new TypeReference<HashMap<String, DirectDebitConfigBean>>() {
+					};
+					ClassPathResource resource = new ClassPathResource("addmoney/directdebit.json");
+					bankConfigList = m.readValue(resource.getFile(), typeRef);
+
+				} catch (JsonParseException e) {
+					e.printStackTrace();
+				} catch (JsonMappingException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				return bankConfigList.get(bankCode);
+			}
+		};
+	}
+	
 	@Bean @Primary
 	public EwalletSoapProxy stubEWalletSoapProxy() {
 		return new EwalletSoapProxy() {

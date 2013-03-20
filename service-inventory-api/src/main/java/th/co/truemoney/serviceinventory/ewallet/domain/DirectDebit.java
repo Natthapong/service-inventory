@@ -19,6 +19,16 @@ public class DirectDebit extends SourceOfFund implements Serializable {
 		super();
 	}
 
+	public DirectDebit(String bankCode, String bankNameEn, String bankNameTh,
+			String bankAccountNumber, BigDecimal minAmount, BigDecimal maxAmount) {
+		this.bankCode = bankCode;
+		this.bankNameEn = bankNameEn;
+		this.bankNameTh = bankNameTh;
+		this.bankAccountNumber = bankAccountNumber;
+		this.minAmount = minAmount;
+		this.maxAmount = maxAmount;
+	}
+
 	public String getBankCode() {
 		return bankCode;
 	}
