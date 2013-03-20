@@ -12,16 +12,17 @@ public abstract class BaseException extends RuntimeException {
 	
 	public static class Code  {		
 		//general error code
-		public static final String GENERAL_ERROR = "9999";
-		public static final String SEND_OTP_FAIL = "1000";
-		public static final String OTP_NOT_MATCH = "1001";
+		public static final String GENERAL_ERROR 	= "9999";
+		public static final String SEND_OTP_FAIL 	= "1000";
+		public static final String OTP_NOT_MATCH 	= "1001";
 		public static final String INVALID_CHECKSUM = "1002";
 		public static final String OTP_NOT_FOUND = "1003";
 		public static final String TOPUP_ORDER_NOT_FOUND = "1004";
 				
 		//profile
-		public static final String INVALID_PROFILE_TYPE = "10000";
-		public static final String ACCESS_TOKEN_NOT_FOUND = "10001";
+		public static final String INVALID_PROFILE_TYPE 	= "10000";
+		public static final String ACCESS_TOKEN_NOT_FOUND 	= "10001";
+		public static final String INVALID_PROFILE_STATUS	= "10002";
 		
 		//topup eWallet
 		public static final String INVALID_AMOUNT_LESS ="20001";

@@ -61,6 +61,14 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			standardBizRequest.setSecurityContext(securityContext);
 			GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
 			
+//			if (profileResponse != null && !profileResponse.getProfileType().equals("C")) {
+//				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_TYPE, "Invalid profile type");
+//			} else if (profileResponse != null && profileResponse.getStatusId() == 0) {
+//				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_STATUS, "Invalid profile status "+profileResponse.getStatusId());
+//			} else if (profileResponse != null && profileResponse.getStatusId() == 0) {
+//				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_STATUS, "Invalid profile status "+profileResponse.getStatusId());
+//			}
+			
 			AccessToken accessToken = AccessToken.generateNewToken(signonResponse.getSessionId(),
 					signonResponse.getTmnId(),
 					login.getUsername(),
