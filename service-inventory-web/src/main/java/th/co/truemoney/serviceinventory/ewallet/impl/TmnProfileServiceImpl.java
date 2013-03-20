@@ -101,6 +101,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
 			TmnProfile tmnProfile = new TmnProfile(profileResponse.getFullName(), profileResponse.getEwalletBalance());
 			tmnProfile.setMobileno(profileResponse.getMobile());
+			tmnProfile.setEmail(profileResponse.getEmail());
 			tmnProfile.setType(profileResponse.getProfileType());
 			tmnProfile.setStatus(profileResponse.getStatusId());
 			return tmnProfile;

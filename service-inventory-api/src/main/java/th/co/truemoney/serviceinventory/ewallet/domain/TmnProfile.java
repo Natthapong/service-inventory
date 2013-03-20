@@ -8,6 +8,7 @@ public class TmnProfile implements Serializable {
 	private static final long serialVersionUID = 8341135419244797163L;
 	private String fullname;
 	private String mobileno;
+	private String email;
 	private BigDecimal balance;
 	private String type;
 	private Integer status;
@@ -50,6 +51,11 @@ public class TmnProfile implements Serializable {
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
-	}	
-	
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}		
 }

@@ -137,8 +137,7 @@ public class LocalProxyConfig {
 			public GetBalanceResponse getBalance(
 					th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest standardBizRequest)
 					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
+				return new GetBalanceResponse("1234", "0", "namespce", new String[] {"key"}, new String[] {"value"}, new BigDecimal("2000.00"), new BigDecimal("2000.00"), new BigDecimal("2000.00"));
 			}
 
 			@Override
