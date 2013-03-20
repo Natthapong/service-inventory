@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class OrderMemoryRepository implements OrderRepository {
 
@@ -28,8 +29,13 @@ public class OrderMemoryRepository implements OrderRepository {
 	}
 
 	@Override
-	public TopUpOrder getTopUpOrder(String orderID) {
-		return mapOrder.get(orderID);
+	public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
+		TopUpOrder topUpOrder = mapOrder.get(orderID);
+		if(topUpOrder == null) {
+			throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_ORDER_NOT_FOUND,
+					"TopUp order not found.");
+		}
+		return topUpOrder;
 	}
 
 	
