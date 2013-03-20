@@ -20,7 +20,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
-public class TmnTopupServiceClient implements TopUpService {
+public class TmnTopUpServiceClient implements TopUpService {
 	
 	@Autowired
 	RestTemplate restTemplate;

@@ -34,7 +34,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class TopupServiceClientTest {
 	
 	@Autowired
-	TopupServiceClient topupServiceClient;
+	TopUpServiceClient topupServiceClient;
 	
 	@Test @Ignore
 	public void checkCreateOrderFromDirectDebitUrl(){
