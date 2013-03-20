@@ -234,14 +234,6 @@ public class TopUpServiceImpl implements TopUpService {
 		this.ewalletProxy = ewalletProxy;
 	}
 
-	public OrderRepository getOrderRepo() {
-		return orderRepo;
-	}
-
-	public void setOrderRepo(OrderRepository orderRepo) {
-		this.orderRepo = orderRepo;
-	}
-
 	public SourceOfFundRepository getSofRepo() {
 		return sofRepo;
 	}
@@ -283,11 +275,15 @@ public class TopUpServiceImpl implements TopUpService {
 		this.sofRepo = sourceOfFundRepo;
 	}
 
+	public OrderRepository getOrderRepo() {
+		return orderRepo;
+	}
+
 	public void setOrderRepository(OrderRepository orderRepo) {
 		this.orderRepo = orderRepo;
 	}
 
-	public OTPService getOtpService() {
+	public OTPService getOrderRepository() {
 		return otpService;
 	}
 
