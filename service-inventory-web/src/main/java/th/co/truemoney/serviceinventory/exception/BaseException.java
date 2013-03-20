@@ -22,7 +22,9 @@ public abstract class BaseException extends RuntimeException {
 		public static final String INVALID_PROFILE_TYPE = "10000";
 		public static final String ACCESS_TOKEN_NOT_FOUND = "10001";
 		
-		//list source of fund direct debit
+		//topup eWallet
+		public static final String INVALID_AMOUNT_LESS ="20001";
+		public static final String INVALID_AMOUNT_MORE ="20002";
 		
 	}
 	

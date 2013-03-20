@@ -81,11 +81,11 @@ public class TopUpServiceImpl implements TopUpService {
 		BigDecimal minAmount = sofDetail.getMinAmount();
 		BigDecimal maxAmount = sofDetail.getMaxAmount();
 		if (amount.compareTo(minAmount) < 0)
-			throw new ServiceInventoryException("20001",
+			throw new ServiceInventoryException(ServiceInventoryException.Code.INVALID_AMOUNT_LESS,
 					"amount less than min amount.");
 		if (amount.compareTo(maxAmount) > 0)
-			throw new ServiceInventoryException("20002",
-					"amount most than max amount.");
+			throw new ServiceInventoryException(ServiceInventoryException.Code.INVALID_AMOUNT_MORE,
+					"amount more than max amount.");
 
 		// --- Connect to Ewallet Client to verify amount on this
 		// ewallet-account ---//
