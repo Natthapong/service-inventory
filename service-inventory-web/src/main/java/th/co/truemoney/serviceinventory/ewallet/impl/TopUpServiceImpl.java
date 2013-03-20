@@ -195,8 +195,8 @@ public class TopUpServiceImpl implements TopUpService {
 		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(topUpOrderId);
 		AccessToken accessTokenObj = accessTokenRepo.getAccessToken(accessToken);		
 		String otpString = otpService.getOTPString(accessTokenObj.getMobileno());
-		
-		if(otp.getOtpString().equals(otpString)){
+				
+		if(!otp.getOtpString().equals(otpString)){
 			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH,
 					"Invalide OTP.");
 		}
@@ -288,6 +288,14 @@ public class TopUpServiceImpl implements TopUpService {
 
 	public void setOrderRepository(OrderRepository orderRepo) {
 		this.orderRepo = orderRepo;
+	}
+
+	public OTPService getOtpService() {
+		return otpService;
+	}
+
+	public void setOtpService(OTPService otpService) {
+		this.otpService = otpService;
 	}
 
 }
