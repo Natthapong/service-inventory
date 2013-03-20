@@ -34,7 +34,6 @@ public class TopUpServiceClient implements TopUpService{
 			QuoteRequest quoteRequest, String accessToken) {
 		
 		HttpEntity<TopUpQuote> requestEntity = new HttpEntity<TopUpQuote>(headers);
-
 		ResponseEntity<TopUpQuote> responseEntity = restTemplate.exchange(
 				environmentConfig.getCreateTopUpQuoteFromDirectDebitUrl(),
 					HttpMethod.POST, requestEntity, TopUpQuote.class, sourceOfFundId, accessToken , quoteRequest );

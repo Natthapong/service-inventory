@@ -16,6 +16,10 @@ public class TopUpOrder implements Serializable {
 	private String otpReferenceCode;
 	private TopUpStatus status = TopUpStatus.AWAITING_CONFIRM;
 	private TopUpConfirmationInfo confirmationInfo;
+	private String bankCode;
+	private String bankNameEn;
+	private String bankNameTh;
+	private String bankAccountNumber;
 
 	public TopUpOrder() {
 		super();
@@ -102,6 +106,38 @@ public class TopUpOrder implements Serializable {
 
 	public void setConfirmationInfo(TopUpConfirmationInfo confirmationInfo) {
 		this.confirmationInfo = confirmationInfo;
+	}
+
+	public String getBankCode() {
+		return bankCode;
+	}
+
+	public void setBankCode(String bankCode) {
+		this.bankCode = bankCode;
+	}
+
+	public String getBankNameEn() {
+		return bankNameEn;
+	}
+
+	public void setBankNameEn(String bankNameEn) {
+		this.bankNameEn = bankNameEn;
+	}
+
+	public String getBankNameTh() {
+		return bankNameTh;
+	}
+
+	public void setBankNameTh(String bankNameTh) {
+		this.bankNameTh = bankNameTh;
+	}
+
+	public String getBankAccountNumber() {
+		return bankAccountNumber;
+	}
+
+	public void setBankAccountNumber(String bankAccountNumber) {
+		this.bankAccountNumber = bankAccountNumber;
 	}
 		
 }
