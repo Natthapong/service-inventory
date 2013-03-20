@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
@@ -53,4 +54,11 @@ public class TopUpEwalletController extends BaseController {
 		return topupService.requestPlaceOrder(quoteID, accessTokenID);
 	}
 	
+	@RequestMapping(value = "/top-up/order/{quoteID}/confirm", method = RequestMethod.POST)
+	public @ResponseBody TopUpOrder confirmPlaceOrder(@PathVariable String quoteID, 
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
+			@RequestBody OTP otp) 
+		throws ServiceInventoryException {		
+		return topupService.confirmPlaceOrder(quoteID, otp, accessTokenID);
+	}
 }
