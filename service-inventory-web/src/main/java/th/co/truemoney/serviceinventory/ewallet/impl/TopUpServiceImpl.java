@@ -151,14 +151,22 @@ public class TopUpServiceImpl implements TopUpService {
 	@Override
 	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID)
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+
+		if (accessToken == null) {
+			throw new ServiceInventoryException(
+					ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
+					"AccessTokenID is expired or not found.");
+		}
+		
+		TopUpQuote topUpQuote = orderRepo.getTopUpQuote(quoteID);
+		
+		return topUpQuote;
 	}
 
 	@Override
 	public TopUpOrder requestPlaceOrder(String quoteID, String accessTokenID)
 			throws ServiceInventoryException {
-
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
 		if (accessToken == null) {
@@ -167,10 +175,7 @@ public class TopUpServiceImpl implements TopUpService {
 					"AccessTokenID is expired or not found.");
 		}
 
-		logger.debug("retrieve access Token: " + accessToken.toString());
-
 		String otpReferenceCode = otpService.send(accessToken.getMobileno());
-		logger.debug("otpReferenceCode : " + otpReferenceCode);
 
 		TopUpOrder topUpOrder = createTopupOrderFromQuote(quoteID, otpReferenceCode);
 
@@ -215,15 +220,25 @@ public class TopUpServiceImpl implements TopUpService {
 	@Override
 	public TopUpStatus getTopUpOrderStatus(String topUpOrderID,
 			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		TopUpStatus topUpStatus = getTopUpOrderDetails(topUpOrderID, accessTokenID).getStatus();
+		
+		return topUpStatus;
 	}
 
 	@Override
 	public TopUpOrder getTopUpOrderDetails(String topUpOrderID,
 			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+
+		if (accessToken == null) {
+			throw new ServiceInventoryException(
+					ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
+					"AccessTokenID is expired or not found.");
+		}
+		
+		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(topUpOrderID);
+		
+		return topUpOrder;
 	}
 
 	public EwalletSoapProxy getEwalletProxy() {
