@@ -7,5 +7,5 @@ public interface AccessTokenRepository {
 	
 	public void save(AccessToken token);
 	public AccessToken getAccessToken(String accessTokenId) throws ServiceInventoryException ;
-	
+	public void remove(String accessTokenId);
 }

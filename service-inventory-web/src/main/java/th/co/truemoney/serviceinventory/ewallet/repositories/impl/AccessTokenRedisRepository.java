@@ -35,7 +35,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
 						"access token not found.");
 			}			
-			ObjectMapper mapper = new ObjectMapper();			
+			ObjectMapper mapper = new ObjectMapper();
 			return mapper.readValue(result, AccessToken.class);
 		} catch (ServiceInventoryException e) {
 			throw e;
@@ -43,6 +43,15 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 			logger.error(e);			
 		}
 		return null;
+	}
+	
+	@Override
+	public void remove(String accessTokenID) {
+		try {
+			redisLoggingDao.delete(accessTokenID);
+		} catch (Exception e) {
+			logger.error(e);
+		}
 	}
 
 }
