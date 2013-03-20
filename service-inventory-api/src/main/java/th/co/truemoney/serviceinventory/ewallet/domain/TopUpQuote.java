@@ -17,6 +17,7 @@ public class TopUpQuote implements Serializable {
 	private BigDecimal topUpFee;
 	
 	public TopUpQuote() {
+		super();
 	}
 	
 	public TopUpQuote(String iD, SourceOfFund sourceOfFund,
@@ -29,10 +30,6 @@ public class TopUpQuote implements Serializable {
 		this.username = username;
 		this.amount = amount;
 		this.topUpFee = topUpFee;
-	}
-
-	public TopUpQuote() {
-		super();
 	}
 
 	public String getID() {
