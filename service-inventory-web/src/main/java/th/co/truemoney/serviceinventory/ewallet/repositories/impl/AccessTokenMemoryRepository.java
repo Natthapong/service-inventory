@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class AccessTokenMemoryRepository implements AccessTokenRepository {
 	
@@ -22,8 +23,13 @@ public class AccessTokenMemoryRepository implements AccessTokenRepository {
 	}
 	
 	@Override
-	public AccessToken getAccessToken(String accessTokenID) {
-		return map.get(accessTokenID);
+	public AccessToken getAccessToken(String accessTokenID) throws ServiceInventoryException {
+		AccessToken accessToken = map.get(accessTokenID);
+		if(accessToken == null) {
+			throw new ServiceInventoryException(ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
+				"access token not found.");
+		}
+		return accessToken;
 	}
 
 	public void dump() {
