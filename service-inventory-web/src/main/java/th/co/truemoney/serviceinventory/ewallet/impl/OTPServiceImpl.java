@@ -44,5 +44,16 @@ public class OTPServiceImpl implements OTPService {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");			
 		} 
 	}
+
+	@Override
+	public String getOTPString(String mobileno) throws ServiceInventoryException {
+			OTPBean otpBean = otpRepository.getOTP(mobileno);
+			if(otpBean == null) {
+				throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "OTP not found. ");
+			}
+		return otpBean.getOtpString();
+	}
+	
+	
 	
 }
