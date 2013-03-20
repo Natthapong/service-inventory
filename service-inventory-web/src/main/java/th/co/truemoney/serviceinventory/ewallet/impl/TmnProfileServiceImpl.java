@@ -162,7 +162,8 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		} catch (Exception e)
 		{
 			return "";
-		}
+		} 
+		return "";
 	}
 
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
