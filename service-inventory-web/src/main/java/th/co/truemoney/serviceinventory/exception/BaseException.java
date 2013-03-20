@@ -17,6 +17,7 @@ public abstract class BaseException extends RuntimeException {
 		public static final String OTP_NOT_MATCH = "1001";
 		public static final String INVALID_CHECKSUM = "1002";
 		public static final String OTP_NOT_FOUND = "1003";
+		public static final String TOPUP_ORDER_NOT_FOUND = "1004";
 				
 		//profile
 		public static final String INVALID_PROFILE_TYPE = "10000";
