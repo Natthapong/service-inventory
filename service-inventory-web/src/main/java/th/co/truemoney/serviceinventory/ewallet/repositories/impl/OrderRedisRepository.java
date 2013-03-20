@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
@@ -46,10 +48,10 @@ public class OrderRedisRepository implements OrderRepository {
 			ObjectMapper mapper = new ObjectMapper();
 
 			Map<String,Object> hashMap = mapper.readValue(result, HashMap.class);
-			
+
 			TopUpQuote topUpQuote = new TopUpQuote();
 			topUpQuote.setID(hashMap.get("id").toString());
-			topUpQuote.setAmount(new BigDecimal(Integer.parseInt(hashMap.get("amount").toString())));
+			topUpQuote.setAmount(new BigDecimal(Double.parseDouble(hashMap.get("amount").toString())));
 			topUpQuote.setUsername(hashMap.get("username").toString());
 			topUpQuote.setTopUpFee(new BigDecimal(Double.parseDouble(hashMap.get("topUpFee").toString())));
 			topUpQuote.setAccessTokenID(hashMap.get("accessTokenID").toString());
@@ -60,8 +62,8 @@ public class OrderRedisRepository implements OrderRepository {
 			directDebit.setBankNameEn(sourceOfFundMap.get("bankNameEn").toString());
 			directDebit.setBankNameTh(sourceOfFundMap.get("bankNameTh").toString());
 			directDebit.setBankAccountNumber(sourceOfFundMap.get("bankAccountNumber").toString());
-			directDebit.setMinAmount(new BigDecimal(Integer.parseInt(sourceOfFundMap.get("minAmount").toString())));
-			directDebit.setMaxAmount(new BigDecimal(Integer.parseInt(sourceOfFundMap.get("maxAmount").toString())));
+			directDebit.setMinAmount(new BigDecimal(Double.parseDouble(sourceOfFundMap.get("minAmount").toString())));
+			directDebit.setMaxAmount(new BigDecimal(Double.parseDouble(sourceOfFundMap.get("maxAmount").toString())));
 			directDebit.setSourceOfFundID(sourceOfFundMap.get("sourceOfFundID").toString());
 			directDebit.setSourceOfFundType(sourceOfFundMap.get("sourceOfFundType").toString());
 			topUpQuote.setSourceOfFund(directDebit);
@@ -95,7 +97,38 @@ public class OrderRedisRepository implements OrderRepository {
 						"TopUp Ewallet order not found.");
 			}			
 			ObjectMapper mapper = new ObjectMapper();
-			return mapper.readValue(result, TopUpOrder.class);
+
+			Map<String,Object> hashMap = mapper.readValue(result, HashMap.class);
+			
+			TopUpOrder topUpOrder = new TopUpOrder();
+			topUpOrder.setID(hashMap.get("id").toString());
+			topUpOrder.setAmount(new BigDecimal(Double.parseDouble(hashMap.get("amount").toString())));
+			topUpOrder.setUsername(hashMap.get("username").toString());
+			topUpOrder.setTopUpFee(new BigDecimal(Double.parseDouble(hashMap.get("topUpFee").toString())));
+			topUpOrder.setAccessTokenID(hashMap.get("accessTokenID").toString());
+			topUpOrder.setOtpReferenceCode(hashMap.get("otpReferenceCode") != null ? hashMap.get("otpReferenceCode").toString() : "");
+			
+			HashMap sourceOfFundMap = (HashMap) hashMap.get("sourceOfFund");
+			DirectDebit directDebit = new DirectDebit();
+			directDebit.setBankCode(sourceOfFundMap.get("bankCode").toString());
+			directDebit.setBankNameEn(sourceOfFundMap.get("bankNameEn").toString());
+			directDebit.setBankNameTh(sourceOfFundMap.get("bankNameTh").toString());
+			directDebit.setBankAccountNumber(sourceOfFundMap.get("bankAccountNumber").toString());
+			directDebit.setMinAmount(new BigDecimal(Double.parseDouble(sourceOfFundMap.get("minAmount").toString())));
+			directDebit.setMaxAmount(new BigDecimal(Double.parseDouble(sourceOfFundMap.get("maxAmount").toString())));
+			directDebit.setSourceOfFundID(sourceOfFundMap.get("sourceOfFundID").toString());
+			directDebit.setSourceOfFundType(sourceOfFundMap.get("sourceOfFundType").toString());
+			topUpOrder.setSourceOfFund(directDebit);
+
+			TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
+			confirmationInfo.setTransactionID(hashMap.get("transactionID") != null ? hashMap.get("transactionID").toString() : "");
+			confirmationInfo.setTransactionDate(hashMap.get("transactionDate") != null ? hashMap.get("transactionDate").toString() : "");
+			topUpOrder.setConfirmationInfo(confirmationInfo);
+			
+			String status = hashMap.get("status") != null ? hashMap.get("status").toString() : "";
+			topUpOrder.setStatus(TopUpStatus.valueOf(status));
+			
+			return topUpOrder;
 		} catch (ServiceInventoryException e) {
 			throw e;
 		} catch (Exception e) {
