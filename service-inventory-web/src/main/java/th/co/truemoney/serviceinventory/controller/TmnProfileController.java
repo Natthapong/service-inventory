@@ -51,9 +51,7 @@ public class TmnProfileController extends BaseController {
 	public @ResponseBody String logout(
 			@PathVariable String accessTokenID)
 	{
-		tmnProfileService.logout(accessTokenID);
-		
-		return "";
+		return tmnProfileService.logout(accessTokenID);
 	}
 	
 }

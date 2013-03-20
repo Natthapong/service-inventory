@@ -165,10 +165,11 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			
 			this.tmnSecurityProxy.terminateSession(standardBizRequest);
 			
-		} catch (Exception e)
-		{
-			return "";
-		} 
+		} catch (EwalletException e) {
+			logger.error(e);
+		} catch (ServiceUnavailableException e) {
+			logger.error(e);
+		}
 		return "";
 	}
 
