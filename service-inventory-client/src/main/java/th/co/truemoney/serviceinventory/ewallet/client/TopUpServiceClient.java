@@ -32,12 +32,12 @@ public class TopUpServiceClient implements TopUpService{
 	@Override
 	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundId,
 			QuoteRequest quoteRequest, String accessToken) {
-		
-		HttpEntity<TopUpQuote> requestEntity = new HttpEntity<TopUpQuote>(headers);
 
+		HttpEntity<QuoteRequest> requestEntity = new HttpEntity<QuoteRequest>(quoteRequest,headers);
+		
 		ResponseEntity<TopUpQuote> responseEntity = restTemplate.exchange(
 				environmentConfig.getCreateTopUpQuoteFromDirectDebitUrl(),
-					HttpMethod.POST, requestEntity, TopUpQuote.class, sourceOfFundId, accessToken , quoteRequest );
+					HttpMethod.POST, requestEntity, TopUpQuote.class, sourceOfFundId, accessToken ,quoteRequest);
 		
 		TopUpQuote topUpQuote = responseEntity.getBody();
 		
@@ -63,21 +63,20 @@ public class TopUpServiceClient implements TopUpService{
 		
 		return topUpOrder;
 	}
-	
-	@Override
-	public TopUpStatus getTopUpOrderStatus(String topupOrderId, String accessToken) {
-		return null;
-	}
-
 
 	@Override
-	public TopUpOrder getTopUpOrderDetails(String topUpOrderId,
+	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp,
 			String accessToken) throws ServiceInventoryException {
 		return null;
 	}
 
 	@Override
-	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp,
+	public TopUpStatus getTopUpOrderStatus(String topupOrderId, String accessToken) {
+		return null;
+	}
+	
+	@Override
+	public TopUpOrder getTopUpOrderDetails(String topUpOrderId,
 			String accessToken) throws ServiceInventoryException {
 		return null;
 	}

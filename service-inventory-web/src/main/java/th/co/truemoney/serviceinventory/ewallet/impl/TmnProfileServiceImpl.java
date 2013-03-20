@@ -140,9 +140,29 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 	
 	@Override
-	public String logout(String accessToken) {
-		// TODO Auto-generated method stub
-		return null;
+	public String logout(String accessTokenID) {
+		try {
+			// --- Get Account Detail from accessToken ---//
+			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+			if (accessToken == null) return "";
+			
+			accessTokenRepo.remove(accessTokenID);
+			
+			//--- Terminate Session Utiba ---//
+			SecurityContext securityContext = new SecurityContext();
+			securityContext.setSessionId(accessToken.getSessionID());
+			securityContext.setTmnId(accessToken.getTruemoneyID());
+			
+			StandardBizRequest standardBizRequest = new StandardBizRequest();
+			standardBizRequest.setSecurityContext(securityContext);
+			standardBizRequest.setChannelId(accessToken.getChannelID());
+			
+			this.tmnSecurityProxy.terminateSession(standardBizRequest);
+			
+		} catch (Exception e)
+		{
+			return "";
+		}
 	}
 
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {

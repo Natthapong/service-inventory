@@ -12,6 +12,11 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 	public String getLoginUrl() {
 		return "http://localhost:8585/service-inventory-web/v1/ewallet/login?channelID={channelID}";
 	}
+	
+	@Override
+	public String getLogoutUrl() {
+		return "http://localhost:8585/service-inventory-web/v1/ewallet/logout/{accessTokenID}";
+	}
 
 	@Override
 	public String getUserDirectDebitSourceOfFundsUrl() {

@@ -38,7 +38,7 @@ public class TopupServiceClientTest {
 	
 	@Test @Ignore
 	public void checkCreateOrderFromDirectDebitUrl(){
-		String url = "http://localhost:8585/service-inventory-web/v1/directdebit/{sof-id}/quote?accessToken={accessToken}";
+		String url = "http://localhost:8585/service-inventory-web/v1/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
 		try{
 			RestTemplate restTemplate = mock(RestTemplate.class);
 			ResponseEntity<TopUpQuote> responseEntity = new ResponseEntity<TopUpQuote>(new TopUpQuote(), HttpStatus.OK);
@@ -47,12 +47,12 @@ public class TopupServiceClientTest {
 			
 			when(
 					restTemplate.exchange(eq(url), eq(HttpMethod.POST),
-							any(HttpEntity.class), eq(TopUpQuote.class), eq("12345"), eq("6789") , eq(quoteRequest)))
+							any(HttpEntity.class), eq(TopUpQuote.class), eq("6789"), eq("12345") , eq(quoteRequest)))
 								.thenReturn(responseEntity);
 			
 			this.topupServiceClient.restTemplate = restTemplate;
 			
-			TopUpQuote topUpOrder = topupServiceClient.createTopUpQuoteFromDirectDebit("12345", quoteRequest ,"6789");
+			TopUpQuote topUpOrder = topupServiceClient.createTopUpQuoteFromDirectDebit("6789", quoteRequest ,"12345");
 			assertNotNull(topUpOrder);
 			
 		}catch(ServiceInventoryException e){
@@ -67,12 +67,12 @@ public class TopupServiceClientTest {
 		try{
 			QuoteRequest quoteRequest = new QuoteRequest();
 			quoteRequest.setAmount(new BigDecimal(2000));
-			TopUpQuote topUpQuote = topupServiceClient.createTopUpQuoteFromDirectDebit("123", quoteRequest, "12345");
+			quoteRequest.setChecksum("");
+			TopUpQuote topUpQuote = topupServiceClient.createTopUpQuoteFromDirectDebit("678", quoteRequest, "12345");
 			
 			assertNotNull(topUpQuote);
 		}catch(ServiceInventoryException e){
-			assertEquals("500", e.getErrorCode());
-			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
+			assertEquals("404", e.getErrorCode());
 			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
 		}
 	}
