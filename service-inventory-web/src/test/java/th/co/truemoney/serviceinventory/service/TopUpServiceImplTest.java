@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -46,6 +47,7 @@ public class TopUpServiceImplTest {
 	private EwalletSoapProxy ewalletSoapProxyMock;
 	private AccessTokenRepository accessTokenRepoMock;
 	private SourceOfFundRepository sourceOfFundRepoMock;
+	private OTPService otpService;
 	
 	private DirectDebit directDebitDetail;
 	
@@ -55,12 +57,15 @@ public class TopUpServiceImplTest {
 		this.ewalletSoapProxyMock = Mockito.mock(EwalletSoapProxy.class);
 		this.accessTokenRepoMock = Mockito.mock(AccessTokenRepository.class);
 		this.sourceOfFundRepoMock = Mockito.mock(SourceOfFundRepository.class);
+		this.otpService = mock(OTPService.class);
 
 		this.topUpService.setEWalletProxy(this.ewalletSoapProxyMock);
 		this.topUpService.setAccessTokenRepository(this.accessTokenRepoMock);
 		this.topUpService.setSourceOfFundRepository(this.sourceOfFundRepoMock);
 		this.topUpService.setDirectDebitConfig(new DirectDebitConfigImpl());
 		this.topUpService.setOrderRepository(new OrderMemoryRepository());
+		this.topUpService.setOtpService(otpService);
+		
 		
 		directDebitDetail = new DirectDebit();
 		directDebitDetail.setBankAccountNumber("xxxx5555");
@@ -163,11 +168,13 @@ public class TopUpServiceImplTest {
 	@Test 
 	public void confirmPlaceOrder() {
 		AccessToken accessToken = new AccessToken();
+		accessToken.setMobileno("0890123456");
 		TopUpOrder topUpOrder = new TopUpOrder();
 		topUpOrder.setID("1");
 		OTP otp = new OTP();
 		String localChecksum = EncryptUtil.buildHmacSignature("accessToken", topUpOrder.toString()+"accessToken");
 		otp.setChecksum(localChecksum);
+		otp.setOtpString("otpString");
 		
 		asyncService = mock(AsyncService.class);
 		AccessTokenRepository accessTokenRepo = mock(AccessTokenRepository.class);
@@ -175,10 +182,12 @@ public class TopUpServiceImplTest {
 		
 		when(orderRepo.getTopUpOrder(anyString())).thenReturn(topUpOrder);
 		when(accessTokenRepo.getAccessToken(anyString())).thenReturn(accessToken);
+		when(otpService.getOTPString(anyString())).thenReturn("otpString");
 		
 		topUpService.setAsyncService(asyncService);
 		topUpService.setOrderRepo(orderRepo);
 		topUpService.setAccessTokenRepo(accessTokenRepo);
+		topUpService.setOtpService(otpService);
 		
 				
 		TopUpOrder order = topUpService.confirmPlaceOrder(topUpOrder.getID(), otp, "accessToken");
