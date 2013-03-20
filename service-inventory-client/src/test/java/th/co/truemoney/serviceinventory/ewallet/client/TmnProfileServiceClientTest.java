@@ -61,8 +61,7 @@ public class TmnProfileServiceClientTest {
 	@Test @Ignore
 	public void getUserProfile() {
 		try {
-			TmnProfile tmnProfile = client.getTruemoneyProfile("12345",
-					EncryptUtil.buildHmacSignature("12345", "12345" + SALT));
+			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
 			assertNotNull(tmnProfile);
 			assertEquals("Firstname lastname", tmnProfile.getFullname());
 		} catch (ServiceInventoryException e) {
@@ -89,7 +88,7 @@ public class TmnProfileServiceClientTest {
 
 			this.client.restTemplate = restTemplate;
 
-			TmnProfile tmnProfile = client.getTruemoneyProfile("12345", checkSum);
+			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
 			assertNotNull(tmnProfile);
 
 		} catch (ServiceInventoryException e) {

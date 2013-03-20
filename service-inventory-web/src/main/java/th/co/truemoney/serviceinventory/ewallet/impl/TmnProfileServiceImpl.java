@@ -85,7 +85,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile getTruemoneyProfile(String accessTokenID, String checksum)
+	public TmnProfile getTruemoneyProfile(String accessTokenID)
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
@@ -114,7 +114,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public BigDecimal getEwalletBalance(String accessTokenID, String checksum)
+	public BigDecimal getEwalletBalance(String accessTokenID)
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
