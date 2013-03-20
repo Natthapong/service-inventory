@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -55,6 +57,14 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		TmnProfile tmnProfile = responseEntity.getBody();
 
 		return tmnProfile;
+	}
+
+	
+	@Override
+	public BigDecimal getEwalletBalance(String accessTokenID, String checksum)
+			throws ServiceInventoryException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

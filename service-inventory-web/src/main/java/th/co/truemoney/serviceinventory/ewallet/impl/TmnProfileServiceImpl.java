@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
+import java.math.BigDecimal;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
@@ -13,15 +15,18 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
+import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBalanceResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.GetBasicProfileResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
+import th.co.truemoney.serviceinventory.exception.BaseException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
@@ -38,6 +43,9 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Autowired
 	private TmnProfileProxy tmnProfileProxy;
+	
+	@Autowired
+	private EwalletSoapProxy ewalletSoapProxy;
 
 	@Override
 	public String login(Integer channelID, Login login)
@@ -80,13 +88,14 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+			if (accessToken == null) {
+				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
+			}
 			logger.debug("retrieve access Token: "+accessToken.toString());
-
-			Integer channelId = accessToken.getChannelID();
-
+			
 			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
 			StandardBizRequest standardBizRequest = new StandardBizRequest();
-			standardBizRequest.setChannelId(channelId);
+			standardBizRequest.setChannelId(accessToken.getChannelID());
 			standardBizRequest.setSecurityContext(securityContext);
 			GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
 			TmnProfile tmnProfile = new TmnProfile(profileResponse.getFullName(), profileResponse.getEwalletBalance());
@@ -103,6 +112,31 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		}
 	}
 
+	@Override
+	public BigDecimal getEwalletBalance(String accessTokenID, String checksum)
+			throws ServiceInventoryException {
+		try {
+			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+			if (accessToken == null) {
+				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
+			}
+			logger.debug("retrieve access Token: "+accessToken.toString());
+
+			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
+			StandardBizRequest standardBizRequest = new StandardBizRequest();
+			standardBizRequest.setChannelId(accessToken.getChannelID());
+			standardBizRequest.setSecurityContext(securityContext);
+			GetBalanceResponse balanceResponse = this.ewalletSoapProxy.getBalance(standardBizRequest);
+			return balanceResponse.getAvailableBalance();
+		} catch (EwalletException e) {
+			throw new SignonServiceException(e.getCode(),
+				"ewalletSoapProxy.getBalance response" + e.getCode(), e.getNamespace());
+		} catch (ServiceUnavailableException e) {
+			throw new SignonServiceException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+				e.getMessage(), e.getNamespace());
+		}
+	}
+	
 	@Override
 	public void logout(String accessToken) {
 		// TODO Auto-generated method stub

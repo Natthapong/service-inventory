@@ -5,11 +5,11 @@ import java.math.RoundingMode;
 import java.rmi.RemoteException;
 
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.GetBasicProfileResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.AuthenticateResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.CreateSessionResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.StandardBizResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 
 public class TmnProfileStubbed {
 	

@@ -9,25 +9,25 @@ import org.springframework.context.annotation.Profile;
 
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.AddMoneyRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.GetBalanceResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.StandardMoneyResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.VerifyAddMoneyRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBalanceResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.CreateTmnProfileRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.CreateTmnProfileResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.GetBasicProfileResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.ListSourceRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.ListSourceResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.SourceContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.AuthenticateRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.AuthenticateResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.CreateSessionResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.SignonResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
@@ -82,7 +82,7 @@ public class LocalProxyConfig {
 
 			@Override
 			public StandardBizResponse terminateSession(
-					th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.StandardBizRequest standardBizRequest)
+					th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest standardBizRequest)
 					throws EwalletException {
 				return new StandardBizResponse("1", "0", "namespace", new String[] {"key"}, new String[] {"value"});
 			}
@@ -104,7 +104,7 @@ public class LocalProxyConfig {
 
 			@Override
 			public StandardBizResponse extendSession(
-					th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.message.StandardBizRequest standardBizRequest)
+					th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest standardBizRequest)
 					throws EwalletException {
 				return new StandardBizResponse("1", "0", "namespace", new String[] {"key"}, new String[] {"value"});
 			}
@@ -135,7 +135,7 @@ public class LocalProxyConfig {
 
 			@Override
 			public GetBalanceResponse getBalance(
-					th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.StandardBizRequest standardBizRequest)
+					th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest standardBizRequest)
 					throws EwalletException {
 				// TODO Auto-generated method stub
 				return null;

@@ -55,11 +55,6 @@ public class ServiceInventoryConfig {
     	return new OTPServiceImpl();
     }
 	
-	@Bean
-    public AsyncService getAsyncService() {
-    	return new AsyncService();
-    }
-	
     @Bean @Qualifier("accessTokenMemoryRepository")
     public AccessTokenRepository getAccessTokenMemoryRepository() {
     	AccessTokenMemoryRepository accessTokenMemoryRepository = new AccessTokenMemoryRepository();

@@ -14,9 +14,9 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.AddMoneyRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.StandardMoneyResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.message.SecurityContext;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 
 @Service
@@ -47,7 +47,7 @@ public class AsyncService {
 			topUpOrder.setStatus(TopUpStatus.CONFIRMED);
 			
 		} else {
-			topUpOrder.setStatus(TopUpStatus.FAIL);
+			topUpOrder.setStatus(TopUpStatus.FAILED);
 		} 
 		
 		orderRepo.saveTopUpOrder(topUpOrder);
