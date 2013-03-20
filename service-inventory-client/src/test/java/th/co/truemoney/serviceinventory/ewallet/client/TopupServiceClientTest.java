@@ -62,11 +62,12 @@ public class TopupServiceClientTest {
 		}
 	}
 	
-	@Test 
+	@Test @Ignore
 	public void createOrderFromDirectDebit() {
 		try{
 			QuoteRequest quoteRequest = new QuoteRequest();
 			quoteRequest.setAmount(new BigDecimal(2000));
+			quoteRequest.setChecksum("");
 			TopUpQuote topUpQuote = topupServiceClient.createTopUpQuoteFromDirectDebit("678", quoteRequest, "12345");
 			
 			assertNotNull(topUpQuote);
