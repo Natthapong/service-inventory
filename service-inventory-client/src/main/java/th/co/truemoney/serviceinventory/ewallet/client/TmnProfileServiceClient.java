@@ -68,11 +68,11 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public void logout(String accessTokenID) throws ServiceInventoryException {
+	public String logout(String accessTokenID) throws ServiceInventoryException {
 		
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLogoutUrl(), HttpMethod.POST, requestEntity, String.class, accessTokenID);
-		responseEntity.getBody();
+		return responseEntity.getBody();
 	}
 
 }
