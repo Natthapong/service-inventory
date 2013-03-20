@@ -10,7 +10,7 @@ public class TopUpQuote implements Serializable {
 	private static final long serialVersionUID = 2372537225330036311L;
 
 	private String ID;
-	private SourceOfFund sourceOfFund;
+	private DirectDebit directDebit;
 	private String accessTokenID;
 	private String username;
 	private BigDecimal amount;
@@ -28,16 +28,16 @@ public class TopUpQuote implements Serializable {
 		return accessTokenID;
 	}
 	
-	public void setSourceOfFund(SourceOfFund sourceOfFund) {
-		this.sourceOfFund = sourceOfFund;
-	}
-
 	public void setAccessTokenID(String accessTokenID) {
 		this.accessTokenID = accessTokenID;
 	}
 
-	public SourceOfFund getSourceOfFund() {
-		return sourceOfFund;
+	public DirectDebit getDirectDebit() {
+		return directDebit;
+	}
+	
+	public void setDirectDebit(DirectDebit directDebit) {
+		this.directDebit = directDebit;
 	}
 
 	public String getUsername() {

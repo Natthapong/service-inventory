@@ -28,7 +28,9 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMem
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderRedisRepository;
 
 @Configuration
 @EnableAsync
@@ -72,6 +74,11 @@ public class ServiceInventoryConfig {
     	return new OrderMemoryRepository();
     }
     
+    @Bean @Qualifier("orderRedisRepository")
+    public OrderRepository getOrderRedisRepository() {
+    	return new OrderRedisRepository();
+    }
+    
     @Bean
     public SourceOfFundRepository sourceOfFundRepo() {
     	return new SourceOfFundRepository();
@@ -85,6 +92,11 @@ public class ServiceInventoryConfig {
     @Bean @Qualifier("otpMemoryRepository")
     public OTPRepository getOTPMemoryRepository() {
     	return new OTPMemoryRepository();
+    }
+    
+    @Bean @Qualifier("otpRedisRepository")
+    public OTPRepository getOTPRedisRepository() {
+    	return new OTPRedisRepository();
     }
     
     @Bean 

@@ -35,7 +35,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	private static Logger logger = Logger.getLogger(TmnProfileServiceImpl.class);
 
-	@Autowired @Qualifier("accessTokenMemoryRepository")
+	@Autowired @Qualifier("accessTokenRedisRepository")
 	private AccessTokenRepository accessTokenRepo;
 
 	@Autowired
@@ -61,13 +61,11 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			standardBizRequest.setSecurityContext(securityContext);
 			GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
 			
-//			if (profileResponse != null && !profileResponse.getProfileType().equals("C")) {
-//				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_TYPE, "Invalid profile type");
-//			} else if (profileResponse != null && profileResponse.getStatusId() == 0) {
-//				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_STATUS, "Invalid profile status "+profileResponse.getStatusId());
-//			} else if (profileResponse != null && profileResponse.getStatusId() == 0) {
-//				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_STATUS, "Invalid profile status "+profileResponse.getStatusId());
-//			}
+			if (profileResponse != null && !profileResponse.getProfileType().equals("C")) {
+				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_TYPE, "Invalid profile type, is not a customer.");
+			} else if (profileResponse != null && profileResponse.getStatusId() != 3) {
+				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_STATUS, "Invalid profile status. ("+profileResponse.getStatusId()+")");
+			} 
 			
 			AccessToken accessToken = AccessToken.generateNewToken(signonResponse.getSessionId(),
 					signonResponse.getTmnId(),
@@ -137,7 +135,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			standardBizRequest.setChannelId(accessToken.getChannelID());
 			standardBizRequest.setSecurityContext(securityContext);
 			GetBalanceResponse balanceResponse = this.ewalletSoapProxy.getBalance(standardBizRequest);
-			return balanceResponse.getAvailableBalance();
+			return balanceResponse.getCurrentBalance();
 		} catch (EwalletException e) {
 			throw new SignonServiceException(e.getCode(),
 				"ewalletSoapProxy.getBalance response" + e.getCode(), e.getNamespace());

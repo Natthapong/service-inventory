@@ -14,9 +14,13 @@ import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPRedisRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderRedisRepository;
 
 @Configuration
 @ComponentScan("th.co.truemoney.serviceinventory.dao")
@@ -55,6 +59,21 @@ public class TestServiceInventoryConfig {
     @Bean @Qualifier("otpMemoryRepository")
     public OTPRepository getOTPMemoryRepository() {
     	return new OTPMemoryRepository();
+    }
+    
+    @Bean @Qualifier("otpRedisRepository")
+    public OTPRepository getOTPRedisRepository() {
+    	return new OTPRedisRepository();
+    }
+    
+    @Bean @Qualifier("orderMemoryRepository")
+    public OrderRepository getOrderMemoryRepository() {
+    	return new OrderMemoryRepository();
+    }
+    
+    @Bean @Qualifier("orderRedisRepository")
+    public OrderRepository getOrderRedisRepository() {
+    	return new OrderRedisRepository();
     }
     
 }

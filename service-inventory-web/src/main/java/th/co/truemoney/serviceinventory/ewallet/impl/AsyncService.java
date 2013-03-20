@@ -24,7 +24,7 @@ public class AsyncService {
 	private static final Logger logger = LoggerFactory.getLogger(AsyncService.class);
 	
 	@Autowired
-	@Qualifier("orderMemoryRepository")
+	@Qualifier("orderRedisRepository")
 	private OrderRepository orderRepo;
 	
 	@Autowired
@@ -38,8 +38,8 @@ public class AsyncService {
 		addMoneyRequest.setChannelId(accessToken.getChannelID());		
 		addMoneyRequest.setRequestTransactionId(topUpOrder.getConfirmationInfo().getTransactionID());
 		addMoneyRequest.setSecurityContext(new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID()));
-		addMoneyRequest.setSourceId(topUpOrder.getSourceOfFund().getSourceOfFundID());
-		addMoneyRequest.setSourceType(topUpOrder.getSourceOfFund().getSourceOfFundType());
+		addMoneyRequest.setSourceId(topUpOrder.getDirectDebit().getSourceOfFundID());
+		addMoneyRequest.setSourceType(topUpOrder.getDirectDebit().getSourceOfFundType());
 		
 		StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);		
 		

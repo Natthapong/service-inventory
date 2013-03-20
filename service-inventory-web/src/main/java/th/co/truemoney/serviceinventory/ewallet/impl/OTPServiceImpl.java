@@ -22,7 +22,7 @@ public class OTPServiceImpl implements OTPService {
 	@Autowired @Qualifier("smsSender")
 	private String smsSender;
 
-	@Autowired 
+	@Autowired @Qualifier("otpRedisRepository")
 	private OTPRepository otpRepository;
 	
 	@Override

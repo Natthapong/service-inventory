@@ -35,6 +35,7 @@ public class TmnProfileStubbed {
 		stubbedProfileResponse.setFullName("Mali Colt");
 		stubbedProfileResponse.setEwalletBalance(new BigDecimal("30000.00").setScale(2, RoundingMode.HALF_UP));
 		stubbedProfileResponse.setProfileType("C");		
+		stubbedProfileResponse.setStatusId(3);		
 		return stubbedProfileResponse;
 	}
 	

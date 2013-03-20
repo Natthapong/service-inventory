@@ -22,7 +22,7 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 
 	private static Logger logger = Logger.getLogger(SourceOfFundServiceImpl.class);
 
-	@Autowired @Qualifier("accessTokenMemoryRepository")
+	@Autowired @Qualifier("accessTokenRedisRepository")
 	private AccessTokenRepository accessTokenRepo;
 
 	@Autowired
@@ -37,13 +37,18 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
 			}
 			logger.debug("retrieve access Token: "+accessToken.toString());
-
+			
+			if (!username.equals(accessToken.getUsername())) {
+				throw new ServiceInventoryException(BaseException.Code.GENERAL_ERROR, "Invalid user name.");
+			}
+			
 			String truemoneyID = accessToken.getTruemoneyID();
 			Integer channelID = accessToken.getChannelID();
 			String sessionID = accessToken.getSessionID();
 
-			List<DirectDebit> userDirectDebitSources = sofRepo.getUserDirectDebitSources(truemoneyID, channelID, sessionID);
-			
+			List<DirectDebit> userDirectDebitSources = sofRepo
+					.getUserDirectDebitSources(truemoneyID, channelID, sessionID);
+
 			return userDirectDebitSources;
 			
 		} catch (EwalletException e) {

@@ -67,8 +67,8 @@ public class LocalProxyConfig {
 						new String[] {"key"}, new String[] {"value"},
 						"Firstname lastname", "local@tmn.com", "0891231234",
 						new BigDecimal(50.0d),
-						"customer",
-						1);
+						"C",
+						3);
 			}
 
 			@Override
