@@ -46,5 +46,14 @@ public class TmnProfileController extends BaseController {
 			throws SignonServiceException {
 		return tmnProfileService.getEwalletBalance(accessTokenID);
 	}
-
+	
+	@RequestMapping(value = "/logout/{accessTokenID}", method = RequestMethod.POST)
+	public @ResponseBody String logout(
+			@PathVariable String accessTokenID)
+	{
+		tmnProfileService.logout(accessTokenID);
+		
+		return "";
+	}
+	
 }

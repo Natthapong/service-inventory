@@ -25,6 +25,11 @@ public class AccessTokenMemoryRepository implements AccessTokenRepository {
 	public AccessToken getAccessToken(String accessTokenID) {
 		return map.get(accessTokenID);
 	}
+	
+	@Override
+	public void remove(String accessTokenID) {
+		map.remove(accessTokenID);
+	}
 
 	public void dump() {
 	  Collection<AccessToken> collection = map.values();

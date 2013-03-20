@@ -6,5 +6,5 @@ public interface AccessTokenRepository {
 	
 	public void save(AccessToken token);
 	public AccessToken getAccessToken(String accessTokenId);
-	
+	public void remove(String accessTokenId);
 }

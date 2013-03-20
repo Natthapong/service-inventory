@@ -26,15 +26,24 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 	}	
 
 	@Override
-	public AccessToken getAccessToken(String accessTokenId) {
+	public AccessToken getAccessToken(String accessTokenID) {
 		try {
-			String result = redisLoggingDao.getData(accessTokenId);
+			String result = redisLoggingDao.getData(accessTokenID);
 			ObjectMapper mapper = new ObjectMapper();
 			return mapper.readValue(result, AccessToken.class);
 		} catch (Exception e) {
 			logger.error(e);			
 		}
 		return null;
+	}
+	
+	@Override
+	public void remove(String accessTokenID) {
+		try {
+			redisLoggingDao.delete(accessTokenID);
+		} catch (Exception e) {
+			logger.error(e);
+		}
 	}
 
 }
