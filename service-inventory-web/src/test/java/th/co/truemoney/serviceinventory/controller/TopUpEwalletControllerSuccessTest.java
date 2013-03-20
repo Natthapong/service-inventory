@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.controller;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -7,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +26,7 @@ import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -58,6 +61,21 @@ public class TopUpEwalletControllerSuccessTest {
 
 		this.mockMvc.perform(post("/top-up/order/{quoteID}?accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "12345")
 			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(print());
+
+	}
+	
+	@Test
+	public void confirmPlaceOrderSuccess() throws Exception {
+		
+		//given
+		when(topupServiceMock.confirmPlaceOrder(anyString(), any(OTP.class), anyString())).thenReturn(new TopUpOrder());
+		
+		ObjectMapper mapper = new ObjectMapper();
+		this.mockMvc.perform(post("/top-up/order/{quoteID}/confirm?accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "12345")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(new OTP())))
 			.andExpect(status().isOk())
 			.andDo(print());
 
