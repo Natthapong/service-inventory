@@ -15,6 +15,21 @@ public class TopUpQuote implements Serializable {
 	private String username;
 	private BigDecimal amount;
 	private BigDecimal topUpFee;
+	
+	public TopUpQuote() {
+	}
+	
+	public TopUpQuote(String iD, SourceOfFund sourceOfFund,
+			String accessTokenID, String username, BigDecimal amount,
+			BigDecimal topUpFee) {
+		super();
+		ID = iD;
+		this.sourceOfFund = sourceOfFund;
+		this.accessTokenID = accessTokenID;
+		this.username = username;
+		this.amount = amount;
+		this.topUpFee = topUpFee;
+	}
 
 	public String getID() {
 		return ID;

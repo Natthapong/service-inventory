@@ -18,6 +18,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
@@ -139,6 +140,15 @@ public class LocalProxyConfig {
 		};
 	}
 
+	@Bean @Primary
+	public OrderRepository stubOrderRepository(){
+		return new OrderMemoryRepository(){
+			public TopUpQuote getTopUpQuote(String orderID) {
+				return new TopUpQuote();
+			}
+		};
+	}
+	
 	@Bean @Primary
 	public SourceOfFundRepository stubSourceOfFundRepository(){
 		return new SourceOfFundRepository(){

@@ -40,7 +40,7 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getRequestPlaceOrder() {
-		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}?accessToken={accessToken}";
+		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}?accessTokenID={accessToken}";
 	}
 
 	@Override

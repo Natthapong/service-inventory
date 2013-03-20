@@ -22,7 +22,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class SourceOfFundServiceClientTest {
 
 	@Autowired
-	SourceOfFundServiceClient sourceOfFundServiceClient;
+	TmnSourceOfFundServiceClient sourceOfFundServiceClient;
 
 	@Test @Ignore
 	public void shouldFail() {

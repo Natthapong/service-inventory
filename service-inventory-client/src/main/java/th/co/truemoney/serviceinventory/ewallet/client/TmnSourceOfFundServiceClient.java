@@ -17,7 +17,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
-public class SourceOfFundServiceClient implements SourceOfFundService {
+public class TmnSourceOfFundServiceClient implements SourceOfFundService {
 
 	@Autowired
 	RestTemplate restTemplate;

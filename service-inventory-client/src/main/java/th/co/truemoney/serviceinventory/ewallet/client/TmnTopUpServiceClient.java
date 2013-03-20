@@ -22,7 +22,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
-public class TopUpServiceClient implements TopUpService {
+public class TmnTopUpServiceClient implements TopUpService {
 
 	@Autowired
 	RestTemplate restTemplate;
@@ -45,6 +45,7 @@ public class TopUpServiceClient implements TopUpService {
 					HttpMethod.POST, requestEntity, HashMap.class, sourceOfFundId, accessToken ,quoteRequest);
 	
 		HashMap hashMap = responseEntity.getBody();
+		System.out.println(hashMap);
 		
 		TopUpQuote topUpQuote = new TopUpQuote();
 		topUpQuote.setID(hashMap.get("id").toString());

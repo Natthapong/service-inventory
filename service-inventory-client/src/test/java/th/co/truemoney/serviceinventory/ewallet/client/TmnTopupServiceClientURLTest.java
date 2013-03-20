@@ -35,10 +35,10 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class })
 @ActiveProfiles(profiles = "local")
-public class TopupServiceClientTest {
+public class TmnTopupServiceClientURLTest {
 	
 	@Autowired
-	TopUpServiceClient topupServiceClient;
+	TmnTopUpServiceClient topupServiceClient;
 	
 	RestTemplate restTemplate;
 	
@@ -110,20 +110,6 @@ public class TopupServiceClientTest {
 			TopUpOrder topUpOrder = topupServiceClient.requestPlaceOrder("12345", "6789");
 			assertNotNull(topUpOrder);
 			
-		}catch(ServiceInventoryException e){
-			assertEquals("500", e.getErrorCode());
-			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
-			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
-		}
-	}
-	
-	@Test @Ignore
-	public void requestPlaceOrder() {
-		try{
-			QuoteRequest quoteRequest = new QuoteRequest();
-			quoteRequest.setAmount(new BigDecimal(2000));
-			TopUpQuote topUpQuote = topupServiceClient.createTopUpQuoteFromDirectDebit("123", quoteRequest, "12345");
-			assertNotNull(topUpQuote);
 		}catch(ServiceInventoryException e){
 			assertEquals("500", e.getErrorCode());
 			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());

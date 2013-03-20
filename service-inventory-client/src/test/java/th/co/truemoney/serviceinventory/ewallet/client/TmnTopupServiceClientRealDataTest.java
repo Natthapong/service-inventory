@@ -14,17 +14,19 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
+import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class })
 @ActiveProfiles(profiles = "local")
-public class TmnProfileServiceClientRealData {
+public class TmnTopupServiceClientRealDataTest {
 
 	@Autowired
-	TopUpServiceClient topupServiceClient;
+	TmnTopUpServiceClient topupServiceClient;
 	
 	@Test @Ignore
 	public void createOrderFromDirectDebit() {
@@ -36,6 +38,20 @@ public class TmnProfileServiceClientRealData {
 			
 			assertNotNull(topUpQuote);
 			assertEquals("username",topUpQuote.getUsername());
+			assertEquals("SCB", ((DirectDebit) topUpQuote.getSourceOfFund()).getBankCode());
+		}catch(ServiceInventoryException e){
+			assertEquals("500", e.getErrorCode());
+			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
+			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
+		}
+	}
+
+	@Test @Ignore
+	public void requestPlaceOrder() {
+		try{
+			TopUpOrder topUpOrder = topupServiceClient.requestPlaceOrder("123", "12345");
+			assertNotNull(topUpOrder);
+			assertEquals("2000", topUpOrder.getAmount());
 		}catch(ServiceInventoryException e){
 			assertEquals("500", e.getErrorCode());
 			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
