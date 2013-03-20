@@ -85,7 +85,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile getTruemoneyProfile(String accessTokenID, String checksum)
+	public TmnProfile getTruemoneyProfile(String accessTokenID)
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
@@ -101,6 +101,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
 			TmnProfile tmnProfile = new TmnProfile(profileResponse.getFullName(), profileResponse.getEwalletBalance());
 			tmnProfile.setMobileno(profileResponse.getMobile());
+			tmnProfile.setEmail(profileResponse.getEmail());
 			tmnProfile.setType(profileResponse.getProfileType());
 			tmnProfile.setStatus(profileResponse.getStatusId());
 			return tmnProfile;
@@ -114,7 +115,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public BigDecimal getEwalletBalance(String accessTokenID, String checksum)
+	public BigDecimal getEwalletBalance(String accessTokenID)
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);

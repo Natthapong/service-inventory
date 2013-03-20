@@ -6,6 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -32,12 +34,12 @@ public class TopUpServiceClient implements TopUpService{
 	@Override
 	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundId,
 			QuoteRequest quoteRequest, String accessToken) {
-		
-		HttpEntity<TopUpQuote> requestEntity = new HttpEntity<TopUpQuote>(headers);
 
+		HttpEntity<QuoteRequest> requestEntity = new HttpEntity<QuoteRequest>(quoteRequest,headers);
+		
 		ResponseEntity<TopUpQuote> responseEntity = restTemplate.exchange(
 				environmentConfig.getCreateTopUpQuoteFromDirectDebitUrl(),
-					HttpMethod.POST, requestEntity, TopUpQuote.class, sourceOfFundId, accessToken , quoteRequest );
+					HttpMethod.POST, requestEntity, TopUpQuote.class, sourceOfFundId, accessToken ,quoteRequest);
 		
 		TopUpQuote topUpQuote = responseEntity.getBody();
 		

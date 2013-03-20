@@ -16,7 +16,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.exception.ValidateException;
-import th.co.truemoney.serviceinventory.util.AccessTokenUtil;
 
 @Controller
 @RequestMapping(value="/ewallet")
@@ -34,26 +33,18 @@ public class TmnProfileController extends BaseController {
 		return tmnProfileService.login(channelID, login);
 	}
 
-	@RequestMapping(value = "/getprofile/{accessTokenID}/{checksum}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getprofile/{accessTokenID}", method = RequestMethod.GET)
 	public @ResponseBody TmnProfile getTruemoneyProfile(
-		@PathVariable String accessTokenID,
-		@PathVariable String checksum)
+		@PathVariable String accessTokenID)
 			throws SignonServiceException {
-		if (!AccessTokenUtil.isValidCheckSum(checksum, accessTokenID, accessTokenID)) {
-			throw new ValidateException("-1", "Invalid checksum value");
-		}
-		return tmnProfileService.getTruemoneyProfile(accessTokenID, checksum);
+		return tmnProfileService.getTruemoneyProfile(accessTokenID);
 	}
 
-	@RequestMapping(value = "/getbalance/{accessTokenID}/{checksum}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getbalance/{accessTokenID}", method = RequestMethod.GET)
 	public @ResponseBody BigDecimal getBalance(
-		@PathVariable String accessTokenID,
-		@PathVariable String checksum)
+		@PathVariable String accessTokenID)
 			throws SignonServiceException {
-		if (!AccessTokenUtil.isValidCheckSum(checksum, accessTokenID, accessTokenID)) {
-			throw new ValidateException("-1", "Invalid checksum value");
-		}
-		return tmnProfileService.getEwalletBalance(accessTokenID, checksum);
+		return tmnProfileService.getEwalletBalance(accessTokenID);
 	}
 
 }

@@ -46,13 +46,13 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile getTruemoneyProfile(String accesstokenID, String checksum) throws ServiceInventoryException {
+	public TmnProfile getTruemoneyProfile(String accesstokenID) throws ServiceInventoryException {
 
 		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(headers);
 
 		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(
 				environmentConfig.getUserProfileUrl(),
-					HttpMethod.GET, requestEntity, TmnProfile.class, accesstokenID, checksum);
+					HttpMethod.GET, requestEntity, TmnProfile.class, accesstokenID);
 
 		TmnProfile tmnProfile = responseEntity.getBody();
 
@@ -61,7 +61,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 
 	
 	@Override
-	public BigDecimal getEwalletBalance(String accessTokenID, String checksum)
+	public BigDecimal getEwalletBalance(String accessTokenID)
 			throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;

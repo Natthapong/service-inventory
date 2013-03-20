@@ -73,7 +73,7 @@ public class TopUpEwalletControllerSuccessTest {
 		when(topupServiceMock.confirmPlaceOrder(anyString(), any(OTP.class), anyString())).thenReturn(new TopUpOrder());
 		
 		ObjectMapper mapper = new ObjectMapper();
-		this.mockMvc.perform(post("/top-up/order/{quoteID}/confirm?accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "12345")
+		this.mockMvc.perform(post("/top-up/order/{topUpOrderID}/confirm?accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "12345")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(new OTP())))
 			.andExpect(status().isOk())

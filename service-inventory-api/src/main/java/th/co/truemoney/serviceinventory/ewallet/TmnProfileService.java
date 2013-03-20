@@ -10,9 +10,9 @@ public interface TmnProfileService {
 
 	public String login(Integer channelID, Login login) throws ServiceInventoryException;
 
-	public TmnProfile getTruemoneyProfile(String accessTokenID, String checksum) throws ServiceInventoryException;
+	public TmnProfile getTruemoneyProfile(String accessTokenID) throws ServiceInventoryException;
 	
-	public BigDecimal getEwalletBalance(String accessTokenID, String checksum) throws ServiceInventoryException;
+	public BigDecimal getEwalletBalance(String accessTokenID) throws ServiceInventoryException;
 
 	public void logout(String accessTokenID) throws ServiceInventoryException;
 	

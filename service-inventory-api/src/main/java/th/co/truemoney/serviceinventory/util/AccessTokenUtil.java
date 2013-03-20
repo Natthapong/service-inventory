@@ -14,9 +14,16 @@ public class AccessTokenUtil {
 				clientIP, salt), utibaSessionID);
 	}
 
-	public static boolean isValidCheckSum(String checksum, String data, String accessToken){
-		String localChecksum = EncryptUtil.buildHmacSignature(accessToken, data+SALT);
+	public static boolean isValidCheckSum(String checksum, String data, String accessTokenID){
+		String localChecksum = EncryptUtil.buildHmacSignature(accessTokenID, data+SALT);
 		return localChecksum.toLowerCase().equals(checksum);	
+	}
+	
+	public static void main(String[] args) {
+		String accessTokenID = "";
+		String data = "";
+		String result = EncryptUtil.buildHmacSignature(accessTokenID, data+SALT);
+		System.out.println(result);
 	}
 
 }
