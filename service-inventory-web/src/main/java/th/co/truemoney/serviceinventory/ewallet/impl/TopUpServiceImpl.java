@@ -128,6 +128,9 @@ public class TopUpServiceImpl implements TopUpService {
 		topupQuote.setAmount(amount);
 		topupQuote.setTopUpFee(totalFee);
 		topupQuote.setSourceOfFund(sofDetail);
+		
+		logger.debug("source id: "+topupQuote.getSourceOfFund().getSourceOfFundID());
+		logger.debug("source type: "+topupQuote.getSourceOfFund().getSourceOfFundType());
 
 		orderRepo.saveTopUpQuote(topupQuote);
 

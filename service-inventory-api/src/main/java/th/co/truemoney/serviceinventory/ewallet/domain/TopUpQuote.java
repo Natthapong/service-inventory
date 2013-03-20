@@ -31,6 +31,10 @@ public class TopUpQuote implements Serializable {
 		this.topUpFee = topUpFee;
 	}
 
+	public TopUpQuote() {
+		super();
+	}
+
 	public String getID() {
 		return ID;
 	}

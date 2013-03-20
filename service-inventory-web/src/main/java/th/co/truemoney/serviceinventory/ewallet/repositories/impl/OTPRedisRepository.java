@@ -23,6 +23,8 @@ public class OTPRedisRepository implements OTPRepository {
 			redisLoggingDao.addData(otpBean.getMobileno(), mapper.writeValueAsString(otpBean), 3L);
 		} catch (Exception e) {
 			logger.error(e);
+			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
+					"Can not stored data in repository.");			
 		}
 	}
 

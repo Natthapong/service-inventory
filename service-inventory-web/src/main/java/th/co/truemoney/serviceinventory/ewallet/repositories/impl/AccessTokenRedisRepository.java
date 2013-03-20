@@ -23,6 +23,8 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 			redisLoggingDao.addData(token.getAccessTokenID(), mapper.writeValueAsString(token), 10L);
 		} catch (Exception e) {
 			logger.error(e);
+			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
+					"Can not stored data in repository.");
 		}
 	}	
 
@@ -51,6 +53,8 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 			redisLoggingDao.delete(accessTokenID);
 		} catch (Exception e) {
 			logger.error(e);
+			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
+					"Can not removed data in repository.");
 		}
 	}
 

@@ -153,7 +153,10 @@ public class LocalProxyConfig {
 	public SourceOfFundRepository stubSourceOfFundRepository(){
 		return new SourceOfFundRepository(){
 			public DirectDebit getUserDirectDebitSourceByID(String sourceOfFundID, String truemoneyID, Integer channelID, String sessionID) {
-				return new DirectDebit("SCB","Siam Commercial Bank","ไทยพาณิชย์","xxxx1234",new BigDecimal(30),new BigDecimal(5000));
+				DirectDebit directDebit = new DirectDebit("SCB","Siam Commercial Bank","ไทยพาณิชย์","xxxx1234",new BigDecimal(30),new BigDecimal(5000));
+				directDebit.setSourceOfFundID("1");
+				directDebit.setSourceOfFundType("debit");
+				return directDebit;
 			}
 		};
 	}
