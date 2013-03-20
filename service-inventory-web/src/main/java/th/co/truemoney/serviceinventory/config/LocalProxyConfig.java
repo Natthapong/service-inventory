@@ -48,7 +48,7 @@ public class LocalProxyConfig {
 					StandardBizRequest standardBizRequest) throws EwalletException {
 				return new GetBasicProfileResponse("1", "0", "namespace",
 						new String[] {"key"}, new String[] {"value"},
-						"Firstname lastname", "0891231234",
+						"Firstname lastname", "local@tmn.com", "0891231234",
 						new BigDecimal(50.0d),
 						"customer",
 						1);

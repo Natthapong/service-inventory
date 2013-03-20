@@ -58,7 +58,7 @@ public class ServiceInventoryConfig {
     @Bean @Qualifier("accessTokenMemoryRepository")
     public AccessTokenRepository getAccessTokenMemoryRepository() {
     	AccessTokenMemoryRepository accessTokenMemoryRepository = new AccessTokenMemoryRepository();
-    	accessTokenMemoryRepository.save(new AccessToken("12345", "6789", "555", "username", "0861234567", 41));
+    	accessTokenMemoryRepository.save(new AccessToken("12345", "6789", "555", "username", "0861234567", "local@tmn.com", 41));
         return accessTokenMemoryRepository;
     }
 

@@ -65,6 +65,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 					signonResponse.getTmnId(),
 					login.getUsername(),
 					profileResponse.getMobile(),
+					profileResponse.getEmail(),
 					channelID);
 
 			// add session id and mapping access token into redis
