@@ -177,16 +177,14 @@ public class TopUpServiceImplTest {
 		otp.setOtpString("otpString");
 		
 		asyncService = mock(AsyncService.class);
-		AccessTokenRepository accessTokenRepo = mock(AccessTokenRepository.class);
 		OrderRepository orderRepo = mock(OrderRepository.class);
 		
 		when(orderRepo.getTopUpOrder(anyString())).thenReturn(topUpOrder);
-		when(accessTokenRepo.getAccessToken(anyString())).thenReturn(accessToken);
+		when(accessTokenRepoMock.getAccessToken(anyString())).thenReturn(accessToken);
 		when(otpService.getOTPString(anyString())).thenReturn("otpString");
 		
 		topUpService.setAsyncService(asyncService);
-		topUpService.setOrderRepo(orderRepo);
-		topUpService.setAccessTokenRepo(accessTokenRepo);
+		topUpService.setOrderRepository(orderRepo);
 		topUpService.setOtpService(otpService);
 		
 				
@@ -195,5 +193,108 @@ public class TopUpServiceImplTest {
 		assertEquals(TopUpStatus.PROCESSING, order.getStatus());
 		verify(asyncService).topUpUtibaEwallet(topUpOrder, accessToken);
 		verify(orderRepo).saveTopUpOrder(topUpOrder);
+	}
+	
+	@Test 
+	public void confirmPlaceOrderFailTopUpOrderNotFound() {
+		OrderRepository orderRepo = mock(OrderRepository.class);		
+		when(orderRepo.getTopUpOrder(anyString())).thenThrow(new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_ORDER_NOT_FOUND,
+				"Top up order not found."));
+		topUpService.setOrderRepository(orderRepo);
+		
+		try {
+			topUpService.confirmPlaceOrder("1", new OTP(), "accessToken");
+		} catch (ServiceInventoryException e) {			
+			assertEquals("1004", e.getCode());
+		}
+	}
+	
+	@Test 
+	public void confirmPlaceOrderFailAccessTokenNotFound() {
+		OrderRepository orderRepo = mock(OrderRepository.class);
+		when(orderRepo.getTopUpOrder(anyString())).thenReturn(new TopUpOrder());
+		when(accessTokenRepoMock.getAccessToken(anyString())).thenThrow(new ServiceInventoryException(ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
+				"access token not found."));
+		topUpService.setOrderRepository(orderRepo);
+		
+		try {
+			topUpService.confirmPlaceOrder("1", new OTP(), "accessToken");
+		} catch (ServiceInventoryException e) {			
+			assertEquals("10001", e.getCode());
+		}
+	}
+	
+	@Test 
+	public void confirmPlaceOrderFailOTPStringNotFound() {
+		OrderRepository orderRepo = mock(OrderRepository.class);
+		when(orderRepo.getTopUpOrder(anyString())).thenReturn(new TopUpOrder());
+		when(accessTokenRepoMock.getAccessToken(anyString())).thenReturn(new AccessToken());
+		when(otpService.getOTPString(anyString())).thenThrow(new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND,"otp not found."));
+		
+		topUpService.setOrderRepository(orderRepo);
+		
+		try {
+			topUpService.confirmPlaceOrder("1", new OTP(), "accessToken");
+		} catch (ServiceInventoryException e) {			
+			assertEquals("1003", e.getCode());
+		}
+	}
+	
+	@Test 
+	public void confirmPlaceOrderFailOTPNotMatch() {
+		AccessToken accessToken = new AccessToken();
+		accessToken.setMobileno("0890123456");
+		TopUpOrder topUpOrder = new TopUpOrder();
+		topUpOrder.setID("1");
+		OTP otp = new OTP();
+		String localChecksum = EncryptUtil.buildHmacSignature("accessToken", topUpOrder.toString()+"accessToken");
+		otp.setChecksum(localChecksum);
+		otp.setOtpString("otpString");
+		
+		asyncService = mock(AsyncService.class);
+		OrderRepository orderRepo = mock(OrderRepository.class);
+		
+		when(orderRepo.getTopUpOrder(anyString())).thenReturn(topUpOrder);
+		when(accessTokenRepoMock.getAccessToken(anyString())).thenReturn(accessToken);
+		when(otpService.getOTPString(anyString())).thenReturn("local-otpString");
+		
+		topUpService.setAsyncService(asyncService);
+		topUpService.setOrderRepository(orderRepo);
+		topUpService.setOtpService(otpService);		
+				
+		try {
+			topUpService.confirmPlaceOrder(topUpOrder.getID(), otp, "accessToken");
+		} catch (ServiceInventoryException e) {			
+			assertEquals("1001", e.getCode());
+		}
+	}
+	
+	@Test 
+	public void confirmPlaceOrderFailInvalidChecksum() {
+		AccessToken accessToken = new AccessToken();
+		accessToken.setMobileno("0890123456");
+		TopUpOrder topUpOrder = new TopUpOrder();
+		topUpOrder.setID("1");
+		OTP otp = new OTP();
+		String localChecksum = EncryptUtil.buildHmacSignature("accessToken", topUpOrder.toString()+"accessToken");
+		otp.setChecksum("fail"+localChecksum);
+		otp.setOtpString("otpString");
+		
+		asyncService = mock(AsyncService.class);
+		OrderRepository orderRepo = mock(OrderRepository.class);
+		
+		when(orderRepo.getTopUpOrder(anyString())).thenReturn(topUpOrder);
+		when(accessTokenRepoMock.getAccessToken(anyString())).thenReturn(accessToken);
+		when(otpService.getOTPString(anyString())).thenReturn("otpString");
+		
+		topUpService.setAsyncService(asyncService);
+		topUpService.setOrderRepository(orderRepo);
+		topUpService.setOtpService(otpService);		
+				
+		try {
+			topUpService.confirmPlaceOrder(topUpOrder.getID(), otp, "accessToken");
+		} catch (ServiceInventoryException e) {			
+			assertEquals("1002", e.getCode());
+		}
 	}
 }
