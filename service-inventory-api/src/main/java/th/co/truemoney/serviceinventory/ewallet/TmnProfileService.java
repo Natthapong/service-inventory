@@ -14,7 +14,7 @@ public interface TmnProfileService {
 	
 	public BigDecimal getEwalletBalance(String accessTokenID) throws ServiceInventoryException;
 
-	public void logout(String accessTokenID) throws ServiceInventoryException;
+	public String logout(String accessTokenID) throws ServiceInventoryException;
 	
 }
 

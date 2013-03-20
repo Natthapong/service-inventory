@@ -140,9 +140,9 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 	
 	@Override
-	public void logout(String accessToken) {
+	public String logout(String accessToken) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
