@@ -25,7 +25,7 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getUserProfileUrl() {
-		return "http://localhost:8585/service-inventory-web/v1/ewallet/getprofile/{accesstokenID}/{checksum}";
+		return "http://localhost:8585/service-inventory-web/v1/ewallet/getprofile/{accesstokenID}";
 	}
 
 	@Override

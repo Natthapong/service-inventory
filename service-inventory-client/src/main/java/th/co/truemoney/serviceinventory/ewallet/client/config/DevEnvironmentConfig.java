@@ -24,7 +24,7 @@ public class DevEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getUserProfileUrl() {
-		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet/getprofile/{accesstokenID}/{checksum}";
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet/getprofile/{accesstokenID}";
 	}
 
 	@Override
