@@ -15,6 +15,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class OrderRedisRepository implements OrderRepository {
 
 	private static Logger logger = Logger.getLogger(OrderRedisRepository.class);
@@ -43,6 +44,7 @@ public class OrderRedisRepository implements OrderRepository {
 						"qoute not found.");
 			}			
 			ObjectMapper mapper = new ObjectMapper();
+
 			Map<String,Object> hashMap = mapper.readValue(result, HashMap.class);
 			
 			TopUpQuote topUpQuote = new TopUpQuote();
