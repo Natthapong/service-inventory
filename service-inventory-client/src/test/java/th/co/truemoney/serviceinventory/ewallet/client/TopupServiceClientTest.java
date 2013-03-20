@@ -5,10 +5,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,18 +40,46 @@ public class TopupServiceClientTest {
 	@Autowired
 	TopUpServiceClient topupServiceClient;
 	
+	RestTemplate restTemplate;
+	
+	@Before
+	public void setup(){
+		restTemplate = mock(RestTemplate.class);
+	}
+	
+	@After
+	public void tearDown(){
+		reset(restTemplate);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test @Ignore
 	public void checkCreateOrderFromDirectDebitUrl(){
 		String url = "http://localhost:8585/service-inventory-web/v1/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
 		try{
-			RestTemplate restTemplate = mock(RestTemplate.class);
-			ResponseEntity<TopUpQuote> responseEntity = new ResponseEntity<TopUpQuote>(new TopUpQuote(), HttpStatus.OK);
+			
+			HashMap hashMap = new HashMap();
+			hashMap.put("id", "1234");
+			hashMap.put("amount", "2000");
+			hashMap.put("username", "username");
+			HashMap sourceOfFund = new HashMap();
+			sourceOfFund.put("bankCode", "SCB");
+			sourceOfFund.put("bankNameEn", "Test");
+			sourceOfFund.put("bankNameTh", "Test");
+			sourceOfFund.put("bankAccountNumber", "xxx213");
+			sourceOfFund.put("minAmount", "20");
+			sourceOfFund.put("maxAmount", "30000");
+			hashMap.put("sourceOfFund", sourceOfFund);
+			hashMap.put("topUpFee", "10");
+			hashMap.put("accessTokenID", "99999");
+			
+			ResponseEntity<HashMap> responseEntity = new ResponseEntity<HashMap>(hashMap, HttpStatus.OK);
 			QuoteRequest quoteRequest = new QuoteRequest();
 			quoteRequest.setAmount(new BigDecimal(2000));
 			
 			when(
 					restTemplate.exchange(eq(url), eq(HttpMethod.POST),
-							any(HttpEntity.class), eq(TopUpQuote.class), eq("6789"), eq("12345") , eq(quoteRequest)))
+							any(HttpEntity.class), eq(HashMap.class), eq("6789"), eq("12345") , eq(quoteRequest)))
 								.thenReturn(responseEntity);
 			
 			this.topupServiceClient.restTemplate = restTemplate;
@@ -58,21 +90,6 @@ public class TopupServiceClientTest {
 		}catch(ServiceInventoryException e){
 			assertEquals("500", e.getErrorCode());
 			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
-			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
-		}
-	}
-	
-	@Test @Ignore
-	public void createOrderFromDirectDebit() {
-		try{
-			QuoteRequest quoteRequest = new QuoteRequest();
-			quoteRequest.setAmount(new BigDecimal(2000));
-			quoteRequest.setChecksum("");
-			TopUpQuote topUpQuote = topupServiceClient.createTopUpQuoteFromDirectDebit("678", quoteRequest, "12345");
-			
-			assertNotNull(topUpQuote);
-		}catch(ServiceInventoryException e){
-			assertEquals("404", e.getErrorCode());
 			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
 		}
 	}
