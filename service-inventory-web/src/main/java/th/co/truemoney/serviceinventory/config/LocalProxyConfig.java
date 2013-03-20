@@ -99,7 +99,7 @@ public class LocalProxyConfig {
 					return new SignonResponse("1", "0", "namespace", new String[] {"key"}, new String[] {"value"}, "sessionId", "trueMoneyId");
 				}
 
-				throw new SignonServiceException("500", "un authorize");
+				throw new SignonServiceException("4", "");
 			}
 
 			@Override
