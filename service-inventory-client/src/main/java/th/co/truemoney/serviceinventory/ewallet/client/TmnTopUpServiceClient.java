@@ -16,6 +16,7 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.EnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
@@ -100,6 +101,13 @@ public class TmnTopUpServiceClient implements TopUpService {
 		directDebit.setMinAmount(new BigDecimal(Integer.parseInt(sourceOfFundMap.get("minAmount").toString())));
 		directDebit.setMaxAmount(new BigDecimal(Integer.parseInt(sourceOfFundMap.get("maxAmount").toString())));
 		
+		HashMap confirmationInfoMap = (HashMap) hashMap.get("confirmationInfo");
+		TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
+		confirmationInfo.setTransactionDate(confirmationInfoMap.get("transactionDate").toString());
+		confirmationInfo.setTransactionID(confirmationInfoMap.get("transactionID").toString());
+		
+		topUpOrder.setOtpReferenceCode(hashMap.get("otpReferenceCode").toString());
+		topUpOrder.setConfirmationInfo(confirmationInfo);
 		topUpOrder.setSourceOfFund(directDebit);
 		topUpOrder.setTopUpFee(new BigDecimal(Double.parseDouble(hashMap.get("topUpFee").toString())));
 		topUpOrder.setAccessTokenID(hashMap.get("accessTokenID").toString());
@@ -108,9 +116,38 @@ public class TmnTopUpServiceClient implements TopUpService {
 	}
 
 	@Override
+	@SuppressWarnings("rawtypes")
 	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp,
 			String accessToken) throws ServiceInventoryException {
-		return null;
+		
+		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,
+				headers);
+
+		ResponseEntity<HashMap> responseEntity = restTemplate.exchange(
+				environmentConfig.getConfirmPlaceOrderUrl(), HttpMethod.POST,
+				requestEntity, HashMap.class, topUpOrderId, accessToken);
+
+		HashMap hashMap = responseEntity.getBody();
+		
+		TopUpOrder topUpOrder = new TopUpOrder();
+		topUpOrder.setID(hashMap.get("id").toString());
+		topUpOrder.setAmount(new BigDecimal(Integer.parseInt(hashMap.get("amount").toString())));
+		topUpOrder.setUsername(hashMap.get("username").toString());
+		
+		HashMap sourceOfFundMap = (HashMap) hashMap.get("sourceOfFund");
+		DirectDebit directDebit = new DirectDebit();
+		directDebit.setBankCode(sourceOfFundMap.get("bankCode").toString());
+		directDebit.setBankNameEn(sourceOfFundMap.get("bankNameEn").toString());
+		directDebit.setBankNameTh(sourceOfFundMap.get("bankNameTh").toString());
+		directDebit.setBankAccountNumber(sourceOfFundMap.get("bankAccountNumber").toString());
+		directDebit.setMinAmount(new BigDecimal(Integer.parseInt(sourceOfFundMap.get("minAmount").toString())));
+		directDebit.setMaxAmount(new BigDecimal(Integer.parseInt(sourceOfFundMap.get("maxAmount").toString())));
+		
+		topUpOrder.setSourceOfFund(directDebit);
+		topUpOrder.setTopUpFee(new BigDecimal(Double.parseDouble(hashMap.get("topUpFee").toString())));
+		topUpOrder.setAccessTokenID(hashMap.get("accessTokenID").toString());
+		
+		return topUpOrder;
 	}
 
 	@Override
