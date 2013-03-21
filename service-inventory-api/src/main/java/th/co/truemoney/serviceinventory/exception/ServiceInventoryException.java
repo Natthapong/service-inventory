@@ -1,6 +1,6 @@
 package th.co.truemoney.serviceinventory.exception;
 
-import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("rawtypes")
 public class ServiceInventoryException extends RuntimeException {
@@ -10,13 +10,13 @@ public class ServiceInventoryException extends RuntimeException {
 	private String errorCode;
 	private String errorDescription;
 	private String errorNamespace;
-	private HashMap data; 
+	private Map<String, Object> data; 
 	
-	public HashMap getData() {
+	public Map<String, Object> getData() {
 		return data;
 	}
 
-	public void setData(HashMap data) {
+	public void setData(Map<String, Object> data) {
 		this.data = data;
 	}
 
