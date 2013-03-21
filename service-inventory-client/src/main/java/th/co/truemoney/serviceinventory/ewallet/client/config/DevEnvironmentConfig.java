@@ -44,7 +44,7 @@ public class DevEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getConfirmPlaceOrderUrl() {
-		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{quoteId}/confirm?accessToken={accessToken}";
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{quoteId}/confirm?accessTokenID={accessToken}";
 	}
 
 	@Override
