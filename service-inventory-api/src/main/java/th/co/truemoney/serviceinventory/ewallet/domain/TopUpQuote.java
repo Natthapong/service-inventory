@@ -3,6 +3,8 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+
 
 public class TopUpQuote implements Serializable {
 
@@ -10,6 +12,7 @@ public class TopUpQuote implements Serializable {
 	private static final long serialVersionUID = 2372537225330036311L;
 
 	private String ID;
+	@JsonDeserialize(as=DirectDebit.class)
 	private SourceOfFund sourceOfFund;
 	private String accessTokenID;
 	private String username;

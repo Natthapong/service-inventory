@@ -2,10 +2,13 @@ package th.co.truemoney.serviceinventory.ewallet.impl;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +70,7 @@ public class TopUpServiceImpl implements TopUpService {
 	private OTPService otpService;
 
 	@Override
+    @SuppressWarnings("unchecked")
 	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID,
 			QuoteRequest quoteRequest, String accessTokenID) {
 
@@ -89,14 +93,18 @@ public class TopUpServiceImpl implements TopUpService {
 			ServiceInventoryException se = new ServiceInventoryException(
 					ServiceInventoryException.Code.INVALID_AMOUNT_LESS,
 					"amount less than min amount.");
-			se.setData(sofDetail);
+			ObjectMapper mapper = new ObjectMapper();
+			Map<String, Object> hashMap = mapper.convertValue(sofDetail, HashMap.class);
+			se.setData(hashMap);
 			throw se; 
 		}
 		if (amount.compareTo(maxAmount) > 0) {
 			ServiceInventoryException se = new ServiceInventoryException(
 					ServiceInventoryException.Code.INVALID_AMOUNT_MORE,
 					"amount less than max amount.");
-			se.setData(sofDetail);
+			ObjectMapper mapper = new ObjectMapper();
+			Map<String, Object> hashMap = mapper.convertValue(sofDetail, HashMap.class);
+			se.setData(hashMap);
 			throw se; 
 		}
 

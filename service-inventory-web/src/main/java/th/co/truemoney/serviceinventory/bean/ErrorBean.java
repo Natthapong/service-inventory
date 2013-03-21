@@ -1,14 +1,15 @@
 package th.co.truemoney.serviceinventory.bean;
 
 import java.io.Serializable;
+import java.util.Map;
 
-public class ErrorBean<T> implements Serializable {
+public class ErrorBean implements Serializable {
 
 	private static final long serialVersionUID = 3740830271398781986L;
 	private String errorCode;
 	private String errorDescription;
 	private String errorNamespace;	
-	private T data;
+	private Map<String, Object> data;
 	
 	public ErrorBean(String errorCode, String errorDescription) {
 		this.errorCode = errorCode;
@@ -33,10 +34,11 @@ public class ErrorBean<T> implements Serializable {
 	public void setErrorNamespace(String errorNamespace) {
 		this.errorNamespace = errorNamespace;
 	}
-	public T getData() {
+	public Map<String, Object> getData() {
 		return data;
 	}
-	public void setData(T data) {
+	public void setData(Map<String, Object> data) {
 		this.data = data;
-	}	
+	}
+	
 }

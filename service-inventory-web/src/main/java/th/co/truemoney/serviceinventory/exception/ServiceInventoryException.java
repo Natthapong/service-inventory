@@ -1,15 +1,16 @@
 package th.co.truemoney.serviceinventory.exception;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
 
 import th.co.truemoney.serviceinventory.bean.ErrorBean;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class ServiceInventoryException extends BaseException {
 	
 	private static final long serialVersionUID = 7328535407875381185L;
 	
-	private Object data;	
+	private Map<String, Object> data;	
 	
 	public ServiceInventoryException(String code, String description) {
 		super(code, description);
@@ -19,8 +20,8 @@ public class ServiceInventoryException extends BaseException {
 		super(code, description, namespace);
 	}
 	
-	public void setData(Object t) {
-		this.data = t;
+	public void setData(Map<String, Object> data) {
+		this.data = data;
 	}
 
 	@Override

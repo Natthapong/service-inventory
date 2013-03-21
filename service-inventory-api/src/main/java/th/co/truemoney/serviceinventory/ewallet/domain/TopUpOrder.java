@@ -3,7 +3,6 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
 public class TopUpOrder implements Serializable {
