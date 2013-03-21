@@ -109,14 +109,11 @@ public class TopUpOrder implements Serializable {
 
 	@Override
 	public String toString() {
-		return new StringBuffer()
-		.append(this.ID)
-		.append(this.accessTokenID)
-		.append(this.username)
-		.append(this.amount)
-		.append(this.topUpFee)
-		.append(this.status)
-		.toString();
+		return "TopUpOrder [ID=" + ID + ", sourceOfFund=" + sourceOfFund
+				+ ", accessTokenID=" + accessTokenID + ", username=" + username
+				+ ", amount=" + amount + ", topUpFee=" + topUpFee
+				+ ", otpReferenceCode=" + otpReferenceCode + ", status="
+				+ status + ", confirmationInfo=" + confirmationInfo + "]";
 	}
 		
 }
