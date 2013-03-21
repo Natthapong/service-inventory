@@ -39,22 +39,22 @@ public class DevEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getRequestPlaceOrder() {
-		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{quoteId}?accessToken={accessToken}";
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{quoteId}?accessTokenID={accessTokenID}";
 	}
 
 	@Override
 	public String getConfirmPlaceOrderUrl() {
-		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{quoteId}/confirm?accessTokenID={accessToken}";
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{topUpOrderID}/confirm?accessTokenID={accessTokenID}";
 	}
 
 	@Override
 	public String getTopUpOrderStatusUrl() {
-		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{quoteId}/status?accessToken={accessToken}";
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{topUpOrderID}/status?accessTokenID={accessTokenID}";
 	}
 
 	@Override
 	public String getTopUpOrderDetailsUrl() {
-		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{quoteId}?accessToken={accessToken}";
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{topUpOrderID}?accessTokenID={accessTokenID}";
 	}
 	
 }

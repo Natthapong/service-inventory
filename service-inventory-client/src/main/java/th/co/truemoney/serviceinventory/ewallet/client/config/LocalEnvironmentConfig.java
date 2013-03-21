@@ -40,22 +40,22 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getRequestPlaceOrder() {
-		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}?accessTokenID={accessToken}";
+		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}?accessTokenID={accessTokenID}";
 	}
 
 	@Override
 	public String getConfirmPlaceOrderUrl() {
-		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}/confirm?accessToken={accessToken}";
+		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{topUpOrderID}/confirm?accessTokenID={accessTokenID}";
 	}
 
 	@Override
 	public String getTopUpOrderStatusUrl() {
-		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}/status?accessToken={accessToken}";
+		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{topUpOrderID}/status?accessTokenID={accessTokenID}";
 	}
 
 	@Override
 	public String getTopUpOrderDetailsUrl() {
-		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}?accessToken={accessToken}";
+		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{topUpOrderID}?accessTokenID={accessTokenID}";
 	}
 	
 }
