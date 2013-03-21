@@ -65,7 +65,7 @@ public class TmnTopupServiceClientRealDataTest {
 		}
 	}
 	
-	@Test
+	@Test @Ignore
 	public void checkRequestPlaceOrder(){
 		try{
 			OTP otp = new OTP("112233", "663f78927872f867d883179378a12dde7ae6a71c");			
