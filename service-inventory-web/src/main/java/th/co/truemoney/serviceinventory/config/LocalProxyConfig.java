@@ -17,6 +17,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
+import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
+import th.co.truemoney.serviceinventory.dao.impl.RedisLoggingDaoImpl;
+import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
@@ -40,9 +43,11 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyRespo
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -145,6 +150,31 @@ public class LocalProxyConfig {
 		return new OrderMemoryRepository(){
 			public TopUpQuote getTopUpQuote(String orderID) {
 				return new TopUpQuote();
+			}
+		};
+	}
+	
+	@Bean @Primary
+	public AccessTokenRepository stubAccessTokenRepository(){
+		return new AccessTokenRedisRepository(){
+			public AccessToken getAccessToken(String accessTokenId) throws ServiceInventoryException {
+				return new AccessToken("12345", "6789", "555", "username", "0861234567", "local@tmn.com", 41);
+			}
+		};
+	}
+	
+	@Bean @Primary
+	public RedisLoggingDao stubRedisLoggingDao(){
+		return new RedisLoggingDaoImpl(){
+			public String getData(String key) {
+				String format = "{\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":%d}";
+				return String.format(format, "accessTokenID", "12345", 
+											"sessionID", "6789",
+											"truemoneyID", "555",
+											"username", "username",
+											"mobileno", "0861234567",
+											"email", "local@tmn.com", 
+											"channelID", 41);
 			}
 		};
 	}

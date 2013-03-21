@@ -29,6 +29,19 @@ public class TmnTopupServiceClientRealDataTest {
 	TmnTopUpServiceClient topupServiceClient;
 	
 	@Test @Ignore
+	public void failCaseMinMax(){
+		try{
+			QuoteRequest quoteRequest = new QuoteRequest();
+			quoteRequest.setAmount(new BigDecimal(10));
+			quoteRequest.setChecksum("");
+			topupServiceClient.createTopUpQuoteFromDirectDebit("678", quoteRequest, "12345");
+		}catch(ServiceInventoryException e){
+			assertNotNull(e.getData());
+			assertEquals("20001", e.getErrorCode());
+		}
+	}
+	
+	@Test @Ignore
 	public void createOrderFromDirectDebit() {
 		try{
 			QuoteRequest quoteRequest = new QuoteRequest();
