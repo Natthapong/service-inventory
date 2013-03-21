@@ -30,18 +30,46 @@ public class AsyncService {
 	@Autowired
 	private EwalletSoapProxy ewalletProxy;
 	
+	public OrderRepository getOrderRepo() {
+		return orderRepo;
+	}
+
+	public void setOrderRepo(OrderRepository orderRepo) {
+		this.orderRepo = orderRepo;
+	}
+
+	public EwalletSoapProxy getEwalletProxy() {
+		return ewalletProxy;
+	}
+
+	public void setEwalletProxy(EwalletSoapProxy ewalletProxy) {
+		this.ewalletProxy = ewalletProxy;
+	}
+
 	@Async
 	public Future<TopUpOrder> topUpUtibaEwallet(TopUpOrder topUpOrder, AddMoneyRequest addMoneyRequest) {
-		logger.debug("start time " + new Date());
-		StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
-		logger.debug("finished time " + new Date());
-		if(moneyResponse.getResultCode().equals("0")) {
-			topUpOrder.setStatus(TopUpStatus.CONFIRMED);			
-		} else {
+		try {
+			logger.debug("start time " + new Date());
+			StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
+			logger.debug("finished time " + new Date());
+			String resultCode = moneyResponse.getResultCode();
+			if(resultCode.equals("0")) {
+				topUpOrder.setStatus(TopUpStatus.CONFIRMED);			
+			} else if (resultCode.equals("24003") || resultCode.equals("24008") || 
+					resultCode.equals("24010") || resultCode.equals("25007")) {
+				topUpOrder.setStatus(TopUpStatus.BANK_FAILED);
+			} else if (resultCode.equals("5") || resultCode.equals("6") || 
+					resultCode.equals("7") || resultCode.equals("19") || 
+					resultCode.equals("27") || resultCode.equals("38")) {
+				topUpOrder.setStatus(TopUpStatus.UMARKET_FAILED);
+			}else {
+				topUpOrder.setStatus(TopUpStatus.FAILED);			
+			} 
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			logger.error(e.getStackTrace().toString());
 			topUpOrder.setStatus(TopUpStatus.FAILED);
-			// 24003, 24008, 24010, 25007 BANK_FAIL			
-			// 5, 6, 7, 19, 27, 38 UMARKET_FAIL
-		} 
+		}
 		
 		orderRepo.saveTopUpOrder(topUpOrder);
 		
