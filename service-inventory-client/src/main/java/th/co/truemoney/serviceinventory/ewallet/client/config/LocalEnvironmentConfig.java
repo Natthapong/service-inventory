@@ -55,7 +55,7 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getTopUpOrderDetailsUrl() {
-		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{topUpOrderID}?accessTokenID={accessTokenID";
+		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{topUpOrderID}?accessTokenID={accessTokenID}";
 	}
 	
 }

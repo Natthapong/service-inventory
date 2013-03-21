@@ -101,7 +101,6 @@ public class TmnTopUpServiceClient implements TopUpService {
 		directDebit.setMinAmount(new BigDecimal(Double.parseDouble(sourceOfFundMap.get("minAmount").toString())));
 		directDebit.setMaxAmount(new BigDecimal(Double.parseDouble(sourceOfFundMap.get("maxAmount").toString())));
 		
-		HashMap confirmationInfoMap = (HashMap) hashMap.get("confirmationInfo");
 		TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
 		confirmationInfo.setTransactionDate(null);
 		confirmationInfo.setTransactionID(null);
@@ -136,9 +135,44 @@ public class TmnTopUpServiceClient implements TopUpService {
 		return topUpStatus;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public TopUpOrder getTopUpOrderDetails(String topUpOrderId,
 			String accessToken) throws ServiceInventoryException {
+		
+		HttpEntity<TopUpOrder> requestEntity = new HttpEntity<TopUpOrder>(
+				headers);
+
+		ResponseEntity<HashMap> responseEntity = restTemplate.exchange(
+				environmentConfig.getTopUpOrderDetailsUrl(), HttpMethod.GET,
+				requestEntity, HashMap.class, accessToken);
+
+		HashMap hashMap = responseEntity.getBody();
+		
+		TopUpOrder topUpOrder = new TopUpOrder();
+		topUpOrder.setID(hashMap.get("id").toString());
+		topUpOrder.setAmount(new BigDecimal(Double.parseDouble(hashMap.get("amount").toString())));
+		topUpOrder.setUsername(hashMap.get("username").toString());
+		
+		HashMap sourceOfFundMap = (HashMap) hashMap.get("sourceOfFund");
+		DirectDebit directDebit = new DirectDebit();
+		directDebit.setBankCode(sourceOfFundMap.get("bankCode").toString());
+		directDebit.setBankNameEn(sourceOfFundMap.get("bankNameEn").toString());
+		directDebit.setBankNameTh(sourceOfFundMap.get("bankNameTh").toString());
+		directDebit.setBankAccountNumber(sourceOfFundMap.get("bankAccountNumber").toString());
+		directDebit.setMinAmount(new BigDecimal(Double.parseDouble(sourceOfFundMap.get("minAmount").toString())));
+		directDebit.setMaxAmount(new BigDecimal(Double.parseDouble(sourceOfFundMap.get("maxAmount").toString())));
+		
+		HashMap confirmationInfoMap = (HashMap) hashMap.get("confirmationInfo");
+		TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
+		confirmationInfo.setTransactionDate(confirmationInfoMap.get("transactionDate").toString());
+		confirmationInfo.setTransactionID(confirmationInfoMap.get("transactionID").toString());
+		
+		topUpOrder.setOtpReferenceCode(hashMap.get("otpReferenceCode").toString());
+		topUpOrder.setConfirmationInfo(confirmationInfo);
+		topUpOrder.setSourceOfFund(directDebit);
+		topUpOrder.setTopUpFee(new BigDecimal(Double.parseDouble(hashMap.get("topUpFee").toString())));
+		topUpOrder.setAccessTokenID(hashMap.get("accessTokenID").toString());
 		return null;
 	}
 
