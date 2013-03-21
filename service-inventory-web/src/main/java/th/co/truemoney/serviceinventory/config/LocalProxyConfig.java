@@ -212,9 +212,14 @@ public class LocalProxyConfig {
 			@Override
 			public StandardMoneyResponse addMoney(
 					AddMoneyRequest addMoneyRequest) throws EwalletException {
-				// TODO Auto-generated method stub
-				//Thread.sleep(1000);
-				return null;
+				StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				moneyResponse.setResultCode("0");
+				return moneyResponse;
 			}
 
 		};
