@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
+import java.util.Date;
 import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
@@ -10,14 +11,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
 public class AsyncService {
@@ -31,21 +31,14 @@ public class AsyncService {
 	private EwalletSoapProxy ewalletProxy;
 	
 	@Async
-	public Future<TopUpOrder> topUpUtibaEwallet(TopUpOrder topUpOrder, AccessToken accessToken) {
-		logger.debug("call ewalletProxy");
-		AddMoneyRequest addMoneyRequest = new AddMoneyRequest();
-		addMoneyRequest.setAmount(topUpOrder.getAmount());
-		addMoneyRequest.setChannelId(accessToken.getChannelID());		
-		addMoneyRequest.setRequestTransactionId(topUpOrder.getConfirmationInfo().getTransactionID());
-		addMoneyRequest.setSecurityContext(new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID()));
-		addMoneyRequest.setSourceId(topUpOrder.getSourceOfFund().getSourceOfFundID());
-		addMoneyRequest.setSourceType(topUpOrder.getSourceOfFund().getSourceOfFundType());
-		
-		StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);		
-		
+	public Future<TopUpOrder> topUpUtibaEwallet(TopUpOrder topUpOrder, AddMoneyRequest addMoneyRequest) {
+		logger.debug("start time " + new Date());
+		StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
+		logger.debug("finished time " + new Date());
 		if(moneyResponse.getResultCode().equals("0")) {
 			topUpOrder.setStatus(TopUpStatus.CONFIRMED);
-			
+			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH,
+					"Invalide OTP.");
 		} else {
 			topUpOrder.setStatus(TopUpStatus.FAILED);
 		} 
