@@ -116,8 +116,16 @@ public class TmnTopUpServiceClient implements TopUpService {
 
 	@Override
 	public TopUpOrder confirmPlaceOrder(String topUpOrderId, OTP otp,
-			String accessToken) throws ServiceInventoryException {
-		return null;
+			String accessTokenId) throws ServiceInventoryException {
+		
+		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp, headers);
+		
+		ResponseEntity<TopUpOrder> responseEntity = restTemplate.exchange(
+				environmentConfig.getConfirmPlaceOrderUrl(),
+					HttpMethod.POST, requestEntity, TopUpOrder.class, topUpOrderId, accessTokenId, otp);
+		TopUpOrder topUpOrder = responseEntity.getBody();
+				
+		return topUpOrder;
 	}
 
 	@Override
