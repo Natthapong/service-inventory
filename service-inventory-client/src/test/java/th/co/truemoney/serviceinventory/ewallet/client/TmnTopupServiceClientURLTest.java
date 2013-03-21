@@ -9,6 +9,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.junit.After;
@@ -27,6 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
@@ -95,6 +97,34 @@ public class TmnTopupServiceClientURLTest {
 	}
 	
 	@Test @Ignore
+	public void createOrderFromDirectDebit() {
+		try{
+			QuoteRequest quoteRequest = new QuoteRequest();
+			quoteRequest.setAmount(new BigDecimal(2000));
+			quoteRequest.setChecksum("");
+			TopUpQuote topUpQuote = topupServiceClient.createTopUpQuoteFromDirectDebit("678", quoteRequest, "12345");
+			
+			assertNotNull(topUpQuote);
+		}catch(ServiceInventoryException e){
+			assertEquals("404", e.getErrorCode());
+			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
+		}
+	}
+	
+	@Test
+	public void checkRequestPlaceOrder(){
+		try{
+			OTP otp = new OTP("112233", "663f78927872f867d883179378a12dde7ae6a71c");			
+			TopUpOrder topUpOrder = topupServiceClient.confirmPlaceOrder("1", otp, "12345");
+			assertNotNull(topUpOrder);
+			System.out.println("finished call remote:" + new Date());
+		} catch(ServiceInventoryException e){
+			System.out.println(e.getErrorCode());
+			assertEquals("1004", e.getErrorCode());
+		}
+	}
+	
+	@Test @Ignore
 	public void checkRequestPlaceOrderUrl(){
 		String url = "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}?accessToken={accessToken}";
 		try{
@@ -109,6 +139,7 @@ public class TmnTopupServiceClientURLTest {
 			
 			TopUpOrder topUpOrder = topupServiceClient.requestPlaceOrder("12345", "6789");
 			assertNotNull(topUpOrder);
+			
 			
 		}catch(ServiceInventoryException e){
 			assertEquals("500", e.getErrorCode());
