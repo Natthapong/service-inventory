@@ -21,12 +21,15 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncService;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -169,12 +172,24 @@ public class TopUpServiceImplTest {
 	public void confirmPlaceOrder() {
 		AccessToken accessToken = new AccessToken();
 		accessToken.setMobileno("0890123456");
+		accessToken.setSessionID("sessionID");
+		accessToken.setTruemoneyID("truemoneyID");
+		accessToken.setChannelID(41);
 		TopUpOrder topUpOrder = new TopUpOrder();
 		topUpOrder.setID("1");
 		OTP otp = new OTP();
 		String localChecksum = EncryptUtil.buildHmacSignature("accessToken", topUpOrder.toString()+"accessToken");
 		otp.setChecksum(localChecksum);
 		otp.setOtpString("otpString");
+		DirectDebit debit = new DirectDebit();
+		debit.setSourceOfFundID("1");
+		debit.setSourceOfFundType("debit");
+		TopUpConfirmationInfo topUpConfirmationInfo = new TopUpConfirmationInfo();
+		topUpConfirmationInfo.setTransactionID("1234");
+		topUpConfirmationInfo.setTransactionDate("dd/mm/yyyy");
+		
+		topUpOrder.setSourceOfFund(debit);
+		topUpOrder.setConfirmationInfo(topUpConfirmationInfo);
 		
 		asyncService = mock(AsyncService.class);
 		OrderRepository orderRepo = mock(OrderRepository.class);
@@ -190,8 +205,16 @@ public class TopUpServiceImplTest {
 				
 		TopUpOrder order = topUpService.confirmPlaceOrder(topUpOrder.getID(), otp, "accessToken");
 		
+		AddMoneyRequest addMoneyRequest = new AddMoneyRequest();			
+		addMoneyRequest.setAmount(topUpOrder.getAmount());
+		addMoneyRequest.setChannelId(41);		
+		addMoneyRequest.setRequestTransactionId(topUpOrder.getConfirmationInfo().getTransactionID());
+		addMoneyRequest.setSecurityContext(new SecurityContext("sessionID", "truemoneyID"));
+		addMoneyRequest.setSourceId(topUpOrder.getSourceOfFund().getSourceOfFundID());
+		addMoneyRequest.setSourceType(topUpOrder.getSourceOfFund().getSourceOfFundType());
+		
 		assertEquals(TopUpStatus.PROCESSING, order.getStatus());
-		verify(asyncService).topUpUtibaEwallet(topUpOrder, accessToken);
+		verify(asyncService).topUpUtibaEwallet(topUpOrder, addMoneyRequest);
 		verify(orderRepo).saveTopUpOrder(topUpOrder);
 	}
 	
