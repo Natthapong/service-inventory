@@ -290,34 +290,5 @@ public class TopUpServiceImplTest {
 		} catch (ServiceInventoryException e) {			
 			assertEquals("1001", e.getCode());
 		}
-	}
-	
-	@Test 
-	public void confirmPlaceOrderFailInvalidChecksum() {
-		AccessToken accessToken = new AccessToken();
-		accessToken.setMobileno("0890123456");
-		TopUpOrder topUpOrder = new TopUpOrder();
-		topUpOrder.setID("1");
-		OTP otp = new OTP();
-		String localChecksum = EncryptUtil.buildHmacSignature("accessToken", topUpOrder.toString()+"accessToken");
-		otp.setChecksum("fail"+localChecksum);
-		otp.setOtpString("otpString");
-		
-		asyncService = mock(AsyncService.class);
-		OrderRepository orderRepo = mock(OrderRepository.class);
-		
-		when(orderRepo.getTopUpOrder(anyString())).thenReturn(topUpOrder);
-		when(accessTokenRepoMock.getAccessToken(anyString())).thenReturn(accessToken);
-		when(otpService.getOTPString(anyString())).thenReturn("otpString");
-		
-		topUpService.setAsyncService(asyncService);
-		topUpService.setOrderRepository(orderRepo);
-		topUpService.setOtpService(otpService);		
-				
-		try {
-			topUpService.confirmPlaceOrder(topUpOrder.getID(), otp, "accessToken");
-		} catch (ServiceInventoryException e) {			
-			assertEquals("1002", e.getCode());
-		}
-	}
+	}	
 }
