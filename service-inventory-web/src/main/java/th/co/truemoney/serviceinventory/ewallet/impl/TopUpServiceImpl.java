@@ -37,8 +37,6 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.util.AccessTokenUtil;
-import th.co.truemoney.serviceinventory.util.EncryptUtil;
 import th.co.truemoney.serviceinventory.util.FeeUtil;
 
 @Service
@@ -229,6 +227,7 @@ public class TopUpServiceImpl implements TopUpService {
 		logger.debug(topUpOrder.toString());
 		AccessToken accessTokenObj = accessTokenRepo.getAccessToken(accessToken);	
 		logger.debug(accessTokenObj.toString());
+		//logger.debug("confirmationInfo "+topUpOrder.getConfirmationInfo().toString());
 		String otpString = otpService.getOTPString(accessTokenObj.getMobileno());
 		if(!otp.getOtpString().equals(otpString)){
 			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH,
@@ -238,7 +237,7 @@ public class TopUpServiceImpl implements TopUpService {
 		AddMoneyRequest addMoneyRequest = new AddMoneyRequest();			
 		addMoneyRequest.setAmount(topUpOrder.getAmount());
 		addMoneyRequest.setChannelId(accessTokenObj.getChannelID());		
-		addMoneyRequest.setRequestTransactionId(topUpOrder.getConfirmationInfo().getTransactionID());
+		//addMoneyRequest.setRequestTransactionId(topUpOrder.getConfirmationInfo().getTransactionID());
 		addMoneyRequest.setSecurityContext(new SecurityContext(accessTokenObj.getSessionID(), accessTokenObj.getTruemoneyID()));
 		addMoneyRequest.setSourceId(topUpOrder.getSourceOfFund().getSourceOfFundID());
 		addMoneyRequest.setSourceType(topUpOrder.getSourceOfFund().getSourceOfFundType());
@@ -256,7 +255,18 @@ public class TopUpServiceImpl implements TopUpService {
 	@Override
 	public TopUpStatus getTopUpOrderStatus(String topUpOrderID,
 			String accessTokenID) throws ServiceInventoryException {
-		TopUpStatus topUpStatus = getTopUpOrderDetails(topUpOrderID, accessTokenID).getStatus();
+		TopUpStatus topUpStatus = getTopUpOrderDetails(topUpOrderID, accessTokenID).getStatus();		
+
+		if(topUpStatus == TopUpStatus.BANK_FAILED) {
+			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_BANK_FAILED, 
+					"bank confirmation processing fail.");
+		} else if (topUpStatus == TopUpStatus.UMARKET_FAILED) {
+			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_UMARKET_FAILED, 
+					"u-market confirmation processing fail.");
+		} else if (topUpStatus == TopUpStatus.FAILED){
+			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_FAILED, 
+					"confirmation processing fail.");
+		}
 		
 		return topUpStatus;
 	}
