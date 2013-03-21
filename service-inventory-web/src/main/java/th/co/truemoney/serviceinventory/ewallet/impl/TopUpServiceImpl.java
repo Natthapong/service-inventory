@@ -256,22 +256,23 @@ public class TopUpServiceImpl implements TopUpService {
 	@Override
 	public TopUpStatus getTopUpOrderStatus(String topUpOrderID,
 			String accessTokenID) throws ServiceInventoryException {
+
 		TopUpStatus topUpStatus = getTopUpOrderDetails(topUpOrderID, accessTokenID).getStatus();
-		
+
 		return topUpStatus;
 	}
 
 	@Override
 	public TopUpOrder getTopUpOrderDetails(String topUpOrderID,
 			String accessTokenID) throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 		if (accessToken == null) {
 			throw new ServiceInventoryException(
 					ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
 					"AccessTokenID is expired or not found.");
 		}
-		
+
 		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(topUpOrderID);
 		
 		return topUpOrder;

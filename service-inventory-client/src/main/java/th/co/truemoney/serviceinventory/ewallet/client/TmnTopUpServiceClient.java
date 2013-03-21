@@ -147,14 +147,13 @@ public class TmnTopUpServiceClient implements TopUpService {
 	@Override
 	public TopUpOrder getTopUpOrderDetails(String topUpOrderId,
 			String accessToken) throws ServiceInventoryException {
-		
+
 		HttpEntity<TopUpOrder> requestEntity = new HttpEntity<TopUpOrder>(
 				headers);
 
 		ResponseEntity<HashMap> responseEntity = restTemplate.exchange(
 				environmentConfig.getTopUpOrderDetailsUrl(), HttpMethod.GET,
-				requestEntity, HashMap.class, accessToken);
-
+				requestEntity, HashMap.class, topUpOrderId,accessToken);
 		HashMap hashMap = responseEntity.getBody();
 		
 		TopUpOrder topUpOrder = new TopUpOrder();

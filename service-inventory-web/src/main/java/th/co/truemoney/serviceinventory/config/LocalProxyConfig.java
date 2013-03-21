@@ -9,6 +9,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -25,6 +26,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.impl.OTPServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -54,6 +56,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundReposit
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderRedisRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
@@ -150,12 +153,39 @@ public class LocalProxyConfig {
 		};
 	}
 
+	@Bean @Primary @Qualifier("orderRedisRepository")
+	public OrderRepository stubOrderRepositoryReddis(){
+		return new OrderRedisRepository(){
+			public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
+				TopUpOrder topUpOrder = new TopUpOrder();
+				topUpOrder.setID("1111");
+				topUpOrder.setAccessTokenID("12345");
+				topUpOrder.setUsername("username");
+				topUpOrder.setStatus(TopUpStatus.CONFIRMED);
+				topUpOrder.setAmount(new BigDecimal(5000));
+				DirectDebit directDebit = new DirectDebit();
+				directDebit.setBankCode("MART");
+				directDebit.setBankNameEn("MART");
+				directDebit.setBankNameTh("MART");
+				directDebit.setBankAccountNumber("XXMART");
+				directDebit.setMinAmount(new BigDecimal(5000));
+				directDebit.setMaxAmount(new BigDecimal(5001));
+				topUpOrder.setSourceOfFund(directDebit);
+				TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
+				confirmationInfo.setTransactionDate("12/12/12");
+				confirmationInfo.setTransactionID("555");
+				topUpOrder.setConfirmationInfo(confirmationInfo);
+				topUpOrder.setOtpReferenceCode("1234");
+				topUpOrder.setTopUpFee(new BigDecimal(1235));
+				topUpOrder.setAccessTokenID("456");
+				return topUpOrder;
+			}
+		};
+	}
+	
 	@Bean @Primary
 	public OrderRepository stubOrderRepository(){
 		return new OrderMemoryRepository(){
-			public TopUpQuote getTopUpQuote(String orderID) {
-				return new TopUpQuote();
-			}
 			public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
 				TopUpOrder topUpOrder = new TopUpOrder();
 				if (orderID.equals("1")) {

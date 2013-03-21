@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -21,6 +20,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,12 +39,21 @@ public class TmnTopupServiceClientRealDataTest {
 			quoteRequest.setChecksum("");
 			topupServiceClient.createTopUpQuoteFromDirectDebit("678", quoteRequest, "12345");
 		}catch(ServiceInventoryException e){
-			System.out.println(e.getData());
-			HashMap debit = (HashMap) e.getData();
-			//System.out.println(debit.get("bankCode").toString());
 			assertNotNull(e.getData());
 			assertEquals("20001", e.getErrorCode());
 		}
+	}
+	
+	@Test @Ignore
+	public void getOrderStatus(){
+		TopUpStatus topUpStatus = topupServiceClient.getTopUpOrderStatus("333", "12345");
+		assertEquals(TopUpStatus.CONFIRMED, topUpStatus);
+	}
+	
+	@Test
+	public void getTopUpOrderDetails(){
+		TopUpOrder topUpOrder = topupServiceClient.getTopUpOrderDetails("333", "12345");
+		assertEquals(topUpOrder.getUsername(), "username");
 	}
 	
 	@Test @Ignore
