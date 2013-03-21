@@ -2,12 +2,13 @@ package th.co.truemoney.serviceinventory.bean;
 
 import java.io.Serializable;
 
-public class ErrorBean implements Serializable {
+public class ErrorBean<T> implements Serializable {
 
 	private static final long serialVersionUID = 3740830271398781986L;
 	private String errorCode;
 	private String errorDescription;
 	private String errorNamespace;	
+	private T data;
 	
 	public ErrorBean(String errorCode, String errorDescription) {
 		this.errorCode = errorCode;
@@ -32,4 +33,10 @@ public class ErrorBean implements Serializable {
 	public void setErrorNamespace(String errorNamespace) {
 		this.errorNamespace = errorNamespace;
 	}
+	public T getData() {
+		return data;
+	}
+	public void setData(T data) {
+		this.data = data;
+	}	
 }
