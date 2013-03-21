@@ -43,6 +43,7 @@ public class AsyncService {
 	        java.text.SimpleDateFormat df= new java.text.SimpleDateFormat();
 	        df.applyPattern("dd/mm/yyyy HH:mm");
 			info.setTransactionDate(df.format(date));
+			topUpOrder.setConfirmationInfo(info);
 		}
 		
 		if(moneyResponse.getResultCode().equals("0")) {
