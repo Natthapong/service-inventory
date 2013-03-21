@@ -50,7 +50,7 @@ public class TmnTopupServiceClientRealDataTest {
 		assertEquals(TopUpStatus.CONFIRMED, topUpStatus);
 	}
 	
-	@Test
+	@Test @Ignore
 	public void getTopUpOrderDetails(){
 		TopUpOrder topUpOrder = topupServiceClient.getTopUpOrderDetails("333", "12345");
 		assertEquals(topUpOrder.getUsername(), "username");
