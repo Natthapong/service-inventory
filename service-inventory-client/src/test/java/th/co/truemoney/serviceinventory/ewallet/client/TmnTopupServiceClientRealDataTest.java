@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -36,6 +37,9 @@ public class TmnTopupServiceClientRealDataTest {
 			quoteRequest.setChecksum("");
 			topupServiceClient.createTopUpQuoteFromDirectDebit("678", quoteRequest, "12345");
 		}catch(ServiceInventoryException e){
+			System.out.println(e.getData());
+			HashMap debit = (HashMap) e.getData();
+			//System.out.println(debit.get("bankCode").toString());
 			assertNotNull(e.getData());
 			assertEquals("20001", e.getErrorCode());
 		}
