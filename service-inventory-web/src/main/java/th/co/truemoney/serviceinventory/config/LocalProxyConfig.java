@@ -16,14 +16,17 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
+import th.co.truemoney.serviceinventory.bean.OTPBean;
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.dao.impl.RedisLoggingDaoImpl;
+import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
+import th.co.truemoney.serviceinventory.ewallet.impl.OTPServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRequest;
@@ -57,6 +60,7 @@ import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.firsthop.proxy.impl.SmsProxyImpl;
+import th.co.truemoney.serviceinventory.util.RandomUtil;
 
 
 @Configuration
@@ -207,6 +211,28 @@ public class LocalProxyConfig {
 				directDebit.setSourceOfFundID("1");
 				directDebit.setSourceOfFundType("debit");
 				return directDebit;
+			}
+		};
+	}
+	
+	@Bean @Primary
+	public OTPService stubOTPService() {
+		return new OTPServiceImpl() {
+			public String send(String mobileno) throws ServiceInventoryException {
+				try {
+					OTPBean otpBean = new OTPBean(mobileno, RandomUtil.genRandomNumber(6), RandomUtil.genRandomString(4));
+					//otpRepository.saveOTP(otpBean);
+					return otpBean.getOtpReferenceCode();
+				} catch (Exception e) {
+					throw new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");			
+				} 
+			}
+
+			public String getOTPString(String mobileno) throws ServiceInventoryException {
+			    	if(!mobileno.equals("0861234567")) {
+			    		throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "OTP not found. ");
+					} 
+				return "112233";
 			}
 		};
 	}
