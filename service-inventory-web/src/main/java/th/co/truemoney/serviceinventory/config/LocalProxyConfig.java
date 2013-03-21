@@ -18,6 +18,8 @@ import org.springframework.core.io.ClassPathResource;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -145,6 +147,25 @@ public class LocalProxyConfig {
 		return new OrderMemoryRepository(){
 			public TopUpQuote getTopUpQuote(String orderID) {
 				return new TopUpQuote();
+			}
+			public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
+				TopUpOrder topUpOrder = new TopUpOrder();
+				if (orderID.equals("1")) {
+					TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
+			    	confirmationInfo.setTransactionID("1");
+			    	confirmationInfo.setTransactionDate("03-21-2013 16:45");
+			    	DirectDebit directDebit = new DirectDebit();
+			    	directDebit.setSourceOfFundID("123");
+			    	directDebit.setSourceOfFundType("direc-debit");
+			    	TopUpOrder topupOrder = new TopUpOrder();
+			    	topupOrder.setID("1");
+			    	topupOrder.setConfirmationInfo(confirmationInfo);
+			    	topupOrder.setSourceOfFund(directDebit);					
+				} else {
+					throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_ORDER_NOT_FOUND,
+							"TopUp order not found.");
+				} 
+				return topUpOrder;
 			}
 		};
 	}
