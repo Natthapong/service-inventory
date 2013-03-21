@@ -6,6 +6,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 
 import java.math.BigDecimal;
 
@@ -193,16 +196,15 @@ public class TopUpServiceImplTest {
 		
 		asyncService = mock(AsyncService.class);
 		OrderRepository orderRepo = mock(OrderRepository.class);
-		
+				
 		when(orderRepo.getTopUpOrder(anyString())).thenReturn(topUpOrder);
 		when(accessTokenRepoMock.getAccessToken(anyString())).thenReturn(accessToken);
 		when(otpService.getOTPString(anyString())).thenReturn("otpString");
-		
+				
 		topUpService.setAsyncService(asyncService);
 		topUpService.setOrderRepository(orderRepo);
 		topUpService.setOtpService(otpService);
-		
-				
+						
 		TopUpOrder order = topUpService.confirmPlaceOrder(topUpOrder.getID(), otp, "accessToken");
 		
 		AddMoneyRequest addMoneyRequest = new AddMoneyRequest();			
@@ -214,7 +216,7 @@ public class TopUpServiceImplTest {
 		addMoneyRequest.setSourceType(topUpOrder.getSourceOfFund().getSourceOfFundType());
 		
 		assertEquals(TopUpStatus.PROCESSING, order.getStatus());
-		verify(asyncService).topUpUtibaEwallet(topUpOrder, addMoneyRequest);
+		verify(asyncService).topUpUtibaEwallet(any(TopUpOrder.class), any(AddMoneyRequest.class));
 		verify(orderRepo).saveTopUpOrder(topUpOrder);
 	}
 	
