@@ -27,10 +27,10 @@ public class SourceOfFundServiceClientTest {
 	@Test @Ignore
 	public void shouldFail() {
 		try{
-			sourceOfFundServiceClient.getUserDirectDebitSources("mart", "1234");
+			sourceOfFundServiceClient.getUserDirectDebitSources("local@tmn.com", "1234");
 			fail();
 		}catch(ServiceInventoryException e){
-			assertEquals("500", e.getErrorCode());
+			assertEquals("9999", e.getErrorCode());
 			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
 			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
 		}

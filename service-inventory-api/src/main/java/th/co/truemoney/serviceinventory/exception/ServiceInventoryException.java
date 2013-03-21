@@ -7,7 +7,16 @@ public class ServiceInventoryException extends RuntimeException {
 	private String errorCode;
 	private String errorDescription;
 	private String errorNamespace;
+	private Object data; 
 	
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
 	public ServiceInventoryException() {
 	}
 	

@@ -109,7 +109,20 @@ public class TmnTopupServiceClientURLTest {
 			assertEquals("404", e.getErrorCode());
 			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
 		}
-	}	
+	}
+	
+	@Test @Ignore
+	public void checkRequestPlaceOrder(){
+		try{
+			OTP otp = new OTP("112233", "663f78927872f867d883179378a12dde7ae6a71c");			
+			TopUpOrder topUpOrder = topupServiceClient.confirmPlaceOrder("1", otp, "12345");
+			assertNotNull(topUpOrder);
+			System.out.println("finished call remote:" + new Date());
+		} catch(ServiceInventoryException e){
+			System.out.println(e.getErrorCode());
+			assertEquals("1004", e.getErrorCode());
+		}
+	}
 	
 	@Test @Ignore
 	public void checkRequestPlaceOrderUrl(){

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,6 +30,22 @@ public class TmnTopupServiceClientRealDataTest {
 
 	@Autowired
 	TmnTopUpServiceClient topupServiceClient;
+	
+	@Test @Ignore
+	public void failCaseMinMax(){
+		try{
+			QuoteRequest quoteRequest = new QuoteRequest();
+			quoteRequest.setAmount(new BigDecimal(10));
+			quoteRequest.setChecksum("");
+			topupServiceClient.createTopUpQuoteFromDirectDebit("678", quoteRequest, "12345");
+		}catch(ServiceInventoryException e){
+			System.out.println(e.getData());
+			HashMap debit = (HashMap) e.getData();
+			//System.out.println(debit.get("bankCode").toString());
+			assertNotNull(e.getData());
+			assertEquals("20001", e.getErrorCode());
+		}
+	}
 	
 	@Test @Ignore
 	public void createOrderFromDirectDebit() {
