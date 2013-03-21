@@ -48,14 +48,8 @@ public class TmnTopupServiceClientRealDataTest {
 
 	@Test @Ignore
 	public void requestPlaceOrder() {
-		try{
-			TopUpOrder topUpOrder = topupServiceClient.requestPlaceOrder("123", "12345");
-			assertNotNull(topUpOrder);
-			assertEquals("2000", topUpOrder.getAmount());
-		}catch(ServiceInventoryException e){
-			assertEquals("500", e.getErrorCode());
-			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
-			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
-		}
+		TopUpOrder topUpOrder = topupServiceClient.requestPlaceOrder("123", "12345");
+		assertNotNull(topUpOrder);
+		assertEquals("2000", topUpOrder.getAmount());
 	}
 }
