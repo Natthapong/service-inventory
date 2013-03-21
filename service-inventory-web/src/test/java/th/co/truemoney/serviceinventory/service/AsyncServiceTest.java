@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.service;
 
 import java.util.concurrent.Future;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.any;
@@ -42,6 +44,11 @@ public class AsyncServiceTest {
 		topUpOrderParams = new TopUpOrder();
 		topUpOrderParams.setID("1");
 		topUpOrderParams.setStatus(TopUpStatus.PROCESSING);
+	}
+	
+	@After
+	public void teardown() {
+		reset(ewalletProxy);
 	}
 	
 	@Test
