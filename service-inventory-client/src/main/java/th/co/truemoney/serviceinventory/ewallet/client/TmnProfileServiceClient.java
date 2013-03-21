@@ -63,8 +63,8 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	@Override
 	public BigDecimal getEwalletBalance(String accessTokenID)
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		TmnProfile profile = getTruemoneyProfile(accessTokenID);
+		return profile.getBalance();
 	}
 
 	@Override
