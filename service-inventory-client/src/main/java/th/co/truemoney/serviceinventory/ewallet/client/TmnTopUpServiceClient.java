@@ -103,8 +103,8 @@ public class TmnTopUpServiceClient implements TopUpService {
 		
 		HashMap confirmationInfoMap = (HashMap) hashMap.get("confirmationInfo");
 		TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
-		confirmationInfo.setTransactionDate(confirmationInfoMap.get("transactionDate").toString());
-		confirmationInfo.setTransactionID(confirmationInfoMap.get("transactionID").toString());
+		confirmationInfo.setTransactionDate(null);
+		confirmationInfo.setTransactionID(null);
 		
 		topUpOrder.setOtpReferenceCode(hashMap.get("otpReferenceCode").toString());
 		topUpOrder.setConfirmationInfo(confirmationInfo);
