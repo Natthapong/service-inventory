@@ -20,8 +20,10 @@ public class AccessTokenUtil {
 	}
 	
 	public static void main(String[] args) {
-		String accessTokenID = "";
-		String data = "";
+		String accessTokenID = "a27ab91a-1371-4c0f-a1f6-f422e271fa54";
+		String id = "9f8a33b6-113c-4588-a38c-06f2158a35a9";
+		String otp = "379864";
+		String data = id+otp+accessTokenID;
 		String result = EncryptUtil.buildHmacSignature(accessTokenID, data+SALT);
 		System.out.println(result);
 	}

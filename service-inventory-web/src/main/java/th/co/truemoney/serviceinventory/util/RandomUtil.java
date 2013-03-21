@@ -12,7 +12,7 @@ public class RandomUtil {
 		for ( int i = 0; i < length; i++ ) {
 			buffer.append(chars[random.nextInt(chars.length)]);
 		}
-		return buffer.toString();
+		return buffer.toString().toLowerCase();
 	}
 	
 	public static String genRandomNumber(int length) {

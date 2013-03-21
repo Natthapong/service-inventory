@@ -35,7 +35,7 @@ public class OTPServiceImpl implements OTPService {
 			logger.debug("refCode = "+otpBean.getOtpReferenceCode());
 			logger.debug("==============================");
 			SmsRequest smsRequest = new SmsRequest(smsSender, mobileno, 
-					"Your OTP is "+otpBean.getOtpString()+" (Reference Code = "+otpBean.getOtpReferenceCode()+").");
+					"รหัส OTP คือ "+otpBean.getOtpString()+" (Ref: "+otpBean.getOtpReferenceCode()+")");
 			smsProxyImpl.send(smsRequest);
 			otpRepository.saveOTP(otpBean);
 			return otpBean.getOtpReferenceCode();

@@ -18,14 +18,11 @@ import org.springframework.core.io.ClassPathResource;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.bean.OTPBean;
-import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
-import th.co.truemoney.serviceinventory.dao.impl.RedisLoggingDaoImpl;
 import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.impl.OTPServiceImpl;
@@ -52,7 +49,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityPro
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
@@ -213,34 +209,6 @@ public class LocalProxyConfig {
 		return new AccessTokenRedisRepository(){
 			public AccessToken getAccessToken(String accessTokenId) throws ServiceInventoryException {
 				return new AccessToken("12345", "6789", "555", "username", "0861234567", "local@tmn.com", 41);
-			}
-		};
-	}
-	
-	@Bean @Primary
-	public RedisLoggingDao stubRedisLoggingDao(){
-		return new RedisLoggingDaoImpl(){
-			public String getData(String key) {
-				String format = "{\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":%d}";
-				return String.format(format, "accessTokenID", "12345", 
-											"sessionID", "6789",
-											"truemoneyID", "555",
-											"username", "username",
-											"mobileno", "0861234567",
-											"email", "local@tmn.com", 
-											"channelID", 41);
-			}
-		};
-	}
-	
-	@Bean @Primary
-	public SourceOfFundRepository stubSourceOfFundRepository(){
-		return new SourceOfFundRepository(){
-			public DirectDebit getUserDirectDebitSourceByID(String sourceOfFundID, String truemoneyID, Integer channelID, String sessionID) {
-				DirectDebit directDebit = new DirectDebit("SCB","Siam Commercial Bank","ไทยพาณิชย์","xxxx1234",new BigDecimal(30),new BigDecimal(5000));
-				directDebit.setSourceOfFundID("1");
-				directDebit.setSourceOfFundType("debit");
-				return directDebit;
 			}
 		};
 	}

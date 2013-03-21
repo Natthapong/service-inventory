@@ -17,7 +17,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapPro
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
 public class AsyncService {
@@ -37,8 +36,6 @@ public class AsyncService {
 		logger.debug("finished time " + new Date());
 		if(moneyResponse.getResultCode().equals("0")) {
 			topUpOrder.setStatus(TopUpStatus.CONFIRMED);
-			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH,
-					"Invalide OTP.");
 		} else {
 			topUpOrder.setStatus(TopUpStatus.FAILED);
 		} 
