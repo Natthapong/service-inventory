@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -34,6 +35,16 @@ public class AsyncService {
 		logger.debug("start time " + new Date());
 		StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
 		logger.debug("finished time " + new Date());
+		
+		if (moneyResponse != null) {
+			TopUpConfirmationInfo info = new TopUpConfirmationInfo();
+			info.setTransactionID(moneyResponse.getTransactionId());
+	        Date date = new Date();
+	        java.text.SimpleDateFormat df= new java.text.SimpleDateFormat();
+	        df.applyPattern("dd/mm/yyyy HH:mm");
+			info.setTransactionDate(df.format(date));
+		}
+		
 		if(moneyResponse.getResultCode().equals("0")) {
 			topUpOrder.setStatus(TopUpStatus.CONFIRMED);
 		} else {
@@ -44,5 +55,5 @@ public class AsyncService {
 		
 		return new AsyncResult<TopUpOrder> (topUpOrder);
 	}
-	
+
 }
