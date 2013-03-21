@@ -65,10 +65,10 @@ public class TmnTopupServiceClientRealDataTest {
 		}
 	}
 	
-	@Test
+	@Test @Ignore
 	public void checkRequestPlaceOrder(){
 		try{
-			OTP otp = new OTP("112233", "663f78927872f867d883179378a12dde7ae6a71c");			
+			OTP otp = new OTP("112233", "885bdbcc4186d862a7ed3bae4dd3adb3b7de186a");			
 			TopUpOrder topUpOrder = topupServiceClient.confirmPlaceOrder("1", otp, "12345");
 			assertNotNull(topUpOrder);
 			System.out.println("finished call remote:" + new Date());
