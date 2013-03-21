@@ -9,11 +9,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import th.co.truemoney.serviceinventory.bean.OTPBean;
 import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncService;
 import th.co.truemoney.serviceinventory.ewallet.impl.OTPServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
@@ -71,7 +75,19 @@ public class ServiceInventoryConfig {
     
     @Bean @Qualifier("orderMemoryRepository")
     public OrderRepository getOrderMemoryRepository() {
-    	return new OrderMemoryRepository();
+    	OrderRepository repository = new OrderMemoryRepository();
+    	TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
+    	confirmationInfo.setTransactionID("1");
+    	confirmationInfo.setTransactionDate("03-21-2013 16:45");
+    	DirectDebit directDebit = new DirectDebit();
+    	directDebit.setSourceOfFundID("123");
+    	directDebit.setSourceOfFundType("direc-debit");
+    	TopUpOrder topupOrder = new TopUpOrder();
+    	topupOrder.setID("1");
+    	topupOrder.setConfirmationInfo(confirmationInfo);
+    	topupOrder.setSourceOfFund(directDebit);
+    	repository.saveTopUpOrder(topupOrder);
+    	return repository;
     }
     
     @Bean @Qualifier("orderRedisRepository")
@@ -91,7 +107,13 @@ public class ServiceInventoryConfig {
 
     @Bean @Qualifier("otpMemoryRepository")
     public OTPRepository getOTPMemoryRepository() {
-    	return new OTPMemoryRepository();
+    	OTPRepository otpRepository = new OTPMemoryRepository();
+    	OTPBean otpBean = new OTPBean();
+    	otpBean.setMobileno("0861234567");
+    	otpBean.setOtpReferenceCode("Code");
+    	otpBean.setOtpString("112233");
+    	otpRepository.saveOTP(otpBean);
+    	return otpRepository;
     }
     
     @Bean @Qualifier("otpRedisRepository")
