@@ -45,7 +45,6 @@ public class TmnTopUpServiceClient implements TopUpService {
 					HttpMethod.POST, requestEntity, HashMap.class, sourceOfFundId, accessToken ,quoteRequest);
 	
 		HashMap hashMap = responseEntity.getBody();
-		System.out.println(hashMap);
 		
 		TopUpQuote topUpQuote = new TopUpQuote();
 		topUpQuote.setID(hashMap.get("id").toString());
@@ -75,17 +74,36 @@ public class TmnTopUpServiceClient implements TopUpService {
 	}
 
 	@Override
+	@SuppressWarnings("rawtypes")
 	public TopUpOrder requestPlaceOrder(String quoteId, String accessToken) {
 
 		HttpEntity<TopUpOrder> requestEntity = new HttpEntity<TopUpOrder>(
 				headers);
 
-		ResponseEntity<TopUpOrder> responseEntity = restTemplate.exchange(
+		ResponseEntity<HashMap> responseEntity = restTemplate.exchange(
 				environmentConfig.getRequestPlaceOrder(), HttpMethod.POST,
-				requestEntity, TopUpOrder.class, quoteId, accessToken);
+				requestEntity, HashMap.class, quoteId, accessToken);
 
-		TopUpOrder topUpOrder = responseEntity.getBody();
-
+		HashMap hashMap = responseEntity.getBody();
+		
+		TopUpOrder topUpOrder = new TopUpOrder();
+		topUpOrder.setID(hashMap.get("id").toString());
+		topUpOrder.setAmount(new BigDecimal(Integer.parseInt(hashMap.get("amount").toString())));
+		topUpOrder.setUsername(hashMap.get("username").toString());
+		
+		HashMap sourceOfFundMap = (HashMap) hashMap.get("sourceOfFund");
+		DirectDebit directDebit = new DirectDebit();
+		directDebit.setBankCode(sourceOfFundMap.get("bankCode").toString());
+		directDebit.setBankNameEn(sourceOfFundMap.get("bankNameEn").toString());
+		directDebit.setBankNameTh(sourceOfFundMap.get("bankNameTh").toString());
+		directDebit.setBankAccountNumber(sourceOfFundMap.get("bankAccountNumber").toString());
+		directDebit.setMinAmount(new BigDecimal(Integer.parseInt(sourceOfFundMap.get("minAmount").toString())));
+		directDebit.setMaxAmount(new BigDecimal(Integer.parseInt(sourceOfFundMap.get("maxAmount").toString())));
+		
+		topUpOrder.setSourceOfFund(directDebit);
+		topUpOrder.setTopUpFee(new BigDecimal(Double.parseDouble(hashMap.get("topUpFee").toString())));
+		topUpOrder.setAccessTokenID(hashMap.get("accessTokenID").toString());
+		
 		return topUpOrder;
 	}
 
