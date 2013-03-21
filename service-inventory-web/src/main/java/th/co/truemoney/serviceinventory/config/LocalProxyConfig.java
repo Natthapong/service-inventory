@@ -9,6 +9,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -54,6 +55,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundReposit
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderRedisRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
@@ -151,37 +153,10 @@ public class LocalProxyConfig {
 	}
 
 	@Bean @Primary
-	public OrderRepository stubOrderRepository(){
-		return new OrderMemoryRepository(){
-			public TopUpQuote getTopUpQuote(String orderID) {
-				return new TopUpQuote();
-			}
-			public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
-				TopUpOrder topUpOrder = new TopUpOrder();
-				if (orderID.equals("1")) {
-					TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
-			    	confirmationInfo.setTransactionID("1");
-			    	confirmationInfo.setTransactionDate("03-21-2013 16:45");
-			    	DirectDebit directDebit = new DirectDebit();
-			    	directDebit.setSourceOfFundID("123");
-			    	directDebit.setSourceOfFundType("direc-debit");
-			    	TopUpOrder topupOrder = new TopUpOrder();
-			    	topupOrder.setID("1");
-			    	topupOrder.setConfirmationInfo(confirmationInfo);
-			    	topupOrder.setSourceOfFund(directDebit);					
-				} else {
-					throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_ORDER_NOT_FOUND,
-							"TopUp order not found.");
-				} 
-				return topUpOrder;
-			}
-		};
-	}
-	
-	@Bean @Primary
 	public AccessTokenRepository stubAccessTokenRepository(){
 		return new AccessTokenRedisRepository(){
 			public AccessToken getAccessToken(String accessTokenId) throws ServiceInventoryException {
+				System.out.println("stub : AccessTokenRepository");
 				return new AccessToken("12345", "6789", "555", "username", "0861234567", "local@tmn.com", 41);
 			}
 		};
@@ -191,6 +166,10 @@ public class LocalProxyConfig {
 	public RedisLoggingDao stubRedisLoggingDao(){
 		return new RedisLoggingDaoImpl(){
 			public String getData(String key) {
+				if(key.contains("order:")) {
+					System.out.println("return order");
+				}
+				
 				String format = "{\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":%d}";
 				return String.format(format, "accessTokenID", "12345", 
 											"sessionID", "6789",
