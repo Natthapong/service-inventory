@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
@@ -209,18 +211,28 @@ public class TopUpServiceImpl implements TopUpService {
 		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(topUpOrderId);
 		AccessToken accessTokenObj = accessTokenRepo.getAccessToken(accessToken);		
 		String otpString = otpService.getOTPString(accessTokenObj.getMobileno());
-				
 		if(!otp.getOtpString().equals(otpString)){
 			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH,
 					"Invalide OTP.");
 		}
-
+		
 		String localChecksum = EncryptUtil.buildHmacSignature(accessToken, topUpOrder.toString() + accessToken);
+		logger.debug("checksum " + localChecksum);
 		if (otp.getChecksum().equals(localChecksum)) {
+			
+			AddMoneyRequest addMoneyRequest = new AddMoneyRequest();			
+			addMoneyRequest.setAmount(topUpOrder.getAmount());
+			addMoneyRequest.setChannelId(accessTokenObj.getChannelID());		
+			addMoneyRequest.setRequestTransactionId(topUpOrder.getConfirmationInfo().getTransactionID());
+			addMoneyRequest.setSecurityContext(new SecurityContext(accessTokenObj.getSessionID(), accessTokenObj.getTruemoneyID()));
+			addMoneyRequest.setSourceId(topUpOrder.getSourceOfFund().getSourceOfFundID());
+			addMoneyRequest.setSourceType(topUpOrder.getSourceOfFund().getSourceOfFundType());
 			
 			topUpOrder.setStatus(TopUpStatus.PROCESSING);
 			orderRepo.saveTopUpOrder(topUpOrder);
-			asyncService.topUpUtibaEwallet(topUpOrder, accessTokenObj);
+			asyncService.topUpUtibaEwallet(topUpOrder, addMoneyRequest);
+			logger.debug("processing " + orderRepo.getTopUpOrder(topUpOrder.getID()).getStatus());
+			logger.debug("time " + new Date());
 		} else {
 			throw new ServiceInventoryException( ServiceInventoryException.Code.INVALID_CHECKSUM, 
 					"Invalide Checksum.");
