@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.exception;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
 
 import th.co.truemoney.serviceinventory.bean.ErrorBean;
@@ -33,6 +35,7 @@ public abstract class BaseException extends RuntimeException {
 	private String code;
 	private String description;
 	private String namespace;
+	public Map<String, Object> data;	
 	
 	public abstract ErrorBean handleExceptions(BaseException e, HttpServletResponse response);
 	
@@ -74,5 +77,13 @@ public abstract class BaseException extends RuntimeException {
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
+
+	public Map<String, Object> getData() {
+		return data;
+	}
+
+	public void setData(Map<String, Object> data) {
+		this.data = data;
+	}	
 	
 }

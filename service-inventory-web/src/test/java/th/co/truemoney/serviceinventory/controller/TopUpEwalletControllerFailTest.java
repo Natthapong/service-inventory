@@ -32,7 +32,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = { WebConfig.class, TestServiceInventoryConfig.class, TestRedisConfig.class })
-public class TopUpEwalletControllerSuccessTest {
+public class TopUpEwalletControllerFailTest {
 
 	private MockMvc mockMvc;
 
@@ -54,29 +54,16 @@ public class TopUpEwalletControllerSuccessTest {
 	}
 
 	@Test
-	public void shouldSuccess() throws Exception {
-
-		//given
-		when(topupServiceMock.requestPlaceOrder(anyString(), anyString())).thenReturn(new TopUpOrder());
-
-		this.mockMvc.perform(post("/top-up/order/{quoteID}?accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "12345")
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andDo(print());
-
-	}
-	
-	@Test
 	public void confirmPlaceOrderSuccess() throws Exception {
 		OTP otp = new OTP("112233", "885bdbcc4186d862a7ed3bae4dd3adb3b7de186a");
 		//given
 		when(topupServiceMock.confirmPlaceOrder(anyString(), any(OTP.class), anyString())).thenReturn(new TopUpOrder());
 		
 		ObjectMapper mapper = new ObjectMapper();
-		this.mockMvc.perform(post("/top-up/order/{topUpOrderID}/confirm?accessTokenID=12345", "1")
+		this.mockMvc.perform(post("/top-up/order/{topUpOrderID}/confirm?accessTokenID=1234567", "1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(otp)))
-			.andExpect(status().isOk())
+			.andExpect(status().isBadRequest())
 			.andDo(print());
 
 	}

@@ -18,6 +18,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.exception.ValidateException;
+import th.co.truemoney.serviceinventory.util.AccessTokenUtil;
 
 @Controller
 public class TopUpEwalletController extends BaseController {
@@ -68,7 +69,12 @@ public class TopUpEwalletController extends BaseController {
 		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 		@RequestBody OTP otp)
 			throws SignonServiceException {
-		return topupService.confirmPlaceOrder(topUpOrderID, otp, accessTokenID);
+		if(AccessTokenUtil.isValidCheckSum(otp.getChecksum(), topUpOrderID+otp.getOtpString()+accessTokenID, accessTokenID)) {
+			return topupService.confirmPlaceOrder(topUpOrderID, otp, accessTokenID);
+		}	else {
+			throw new ServiceInventoryException( ServiceInventoryException.Code.INVALID_CHECKSUM, 
+					"Invalide Checksum.");
+		}		
 	}
 	
 	@RequestMapping(value = "/top-up/order/{topUpOrderID}/status", method = RequestMethod.GET)
