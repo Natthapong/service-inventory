@@ -1,5 +1,8 @@
 package th.co.truemoney.serviceinventory.exception;
 
+import java.util.HashMap;
+
+@SuppressWarnings("rawtypes")
 public class ServiceInventoryException extends RuntimeException {
 	
 	private static final long serialVersionUID = 3961433822995791383L;
@@ -7,13 +10,13 @@ public class ServiceInventoryException extends RuntimeException {
 	private String errorCode;
 	private String errorDescription;
 	private String errorNamespace;
-	private Object data; 
+	private HashMap data; 
 	
-	public Object getData() {
+	public HashMap getData() {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(HashMap data) {
 		this.data = data;
 	}
 
