@@ -181,7 +181,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 		topUpOrder.setSourceOfFund(directDebit);
 		topUpOrder.setTopUpFee(new BigDecimal(Double.parseDouble(hashMap.get("topUpFee").toString())));
 		topUpOrder.setAccessTokenID(hashMap.get("accessTokenID").toString());
-		return null;
+		return topUpOrder;
 	}
 
 }
