@@ -115,7 +115,6 @@ public class TopUpOrder implements Serializable {
 		.append(this.username)
 		.append(this.amount)
 		.append(this.topUpFee)
-		.append(this.otpReferenceCode)		
 		.append(this.status)
 		.toString();
 	}
