@@ -36,11 +36,11 @@ public class AsyncService {
 		StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
 		logger.debug("finished time " + new Date());
 		if(moneyResponse.getResultCode().equals("0")) {
-			topUpOrder.setStatus(TopUpStatus.CONFIRMED);
-			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH,
-					"Invalide OTP.");
+			topUpOrder.setStatus(TopUpStatus.CONFIRMED);			
 		} else {
 			topUpOrder.setStatus(TopUpStatus.FAILED);
+			// 24003, 24008, 24010, 25007 BANK_FAIL			
+			// 5, 6, 7, 19, 27, 38 UMARKET_FAIL
 		} 
 		
 		orderRepo.saveTopUpOrder(topUpOrder);
