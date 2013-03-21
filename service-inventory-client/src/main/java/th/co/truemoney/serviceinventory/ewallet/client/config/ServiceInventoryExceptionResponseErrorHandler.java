@@ -32,6 +32,7 @@ public class ServiceInventoryExceptionResponseErrorHandler extends DefaultRespon
 			} catch (ServiceInventoryException e1) {
 				throw e1;
 			} catch (IOException e2) {
+				e2.printStackTrace();
 				throw SERVICE_NOT_AVAILABLE;
 			}
 		} else {

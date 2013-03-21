@@ -45,7 +45,7 @@ public class DevProxyConfig {
 	@Bean
 	public EwalletSoapEndPointProxy getEwalletSoapEndPointProxy() {
 		EwalletSoapEndPointProxy endPointProxy = new EwalletSoapEndPointProxy(getEwalletSoapEndpoint());
-		endPointProxy.setTimeout(5000);
+		endPointProxy.setTimeout(60000);
 		return endPointProxy;
 	}
 	

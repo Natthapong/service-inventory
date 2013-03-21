@@ -24,6 +24,24 @@ public class TopUpOrder implements Serializable {
 		super();
 	}
 
+	
+	public TopUpOrder(String iD, SourceOfFund sourceOfFund,
+			String accessTokenID, String username, BigDecimal amount,
+			BigDecimal topUpFee, String otpReferenceCode, TopUpStatus status,
+			TopUpConfirmationInfo confirmationInfo) {
+		super();
+		ID = iD;
+		this.sourceOfFund = sourceOfFund;
+		this.accessTokenID = accessTokenID;
+		this.username = username;
+		this.amount = amount;
+		this.topUpFee = topUpFee;
+		this.otpReferenceCode = otpReferenceCode;
+		this.status = status;
+		this.confirmationInfo = confirmationInfo;
+	}
+
+
 	public TopUpOrder(TopUpQuote quote) {
 		this.ID = quote.getID();
 		this.sourceOfFund = quote.getSourceOfFund();

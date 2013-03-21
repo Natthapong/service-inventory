@@ -11,13 +11,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
 public class AsyncService {
@@ -52,6 +52,17 @@ public class AsyncService {
 			logger.debug("start time " + new Date());
 			StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
 			logger.debug("finished time " + new Date());
+			
+			if (moneyResponse != null) {
+				TopUpConfirmationInfo info = new TopUpConfirmationInfo();
+				info.setTransactionID(moneyResponse.getTransactionId());
+		        Date date = new Date();
+		        java.text.SimpleDateFormat df= new java.text.SimpleDateFormat();
+		        df.applyPattern("dd/MM/yyyy HH:mm");
+				info.setTransactionDate(df.format(date));
+				topUpOrder.setConfirmationInfo(info);
+			}
+			
 			String resultCode = moneyResponse.getResultCode();
 			if(resultCode.equals("0")) {
 				topUpOrder.setStatus(TopUpStatus.CONFIRMED);			
@@ -75,5 +86,5 @@ public class AsyncService {
 		
 		return new AsyncResult<TopUpOrder> (topUpOrder);
 	}
-	
+
 }

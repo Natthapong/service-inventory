@@ -2,13 +2,17 @@ package th.co.truemoney.serviceinventory.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+<<<<<<< HEAD
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+=======
+import static org.mockito.Mockito.when;
+>>>>>>> 205c10718b56be2c5845656e1b5d8b8c184db53e
 
 import java.math.BigDecimal;
 

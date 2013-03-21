@@ -180,14 +180,9 @@ public class TopUpServiceImpl implements TopUpService {
 	@Override
 	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID)
 			throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-
-		if (accessToken == null) {
-			throw new ServiceInventoryException(
-					ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
-					"AccessTokenID is expired or not found.");
-		}
 		
+		accessTokenRepo.getAccessToken(accessTokenID);
+
 		TopUpQuote topUpQuote = orderRepo.getTopUpQuote(quoteID);
 		
 		return topUpQuote;
@@ -198,12 +193,6 @@ public class TopUpServiceImpl implements TopUpService {
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
-		if (accessToken == null) {
-			throw new ServiceInventoryException(
-					ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
-					"AccessTokenID is expired or not found.");
-		}
-
 		String otpReferenceCode = otpService.send(accessToken.getMobileno());
 
 		TopUpOrder topUpOrder = createTopupOrderFromQuote(quoteID, otpReferenceCode);
@@ -213,7 +202,9 @@ public class TopUpServiceImpl implements TopUpService {
 
 	private TopUpOrder createTopupOrderFromQuote(String quoteID,
 			String otpReferenceCode) {
-		TopUpOrder topUpOrder = new TopUpOrder(orderRepo.getTopUpQuote(quoteID));
+		TopUpQuote topUpQuote = orderRepo.getTopUpQuote(quoteID);
+		logger.debug("topUpQuote: "+topUpQuote.toString());
+		TopUpOrder topUpOrder = new TopUpOrder(topUpQuote);
 		topUpOrder.setStatus(TopUpStatus.AWAITING_CONFIRM);
 		topUpOrder.setOtpReferenceCode(otpReferenceCode);
 		orderRepo.saveTopUpOrder(topUpOrder);
@@ -227,7 +218,6 @@ public class TopUpServiceImpl implements TopUpService {
 		logger.debug(topUpOrder.toString());
 		AccessToken accessTokenObj = accessTokenRepo.getAccessToken(accessToken);	
 		logger.debug(accessTokenObj.toString());
-		//logger.debug("confirmationInfo "+topUpOrder.getConfirmationInfo().toString());
 		String otpString = otpService.getOTPString(accessTokenObj.getMobileno());
 		if(!otp.getOtpString().equals(otpString)){
 			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH,
@@ -237,7 +227,6 @@ public class TopUpServiceImpl implements TopUpService {
 		AddMoneyRequest addMoneyRequest = new AddMoneyRequest();			
 		addMoneyRequest.setAmount(topUpOrder.getAmount());
 		addMoneyRequest.setChannelId(accessTokenObj.getChannelID());		
-		//addMoneyRequest.setRequestTransactionId(topUpOrder.getConfirmationInfo().getTransactionID());
 		addMoneyRequest.setSecurityContext(new SecurityContext(accessTokenObj.getSessionID(), accessTokenObj.getTruemoneyID()));
 		addMoneyRequest.setSourceId(topUpOrder.getSourceOfFund().getSourceOfFundID());
 		addMoneyRequest.setSourceType(topUpOrder.getSourceOfFund().getSourceOfFundType());
@@ -266,22 +255,17 @@ public class TopUpServiceImpl implements TopUpService {
 		} else if (topUpStatus == TopUpStatus.FAILED){
 			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_FAILED, 
 					"confirmation processing fail.");
-		}
-		
+		}		
+
 		return topUpStatus;
 	}
 
 	@Override
 	public TopUpOrder getTopUpOrderDetails(String topUpOrderID,
 			String accessTokenID) throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-
-		if (accessToken == null) {
-			throw new ServiceInventoryException(
-					ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
-					"AccessTokenID is expired or not found.");
-		}
 		
+		accessTokenRepo.getAccessToken(accessTokenID);
+
 		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(topUpOrderID);
 		
 		return topUpOrder;

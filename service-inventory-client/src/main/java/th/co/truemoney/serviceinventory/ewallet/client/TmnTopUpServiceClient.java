@@ -147,16 +147,15 @@ public class TmnTopUpServiceClient implements TopUpService {
 	@Override
 	public TopUpOrder getTopUpOrderDetails(String topUpOrderId,
 			String accessToken) throws ServiceInventoryException {
-		
+
 		HttpEntity<TopUpOrder> requestEntity = new HttpEntity<TopUpOrder>(
 				headers);
 
 		ResponseEntity<HashMap> responseEntity = restTemplate.exchange(
 				environmentConfig.getTopUpOrderDetailsUrl(), HttpMethod.GET,
-				requestEntity, HashMap.class, accessToken);
-
+				requestEntity, HashMap.class, topUpOrderId, accessToken);
 		HashMap hashMap = responseEntity.getBody();
-		
+
 		TopUpOrder topUpOrder = new TopUpOrder();
 		topUpOrder.setID(hashMap.get("id").toString());
 		topUpOrder.setAmount(new BigDecimal(Double.parseDouble(hashMap.get("amount").toString())));
@@ -181,6 +180,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 		topUpOrder.setSourceOfFund(directDebit);
 		topUpOrder.setTopUpFee(new BigDecimal(Double.parseDouble(hashMap.get("topUpFee").toString())));
 		topUpOrder.setAccessTokenID(hashMap.get("accessTokenID").toString());
+		
 		return topUpOrder;
 	}
 

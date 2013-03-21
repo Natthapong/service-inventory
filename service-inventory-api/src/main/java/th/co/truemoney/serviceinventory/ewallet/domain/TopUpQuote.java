@@ -23,11 +23,11 @@ public class TopUpQuote implements Serializable {
 		super();
 	}
 	
-	public TopUpQuote(String iD, SourceOfFund sourceOfFund,
+	public TopUpQuote(String ID, SourceOfFund sourceOfFund,
 			String accessTokenID, String username, BigDecimal amount,
 			BigDecimal topUpFee) {
 		super();
-		ID = iD;
+		this.ID = ID;
 		this.sourceOfFund = sourceOfFund;
 		this.accessTokenID = accessTokenID;
 		this.username = username;
@@ -39,8 +39,8 @@ public class TopUpQuote implements Serializable {
 		return ID;
 	}
 	
-	public void setID(String iD) {
-		ID = iD;
+	public void setID(String ID) {
+		this.ID = ID;
 	}
 	
 	public String getAccessTokenID() {
@@ -82,4 +82,13 @@ public class TopUpQuote implements Serializable {
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
+
+	@Override
+	public String toString() {
+		return "TopUpQuote [ID=" + ID + ", sourceOfFund=" + sourceOfFund
+				+ ", accessTokenID=" + accessTokenID + ", username=" + username
+				+ ", amount=" + amount + ", topUpFee=" + topUpFee + "]";
+	}
+	
+	
 }

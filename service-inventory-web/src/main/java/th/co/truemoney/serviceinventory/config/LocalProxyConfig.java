@@ -25,7 +25,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.impl.OTPServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -152,6 +152,61 @@ public class LocalProxyConfig {
 		};
 	}
 
+	@Bean @Primary @Qualifier("orderRedisRepository")
+	public OrderRepository stubOrderRepositoryReddis(){
+		return new OrderRedisRepository(){
+			public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
+				TopUpOrder topUpOrder = new TopUpOrder();
+				topUpOrder.setID("1111");
+				topUpOrder.setAccessTokenID("12345");
+				topUpOrder.setUsername("username");
+				topUpOrder.setStatus(TopUpStatus.CONFIRMED);
+				topUpOrder.setAmount(new BigDecimal(5000));
+				DirectDebit directDebit = new DirectDebit();
+				directDebit.setBankCode("MART");
+				directDebit.setBankNameEn("MART");
+				directDebit.setBankNameTh("MART");
+				directDebit.setBankAccountNumber("XXMART");
+				directDebit.setMinAmount(new BigDecimal(5000));
+				directDebit.setMaxAmount(new BigDecimal(5001));
+				topUpOrder.setSourceOfFund(directDebit);
+				TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
+				confirmationInfo.setTransactionDate("12/12/12");
+				confirmationInfo.setTransactionID("555");
+				topUpOrder.setConfirmationInfo(confirmationInfo);
+				topUpOrder.setOtpReferenceCode("1234");
+				topUpOrder.setTopUpFee(new BigDecimal(1235));
+				topUpOrder.setAccessTokenID("456");
+				return topUpOrder;
+			}
+		};
+	}
+	
+	@Bean @Primary
+	public OrderRepository stubOrderRepository(){
+		return new OrderMemoryRepository(){
+			public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
+				TopUpOrder topUpOrder = new TopUpOrder();
+				if (orderID.equals("1")) {
+					TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
+			    	confirmationInfo.setTransactionID("1");
+			    	confirmationInfo.setTransactionDate("03-21-2013 16:45");
+			    	DirectDebit directDebit = new DirectDebit();
+			    	directDebit.setSourceOfFundID("123");
+			    	directDebit.setSourceOfFundType("direc-debit");
+			    	TopUpOrder topupOrder = new TopUpOrder();
+			    	topupOrder.setID("1");
+			    	topupOrder.setConfirmationInfo(confirmationInfo);
+			    	topupOrder.setSourceOfFund(directDebit);					
+				} else {
+					throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_ORDER_NOT_FOUND,
+							"TopUp order not found.");
+				} 
+				return topUpOrder;
+			}
+		};
+	}
+	
 	@Bean @Primary
 	public AccessTokenRepository stubAccessTokenRepository(){
 		return new AccessTokenRedisRepository(){
