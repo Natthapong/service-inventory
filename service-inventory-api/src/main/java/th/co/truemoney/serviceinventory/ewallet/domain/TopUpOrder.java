@@ -3,11 +3,15 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+
 public class TopUpOrder implements Serializable {
 
 	private static final long serialVersionUID = 2325219087645032462L;
 
-	private String ID;
+	private String ID;	
+	@JsonDeserialize(as=DirectDebit.class)
 	private SourceOfFund sourceOfFund;
 	private String accessTokenID;
 	private String username;
@@ -102,6 +106,19 @@ public class TopUpOrder implements Serializable {
 
 	public void setConfirmationInfo(TopUpConfirmationInfo confirmationInfo) {
 		this.confirmationInfo = confirmationInfo;
+	}
+
+	@Override
+	public String toString() {
+		return new StringBuffer()
+		.append(this.ID)
+		.append(this.accessTokenID)
+		.append(this.username)
+		.append(this.amount)
+		.append(this.topUpFee)
+		.append(this.otpReferenceCode)		
+		.append(this.status)
+		.toString();
 	}
 		
 }
