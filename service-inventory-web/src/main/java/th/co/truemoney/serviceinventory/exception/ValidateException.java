@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.exception;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletResponse;
 
 import th.co.truemoney.serviceinventory.bean.ErrorBean;
@@ -17,6 +19,7 @@ public class ValidateException extends BaseException {
 		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		ErrorBean error = new ErrorBean(e.getCode(), e.getDescription());
 		error.setErrorNamespace(e.getNamespace() != null ? e.getNamespace() : NAMESPACE);
+		error.setData(this.data != null ? this.data : new HashMap<String, Object>());
 		return error;
 	}
 
