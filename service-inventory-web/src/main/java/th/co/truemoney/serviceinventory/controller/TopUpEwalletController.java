@@ -80,8 +80,21 @@ public class TopUpEwalletController extends BaseController {
 	@RequestMapping(value = "/top-up/order/{topUpOrderID}/status", method = RequestMethod.GET)
 	public @ResponseBody TopUpStatus getOrderStatus(@PathVariable String topUpOrderID, 
 		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
-				throws SignonServiceException {
-		return topupService.getTopUpOrderStatus(topUpOrderID, accessTokenID);
+				throws SignonServiceException, ServiceInventoryException {
+		TopUpStatus topUpStatus = topupService.getTopUpOrderStatus(topUpOrderID, accessTokenID);
+		
+		if(topUpStatus == TopUpStatus.BANK_FAILED) {
+			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_BANK_FAILED, 
+					"bank confirmation processing fail.");
+		} else if (topUpStatus == TopUpStatus.UMARKET_FAILED) {
+			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_UMARKET_FAILED, 
+					"u-market confirmation processing fail.");
+		} else if (topUpStatus == TopUpStatus.FAILED){
+			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_FAILED, 
+					"confirmation processing fail.");
+		}
+		
+		return topUpStatus;
 	}
 	
 	@RequestMapping(value = "/top-up/order/{topUpOrderID}", method = RequestMethod.GET)
