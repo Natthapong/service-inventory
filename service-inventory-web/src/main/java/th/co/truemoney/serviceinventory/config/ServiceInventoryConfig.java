@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import th.co.truemoney.serviceinventory.bean.OTPBean;
-import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -19,7 +18,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncService;
-import th.co.truemoney.serviceinventory.ewallet.impl.OTPServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
@@ -35,6 +33,8 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepos
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderRedisRepository;
+import th.co.truemoney.serviceinventory.sms.OTPService;
+import th.co.truemoney.serviceinventory.sms.impl.OTPServiceImpl;
 
 @Configuration
 @EnableAsync

@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.ewallet.impl;
+package th.co.truemoney.serviceinventory.sms.impl;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import th.co.truemoney.serviceinventory.bean.OTPBean;
-import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
+import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.util.RandomUtil;
 
 public class OTPServiceImpl implements OTPService {

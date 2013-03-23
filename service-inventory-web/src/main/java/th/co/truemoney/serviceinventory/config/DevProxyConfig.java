@@ -22,30 +22,39 @@ public class DevProxyConfig {
 	@Value("${tmnprofile.endpoint}")
 	private String tmnProfileSoapEndpoint;
 	
+	@Value("${tmnprofile.timeout}")
+	private Integer tmnProfileSoapTimeout;
+	
 	@Value("${tmnsecurity.endpoint}")
 	private String tmnSecuritySoapEndpoint;
+	
+	@Value("${tmnsecurity.timeout}")
+	private Integer tmnSecuritySoapTimeout;
 	
 	@Value( "${ewalletsoap.endpoint}")
 	private String ewalletSoapEndpoint;
 	
+	@Value( "${ewalletsoap.timeout}")
+	private Integer ewalletSoapTimeout;
+	
 	@Bean
 	public TmnProfileSoapEndPointProxy tmnProfileSoapEndPointProxy() {
 		TmnProfileSoapEndPointProxy endPointProxy = new TmnProfileSoapEndPointProxy(getTrueMoneyProfileSoapEndpoint());
-		endPointProxy.setTimeout(10000);
+		endPointProxy.setTimeout(tmnProfileSoapTimeout);
 		return endPointProxy;
 	}
 	
 	@Bean
 	public TmnSecuritySoapEndPointProxy tmnSecuritySoapEndPointProxy() {
 		TmnSecuritySoapEndPointProxy endPointProxy = new TmnSecuritySoapEndPointProxy(getTrueMoneySecuritySoapEndpoint());
-		endPointProxy.setTimeout(10000);
+		endPointProxy.setTimeout(tmnSecuritySoapTimeout);
 		return endPointProxy;
 	}
 	
 	@Bean
 	public EwalletSoapEndPointProxy getEwalletSoapEndPointProxy() {
 		EwalletSoapEndPointProxy endPointProxy = new EwalletSoapEndPointProxy(getEwalletSoapEndpoint());
-		endPointProxy.setTimeout(120000);
+		endPointProxy.setTimeout(ewalletSoapTimeout);
 		return endPointProxy;
 	}
 	

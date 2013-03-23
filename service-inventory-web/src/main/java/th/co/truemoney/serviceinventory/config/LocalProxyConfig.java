@@ -20,14 +20,12 @@ import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.bean.OTPBean;
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.dao.impl.RedisLoggingDaoImpl;
-import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.impl.OTPServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRequest;
@@ -62,6 +60,8 @@ import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.firsthop.proxy.impl.SmsProxyImpl;
+import th.co.truemoney.serviceinventory.sms.OTPService;
+import th.co.truemoney.serviceinventory.sms.impl.OTPServiceImpl;
 import th.co.truemoney.serviceinventory.util.RandomUtil;
 
 

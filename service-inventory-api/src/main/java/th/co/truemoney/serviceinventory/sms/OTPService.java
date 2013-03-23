@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.ewallet;
+package th.co.truemoney.serviceinventory.sms;
 
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 

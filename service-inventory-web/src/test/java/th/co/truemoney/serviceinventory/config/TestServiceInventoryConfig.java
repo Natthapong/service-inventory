@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 
-import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -21,6 +20,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepos
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderRedisRepository;
+import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Configuration
 @ComponentScan("th.co.truemoney.serviceinventory.dao")

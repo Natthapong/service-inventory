@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -40,6 +39,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundReposit
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.stub.AccessTokenRepositoryStubbed;
 import th.co.truemoney.serviceinventory.stub.TopUpStubbed;
 import th.co.truemoney.serviceinventory.util.EncryptUtil;

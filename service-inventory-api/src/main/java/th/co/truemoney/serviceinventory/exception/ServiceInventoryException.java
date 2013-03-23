@@ -2,7 +2,6 @@ package th.co.truemoney.serviceinventory.exception;
 
 import java.util.Map;
 
-@SuppressWarnings("rawtypes")
 public class ServiceInventoryException extends RuntimeException {
 	
 	private static final long serialVersionUID = 3961433822995791383L;

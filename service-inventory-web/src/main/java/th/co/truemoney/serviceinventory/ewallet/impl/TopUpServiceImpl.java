@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
-import th.co.truemoney.serviceinventory.ewallet.OTPService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
@@ -37,6 +36,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.util.FeeUtil;
 
 @Service
