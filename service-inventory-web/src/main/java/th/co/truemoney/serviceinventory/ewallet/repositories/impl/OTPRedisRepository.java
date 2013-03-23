@@ -33,7 +33,7 @@ public class OTPRedisRepository implements OTPRepository {
 		try {
 			String result = redisLoggingDao.getData(mobileno);		
 			if(result == null) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
+				throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND,
 						"otp not found.");
 			}			
 			ObjectMapper mapper = new ObjectMapper();

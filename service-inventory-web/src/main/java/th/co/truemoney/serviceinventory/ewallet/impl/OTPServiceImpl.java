@@ -1,14 +1,18 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import th.co.truemoney.serviceinventory.bean.OTPBean;
 import th.co.truemoney.serviceinventory.ewallet.OTPService;
+import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
+import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.util.RandomUtil;
 
@@ -36,20 +40,23 @@ public class OTPServiceImpl implements OTPService {
 			logger.debug("==============================");
 			SmsRequest smsRequest = new SmsRequest(smsSender, mobileno, 
 					"รหัส OTP คือ "+otpBean.getOtpString()+" (Ref: "+otpBean.getOtpReferenceCode()+")");
-			smsProxyImpl.send(smsRequest);
+			SmsResponse smsResponse = smsProxyImpl.send(smsRequest);
+			if (!smsResponse.isSuccess()) {
+				throw new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed."); 
+			}
 			otpRepository.saveOTP(otpBean);
 			return otpBean.getOtpReferenceCode();
-		} catch (Exception e) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");			
+		} catch (ServiceInventoryException e) {
+			throw e;
+		} catch (ServiceUnavailableException e) {
+			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+					e.getMessage(), e.getNamespace());		
 		} 
 	}
 
 	@Override
 	public String getOTPString(String mobileno) throws ServiceInventoryException {
-			OTPBean otpBean = otpRepository.getOTP(mobileno);
-			if(otpBean == null) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "OTP not found. ");
-			}
+		OTPBean otpBean = otpRepository.getOTP(mobileno);
 		return otpBean.getOtpString();
 	}
 	

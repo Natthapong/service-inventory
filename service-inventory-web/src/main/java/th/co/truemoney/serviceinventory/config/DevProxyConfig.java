@@ -31,21 +31,21 @@ public class DevProxyConfig {
 	@Bean
 	public TmnProfileSoapEndPointProxy tmnProfileSoapEndPointProxy() {
 		TmnProfileSoapEndPointProxy endPointProxy = new TmnProfileSoapEndPointProxy(getTrueMoneyProfileSoapEndpoint());
-		endPointProxy.setTimeout(5000);
+		endPointProxy.setTimeout(10000);
 		return endPointProxy;
 	}
 	
 	@Bean
 	public TmnSecuritySoapEndPointProxy tmnSecuritySoapEndPointProxy() {
 		TmnSecuritySoapEndPointProxy endPointProxy = new TmnSecuritySoapEndPointProxy(getTrueMoneySecuritySoapEndpoint());
-		endPointProxy.setTimeout(5000);
+		endPointProxy.setTimeout(10000);
 		return endPointProxy;
 	}
 	
 	@Bean
 	public EwalletSoapEndPointProxy getEwalletSoapEndPointProxy() {
 		EwalletSoapEndPointProxy endPointProxy = new EwalletSoapEndPointProxy(getEwalletSoapEndpoint());
-		endPointProxy.setTimeout(60000);
+		endPointProxy.setTimeout(120000);
 		return endPointProxy;
 	}
 	

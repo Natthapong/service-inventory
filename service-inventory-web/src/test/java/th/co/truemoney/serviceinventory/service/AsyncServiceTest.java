@@ -18,6 +18,7 @@ import static org.mockito.Matchers.any;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
+import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncService;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
@@ -66,7 +67,7 @@ public class AsyncServiceTest {
 	public void topUpUtibaEwalletBankFail() {
 		StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
 		moneyResponse.setResultCode("24010");
-		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenReturn(moneyResponse);		
+		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new EwalletException("24010","umarket"));	
 		
 		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, new AddMoneyRequest());
 		assertEquals(true, topUpOrder.isDone());
@@ -77,7 +78,7 @@ public class AsyncServiceTest {
 	public void topUpUtibaEwalletUMarketFail() {
 		StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
 		moneyResponse.setResultCode("27");
-		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenReturn(moneyResponse);		
+		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new EwalletException("27","umarket"));		
 		
 		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, new AddMoneyRequest());
 		assertEquals(true, topUpOrder.isDone());
@@ -88,7 +89,7 @@ public class AsyncServiceTest {
 	public void topUpUtibaEwalletOthersFail() {
 		StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
 		moneyResponse.setResultCode("300");
-		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenReturn(moneyResponse);		
+		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new EwalletException("300",""));
 		
 		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, new AddMoneyRequest());
 		assertEquals(true, topUpOrder.isDone());
