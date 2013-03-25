@@ -180,13 +180,13 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public String preparedCreateProfile(TmnProfile tmnProfile) {
+	public String createProfile(TmnProfile tmnProfile) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TmnProfile createProfile(String mobileno, String OTPString) {
+	public TmnProfile confirmCreateProfile(String mobileno, String OTPString) {
 		// TODO Auto-generated method stub
 		return null;
 	}
