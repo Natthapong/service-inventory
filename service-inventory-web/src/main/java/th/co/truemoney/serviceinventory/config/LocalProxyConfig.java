@@ -4,17 +4,18 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.bean.OTPBean;
@@ -95,7 +96,7 @@ public class LocalProxyConfig {
 			public ListSourceResponse listSource(
 					ListSourceRequest listSourceRequest)
 					throws EwalletException {
-				
+
 				SourceContext[] sourceContext = new SourceContext[3];
 				sourceContext[0] = new SourceContext("1","type",new String[] {"SCB","xxxx1234"});
 				sourceContext[1] = new SourceContext("2","type",new String[] {"KTB","xxxx5678"});
@@ -181,7 +182,7 @@ public class LocalProxyConfig {
 			}
 		};
 	}
-	
+
 	@Bean @Primary
 	public OrderRepository stubOrderRepository(){
 		return new OrderMemoryRepository(){
@@ -197,16 +198,16 @@ public class LocalProxyConfig {
 			    	TopUpOrder topupOrder = new TopUpOrder();
 			    	topupOrder.setID("1");
 			    	topupOrder.setConfirmationInfo(confirmationInfo);
-			    	topupOrder.setSourceOfFund(directDebit);					
+			    	topupOrder.setSourceOfFund(directDebit);
 				} else {
 					throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_ORDER_NOT_FOUND,
 							"TopUp order not found.");
-				} 
+				}
 				return topUpOrder;
 			}
 		};
 	}
-	
+
 	@Bean @Primary
 	public AccessTokenRepository stubAccessTokenRepository(){
 		return new AccessTokenRedisRepository(){
@@ -216,7 +217,7 @@ public class LocalProxyConfig {
 			}
 		};
 	}
-	
+
 	@Bean @Primary
 	public RedisLoggingDao stubRedisLoggingDao(){
 		return new RedisLoggingDaoImpl(){
@@ -224,19 +225,19 @@ public class LocalProxyConfig {
 				if(key.contains("order:")) {
 					System.out.println("return order");
 				}
-				
+
 				String format = "{\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":%d}";
-				return String.format(format, "accessTokenID", "12345", 
+				return String.format(format, "accessTokenID", "12345",
 											"sessionID", "6789",
 											"truemoneyID", "555",
 											"username", "username",
 											"mobileno", "0861234567",
-											"email", "local@tmn.com", 
+											"email", "local@tmn.com",
 											"channelID", 41);
 			}
 		};
 	}
-	
+
 	@Bean @Primary
 	public SourceOfFundRepository stubSourceOfFundRepository(){
 		return new SourceOfFundRepository(){
@@ -248,7 +249,7 @@ public class LocalProxyConfig {
 			}
 		};
 	}
-	
+
 	@Bean @Primary
 	public OTPService stubOTPService() {
 		return new OTPServiceImpl() {
@@ -258,26 +259,26 @@ public class LocalProxyConfig {
 					//otpRepository.saveOTP(otpBean);
 					return otpBean.getOtpReferenceCode();
 				} catch (Exception e) {
-					throw new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");			
-				} 
+					throw new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");
+				}
 			}
 
 			public String getOTPString(String mobileno) throws ServiceInventoryException {
 			    	if(!mobileno.equals("0861234567")) {
 			    		throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "OTP not found. ");
-					} 
+					}
 				return "112233";
 			}
 		};
 	}
-	
+
 	@Bean @Primary
 	public DirectDebitConfig stubDirectDebitConfig(){
 		return new DirectDebitConfigImpl(){
 			private HashMap<String, DirectDebitConfigBean> bankConfigList;
-			
+
 			public DirectDebitConfigBean getBankDetail(String bankCode) {
-				
+
 				try {
 					JsonFactory factory = new JsonFactory();
 					ObjectMapper m = new ObjectMapper(factory);
@@ -295,12 +296,12 @@ public class LocalProxyConfig {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 				return bankConfigList.get(bankCode);
 			}
 		};
 	}
-	
+
 	@Bean @Primary
 	public EwalletSoapProxy stubEWalletSoapProxy() {
 		return new EwalletSoapProxy() {
@@ -338,7 +339,7 @@ public class LocalProxyConfig {
 	@Bean @Primary
 	public SmsProxy stubSmsProxy() {
 		return new SmsProxy() {
-			
+
 			@Override
 			public SmsResponse send(SmsRequest request) {
 				StringBuilder xmlResponse = new StringBuilder();
@@ -362,10 +363,10 @@ public class LocalProxyConfig {
 				xmlResponse.append("</rsr_detail>");
 				xmlResponse.append("</rsr>");
 				xmlResponse.append("</message>");
-				
+
 				return new SmsProxyImpl().readXMLResponse(xmlResponse.toString());
 			}
-						
+
 		};
 	}
 }

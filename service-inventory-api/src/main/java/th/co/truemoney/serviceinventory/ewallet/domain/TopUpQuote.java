@@ -3,7 +3,8 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 
 
 public class TopUpQuote implements Serializable {
@@ -18,11 +19,11 @@ public class TopUpQuote implements Serializable {
 	private String username;
 	private BigDecimal amount;
 	private BigDecimal topUpFee;
-	
+
 	public TopUpQuote() {
 		super();
 	}
-	
+
 	public TopUpQuote(String ID, SourceOfFund sourceOfFund,
 			String accessTokenID, String username, BigDecimal amount,
 			BigDecimal topUpFee) {
@@ -38,15 +39,15 @@ public class TopUpQuote implements Serializable {
 	public String getID() {
 		return ID;
 	}
-	
+
 	public void setID(String ID) {
 		this.ID = ID;
 	}
-	
+
 	public String getAccessTokenID() {
 		return accessTokenID;
 	}
-	
+
 	public void setAccessTokenID(String accessTokenID) {
 		this.accessTokenID = accessTokenID;
 	}
@@ -89,6 +90,6 @@ public class TopUpQuote implements Serializable {
 				+ ", accessTokenID=" + accessTokenID + ", username=" + username
 				+ ", amount=" + amount + ", topUpFee=" + topUpFee + "]";
 	}
-	
-	
+
+
 }

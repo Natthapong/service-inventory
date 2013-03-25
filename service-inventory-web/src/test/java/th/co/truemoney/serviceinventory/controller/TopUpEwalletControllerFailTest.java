@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +20,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
@@ -58,7 +59,7 @@ public class TopUpEwalletControllerFailTest {
 		OTP otp = new OTP("112233", "885bdbcc4186d862a7ed3bae4dd3adb3b7de186a");
 		//given
 		when(topupServiceMock.confirmPlaceOrder(anyString(), any(OTP.class), anyString())).thenReturn(new TopUpOrder());
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		this.mockMvc.perform(post("/top-up/order/{topUpOrderID}/confirm?accessTokenID=1234567", "1")
 			.contentType(MediaType.APPLICATION_JSON)

@@ -1,7 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
@@ -11,10 +10,10 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 public class AccessTokenRedisRepository implements AccessTokenRepository {
 
 	private static Logger logger = Logger.getLogger(AccessTokenRedisRepository.class);
-	
+
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
-		
+
 	@Override
 	public void save(AccessToken token) {
 		try {
@@ -23,7 +22,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 		} catch (Exception e) {
 			logger.error(e);
 		}
-	}	
+	}
 
 	@Override
 	public AccessToken getAccessToken(String accessTokenId) {
@@ -32,7 +31,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 			ObjectMapper mapper = new ObjectMapper();
 			return mapper.readValue(result, AccessToken.class);
 		} catch (Exception e) {
-			logger.error(e);			
+			logger.error(e);
 		}
 		return null;
 	}

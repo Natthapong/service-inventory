@@ -1,8 +1,9 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -12,10 +13,10 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class AccessTokenRedisRepository implements AccessTokenRepository {
 
 	private static Logger logger = Logger.getLogger(AccessTokenRedisRepository.class);
-	
+
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
-		
+
 	@Override
 	public void save(AccessToken token) {
 		try {
@@ -26,27 +27,27 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
 					"Can not stored data in repository.");
 		}
-	}	
+	}
 
 	@Override
 	public AccessToken getAccessToken(String accessTokenId) throws ServiceInventoryException {
 		try {
 			String result = redisLoggingDao.getData(accessTokenId);
-			
+
 			if(result == null) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
 						"access token not found.");
-			}			
+			}
 			ObjectMapper mapper = new ObjectMapper();
 			return mapper.readValue(result, AccessToken.class);
 		} catch (ServiceInventoryException e) {
 			throw e;
 		} catch (Exception e) {
-			logger.error(e);			
+			logger.error(e);
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void remove(String accessTokenID) {
 		try {

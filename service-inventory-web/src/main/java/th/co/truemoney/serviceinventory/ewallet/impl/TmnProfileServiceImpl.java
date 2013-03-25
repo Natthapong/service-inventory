@@ -35,7 +35,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	private static Logger logger = Logger.getLogger(TmnProfileServiceImpl.class);
 
-	@Autowired @Qualifier("accessTokenRedisRepository")
+	@Autowired @Qualifier("accessTokenMemoryRepository")
 	private AccessTokenRepository accessTokenRepo;
 
 	@Autowired
@@ -43,7 +43,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Autowired
 	private TmnProfileProxy tmnProfileProxy;
-	
+
 	@Autowired
 	private EwalletSoapProxy ewalletSoapProxy;
 
@@ -60,13 +60,13 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			standardBizRequest.setChannelId(channelID);
 			standardBizRequest.setSecurityContext(securityContext);
 			GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
-			
+
 			if (profileResponse != null && !profileResponse.getProfileType().equals("C")) {
 				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_TYPE, "Invalid profile type, is not a customer.");
 			} else if (profileResponse != null && profileResponse.getStatusId() != 3) {
 				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_STATUS, "Invalid profile status. ("+profileResponse.getStatusId()+")");
-			} 
-			
+			}
+
 			AccessToken accessToken = AccessToken.generateNewToken(signonResponse.getSessionId(),
 					signonResponse.getTmnId(),
 					login.getUsername(),
@@ -99,7 +99,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
 			}
 			logger.debug("retrieve access Token: "+accessToken.toString());
-			
+
 			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
 			StandardBizRequest standardBizRequest = new StandardBizRequest();
 			standardBizRequest.setChannelId(accessToken.getChannelID());
@@ -144,27 +144,27 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 				e.getMessage(), e.getNamespace());
 		}
 	}
-	
+
 	@Override
 	public String logout(String accessTokenID) {
 		try {
 			// --- Get Account Detail from accessToken ---//
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 			if (accessToken == null) return "";
-			
+
 			accessTokenRepo.remove(accessTokenID);
-			
+
 			//--- Terminate Session Utiba ---//
 			SecurityContext securityContext = new SecurityContext();
 			securityContext.setSessionId(accessToken.getSessionID());
 			securityContext.setTmnId(accessToken.getTruemoneyID());
-			
+
 			StandardBizRequest standardBizRequest = new StandardBizRequest();
 			standardBizRequest.setSecurityContext(securityContext);
 			standardBizRequest.setChannelId(accessToken.getChannelID());
-			
+
 			this.tmnSecurityProxy.terminateSession(standardBizRequest);
-			
+
 		} catch (EwalletException e) {
 			logger.error(e);
 		} catch (ServiceUnavailableException e) {

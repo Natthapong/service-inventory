@@ -1,8 +1,9 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import th.co.truemoney.serviceinventory.bean.OTPBean;
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
@@ -12,7 +13,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class OTPRedisRepository implements OTPRepository {
 
 	private static Logger logger = Logger.getLogger(OTPRedisRepository.class);
-	
+
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
 
@@ -24,24 +25,24 @@ public class OTPRedisRepository implements OTPRepository {
 		} catch (Exception e) {
 			logger.error(e);
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
-					"Can not stored data in repository.");			
+					"Can not stored data in repository.");
 		}
 	}
 
 	@Override
 	public OTPBean getOTP(String mobileno) {
 		try {
-			String result = redisLoggingDao.getData(mobileno);		
+			String result = redisLoggingDao.getData(mobileno);
 			if(result == null) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND,
 						"otp not found.");
-			}			
+			}
 			ObjectMapper mapper = new ObjectMapper();
 			return mapper.readValue(result, OTPBean.class);
 		} catch (ServiceInventoryException e) {
 			throw e;
 		} catch (Exception e) {
-			logger.error(e);			
+			logger.error(e);
 		}
 		return null;
 	}

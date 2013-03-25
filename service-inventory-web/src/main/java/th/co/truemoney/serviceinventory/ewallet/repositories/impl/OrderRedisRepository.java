@@ -1,8 +1,9 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
@@ -13,10 +14,10 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class OrderRedisRepository implements OrderRepository {
 
 	private static Logger logger = Logger.getLogger(OrderRedisRepository.class);
-	
+
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
-	
+
 	@Override
 	public void saveTopUpQuote(TopUpQuote topupQuote) {
 		try {
@@ -25,28 +26,28 @@ public class OrderRedisRepository implements OrderRepository {
 		} catch (Exception e) {
 			logger.error(e);
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
-					"Can not stored data in repository.");	
+					"Can not stored data in repository.");
 		}
 	}
 
 	@Override
 	public TopUpQuote getTopUpQuote(String orderID) {
 		try {
-			String result = redisLoggingDao.getData("quote:"+orderID);			
+			String result = redisLoggingDao.getData("quote:"+orderID);
 			if(result == null) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_ORDER_NOT_FOUND,
 						"qoute not found.");
-			}			
+			}
 			ObjectMapper mapper = new ObjectMapper();
 			return mapper.readValue(result, TopUpQuote.class);
 		} catch (ServiceInventoryException e) {
 			throw e;
 		} catch (Exception e) {
-			logger.error(e);			
+			logger.error(e);
 		}
-		return null;		
+		return null;
 	}
-	
+
 	@Override
 	public void saveTopUpOrder(TopUpOrder topupOrder) {
 		try {
@@ -61,19 +62,19 @@ public class OrderRedisRepository implements OrderRepository {
 	@Override
 	public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
 		try {
-			String result = redisLoggingDao.getData("order:"+orderID);			
+			String result = redisLoggingDao.getData("order:"+orderID);
 			if(result == null) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_ORDER_NOT_FOUND,
 						"TopUp Ewallet order not found.");
-			}			
+			}
 			ObjectMapper mapper = new ObjectMapper();
 			return mapper.readValue(result, TopUpOrder.class);
 		} catch (ServiceInventoryException e) {
 			throw e;
 		} catch (Exception e) {
-			logger.error(e);			
+			logger.error(e);
 		}
-		return null;	
+		return null;
 	}
 
 }

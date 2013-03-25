@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.springframework.core.io.ClassPathResource;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;

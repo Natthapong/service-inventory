@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatus.Series;
@@ -15,12 +14,14 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class ServiceInventoryExceptionResponseErrorHandler extends DefaultResponseErrorHandler {
-	
+
 	public static final ServiceInventoryException SERVICE_NOT_AVAILABLE = new ServiceInventoryException("503", "Service Not Available", "TMN-PRODUCT");
-	
+
 	public void handleError(ClientHttpResponse response) throws IOException {
 		HttpStatus statusCode = getHttpStatusCode(response);
 

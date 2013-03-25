@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
@@ -33,16 +34,16 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 public class TmnProfileControllerValidateFailTest {
 
 	private MockMvc mockMvc;
-	
+
 	@Autowired
 	private WebApplicationContext wac;
 
 	@Autowired
 	private TmnProfileService tmnProfileServiceMock;
-	
+
 	@Before
 	public void setup() {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();	
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);
 	}
 
@@ -50,14 +51,14 @@ public class TmnProfileControllerValidateFailTest {
 	public void tierDown() {
 		reset(this.tmnProfileServiceMock);
 	}
-	
+
 	@Test
 	public void shouldLoginFail() throws Exception {
-		
-		//given		
+
+		//given
 		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class)))
 				.thenReturn("8e48e03be057319f40621fe9bcd123f750f6df1d");
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
 		this.mockMvc.perform(post("/ewallet/login")
@@ -65,7 +66,7 @@ public class TmnProfileControllerValidateFailTest {
 			.content(mapper.writeValueAsBytes(login)))
 			.andExpect(status().isBadRequest())
 			.andDo(print());
-		
+
 	}
-		
+
 }

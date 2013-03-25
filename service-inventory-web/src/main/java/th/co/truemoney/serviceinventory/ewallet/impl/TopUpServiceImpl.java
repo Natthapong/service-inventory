@@ -8,12 +8,13 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -95,7 +96,7 @@ public class TopUpServiceImpl implements TopUpService {
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Object> hashMap = mapper.convertValue(sofDetail, HashMap.class);
 			se.setData(hashMap);
-			throw se; 
+			throw se;
 		}
 		if (amount.compareTo(maxAmount) > 0) {
 			ServiceInventoryException se = new ServiceInventoryException(
@@ -104,14 +105,14 @@ public class TopUpServiceImpl implements TopUpService {
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Object> hashMap = mapper.convertValue(sofDetail, HashMap.class);
 			se.setData(hashMap);
-			throw se; 
+			throw se;
 		}
 
 		// --- Connect to Ewallet Client to verify amount on this
 		// ewallet-account ---//
 		try {
 			StandardMoneyResponse verifyResponse = verifyTopupEwallet(
-					quoteRequest.getAmount(), 
+					quoteRequest.getAmount(),
 					accessToken.getChannelID(),
 					sofDetail.getSourceOfFundID(),
 					sofDetail.getSourceOfFundType(),
@@ -145,7 +146,7 @@ public class TopUpServiceImpl implements TopUpService {
 		topupQuote.setAmount(amount);
 		topupQuote.setTopUpFee(totalFee);
 		topupQuote.setSourceOfFund(sofDetail);
-		
+
 		logger.debug("source id: "+topupQuote.getSourceOfFund().getSourceOfFundID());
 		logger.debug("source type: "+topupQuote.getSourceOfFund().getSourceOfFundType());
 
@@ -160,7 +161,7 @@ public class TopUpServiceImpl implements TopUpService {
 		request.setAmount(amount);
 		request.setChannelId(channelID);
 		request.setSourceId(sourceOfFundID);
-		request.setSourceType(sofType);		
+		request.setSourceType(sofType);
 		SecurityContext securityContext = new SecurityContext(sessionID, truemoneyID);
 		request.setSecurityContext(securityContext);
 		return ewalletProxy.verifyAddMoney(request);
@@ -180,11 +181,11 @@ public class TopUpServiceImpl implements TopUpService {
 	@Override
 	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID)
 			throws ServiceInventoryException {
-		
+
 		accessTokenRepo.getAccessToken(accessTokenID);
 
 		TopUpQuote topUpQuote = orderRepo.getTopUpQuote(quoteID);
-		
+
 		return topUpQuote;
 	}
 
@@ -216,27 +217,27 @@ public class TopUpServiceImpl implements TopUpService {
 		logger.debug("processing " + topUpOrderId);
 		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(topUpOrderId);
 		logger.debug(topUpOrder.toString());
-		AccessToken accessTokenObj = accessTokenRepo.getAccessToken(accessToken);	
+		AccessToken accessTokenObj = accessTokenRepo.getAccessToken(accessToken);
 		logger.debug(accessTokenObj.toString());
 		String otpString = otpService.getOTPString(accessTokenObj.getMobileno());
 		if(!otp.getOtpString().equals(otpString)){
 			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH,
 					"Invalide OTP.");
-		}		
-		
-		AddMoneyRequest addMoneyRequest = new AddMoneyRequest();			
+		}
+
+		AddMoneyRequest addMoneyRequest = new AddMoneyRequest();
 		addMoneyRequest.setAmount(topUpOrder.getAmount());
-		addMoneyRequest.setChannelId(accessTokenObj.getChannelID());		
+		addMoneyRequest.setChannelId(accessTokenObj.getChannelID());
 		addMoneyRequest.setSecurityContext(new SecurityContext(accessTokenObj.getSessionID(), accessTokenObj.getTruemoneyID()));
 		addMoneyRequest.setSourceId(topUpOrder.getSourceOfFund().getSourceOfFundID());
 		addMoneyRequest.setSourceType(topUpOrder.getSourceOfFund().getSourceOfFundType());
-			
+
 		topUpOrder.setStatus(TopUpStatus.PROCESSING);
 		orderRepo.saveTopUpOrder(topUpOrder);
 		asyncService.topUpUtibaEwallet(topUpOrder, addMoneyRequest);
 		logger.debug("processing " + orderRepo.getTopUpOrder(topUpOrder.getID()).getStatus());
 		logger.debug("time " + new Date());
-		
+
 
 		return topUpOrder;
 	}
@@ -244,18 +245,18 @@ public class TopUpServiceImpl implements TopUpService {
 	@Override
 	public TopUpStatus getTopUpOrderStatus(String topUpOrderID,
 			String accessTokenID) throws ServiceInventoryException {
-		TopUpStatus topUpStatus = getTopUpOrderDetails(topUpOrderID, accessTokenID).getStatus();		
+		TopUpStatus topUpStatus = getTopUpOrderDetails(topUpOrderID, accessTokenID).getStatus();
 
 		if(topUpStatus == TopUpStatus.BANK_FAILED) {
-			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_BANK_FAILED, 
+			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_BANK_FAILED,
 					"bank confirmation processing fail.");
 		} else if (topUpStatus == TopUpStatus.UMARKET_FAILED) {
-			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_UMARKET_FAILED, 
+			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_UMARKET_FAILED,
 					"u-market confirmation processing fail.");
 		} else if (topUpStatus == TopUpStatus.FAILED){
-			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_FAILED, 
+			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_FAILED,
 					"confirmation processing fail.");
-		}		
+		}
 
 		return topUpStatus;
 	}
@@ -263,11 +264,11 @@ public class TopUpServiceImpl implements TopUpService {
 	@Override
 	public TopUpOrder getTopUpOrderDetails(String topUpOrderID,
 			String accessTokenID) throws ServiceInventoryException {
-		
+
 		accessTokenRepo.getAccessToken(accessTokenID);
 
 		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(topUpOrderID);
-		
+
 		return topUpOrder;
 	}
 
