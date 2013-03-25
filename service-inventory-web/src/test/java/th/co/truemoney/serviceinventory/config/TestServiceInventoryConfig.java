@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Scope;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
+import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
@@ -74,6 +75,11 @@ public class TestServiceInventoryConfig {
     @Bean @Qualifier("orderRedisRepository")
     public OrderRepository getOrderRedisRepository() {
     	return new OrderRedisRepository();
+    }
+    
+    @Bean
+    public ExtendAccessTokenAsynService mockExtendAccessTokenAsynService() {
+    	return Mockito.mock(ExtendAccessTokenAsynService.class);
     }
     
 }

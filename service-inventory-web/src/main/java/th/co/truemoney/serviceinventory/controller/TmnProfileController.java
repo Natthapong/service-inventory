@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
+import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.exception.ValidateException;
 
@@ -23,6 +25,9 @@ public class TmnProfileController extends BaseController {
 
 	@Autowired
 	private TmnProfileService tmnProfileService;
+	
+	@Autowired 
+	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody String login(@RequestParam(value = "channelID", defaultValue="-1") Integer channelID, @RequestBody Login login)
@@ -36,22 +41,29 @@ public class TmnProfileController extends BaseController {
 	@RequestMapping(value = "/getprofile/{accessTokenID}", method = RequestMethod.GET)
 	public @ResponseBody TmnProfile getTruemoneyProfile(
 		@PathVariable String accessTokenID)
-			throws SignonServiceException {
-		return tmnProfileService.getTruemoneyProfile(accessTokenID);
+			throws ServiceInventoryException {
+		TmnProfile tmnProfile = tmnProfileService.getTruemoneyProfile(accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		return tmnProfile;
 	}
 
 	@RequestMapping(value = "/getbalance/{accessTokenID}", method = RequestMethod.GET)
 	public @ResponseBody BigDecimal getBalance(
 		@PathVariable String accessTokenID)
-			throws SignonServiceException {
-		return tmnProfileService.getEwalletBalance(accessTokenID);
+			throws ServiceInventoryException {
+		BigDecimal balance = tmnProfileService.getEwalletBalance(accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		return balance;
 	}
 	
 	@RequestMapping(value = "/logout/{accessTokenID}", method = RequestMethod.POST)
 	public @ResponseBody String logout(
-			@PathVariable String accessTokenID)
-	{
+		@PathVariable String accessTokenID) {
 		return tmnProfileService.logout(accessTokenID);
+	}
+	
+	private void extendExpireAccessToken(String accessTokenID) {
+		extendAccessTokenAsynService.setExpire(accessTokenID);
 	}
 	
 }

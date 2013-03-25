@@ -3,12 +3,12 @@ package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AccessTokenRedisRepository implements AccessTokenRepository {
 
@@ -21,7 +21,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 	public void save(AccessToken token) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			redisLoggingDao.addData(token.getAccessTokenID(), mapper.writeValueAsString(token), 10L);
+			redisLoggingDao.addData(token.getAccessTokenID(), mapper.writeValueAsString(token), 15L);
 		} catch (Exception e) {
 			logger.error(e);
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
@@ -30,10 +30,9 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 	}
 
 	@Override
-	public AccessToken getAccessToken(String accessTokenId) throws ServiceInventoryException {
+	public AccessToken getAccessToken(String accessTokenID) throws ServiceInventoryException {
 		try {
-			String result = redisLoggingDao.getData(accessTokenId);
-
+			String result = redisLoggingDao.getData(accessTokenID);
 			if(result == null) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
 						"access token not found.");
@@ -59,4 +58,15 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 		}
 	}
 
+	@Override
+	public void extendAccessToken(String accessTokenID) {
+		try {
+			redisLoggingDao.setExpire(accessTokenID, 15L);
+		} catch (Exception e) {
+			logger.error(e);
+			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
+					"Can not stored data in repository.");
+		}		
+	}
+	
 }

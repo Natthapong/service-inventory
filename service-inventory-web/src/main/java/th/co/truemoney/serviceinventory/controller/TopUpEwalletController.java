@@ -68,7 +68,7 @@ public class TopUpEwalletController extends BaseController {
 	public @ResponseBody TopUpOrder confirmOrder(@PathVariable String topUpOrderID, 
 		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 		@RequestBody OTP otp)
-			throws SignonServiceException {
+			throws ServiceInventoryException {
 		if(AccessTokenUtil.isValidCheckSum(otp.getChecksum(), topUpOrderID+otp.getOtpString()+accessTokenID, accessTokenID)) {
 			return topupService.confirmPlaceOrder(topUpOrderID, otp, accessTokenID);
 		}	else {
@@ -80,14 +80,15 @@ public class TopUpEwalletController extends BaseController {
 	@RequestMapping(value = "/top-up/order/{topUpOrderID}/status", method = RequestMethod.GET)
 	public @ResponseBody TopUpStatus getOrderStatus(@PathVariable String topUpOrderID, 
 		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
-				throws SignonServiceException, ServiceInventoryException {						
+				throws ServiceInventoryException {						
 		return topupService.getTopUpOrderStatus(topUpOrderID, accessTokenID);
 	}
 	
 	@RequestMapping(value = "/top-up/order/{topUpOrderID}", method = RequestMethod.GET)
 	public @ResponseBody TopUpOrder getOrderInfo(@PathVariable String topUpOrderID, 
 		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
-				throws SignonServiceException {
+				throws ServiceInventoryException {
 		return topupService.getTopUpOrderDetails(topUpOrderID, accessTokenID);
 	}
+	
 }

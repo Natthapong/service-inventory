@@ -34,4 +34,9 @@ public class RedisLoggingDaoImpl implements RedisLoggingDao {
 		return redisTemplate.opsForValue().get(key);
 	}
 
+	@Override
+	public void setExpire(String key, Long expired) {
+		redisTemplate.expire(key, expired.longValue(), TimeUnit.MINUTES);		
+	}
+	
 }

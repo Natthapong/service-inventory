@@ -44,4 +44,10 @@ public class AccessTokenMemoryRepository implements AccessTokenRepository {
 		logger.debug("accessToken: "+accessToken.toString());
 	  }
 	}
+
+	@Override
+	public void extendAccessToken(String accessTokenID) {
+		//not implement because memory repository
+	}	
+	
 }
