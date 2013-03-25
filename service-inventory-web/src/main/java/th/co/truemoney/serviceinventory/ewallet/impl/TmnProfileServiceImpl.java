@@ -172,6 +172,30 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		}
 		return "";
 	}
+	
+	@Override
+	public Boolean validateEmail(String email) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String preparedCreateProfile(TmnProfile tmnProfile) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TmnProfile createProfile(String mobileno, String OTPString) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String resendOTP(String mobileno) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
 		this.tmnProfileProxy = tmnProfileProxy;
