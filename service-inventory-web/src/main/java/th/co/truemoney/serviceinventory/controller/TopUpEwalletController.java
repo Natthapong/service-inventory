@@ -18,7 +18,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
-import th.co.truemoney.serviceinventory.exception.ValidateException;
 import th.co.truemoney.serviceinventory.util.AccessTokenUtil;
 
 @Controller
@@ -37,10 +36,6 @@ public class TopUpEwalletController extends BaseController {
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 			@RequestBody QuoteRequest quoteRequest)
 			throws ServiceInventoryException {
-		if ("".equals(accessTokenID)) {
-			throw new ValidateException("-1",
-					"Validate error: accessTokenID is null or empty.");
-		}
 		TopUpQuote topUpQuote = topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quoteRequest, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 		return topUpQuote;
