@@ -50,7 +50,7 @@ public class TmnProfileServiceClientTest {
 		}
 	}
 
-	@Test @Ignore
+	@Test
 	public void correctUsernameAndPasswordWillProduceAccessToken() {
 
 		try {
@@ -60,7 +60,7 @@ public class TmnProfileServiceClientTest {
 		}
 	}
 
-	@Test @Ignore
+	@Test
 	public void getUserProfile() {
 		try {
 			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
@@ -81,7 +81,7 @@ public class TmnProfileServiceClientTest {
 
 	@Test @Ignore
 	public void checkUserProfileUrl() {
-		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/getprofile/{accesstokenID}/{checksum}";
+		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/profile/{accesstokenID}/{checksum}";
 		String checkSum = EncryptUtil.buildHmacSignature("12345", "12345"
 				+ SALT);
 		try {
