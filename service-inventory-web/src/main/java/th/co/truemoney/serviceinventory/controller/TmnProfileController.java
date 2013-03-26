@@ -35,9 +35,7 @@ public class TmnProfileController extends BaseController {
 		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID, 
 		@RequestBody Login login)
 			throws SignonServiceException {
-		if (channelID == -1) {
-			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
-		}
+		validateRequestParam(channelID);
 		return tmnProfileService.login(channelID, login);
 	}
 
@@ -67,25 +65,42 @@ public class TmnProfileController extends BaseController {
 	
 	@RequestMapping(value = "/profiles/validate-email", method = RequestMethod.POST)
 	public @ResponseBody String isExistRegistered(
-		@RequestBody String email) {
-		return tmnProfileService.validateEmail(email);
+		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		@RequestBody String email) 
+			throws ServiceInventoryException {
+		if (channelID == -1) {
+			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
+		}
+		return tmnProfileService.validateEmail(channelID, email);
 	}
 	
 	@RequestMapping(value = "/profiles", method = RequestMethod.POST)
 	public @ResponseBody String createTruemoneyProfile(
-		@RequestBody TmnProfile tmnProfile) {
-		return tmnProfileService.createProfile(tmnProfile);
+		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		@RequestBody TmnProfile tmnProfile) 
+			throws ServiceInventoryException {
+		validateRequestParam(channelID);
+		return tmnProfileService.createProfile(channelID, tmnProfile);
 	}
 	
 	@RequestMapping(value = "/profiles/{mobileno}/verify-otp", method = RequestMethod.POST)
 	public @ResponseBody TmnProfile confirmCreateTruemoneyProfile(
 		@PathVariable String mobileno,
-		@RequestBody OTP otp) {
-		return tmnProfileService.confirmCreateProfile(mobileno, otp);
+		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		@RequestBody OTP otp) 
+			throws ServiceInventoryException {
+		validateRequestParam(channelID);
+		return tmnProfileService.confirmCreateProfile(channelID, mobileno, otp);
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {
 		extendAccessTokenAsynService.setExpire(accessTokenID);
+	}
+	
+	private void validateRequestParam(Integer channelID) {
+		if (channelID == -1) {
+			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
+		}		
 	}
 	
 }
