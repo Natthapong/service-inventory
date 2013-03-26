@@ -1,9 +1,8 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
@@ -11,9 +10,11 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class OrderRedisRepository implements OrderRepository {
 
-	private static Logger logger = Logger.getLogger(OrderRedisRepository.class);
+	private static Logger logger = LoggerFactory.getLogger(OrderRedisRepository.class);
 
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
@@ -24,7 +25,7 @@ public class OrderRedisRepository implements OrderRepository {
 			ObjectMapper mapper = new ObjectMapper();
 			redisLoggingDao.addData("quote:"+topupQuote.getID(), mapper.writeValueAsString(topupQuote), 15L);
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getMessage(), e);
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
 					"Can not stored data in repository.");
 		}
@@ -43,7 +44,7 @@ public class OrderRedisRepository implements OrderRepository {
 		} catch (ServiceInventoryException e) {
 			throw e;
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -72,7 +73,7 @@ public class OrderRedisRepository implements OrderRepository {
 		} catch (ServiceInventoryException e) {
 			throw e;
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}

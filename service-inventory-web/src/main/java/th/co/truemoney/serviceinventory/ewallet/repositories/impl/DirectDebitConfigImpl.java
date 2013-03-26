@@ -3,8 +3,12 @@ package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
+
+import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
+import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -12,12 +16,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
-import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
-
 public class DirectDebitConfigImpl implements DirectDebitConfig {
 
-	private static Logger logger = Logger.getLogger(DirectDebitConfigImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(DirectDebitConfigImpl.class);
 
 	private HashMap<String, DirectDebitConfigBean> bankConfigList;
 

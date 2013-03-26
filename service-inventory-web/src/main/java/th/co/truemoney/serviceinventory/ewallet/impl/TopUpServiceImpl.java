@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -40,11 +38,12 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.util.FeeUtil;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service
 public class TopUpServiceImpl implements TopUpService {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(TopUpServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(TopUpServiceImpl.class);
 
 	@Autowired
 	@Qualifier("accessTokenRedisRepository")
@@ -70,18 +69,12 @@ public class TopUpServiceImpl implements TopUpService {
 	private OTPService otpService;
 
 	@Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "unused"})
 	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID,
 			QuoteRequest quoteRequest, String accessTokenID) {
 
 		// --- Get Account Detail from accessToken ---//
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-
-		if (accessToken == null) {
-			throw new ServiceInventoryException(
-					ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
-					"AccessTokenID is expired or not found.");
-		}
 
 		// --- get SOF List ---//
 		DirectDebit sofDetail = getSourceOfFund(sourceOfFundID, accessToken);

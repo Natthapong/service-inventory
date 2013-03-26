@@ -2,7 +2,8 @@ package th.co.truemoney.serviceinventory.ewallet.impl;
 
 import java.util.concurrent.Future;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
@@ -14,7 +15,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 @Service
 public class ExtendAccessTokenAsynService {
 
-	private static Logger logger = Logger.getLogger(ExtendAccessTokenAsynService.class);
+	private static Logger logger = LoggerFactory.getLogger(ExtendAccessTokenAsynService.class);
 
 	@Autowired @Qualifier("accessTokenRedisRepository")
 	private AccessTokenRepository accessTokenRepo;
