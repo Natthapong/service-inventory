@@ -24,7 +24,12 @@ public class DevEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getUserProfileUrl() {
-		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet/getprofile/{accesstokenID}";
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet/profile/{accesstokenID}";
+	}
+	
+	@Override
+	public String getBalance() {
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet/balance/{accesstokenID}";
 	}
 
 	@Override
@@ -55,6 +60,5 @@ public class DevEnvironmentConfig implements EnvironmentConfig {
 	@Override
 	public String getTopUpOrderDetailsUrl() {
 		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{topUpOrderID}?accessTokenID={accessTokenID}";
-	}
-	
+	}	
 }

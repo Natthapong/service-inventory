@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.client.config;
 
+import java.math.BigDecimal;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +27,12 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getUserProfileUrl() {
-		return "http://localhost:8585/service-inventory-web/v1/ewallet/getprofile/{accesstokenID}";
+		return "http://localhost:8585/service-inventory-web/v1/ewallet/profile/{accesstokenID}";
+	}
+	
+	@Override
+	public String getBalance() {
+		return "http://localhost:8585/service-inventory-web/v1/ewallet/balance/{accesstokenID}";
 	}
 
 	@Override
@@ -56,6 +63,5 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 	@Override
 	public String getTopUpOrderDetailsUrl() {
 		return "http://localhost:8585/service-inventory-web/v1/top-up/order/{topUpOrderID}?accessTokenID={accessTokenID}";
-	}
-	
+	}	
 }

@@ -6,6 +6,7 @@ public interface EnvironmentConfig {
 	String getLogoutUrl();
 	String getUserDirectDebitSourceOfFundsUrl();
 	String getUserProfileUrl();
+	String getBalance();
 	
 	String getCreateTopUpQuoteFromDirectDebitUrl();
 	String getTopUpQuoteDetailsUrl();
