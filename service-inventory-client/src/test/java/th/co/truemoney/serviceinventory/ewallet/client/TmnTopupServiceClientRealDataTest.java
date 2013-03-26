@@ -9,6 +9,7 @@ import java.util.Date;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,6 +28,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class })
 @ActiveProfiles(profiles = "local")
+@Category(IntegrationTest.class)
 public class TmnTopupServiceClientRealDataTest {
 
 	@Autowired
