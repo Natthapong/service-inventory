@@ -63,8 +63,14 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	@Override
 	public BigDecimal getEwalletBalance(String accessTokenID)
 			throws ServiceInventoryException {
-		TmnProfile profile = getTruemoneyProfile(accessTokenID);
-		return profile.getBalance();
+		
+		HttpEntity<BigDecimal> requestEntity = new HttpEntity<BigDecimal>(headers);
+		ResponseEntity<BigDecimal> responseEntity = restTemplate.exchange(
+				environmentConfig.getBalance(),
+					HttpMethod.GET, requestEntity, BigDecimal.class, accessTokenID);
+
+		return responseEntity.getBody();
+		
 	}
 
 	@Override
