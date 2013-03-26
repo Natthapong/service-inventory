@@ -4,7 +4,8 @@ import java.math.BigDecimal;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
@@ -32,7 +34,7 @@ import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 @Service
 public class TmnProfileServiceImpl implements TmnProfileService {
 
-	private static Logger logger = Logger.getLogger(TmnProfileServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(TmnProfileServiceImpl.class);
 
 	@Autowired @Qualifier("accessTokenMemoryRepository")
 	private AccessTokenRepository accessTokenRepo;
@@ -159,15 +161,15 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			this.tmnSecurityProxy.terminateSession(standardBizRequest);
 
 		} catch (EwalletException e) {
-			logger.error(e);
+			logger.error(e.getMessage(), e);
 		} catch (ServiceUnavailableException e) {
-			logger.error(e);
+			logger.error(e.getMessage(), e);
 		}
 		return "";
 	}
 	
 	@Override
-	public Boolean validateEmail(String email) {
+	public String validateEmail(String email) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -179,7 +181,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile confirmCreateProfile(String mobileno, String OTPString) {
+	public TmnProfile confirmCreateProfile(String mobileno, OTP otp) {
 		// TODO Auto-generated method stub
 		return null;
 	}

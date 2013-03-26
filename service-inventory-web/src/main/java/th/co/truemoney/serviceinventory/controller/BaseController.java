@@ -2,7 +2,8 @@ package th.co.truemoney.serviceinventory.controller;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,7 +17,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class BaseController {
 
-	private static Logger logger = Logger.getLogger(BaseController.class);
+	private static Logger logger = LoggerFactory.getLogger(BaseController.class);
 
 	@ExceptionHandler(BaseException.class)
 	public @ResponseBody ErrorBean handleException(BaseException exception,

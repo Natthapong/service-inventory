@@ -3,7 +3,8 @@ package th.co.truemoney.serviceinventory.ewallet.impl;
 import java.util.Date;
 import java.util.concurrent.Future;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
@@ -22,7 +23,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
 @Service
 public class AsyncService {
 	
-	private static final Logger logger = Logger.getLogger(AsyncService.class);
+	private static final Logger logger = LoggerFactory.getLogger(AsyncService.class);
 	
 	@Autowired
 	@Qualifier("orderRedisRepository")

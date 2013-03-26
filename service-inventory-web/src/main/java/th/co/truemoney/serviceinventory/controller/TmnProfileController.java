@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -62,6 +63,31 @@ public class TmnProfileController extends BaseController {
 	public @ResponseBody String logout(
 		@PathVariable String accessTokenID) {
 		return tmnProfileService.logout(accessTokenID);
+	}
+	
+	@RequestMapping(value = "/profiles/validate-email", method = RequestMethod.POST)
+	public @ResponseBody String isExistRegistered(
+		@RequestBody String email) {
+		return tmnProfileService.validateEmail(email);
+	}
+	
+	@RequestMapping(value = "/profiles", method = RequestMethod.POST)
+	public @ResponseBody String createTruemoneyProfile(
+		@RequestBody TmnProfile tmnProfile) {
+		return tmnProfileService.createProfile(tmnProfile);
+	}
+	
+	@RequestMapping(value = "/profiles/{mobileno}/verify-otp", method = RequestMethod.POST)
+	public @ResponseBody TmnProfile confirmCreateTruemoneyProfile(
+		@PathVariable String mobileno,
+		@RequestBody OTP otp) {
+		return tmnProfileService.confirmCreateProfile(mobileno, otp);
+	}
+	
+	@RequestMapping(value = "/profiles/{mobileno}/resend-otp", method = RequestMethod.POST)
+	public @ResponseBody String resendOTP(
+		@PathVariable String mobileno) {
+		return tmnProfileService.resendOTP(mobileno);
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {

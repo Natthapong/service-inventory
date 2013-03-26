@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
@@ -12,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AccessTokenRedisRepository implements AccessTokenRepository {
 
-	private static Logger logger = Logger.getLogger(AccessTokenRedisRepository.class);
+	private static Logger logger = LoggerFactory.getLogger(AccessTokenRedisRepository.class);
 
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
@@ -23,7 +24,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 			ObjectMapper mapper = new ObjectMapper();
 			redisLoggingDao.addData(token.getAccessTokenID(), mapper.writeValueAsString(token), 15L);
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getMessage(), e);
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
 					"Can not stored data in repository.");
 		}
@@ -42,7 +43,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 		} catch (ServiceInventoryException e) {
 			throw e;
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -52,7 +53,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 		try {
 			redisLoggingDao.delete(accessTokenID);
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getMessage(), e);
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
 					"Can not removed data in repository.");
 		}
@@ -63,7 +64,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 		try {
 			redisLoggingDao.setExpire(accessTokenID, 15L);
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getMessage(), e);
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
 					"Can not stored data in repository.");
 		}		

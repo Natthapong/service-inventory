@@ -1,18 +1,19 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import th.co.truemoney.serviceinventory.bean.OTPBean;
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class OTPRedisRepository implements OTPRepository {
 
-	private static Logger logger = Logger.getLogger(OTPRedisRepository.class);
+	private static Logger logger = LoggerFactory.getLogger(OTPRedisRepository.class);
 
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
@@ -23,7 +24,7 @@ public class OTPRedisRepository implements OTPRepository {
 			ObjectMapper mapper = new ObjectMapper();
 			redisLoggingDao.addData(otpBean.getMobileno(), mapper.writeValueAsString(otpBean), 3L);
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getMessage(), e);
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
 					"Can not stored data in repository.");
 		}
@@ -42,7 +43,7 @@ public class OTPRedisRepository implements OTPRepository {
 		} catch (ServiceInventoryException e) {
 			throw e;
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
