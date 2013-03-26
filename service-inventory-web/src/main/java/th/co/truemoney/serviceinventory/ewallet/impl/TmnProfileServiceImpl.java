@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
 import java.math.BigDecimal;
+import java.rmi.RemoteException;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,6 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AdminSecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBalanceResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
@@ -30,9 +32,11 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
+import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
 public class TmnProfileServiceImpl implements TmnProfileService {
@@ -41,6 +45,12 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Autowired @Qualifier("accessTokenMemoryRepository")
 	private AccessTokenRepository accessTokenRepo;
+	
+	@Autowired
+	private ProfileRepository profileRepository;
+	
+	@Autowired
+	private OTPService otpService;
 
 	@Autowired
 	private TmnSecurityProxy tmnSecurityProxy;
@@ -50,7 +60,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Autowired
 	private EwalletSoapProxy ewalletSoapProxy;
-
+	
 	@Autowired
 	private TmnProfileAdminProxy tmnProfileAdminProxy;
 
@@ -175,9 +185,18 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 	
 	@Override
-	public String validateEmail(Integer channelID, String email) {
-		// TODO Auto-generated method stub
-		return null;
+	public String validateEmail(Integer channelID, String email) throws ServiceInventoryException {
+		AdminSecurityContext adminSecurityContext = new AdminSecurityContext();
+		adminSecurityContext.setInitiator("si.tmnprofile");
+		adminSecurityContext.setPin("0000");
+		IsCreatableRequest isCreatableRequest = new IsCreatableRequest();
+		isCreatableRequest.setAdminSecurityContext(adminSecurityContext);
+		isCreatableRequest.setChannelId(channelID);
+		isCreatableRequest.setLoginId(email);		
+		
+		tmnProfileAdminProxy.isCreatable(isCreatableRequest);
+		
+		return email;
 	}
 
 	@Override
@@ -195,8 +214,25 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Override
 	public TmnProfile confirmCreateProfile(Integer channelID, String mobileno, OTP otp) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String localOTP = otpService.getOTPString(mobileno);
+		if(!localOTP.equals(otp.getOtpString())) {
+			throw new ServiceInventoryException(SignonServiceException.Code.OTP_NOT_MATCH, "otp string not match");
+		}
+		
+		TmnProfile tmnProfile = profileRepository.getTmnProfile(mobileno);
+		
+		CreateTmnProfileRequest tmnProfileRequest = new CreateTmnProfileRequest();		
+		tmnProfileRequest.setChannelId(channelID);
+		tmnProfileRequest.setEmail(tmnProfile.getEmail());
+		tmnProfileRequest.setFullName(tmnProfile.getFullname());
+		tmnProfileRequest.setMobile(tmnProfile.getMobileno());
+		tmnProfileRequest.setPassword(tmnProfile.getPassword());
+		tmnProfileRequest.setThaiId(tmnProfile.getThaiID());
+				
+		tmnProfileProxy.createTmnProfile(tmnProfileRequest);
+		
+		return tmnProfile;
 	}
 
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
@@ -215,6 +251,14 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		this.accessTokenRepo = accessTokenMemoryRepository;
 	}
 
+	public void setProfileRepository(ProfileRepository profileRepository) {
+		this.profileRepository = profileRepository;
+	}
+
+	public void setOtpService(OTPService otpService) {
+		this.otpService = otpService;
+	}
+
 	private SignonRequest createSignOnRequest(Integer channelID, Login login) {
 		SignonRequest signonRequest = new SignonRequest();
 		signonRequest.setInitiator(login.getUsername());
@@ -223,6 +267,4 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 		return signonRequest;
 	}
-
-
 }
