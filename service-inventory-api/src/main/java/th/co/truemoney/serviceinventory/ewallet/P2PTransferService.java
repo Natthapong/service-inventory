@@ -14,7 +14,7 @@ public interface P2PTransferService {
 	
 	public P2PDraftTransaction sendOTP(String draftTransactionID, String accessTokenID);
 	
-	public P2PTransaction createTransaction(String transactionID, String accessTokenID);
+	public P2PTransaction createTransaction(String draftTransactionID, String accessTokenID);
 	
 	public P2PTransactionStatus getTransactionStatus(String transactionID, String accessTokenID);
 	

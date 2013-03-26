@@ -30,7 +30,9 @@ public class TmnProfileController extends BaseController {
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public @ResponseBody String login(@RequestParam(value = "channelID", defaultValue="-1") Integer channelID, @RequestBody Login login)
+	public @ResponseBody String login(
+		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID, 
+		@RequestBody Login login)
 			throws SignonServiceException {
 		if (channelID == -1) {
 			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
@@ -38,7 +40,7 @@ public class TmnProfileController extends BaseController {
 		return tmnProfileService.login(channelID, login);
 	}
 
-	@RequestMapping(value = "/getprofile/{accessTokenID}", method = RequestMethod.GET)
+	@RequestMapping(value = "/profile/{accessTokenID}", method = RequestMethod.GET)
 	public @ResponseBody TmnProfile getTruemoneyProfile(
 		@PathVariable String accessTokenID)
 			throws ServiceInventoryException {
@@ -47,7 +49,7 @@ public class TmnProfileController extends BaseController {
 		return tmnProfile;
 	}
 
-	@RequestMapping(value = "/getbalance/{accessTokenID}", method = RequestMethod.GET)
+	@RequestMapping(value = "/balance/{accessTokenID}", method = RequestMethod.GET)
 	public @ResponseBody BigDecimal getBalance(
 		@PathVariable String accessTokenID)
 			throws ServiceInventoryException {

@@ -15,6 +15,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
+import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.exception.ValidateException;
@@ -25,6 +26,9 @@ public class TopUpEwalletController extends BaseController {
 
 	@Autowired
 	private TopUpService topupService;
+	
+	@Autowired 
+	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
 	@RequestMapping(value = "/directdebit/{sourceOfFundID}/quote", method = RequestMethod.POST)
 	public @ResponseBody
@@ -37,16 +41,6 @@ public class TopUpEwalletController extends BaseController {
 			throw new ValidateException("-1",
 					"Validate error: accessTokenID is null or empty.");
 		}
-		
-		//--- checksum data ---//
-		/*
-		String checksum = quoteRequest.getChecksum();
-		String datasum = String.format("%s%s", sourceOfFundID, quoteRequest.getAmount().toString());
-		if (!AccessTokenUtil.isValidCheckSum(checksum, datasum, accessTokenId))
-			throw new ValidateException("-1",
-					"Validate error: invalid checksum.");
-		*/
-		
 		return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quoteRequest, accessTokenID);
 	}
 	
@@ -89,6 +83,10 @@ public class TopUpEwalletController extends BaseController {
 		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
 				throws ServiceInventoryException {
 		return topupService.getTopUpOrderDetails(topUpOrderID, accessTokenID);
+	}
+	
+	private void extendExpireAccessToken(String accessTokenID) {
+		extendAccessTokenAsynService.setExpire(accessTokenID);
 	}
 	
 }

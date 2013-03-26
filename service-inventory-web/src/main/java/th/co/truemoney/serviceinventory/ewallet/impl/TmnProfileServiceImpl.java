@@ -26,7 +26,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
-import th.co.truemoney.serviceinventory.exception.BaseException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
@@ -95,9 +94,6 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-			if (accessToken == null) {
-				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
-			}
 			logger.debug("retrieve access Token: "+accessToken.toString());
 
 			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
@@ -125,9 +121,6 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-			if (accessToken == null) {
-				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
-			}
 			logger.debug("retrieve access Token: "+accessToken.toString());
 
 			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
