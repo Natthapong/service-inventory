@@ -57,7 +57,7 @@ public class TmnTopupServiceClientURLTest {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void checkCreateOrderFromDirectDebitUrl(){
-		String url = "http://localhost:8585/service-inventory-web/v1/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
+		String url = "http://localhost:8585/service-inventory-web/v1/direct-debit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
 		try{
 			
 			HashMap hashMap = new HashMap();
@@ -94,22 +94,7 @@ public class TmnTopupServiceClientURLTest {
 			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
 			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
 		}
-	}
-	
-	@Test
-	public void createOrderFromDirectDebit() {
-		try{
-			QuoteRequest quoteRequest = new QuoteRequest();
-			quoteRequest.setAmount(new BigDecimal(2000));
-			quoteRequest.setChecksum("");
-			TopUpQuote topUpQuote = topupServiceClient.createTopUpQuoteFromDirectDebit("678", quoteRequest, "12345");
-			
-			assertNotNull(topUpQuote);
-		}catch(ServiceInventoryException e){
-			assertEquals("404", e.getErrorCode());
-			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
-		}
-	}
+	}	
 	
 	@Test @Ignore
 	public void checkRequestPlaceOrderUrl(){
