@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -25,6 +26,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -152,8 +154,8 @@ public class LocalProxyConfig {
 			}
 		};
 	}
-
-	@Bean @Primary @Qualifier("orderRedisRepository")
+	
+	/*@Bean @Primary @Qualifier("orderRedisRepository")
 	public OrderRepository stubOrderRepositoryReddis(){
 		return new OrderRedisRepository(){
 			public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
@@ -181,8 +183,8 @@ public class LocalProxyConfig {
 				return topUpOrder;
 			}
 		};
-	}
-
+	}*/
+	
 	@Bean @Primary
 	public OrderRepository stubOrderRepository(){
 		return new OrderMemoryRepository(){
@@ -220,20 +222,82 @@ public class LocalProxyConfig {
 
 	@Bean @Primary
 	public RedisLoggingDao stubRedisLoggingDao(){
-		return new RedisLoggingDaoImpl(){
+		return new RedisLoggingDaoImpl(){			
 			public String getData(String key) {
 				if(key.contains("order:")) {
-					System.out.println("return order");
+					TopUpOrder topUpOrder = new TopUpOrder();
+					topUpOrder.setID("1112");
+					topUpOrder.setAccessTokenID("12345");
+					topUpOrder.setUsername("username");
+					topUpOrder.setStatus(TopUpStatus.CONFIRMED);
+					topUpOrder.setAmount(new BigDecimal(5000));
+					DirectDebit directDebit = new DirectDebit();
+					directDebit.setBankCode("MART");
+					directDebit.setBankNameEn("MART");
+					directDebit.setBankNameTh("MART");
+					directDebit.setBankAccountNumber("XXMART");
+					directDebit.setMinAmount(new BigDecimal(5000));
+					directDebit.setMaxAmount(new BigDecimal(5001));
+					topUpOrder.setSourceOfFund(directDebit);
+					TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
+					confirmationInfo.setTransactionDate("12/12/12");
+					confirmationInfo.setTransactionID("555");
+					topUpOrder.setConfirmationInfo(confirmationInfo);
+					topUpOrder.setOtpReferenceCode("1234");
+					topUpOrder.setTopUpFee(new BigDecimal(1235));
+					topUpOrder.setAccessTokenID("456");
+					return toJsonString(topUpOrder);
+				} else if (key.contains("quote:")){
+					DirectDebit directDebit = new DirectDebit();
+			    	directDebit.setSourceOfFundID("123");
+			    	directDebit.setSourceOfFundType("direc-debit");
+			    	directDebit.setBankCode("SCB");
+			    	directDebit.setBankNameEn("sian comercial");
+			    	directDebit.setBankNameTh("ไทยพานิชย์");
+			    	directDebit.setBankAccountNumber("1234567890");
+			    	directDebit.setMinAmount(new BigDecimal(10));
+			    	directDebit.setMaxAmount(new BigDecimal(10000));
+					TopUpQuote topUpQuote = new TopUpQuote();
+					topUpQuote.setID("1");
+					topUpQuote.setAccessTokenID("12345");
+					topUpQuote.setAmount(new BigDecimal(2000));
+					topUpQuote.setTopUpFee(new BigDecimal(120));
+					topUpQuote.setUsername("MART");
+					topUpQuote.setSourceOfFund(directDebit);
+					return toJsonString(topUpQuote);
+				} else {
+					AccessToken accessToken = new AccessToken();
+					accessToken.setAccessTokenID("12345");
+					accessToken.setChannelID(41);
+					accessToken.setEmail("local@tmn.com");
+					accessToken.setMobileno("0861234567");
+					accessToken.setSessionID("6789");
+					accessToken.setTruemoneyID("555");
+					accessToken.setUsername("username");
+					return toJsonString(accessToken);					
+				}				
+			}
+			
+			public void addData(String key, String value, Long expired) {				
+			}
+			
+			public void setExpire(String key, Long expire) {
+				System.out.println("logging : "+key+" expire : "+expire);
+			}
+			
+			private String toJsonString(Object obj) {
+				ObjectMapper mapper = new ObjectMapper();
+				String str = null;
+				try {
+					str = mapper.writeValueAsString(obj);
+				} catch (JsonGenerationException e) {
+					e.printStackTrace();
+				} catch (JsonMappingException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-
-				String format = "{\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":\"%s\",\"%s\":%d}";
-				return String.format(format, "accessTokenID", "12345",
-											"sessionID", "6789",
-											"truemoneyID", "555",
-											"username", "username",
-											"mobileno", "0861234567",
-											"email", "local@tmn.com",
-											"channelID", 41);
+				return str;
 			}
 		};
 	}
@@ -288,7 +352,7 @@ public class LocalProxyConfig {
 					};
 					ClassPathResource resource = new ClassPathResource("addmoney/directdebit.json");
 					bankConfigList = m.readValue(resource.getFile(), typeRef);
-
+					System.out.println(bankConfigList);
 				} catch (JsonParseException e) {
 					e.printStackTrace();
 				} catch (JsonMappingException e) {
