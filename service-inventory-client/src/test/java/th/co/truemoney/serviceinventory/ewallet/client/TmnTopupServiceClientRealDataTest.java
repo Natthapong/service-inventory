@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.ewallet.client;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -44,7 +45,7 @@ public class TmnTopupServiceClientRealDataTest {
 		}
 	}
 	
-	@Test @Ignore
+	@Test
 	public void getOrderStatus(){
 		TopUpStatus topUpStatus = topupServiceClient.getTopUpOrderStatus("333", "12345");
 		assertEquals(TopUpStatus.CONFIRMED, topUpStatus);
@@ -56,7 +57,7 @@ public class TmnTopupServiceClientRealDataTest {
 		assertEquals(topUpOrder.getUsername(), "username");
 	}
 	
-	@Test @Ignore
+	@Test
 	public void createOrderFromDirectDebit() {
 		try{
 			QuoteRequest quoteRequest = new QuoteRequest();
@@ -86,11 +87,11 @@ public class TmnTopupServiceClientRealDataTest {
 			assertEquals("1004", e.getErrorCode());
 		}
 	}
-
-	@Test @Ignore
+	
+	@Test
 	public void requestPlaceOrder() {
 		TopUpOrder topUpOrder = topupServiceClient.requestPlaceOrder("123", "12345");
 		assertNotNull(topUpOrder);
-		assertEquals("2000", topUpOrder.getAmount());
+		assertEquals(new BigDecimal(2000), topUpOrder.getAmount());
 	}
 }
