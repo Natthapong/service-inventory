@@ -99,4 +99,5 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }
