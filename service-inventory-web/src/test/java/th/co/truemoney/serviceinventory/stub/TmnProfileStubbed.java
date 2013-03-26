@@ -10,6 +10,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionRespo
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class TmnProfileStubbed {
 	
@@ -102,6 +103,11 @@ public class TmnProfileStubbed {
 
 	public static Exception createFailedThrowEwalletException() {
 		EwalletException e = new EwalletException("error code", "error namespace");
+		return e;
+	}
+
+	public static Exception createFailedThrowServiceInventoryException() {
+		ServiceInventoryException e = new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");
 		return e;
 	}
 
