@@ -21,8 +21,8 @@ public class SourceOfFundController extends BaseController {
 	@Autowired
 	private SourceOfFundService sourceOfFundService;
 	
-//	@Autowired 
-//	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
+	@Autowired 
+	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
 	@RequestMapping(value = "/user/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
 	public @ResponseBody List<DirectDebit> listDirectDebitSources(
@@ -30,12 +30,12 @@ public class SourceOfFundController extends BaseController {
 		@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID)
 			throws ServiceInventoryException {
 		List<DirectDebit> directDebits = sourceOfFundService.getUserDirectDebitSources(username, accessTokenID);
-		//extendExpireAccessToken(accessTokenID);
+		extendExpireAccessToken(accessTokenID);
 		return directDebits;
 	}
 	
-//	private void extendExpireAccessToken(String accessTokenID) {
-//		extendAccessTokenAsynService.setExpire(accessTokenID);
-//	}
+	private void extendExpireAccessToken(String accessTokenID) {
+		extendAccessTokenAsynService.setExpire(accessTokenID);
+	}
 
 }

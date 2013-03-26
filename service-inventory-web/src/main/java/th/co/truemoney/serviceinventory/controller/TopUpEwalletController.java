@@ -41,21 +41,27 @@ public class TopUpEwalletController extends BaseController {
 			throw new ValidateException("-1",
 					"Validate error: accessTokenID is null or empty.");
 		}
-		return topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quoteRequest, accessTokenID);
+		TopUpQuote topUpQuote = topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quoteRequest, accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		return topUpQuote;
 	}
 	
 	@RequestMapping(value = "/top-up/quote/{quoteID}", method = RequestMethod.GET)
 	public @ResponseBody TopUpQuote getQuoteInfo(@PathVariable String quoteID, 
 		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
 				throws SignonServiceException {
-		return topupService.getTopUpQuoteDetails(quoteID, accessTokenID);
+		TopUpQuote topUpQuote = topupService.getTopUpQuoteDetails(quoteID, accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		return topUpQuote;
 	}
 	
 	@RequestMapping(value = "/top-up/order/{quoteID}", method = RequestMethod.POST)
 	public @ResponseBody TopUpOrder placeOrder(@PathVariable String quoteID, 
 		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) 
 			throws ServiceInventoryException {		
-		return topupService.requestPlaceOrder(quoteID, accessTokenID);
+		TopUpOrder topUpOrder = topupService.requestPlaceOrder(quoteID, accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		return topUpOrder;
 	}
 	
 	@RequestMapping(value = "/top-up/order/{topUpOrderID}/confirm", method = RequestMethod.POST)
@@ -64,7 +70,9 @@ public class TopUpEwalletController extends BaseController {
 		@RequestBody OTP otp)
 			throws ServiceInventoryException {
 		if(AccessTokenUtil.isValidCheckSum(otp.getChecksum(), topUpOrderID+otp.getOtpString()+accessTokenID, accessTokenID)) {
-			return topupService.confirmPlaceOrder(topUpOrderID, otp, accessTokenID);
+			TopUpOrder topUpOrder = topupService.confirmPlaceOrder(topUpOrderID, otp, accessTokenID);
+			extendExpireAccessToken(accessTokenID);
+			return topUpOrder;
 		}	else {
 			throw new ServiceInventoryException( ServiceInventoryException.Code.INVALID_CHECKSUM, 
 					"Invalide Checksum.");
@@ -75,14 +83,18 @@ public class TopUpEwalletController extends BaseController {
 	public @ResponseBody TopUpStatus getOrderStatus(@PathVariable String topUpOrderID, 
 		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
 				throws ServiceInventoryException {						
-		return topupService.getTopUpOrderStatus(topUpOrderID, accessTokenID);
+		TopUpStatus topUpStatus = topupService.getTopUpOrderStatus(topUpOrderID, accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		return topUpStatus;
 	}
 	
 	@RequestMapping(value = "/top-up/order/{topUpOrderID}", method = RequestMethod.GET)
 	public @ResponseBody TopUpOrder getOrderInfo(@PathVariable String topUpOrderID, 
 		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
 				throws ServiceInventoryException {
-		return topupService.getTopUpOrderDetails(topUpOrderID, accessTokenID);
+		TopUpOrder topUpOrder = topupService.getTopUpOrderDetails(topUpOrderID, accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		return topUpOrder;
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {
