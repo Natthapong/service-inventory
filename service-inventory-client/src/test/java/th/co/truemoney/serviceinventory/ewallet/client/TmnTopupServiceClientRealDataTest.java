@@ -50,7 +50,7 @@ public class TmnTopupServiceClientRealDataTest {
 		assertEquals(TopUpStatus.CONFIRMED, topUpStatus);
 	}
 	
-	@Test @Ignore
+	@Test
 	public void getTopUpOrderDetails(){
 		TopUpOrder topUpOrder = topupServiceClient.getTopUpOrderDetails("333", "12345");
 		assertEquals(topUpOrder.getUsername(), "username");
@@ -74,7 +74,7 @@ public class TmnTopupServiceClientRealDataTest {
 		}
 	}
 	
-	@Test @Ignore
+	@Test
 	public void checkRequestPlaceOrder(){
 		try{
 			OTP otp = new OTP("112233", "885bdbcc4186d862a7ed3bae4dd3adb3b7de186a");			
