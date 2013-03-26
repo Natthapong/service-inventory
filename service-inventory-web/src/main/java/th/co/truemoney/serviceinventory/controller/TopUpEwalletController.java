@@ -29,7 +29,7 @@ public class TopUpEwalletController extends BaseController {
 	@Autowired 
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
-	@RequestMapping(value = "/directdebit/{sourceOfFundID}/quote", method = RequestMethod.POST)
+	@RequestMapping(value = "/direct-debit/{sourceOfFundID}/quote", method = RequestMethod.POST)
 	public @ResponseBody
 	TopUpQuote createTopUpQuoteFromDirectDebit(
 			@PathVariable String sourceOfFundID,

@@ -34,7 +34,7 @@ public class DevEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getCreateTopUpQuoteFromDirectDebitUrl() {
-		return "https://dev.truemoney.co.th/service-inventory-web/v1/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/direct-debit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
 	}
 	
 	@Override

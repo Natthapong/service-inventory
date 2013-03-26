@@ -37,7 +37,7 @@ public class LocalEnvironmentConfig implements EnvironmentConfig {
 
 	@Override
 	public String getCreateTopUpQuoteFromDirectDebitUrl() {
-		return "http://localhost:8585/service-inventory-web/v1/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
+		return "http://localhost:8585/service-inventory-web/v1/direct-debit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
 	}
 
 	@Override
