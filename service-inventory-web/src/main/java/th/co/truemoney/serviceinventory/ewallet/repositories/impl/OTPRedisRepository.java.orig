@@ -1,0 +1,67 @@
+package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+<<<<<<< HEAD
+import th.co.truemoney.serviceinventory.bean.OTPBean;
+=======
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+>>>>>>> clean up iteration 1 work. Restructure Top up workflow.
+import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class OTPRedisRepository implements OTPRepository {
+
+	private static Logger logger = LoggerFactory.getLogger(OTPRedisRepository.class);
+
+	ObjectMapper mapper = new ObjectMapper();
+
+	@Autowired
+	private RedisLoggingDao redisLoggingDao;
+
+	@Override
+	public void saveOTP(OTP otp) {
+		try {
+			redisLoggingDao.addData(otp.getReferenceCode(), mapper.writeValueAsString(otp), 3L);
+		} catch (Exception e) {
+<<<<<<< HEAD
+			logger.error(e.getMessage(), e);
+			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
+					"Can not stored data in repository.");
+=======
+			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR, "Can not stored data in repository.");
+>>>>>>> clean up iteration 1 work. Restructure Top up workflow.
+		}
+
+	}
+
+	@Override
+	public OTP getOTPByRefCode(String refCode) {
+		try {
+
+			String result = redisLoggingDao.getData(refCode);
+
+			if(result == null) {
+				throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "otp not found.");
+			}
+
+			return mapper.readValue(result, OTP.class);
+
+		} catch (Exception e) {
+<<<<<<< HEAD
+			logger.error(e.getMessage(), e);
+=======
+			logger.error(e);
+			return null;
+>>>>>>> clean up iteration 1 work. Restructure Top up workflow.
+		}
+	}
+
+}

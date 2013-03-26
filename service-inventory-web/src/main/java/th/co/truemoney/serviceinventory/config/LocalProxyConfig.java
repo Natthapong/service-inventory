@@ -1,34 +1,12 @@
 package th.co.truemoney.serviceinventory.config;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.rmi.RemoteException;
-import java.util.HashMap;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.ClassPathResource;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
-import th.co.truemoney.serviceinventory.bean.OTPBean;
-import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
-import th.co.truemoney.serviceinventory.dao.impl.RedisLoggingDaoImpl;
-import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
@@ -58,23 +36,11 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswo
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
-import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderRedisRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.firsthop.proxy.impl.SmsProxyImpl;
-import th.co.truemoney.serviceinventory.sms.OTPService;
-import th.co.truemoney.serviceinventory.sms.impl.OTPServiceImpl;
-import th.co.truemoney.serviceinventory.util.RandomUtil;
 
 
 @Configuration
@@ -163,7 +129,7 @@ public class LocalProxyConfig {
 			}
 		};
 	}
-	
+
 	public TmnProfileAdminProxy stubTmnProfileAdminProxy() {
 		return new TmnProfileAdminProxy() {
 
@@ -205,189 +171,8 @@ public class LocalProxyConfig {
 					throws EwalletException {
 				// TODO Auto-generated method stub
 				return null;
-			}			
-			
-		};
-	}
-	
-	@Bean @Primary
-	public OrderRepository stubOrderRepository(){
-		return new OrderMemoryRepository(){
-			public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
-				TopUpOrder topUpOrder = new TopUpOrder();
-				if (orderID.equals("1")) {
-					TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
-			    	confirmationInfo.setTransactionID("1");
-			    	confirmationInfo.setTransactionDate("03-21-2013 16:45");
-			    	DirectDebit directDebit = new DirectDebit();
-			    	directDebit.setSourceOfFundID("123");
-			    	directDebit.setSourceOfFundType("direc-debit");
-			    	TopUpOrder topupOrder = new TopUpOrder();
-			    	topupOrder.setID("1");
-			    	topupOrder.setConfirmationInfo(confirmationInfo);
-			    	topupOrder.setSourceOfFund(directDebit);
-				} else {
-					throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_ORDER_NOT_FOUND,
-							"TopUp order not found.");
-				}
-				return topUpOrder;
-			}
-		};
-	}
-
-	@Bean @Primary
-	public AccessTokenRepository stubAccessTokenRepository(){
-		return new AccessTokenRedisRepository(){
-			public AccessToken getAccessToken(String accessTokenId) throws ServiceInventoryException {
-				System.out.println("stub : AccessTokenRepository");
-				return new AccessToken("12345", "6789", "555", "username", "0861234567", "local@tmn.com", 41);
-			}
-		};
-	}
-
-	@Bean @Primary
-	public RedisLoggingDao stubRedisLoggingDao(){
-		return new RedisLoggingDaoImpl(){			
-			public String getData(String key) {
-				if(key.contains("order:")) {
-					TopUpOrder topUpOrder = new TopUpOrder();
-					topUpOrder.setID("1112");
-					topUpOrder.setAccessTokenID("12345");
-					topUpOrder.setUsername("username");
-					topUpOrder.setStatus(TopUpStatus.CONFIRMED);
-					topUpOrder.setAmount(new BigDecimal(5000));
-					DirectDebit directDebit = new DirectDebit();
-					directDebit.setBankCode("MART");
-					directDebit.setBankNameEn("MART");
-					directDebit.setBankNameTh("MART");
-					directDebit.setBankAccountNumber("XXMART");
-					directDebit.setMinAmount(new BigDecimal(5000));
-					directDebit.setMaxAmount(new BigDecimal(5001));
-					topUpOrder.setSourceOfFund(directDebit);
-					TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
-					confirmationInfo.setTransactionDate("12/12/12");
-					confirmationInfo.setTransactionID("555");
-					topUpOrder.setConfirmationInfo(confirmationInfo);
-					topUpOrder.setOtpReferenceCode("1234");
-					topUpOrder.setTopUpFee(new BigDecimal(1235));
-					topUpOrder.setAccessTokenID("456");
-					return toJsonString(topUpOrder);
-				} else if (key.contains("quote:")){
-					DirectDebit directDebit = new DirectDebit();
-			    	directDebit.setSourceOfFundID("123");
-			    	directDebit.setSourceOfFundType("direc-debit");
-			    	directDebit.setBankCode("SCB");
-			    	directDebit.setBankNameEn("sian comercial");
-			    	directDebit.setBankNameTh("ไทยพานิชย์");
-			    	directDebit.setBankAccountNumber("1234567890");
-			    	directDebit.setMinAmount(new BigDecimal(10));
-			    	directDebit.setMaxAmount(new BigDecimal(10000));
-					TopUpQuote topUpQuote = new TopUpQuote();
-					topUpQuote.setID("1");
-					topUpQuote.setAccessTokenID("12345");
-					topUpQuote.setAmount(new BigDecimal(2000));
-					topUpQuote.setTopUpFee(new BigDecimal(120));
-					topUpQuote.setUsername("MART");
-					topUpQuote.setSourceOfFund(directDebit);
-					return toJsonString(topUpQuote);
-				} else {
-					AccessToken accessToken = new AccessToken();
-					accessToken.setAccessTokenID("12345");
-					accessToken.setChannelID(41);
-					accessToken.setEmail("local@tmn.com");
-					accessToken.setMobileno("0861234567");
-					accessToken.setSessionID("6789");
-					accessToken.setTruemoneyID("555");
-					accessToken.setUsername("username");
-					return toJsonString(accessToken);					
-				}				
-			}
-			
-			public void addData(String key, String value, Long expired) {				
-			}
-			
-			public void setExpire(String key, Long expire) {
-				System.out.println("logging : "+key+" expire : "+expire);
-			}
-			
-			private String toJsonString(Object obj) {
-				ObjectMapper mapper = new ObjectMapper();
-				String str = null;
-				try {
-					str = mapper.writeValueAsString(obj);
-				} catch (JsonGenerationException e) {
-					e.printStackTrace();
-				} catch (JsonMappingException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return str;
-			}
-		};
-	}
-
-	@Bean @Primary
-	public SourceOfFundRepository stubSourceOfFundRepository(){
-		return new SourceOfFundRepository(){
-			public DirectDebit getUserDirectDebitSourceByID(String sourceOfFundID, String truemoneyID, Integer channelID, String sessionID) {
-				DirectDebit directDebit = new DirectDebit("SCB","Siam Commercial Bank","ไทยพาณิชย์","xxxx1234",new BigDecimal(30),new BigDecimal(5000));
-				directDebit.setSourceOfFundID("1");
-				directDebit.setSourceOfFundType("debit");
-				return directDebit;
-			}
-		};
-	}
-
-	@Bean @Primary
-	public OTPService stubOTPService() {
-		return new OTPServiceImpl() {
-			public String send(String mobileno) throws ServiceInventoryException {
-				try {
-					OTPBean otpBean = new OTPBean(mobileno, RandomUtil.genRandomNumber(6), RandomUtil.genRandomString(4));
-					//otpRepository.saveOTP(otpBean);
-					return otpBean.getOtpReferenceCode();
-				} catch (Exception e) {
-					throw new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");
-				}
 			}
 
-			public String getOTPString(String mobileno) throws ServiceInventoryException {
-			    	if(!mobileno.equals("0861234567")) {
-			    		throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "OTP not found. ");
-					}
-				return "112233";
-			}
-		};
-	}
-
-	@Bean @Primary
-	public DirectDebitConfig stubDirectDebitConfig(){
-		return new DirectDebitConfigImpl(){
-			private HashMap<String, DirectDebitConfigBean> bankConfigList;
-
-			public DirectDebitConfigBean getBankDetail(String bankCode) {
-
-				try {
-					JsonFactory factory = new JsonFactory();
-					ObjectMapper m = new ObjectMapper(factory);
-
-					TypeReference<HashMap<String, DirectDebitConfigBean>> typeRef;
-					typeRef = new TypeReference<HashMap<String, DirectDebitConfigBean>>() {
-					};
-					ClassPathResource resource = new ClassPathResource("addmoney/directdebit.json");
-					bankConfigList = m.readValue(resource.getFile(), typeRef);
-					System.out.println(bankConfigList);
-				} catch (JsonParseException e) {
-					e.printStackTrace();
-				} catch (JsonMappingException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				return bankConfigList.get(bankCode);
-			}
 		};
 	}
 

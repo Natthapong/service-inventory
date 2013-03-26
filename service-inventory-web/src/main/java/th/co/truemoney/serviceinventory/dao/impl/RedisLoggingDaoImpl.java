@@ -4,16 +4,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Repository;
 
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 
-@Repository
 public class RedisLoggingDaoImpl implements RedisLoggingDao {
 
 	@Autowired
 	RedisTemplate<String, String> redisTemplate;
-	
+
 	@Override
 	public void addData(String key, String value, Long expired) {
 		redisTemplate.opsForValue().set(key, value, expired.longValue(), TimeUnit.MINUTES);
@@ -26,7 +24,7 @@ public class RedisLoggingDaoImpl implements RedisLoggingDao {
 
 	@Override
 	public void delete(String key) {
-		redisTemplate.delete(key);	
+		redisTemplate.delete(key);
 	}
 
 	@Override
@@ -36,7 +34,7 @@ public class RedisLoggingDaoImpl implements RedisLoggingDao {
 
 	@Override
 	public void setExpire(String key, Long expired) {
-		redisTemplate.expire(key, expired.longValue(), TimeUnit.MINUTES);		
+		redisTemplate.expire(key, expired.longValue(), TimeUnit.MINUTES);
 	}
-	
+
 }

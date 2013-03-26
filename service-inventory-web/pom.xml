@@ -15,7 +15,8 @@
 		<redis-version>1.0.2.RELEASE</redis-version>
 		<junit.version>4.10</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.profiles.active>dev</spring.profiles.active>
+		<tmn.environment>dev</tmn.environment>
+		<tmn.repo>redis</tmn.repo>
 	</properties>
 
 	<dependencies>
@@ -150,7 +151,7 @@
 				<configuration>
 					<port>8585</port>
 					<systemProperties>
-						<spring.profiles.active>${spring.profiles.active}</spring.profiles.active>
+						<spring.profiles.active>${tmn.environment},${tmn.repo}</spring.profiles.active>
 					</systemProperties>
 				</configuration>
 			</plugin>
@@ -177,8 +178,14 @@
 		<profile>
 			<id>local</id>
 			<properties>
-				<spring.profiles.active>local</spring.profiles.active>
+				<tmn.environment>local</tmn.environment>
 			</properties>
+		</profile>
+		<profile>
+		    <id>mem</id>
+		    <properties>
+		        <tmn.repo>mem</tmn.repo>
+		    </properties>
 		</profile>
 	</profiles>
 </project>

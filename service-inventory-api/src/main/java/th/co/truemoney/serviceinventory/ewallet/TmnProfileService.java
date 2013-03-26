@@ -11,17 +11,17 @@ public interface TmnProfileService {
 
 	public String login(Integer channelID, Login login) throws ServiceInventoryException;
 
-	public TmnProfile getTruemoneyProfile(String accessTokenID) throws ServiceInventoryException;
-	
-	public BigDecimal getEwalletBalance(String accessTokenID) throws ServiceInventoryException;
+    public TmnProfile getTruemoneyProfile(String accessTokenID) throws ServiceInventoryException;
 
-	public String logout(String accessTokenID) throws ServiceInventoryException;
-	
-	public String validateEmail(Integer channelID, String email) throws ServiceInventoryException;
-	
-	public String createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException;
-	
-	public TmnProfile confirmCreateProfile(Integer channelID, String mobileno, OTP otp) throws ServiceInventoryException;
-	
+    public BigDecimal getEwalletBalance(String accessTokenID) throws ServiceInventoryException;
+
+    public String logout(String accessTokenID) throws ServiceInventoryException;
+
+    public String validateEmail(Integer channelID, String email) throws ServiceInventoryException;
+
+    public String createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException;
+
+    public TmnProfile confirmCreateProfile(Integer channelID, String mobileno, OTP otp) throws ServiceInventoryException;
+
 }
 

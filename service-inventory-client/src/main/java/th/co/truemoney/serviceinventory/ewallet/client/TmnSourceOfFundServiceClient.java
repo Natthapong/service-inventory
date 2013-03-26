@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
-import th.co.truemoney.serviceinventory.ewallet.client.config.EnvironmentConfig;
+import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
@@ -23,7 +23,7 @@ public class TmnSourceOfFundServiceClient implements SourceOfFundService {
 	RestTemplate restTemplate;
 
 	@Autowired
-	private EnvironmentConfig environmentConfig;
+	private EndPoints environmentConfig;
 
 	@Autowired
 	private HttpHeaders headers;

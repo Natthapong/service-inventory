@@ -34,4 +34,8 @@ public class ServiceInventoryClientConfig {
 		return headers;
 	}
 
+	@Bean
+	public EndPoints endPoints() {
+		return new EndPoints();
+	}
 }

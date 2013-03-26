@@ -5,7 +5,6 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
@@ -17,9 +16,9 @@ public class ExtendAccessTokenAsynService {
 
 	private static Logger logger = LoggerFactory.getLogger(ExtendAccessTokenAsynService.class);
 
-	@Autowired @Qualifier("accessTokenRedisRepository")
+	@Autowired
 	private AccessTokenRepository accessTokenRepo;
-	
+
 	@Async
 	public Future<Boolean> setExpire(String accessTokenID) {
 		try {
@@ -29,5 +28,5 @@ public class ExtendAccessTokenAsynService {
 		}
 		return new AsyncResult<Boolean> (true);
 	}
-	
+
 }

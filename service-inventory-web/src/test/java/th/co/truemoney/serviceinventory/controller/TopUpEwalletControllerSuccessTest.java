@@ -4,7 +4,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -23,16 +24,19 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
+import th.co.truemoney.serviceinventory.config.SmsConfig;
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuoteStatus;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { WebConfig.class, TestServiceInventoryConfig.class, TestRedisConfig.class })
+@ContextConfiguration(classes = { WebConfig.class, MemRepositoriesConfig.class, TestServiceInventoryConfig.class, TestRedisConfig.class, SmsConfig.class })
+@ActiveProfiles(profiles={"local", "mem"})
 public class TopUpEwalletControllerSuccessTest {
 
 	private MockMvc mockMvc;
@@ -58,9 +62,9 @@ public class TopUpEwalletControllerSuccessTest {
 	public void shouldSuccess() throws Exception {
 
 		//given
-		when(topupServiceMock.requestPlaceOrder(anyString(), anyString())).thenReturn(new TopUpOrder());
+		when(topupServiceMock.sendOTPConfirm(anyString(), anyString())).thenReturn(new OTP("11233", "refCode"));
 
-		this.mockMvc.perform(post("/top-up/order/{quoteID}?accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "12345")
+		this.mockMvc.perform(post("/top-up/quote/{quoteID}/otp?accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "12345")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(print());
@@ -69,12 +73,12 @@ public class TopUpEwalletControllerSuccessTest {
 
 	@Test
 	public void confirmPlaceOrderSuccess() throws Exception {
-		OTP otp = new OTP("112233", "885bdbcc4186d862a7ed3bae4dd3adb3b7de186a");
+		OTP otp = new OTP("112233", "refCode", "123");
 		//given
-		when(topupServiceMock.confirmPlaceOrder(anyString(), any(OTP.class), anyString())).thenReturn(new TopUpOrder());
+		when(topupServiceMock.confirmOTP(anyString(), any(OTP.class), anyString())).thenReturn(TopUpQuoteStatus.OTP_SENT);
 
 		ObjectMapper mapper = new ObjectMapper();
-		this.mockMvc.perform(post("/top-up/order/{topUpOrderID}/confirm?accessTokenID=12345", "1")
+		this.mockMvc.perform(put("/top-up/quote/{quoteID}/otp/refCode?accessTokenID=12345", "1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(otp)))
 			.andExpect(status().isOk())

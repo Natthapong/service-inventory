@@ -30,10 +30,7 @@ public class ServiceInventoryExceptionResponseErrorHandler extends DefaultRespon
 			try {
 				ObjectMapper objectMapper = new ObjectMapper();
 				throw objectMapper.readValue(getResponseBody(response), ServiceInventoryException.class);
-			} catch (ServiceInventoryException e1) {
-				throw e1;
-			} catch (IOException e2) {
-				e2.printStackTrace();
+			} catch (IOException ex) {
 				throw SERVICE_NOT_AVAILABLE;
 			}
 		} else {
@@ -54,14 +51,24 @@ public class ServiceInventoryExceptionResponseErrorHandler extends DefaultRespon
 	}
 
 	private byte[] getResponseBody(ClientHttpResponse response) {
+
+		InputStream responseBody = null;
 		try {
-			InputStream responseBody = response.getBody();
+			responseBody = response.getBody();
 			if (responseBody != null) {
 				return FileCopyUtils.copyToByteArray(responseBody);
 			}
 		}
 		catch (IOException ex) {
 			// ignore
+		} finally {
+			if (responseBody != null) {
+				try {
+					responseBody.close();
+				} catch (IOException e) {
+					// ignore
+				}
+			}
 		}
 		return new byte[0];
 	}

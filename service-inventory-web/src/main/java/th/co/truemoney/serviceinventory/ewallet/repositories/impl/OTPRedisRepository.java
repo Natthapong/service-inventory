@@ -4,48 +4,49 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.co.truemoney.serviceinventory.bean.OTPBean;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OTPRedisRepository implements OTPRepository {
 
 	private static Logger logger = LoggerFactory.getLogger(OTPRedisRepository.class);
 
+	ObjectMapper mapper = new ObjectMapper();
+
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
 
 	@Override
-	public void saveOTP(OTPBean otpBean) {
+	public void saveOTP(OTP otp) {
 		try {
-			ObjectMapper mapper = new ObjectMapper();
-			redisLoggingDao.addData(otpBean.getMobileno(), mapper.writeValueAsString(otpBean), 3L);
+			redisLoggingDao.addData(otp.getReferenceCode(), mapper.writeValueAsString(otp), 3L);
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
-					"Can not stored data in repository.");
+			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR, "Can not stored data in repository.");
 		}
+
 	}
 
 	@Override
-	public OTPBean getOTP(String mobileno) {
+	public OTP getOTPByRefCode(String refCode) {
 		try {
-			String result = redisLoggingDao.getData(mobileno);
+
+			String result = redisLoggingDao.getData(refCode);
+
 			if(result == null) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND,
-						"otp not found.");
+				throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "otp not found.");
 			}
-			ObjectMapper mapper = new ObjectMapper();
-			return mapper.readValue(result, OTPBean.class);
-		} catch (ServiceInventoryException e) {
-			throw e;
+
+			return mapper.readValue(result, OTP.class);
+
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		return null;
+
+	    return null;
 	}
 
 }

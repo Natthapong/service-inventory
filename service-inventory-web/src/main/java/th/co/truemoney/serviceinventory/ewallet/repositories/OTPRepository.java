@@ -1,10 +1,10 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories;
 
-import th.co.truemoney.serviceinventory.bean.OTPBean;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 
 public interface OTPRepository {
 
-	public void saveOTP(OTPBean otpBean);
-	public OTPBean getOTP(String mobileno);	
+	public void saveOTP(OTP otpBean);
+	public OTP getOTPByRefCode(String refCode);
 
 }

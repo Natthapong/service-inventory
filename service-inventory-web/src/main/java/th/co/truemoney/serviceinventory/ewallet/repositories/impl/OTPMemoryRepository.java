@@ -3,21 +3,21 @@ package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import th.co.truemoney.serviceinventory.bean.OTPBean;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 
 public class OTPMemoryRepository implements OTPRepository {
 
-	public static HashMap<String, OTPBean> mapOTP = new LinkedHashMap<String, OTPBean>();
+	public static HashMap<String, OTP> otpsMap = new LinkedHashMap<String, OTP>();
 
 	@Override
-	public void saveOTP(OTPBean otpBean) {
-		mapOTP.put(otpBean.getMobileno(), otpBean);		
+	public void saveOTP(OTP otp) {
+		otpsMap.put(otp.getReferenceCode(), otp);
 	}
 
 	@Override
-	public OTPBean getOTP(String mobileno) {
-		return mapOTP.get(mobileno);
+	public OTP getOTPByRefCode(String refCode) {
+		return otpsMap.get(refCode);
 	}
 
 }

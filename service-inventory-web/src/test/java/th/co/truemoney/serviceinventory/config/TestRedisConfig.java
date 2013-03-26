@@ -13,13 +13,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class TestRedisConfig {
-	
+
 	@Value("${redis.host}")
 	private String redisHost;
-	
+
 	@Value("${redis.port}")
 	private Integer redisPort;
-	
+
 	@Bean
 	JedisConnectionFactory jedisConnectionFactory() {
 		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
@@ -37,7 +37,7 @@ public class TestRedisConfig {
 		template.setValueSerializer(new GenericToStringSerializer<Object>(Object.class));
 		return template;
 	}
-	
+
 	@Bean
 	public static PropertyPlaceholderConfigurer redisProperties(){
 	  PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();

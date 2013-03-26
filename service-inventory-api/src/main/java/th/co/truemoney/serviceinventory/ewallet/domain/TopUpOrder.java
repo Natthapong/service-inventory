@@ -3,21 +3,23 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(Include.NON_NULL)
 public class TopUpOrder implements Serializable {
 
 	private static final long serialVersionUID = 2325219087645032462L;
 
 	private String ID;
-	@JsonDeserialize(as=DirectDebit.class)
 	private SourceOfFund sourceOfFund;
 	private String accessTokenID;
 	private String username;
 	private BigDecimal amount;
 	private BigDecimal topUpFee;
-	private String otpReferenceCode;
-	private TopUpStatus status = TopUpStatus.AWAITING_CONFIRM;
+	private TopUpOrderStatus status = TopUpOrderStatus.ORDER_VERIFIED;
 	private TopUpConfirmationInfo confirmationInfo;
 
 	public TopUpOrder() {
@@ -27,7 +29,7 @@ public class TopUpOrder implements Serializable {
 
 	public TopUpOrder(String iD, SourceOfFund sourceOfFund,
 			String accessTokenID, String username, BigDecimal amount,
-			BigDecimal topUpFee, String otpReferenceCode, TopUpStatus status,
+			BigDecimal topUpFee, TopUpOrderStatus status,
 			TopUpConfirmationInfo confirmationInfo) {
 		super();
 		ID = iD;
@@ -36,7 +38,6 @@ public class TopUpOrder implements Serializable {
 		this.username = username;
 		this.amount = amount;
 		this.topUpFee = topUpFee;
-		this.otpReferenceCode = otpReferenceCode;
 		this.status = status;
 		this.confirmationInfo = confirmationInfo;
 	}
@@ -50,7 +51,7 @@ public class TopUpOrder implements Serializable {
 		this.amount = quote.getAmount();
 		this.topUpFee = quote.getTopUpFee();
 
-		this.status = TopUpStatus.AWAITING_CONFIRM;
+		this.status = TopUpOrderStatus.ORDER_VERIFIED;
 	}
 
 	public String getID() {
@@ -101,20 +102,12 @@ public class TopUpOrder implements Serializable {
 		this.amount = amount;
 	}
 
-	public TopUpStatus getStatus() {
+	public TopUpOrderStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(TopUpStatus status) {
+	public void setStatus(TopUpOrderStatus status) {
 		this.status = status;
-	}
-
-	public String getOtpReferenceCode() {
-		return otpReferenceCode;
-	}
-
-	public void setOtpReferenceCode(String otpReferenceCode) {
-		this.otpReferenceCode = otpReferenceCode;
 	}
 
 	public TopUpConfirmationInfo getConfirmationInfo() {
@@ -130,8 +123,7 @@ public class TopUpOrder implements Serializable {
 		return "TopUpOrder [ID=" + ID + ", sourceOfFund=" + sourceOfFund
 				+ ", accessTokenID=" + accessTokenID + ", username=" + username
 				+ ", amount=" + amount + ", topUpFee=" + topUpFee
-				+ ", otpReferenceCode=" + otpReferenceCode + ", status="
-				+ status + ", confirmationInfo=" + confirmationInfo + "]";
+				+ ", status=" + status + ", confirmationInfo=" + confirmationInfo + "]";
 	}
 
 }

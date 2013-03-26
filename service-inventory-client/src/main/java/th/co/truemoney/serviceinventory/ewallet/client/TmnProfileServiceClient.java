@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
-import th.co.truemoney.serviceinventory.ewallet.client.config.EnvironmentConfig;
+import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
@@ -22,10 +22,10 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class TmnProfileServiceClient implements TmnProfileService {
 
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
 	@Autowired
-	private EnvironmentConfig environmentConfig;
+	private EndPoints endPoints;
 
 	@Autowired
 	private HttpHeaders headers;
@@ -39,7 +39,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 
 		HttpEntity<Login> requestEntity = new HttpEntity<Login>(login, headers);
 
-		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLoginUrl(), HttpMethod.POST, requestEntity, String.class, channelID);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getLoginUrl(), HttpMethod.POST, requestEntity, String.class, channelID);
 
 		String accessToken = responseEntity.getBody();
 
@@ -52,7 +52,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(headers);
 
 		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(
-				environmentConfig.getUserProfileUrl(),
+				endPoints.getUserProfileUrl(),
 					HttpMethod.GET, requestEntity, TmnProfile.class, accesstokenID);
 
 		TmnProfile tmnProfile = responseEntity.getBody();
@@ -60,25 +60,25 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		return tmnProfile;
 	}
 
-	
+
 	@Override
 	public BigDecimal getEwalletBalance(String accessTokenID)
 			throws ServiceInventoryException {
-		
+
 		HttpEntity<BigDecimal> requestEntity = new HttpEntity<BigDecimal>(headers);
 		ResponseEntity<BigDecimal> responseEntity = restTemplate.exchange(
-				environmentConfig.getBalance(),
+				endPoints.getBalance(),
 					HttpMethod.GET, requestEntity, BigDecimal.class, accessTokenID);
 
 		return responseEntity.getBody();
-		
+
 	}
 
 	@Override
 	public String logout(String accessTokenID) throws ServiceInventoryException {
-		
+
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
-		ResponseEntity<String> responseEntity = restTemplate.exchange(environmentConfig.getLogoutUrl(), HttpMethod.POST, requestEntity, String.class, accessTokenID);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getLogoutUrl(), HttpMethod.POST, requestEntity, String.class, accessTokenID);
 		return responseEntity.getBody();
 	}
 
@@ -87,7 +87,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public String createProfile(Integer channelID, TmnProfile tmnProfile) {
 		// TODO Auto-generated method stub

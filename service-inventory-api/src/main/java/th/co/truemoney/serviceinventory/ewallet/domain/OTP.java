@@ -4,19 +4,32 @@ import java.io.Serializable;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(Include.NON_NULL)
 public class OTP implements Serializable {
-	
+
 	private static final long serialVersionUID = -4332227740146738592L;
+
+	private String mobileNo;
+	private String referenceCode;
 	private String otpString;
-	private String checksum;
-		
+
 	public OTP() {
-		super();
 	}
-	
-	public OTP(String otpString, String checksum) {
+
+	public OTP(String mobileNo, String referenceCode) {
+		this.mobileNo = mobileNo;
+		this.referenceCode = referenceCode;
+	}
+
+	public OTP(String mobileNo, String referenceCode, String otpString) {
+		this.mobileNo = mobileNo;
+		this.referenceCode = referenceCode;
 		this.otpString = otpString;
-		this.checksum = checksum;
 	}
 
 	public String getOtpString() {
@@ -27,20 +40,29 @@ public class OTP implements Serializable {
 		this.otpString = otpString;
 	}
 
-	public String getChecksum() {
-		return checksum;
+	public String getReferenceCode() {
+		return referenceCode;
 	}
 
-	public void setChecksum(String checksum) {
-		this.checksum = checksum;
+	public void setReferenceCode(String referenceCode) {
+		this.referenceCode = referenceCode;
+	}
+
+	public String getMobileNo() {
+		return mobileNo;
+	}
+
+	public void setMobileNo(String mobileNo) {
+		this.mobileNo = mobileNo;
 	}
 
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
+			.append("ref code: ", this.referenceCode)
 			.append("otpString: ", this.otpString)
-			.append("checksum: ", this.checksum)
+			.append("mobile no: ", this.mobileNo)
 			.toString();
 	}
-	
+
 }

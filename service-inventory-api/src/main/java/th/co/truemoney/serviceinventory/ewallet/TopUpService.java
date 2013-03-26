@@ -1,24 +1,26 @@
 package th.co.truemoney.serviceinventory.ewallet;
 
+import java.math.BigDecimal;
+
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrderStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpStatus;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuoteStatus;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface TopUpService {
 
-	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID, QuoteRequest quoteRequest , String accessTokenID) throws ServiceInventoryException;
+	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID, BigDecimal amount , String accessTokenID) throws ServiceInventoryException;
 
 	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID) throws ServiceInventoryException;
 
-	public TopUpOrder requestPlaceOrder(String quoteID, String accessTokenID) throws ServiceInventoryException;
+	public OTP sendOTPConfirm(String quoteID, String accessTokenID) throws ServiceInventoryException;
 
-	public TopUpOrder confirmPlaceOrder(String topUpOrderID, OTP otp, String accessTokenID) throws ServiceInventoryException;
+	public TopUpQuoteStatus confirmOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException;
 
-	public TopUpStatus getTopUpOrderStatus(String topUpOrderID, String accessTokenID) throws ServiceInventoryException;
+	public TopUpOrderStatus getTopUpProcessingStatus(String topUpOrderID, String accessTokenID) throws ServiceInventoryException;
 
-	public TopUpOrder getTopUpOrderDetails(String topUpOrderID, String accessTokenID) throws ServiceInventoryException;
+	public TopUpOrder getTopUpOrderResults(String topUpOrderID, String accessTokenID) throws ServiceInventoryException;
 
 }

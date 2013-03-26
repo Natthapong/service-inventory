@@ -1,11 +1,8 @@
 package th.co.truemoney.serviceinventory.config;
 
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
@@ -13,79 +10,46 @@ import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPRedisRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderRedisRepository;
+import th.co.truemoney.serviceinventory.sms.OTPGenerator;
 import th.co.truemoney.serviceinventory.sms.OTPService;
+import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 
 @Configuration
-@ComponentScan("th.co.truemoney.serviceinventory.dao")
 public class TestServiceInventoryConfig {
-	
-	@Bean @Scope("singleton") @Primary
+
+	@Bean @Scope("singleton")
 	public TmnProfileService tmnProfileServiceMock() {
 		return Mockito.mock(TmnProfileService.class);
 	}
-	
+
 	@Bean @Scope("singleton")
 	public SourceOfFundService getSourceOfFundService() {
 		return Mockito.mock(SourceOfFundService.class);
 	}
-	
+
 	@Bean @Scope("singleton")
 	public TopUpService mockTopUpService() {
 		return Mockito.mock(TopUpService.class);
 	}
-	
+
 	@Bean @Scope("singleton")
 	public OTPService getOTPService() {
 		return Mockito.mock(OTPService.class);
 	}
-	
-    @Bean @Qualifier("accessTokenMemoryRepository")
-    public AccessTokenRepository getAccessTokenMemoryRepository() {
-        return new AccessTokenMemoryRepository();
-    }
 
-    @Bean @Qualifier("accessTokenRedisRepository")
-    public AccessTokenRepository getAccessTokenRedisRepository() {
-        return new AccessTokenRedisRepository();
-    }
+	@Bean @Scope("singleton")
+	public P2PTransferService mockP2PTransferService() {
+		return Mockito.mock(P2PTransferService.class);
+	}
 
-    @Bean @Qualifier("otpMemoryRepository")
-    public OTPRepository getOTPMemoryRepository() {
-    	return new OTPMemoryRepository();
-    }
-    
-    @Bean @Qualifier("otpRedisRepository")
-    public OTPRepository getOTPRedisRepository() {
-    	return new OTPRedisRepository();
-    }
-    
-    @Bean @Qualifier("orderMemoryRepository")
-    public OrderRepository getOrderMemoryRepository() {
-    	return new OrderMemoryRepository();
-    }
-    
-    @Bean @Qualifier("orderRedisRepository")
-    public OrderRepository getOrderRedisRepository() {
-    	return new OrderRedisRepository();
-    }
-    
     @Bean
     public ExtendAccessTokenAsynService mockExtendAccessTokenAsynService() {
     	return Mockito.mock(ExtendAccessTokenAsynService.class);
     }
-    
-	@Bean
-    public P2PTransferService mockP2pTransferService() {
-    	return Mockito.mock(P2PTransferService.class);
-    }
-    
+
+    @Bean
+	public OTPGenerator otpGenerator() {
+		return new UnSecureOTPGenerator();
+	}
+
 }

@@ -94,7 +94,7 @@ public class TmnProfileServiceClientTest {
 							any(HttpEntity.class), eq(TmnProfile.class), eq("12345"),
 							eq(checkSum))).thenReturn(responseEntity);
 
-			this.client.restTemplate = restTemplate;
+//			this.client.restTemplate = restTemplate;
 
 			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
 			assertNotNull(tmnProfile);

@@ -9,7 +9,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 
 import org.junit.After;
@@ -29,7 +28,6 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.QuoteRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -38,28 +36,28 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class })
 @ActiveProfiles(profiles = "local")
 public class TmnTopupServiceClientURLTest {
-	
+
 	@Autowired
 	TmnTopUpServiceClient topupServiceClient;
-	
+
 	RestTemplate restTemplate;
-	
+
 	@Before
 	public void setup(){
 		restTemplate = mock(RestTemplate.class);
 	}
-	
+
 	@After
 	public void tearDown(){
 		reset(restTemplate);
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Test
+	@Test @Ignore
 	public void checkCreateOrderFromDirectDebitUrl(){
 		String url = "http://localhost:8585/service-inventory-web/v1/direct-debit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
 		try{
-			
+
 			HashMap hashMap = new HashMap();
 			hashMap.put("id", "1234");
 			hashMap.put("amount", "2000");
@@ -74,50 +72,49 @@ public class TmnTopupServiceClientURLTest {
 			hashMap.put("sourceOfFund", sourceOfFund);
 			hashMap.put("topUpFee", "10");
 			hashMap.put("accessTokenID", "99999");
-			
+
 			ResponseEntity<HashMap> responseEntity = new ResponseEntity<HashMap>(hashMap, HttpStatus.OK);
-			QuoteRequest quoteRequest = new QuoteRequest();
-			quoteRequest.setAmount(new BigDecimal(2000));
-			
+			BigDecimal amount = new BigDecimal(2000);
+
 			when(
 					restTemplate.exchange(eq(url), eq(HttpMethod.POST),
-							any(HttpEntity.class), eq(HashMap.class), eq("6789"), eq("12345") , eq(quoteRequest)))
+							any(HttpEntity.class), eq(HashMap.class), eq("6789"), eq("12345") , eq(amount)))
 								.thenReturn(responseEntity);
-			
+
 			this.topupServiceClient.restTemplate = restTemplate;
-			
-			TopUpQuote topUpOrder = topupServiceClient.createTopUpQuoteFromDirectDebit("6789", quoteRequest ,"12345");
+
+			TopUpQuote topUpOrder = topupServiceClient.createTopUpQuoteFromDirectDebit("6789", amount ,"12345");
 			assertNotNull(topUpOrder);
-			
-		}catch(ServiceInventoryException e){
-			assertEquals("500", e.getErrorCode());
-			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
-			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
-		}
-	}	
-	
-	@Test @Ignore
-	public void checkRequestPlaceOrderUrl(){
-		String url = "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}?accessToken={accessToken}";
-		try{
-			RestTemplate restTemplate = mock(RestTemplate.class);
-			ResponseEntity<TopUpOrder> responseEntity = new ResponseEntity<TopUpOrder>(new TopUpOrder(), HttpStatus.OK);
-			
-			when(
-					restTemplate.exchange(eq(url), eq(HttpMethod.POST),
-							any(HttpEntity.class), eq(TopUpOrder.class), eq("12345"), eq("6789"))).thenReturn(responseEntity);
-			
-			this.topupServiceClient.restTemplate = restTemplate;
-			
-			TopUpOrder topUpOrder = topupServiceClient.requestPlaceOrder("12345", "6789");
-			assertNotNull(topUpOrder);
-			
-			
+
 		}catch(ServiceInventoryException e){
 			assertEquals("500", e.getErrorCode());
 			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
 			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
 		}
 	}
-	
+
+	@Test @Ignore
+	public void checkRequestPlaceOrderUrl(){
+		String url = "http://localhost:8585/service-inventory-web/v1/top-up/order/{quoteId}?accessToken={accessToken}";
+		try{
+			RestTemplate restTemplate = mock(RestTemplate.class);
+			ResponseEntity<TopUpOrder> responseEntity = new ResponseEntity<TopUpOrder>(new TopUpOrder(), HttpStatus.OK);
+
+			when(
+					restTemplate.exchange(eq(url), eq(HttpMethod.POST),
+							any(HttpEntity.class), eq(TopUpOrder.class), eq("12345"), eq("6789"))).thenReturn(responseEntity);
+
+			this.topupServiceClient.restTemplate = restTemplate;
+
+			OTP otpConfirm = topupServiceClient.sendOTPConfirm("12345", "6789");
+			assertNotNull(otpConfirm);
+
+
+		}catch(ServiceInventoryException e){
+			assertEquals("500", e.getErrorCode());
+			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
+			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
+		}
+	}
+
 }
