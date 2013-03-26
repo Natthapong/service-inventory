@@ -93,11 +93,5 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public String resendOTP(String mobileno) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 }
