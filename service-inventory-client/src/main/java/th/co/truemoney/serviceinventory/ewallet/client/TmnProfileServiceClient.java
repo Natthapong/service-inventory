@@ -83,19 +83,19 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public String validateEmail(String email) {
+	public String validateEmail(Integer channelID, String email) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public String createProfile(TmnProfile tmnProfile) {
+	public String createProfile(Integer channelID, TmnProfile tmnProfile) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TmnProfile confirmCreateProfile(String mobileno, OTP otp) {
+	public TmnProfile confirmCreateProfile(Integer channelID, String mobileno, OTP otp) {
 		// TODO Auto-generated method stub
 		return null;
 	}

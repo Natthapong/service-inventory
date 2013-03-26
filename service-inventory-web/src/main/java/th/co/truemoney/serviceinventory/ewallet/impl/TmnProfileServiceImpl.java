@@ -18,13 +18,16 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBalanceResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsCreatableRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
@@ -47,6 +50,9 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Autowired
 	private EwalletSoapProxy ewalletSoapProxy;
+
+	@Autowired
+	private TmnProfileAdminProxy tmnProfileAdminProxy;
 
 	@Override
 	public String login(Integer channelID, Login login)
@@ -169,19 +175,26 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 	
 	@Override
-	public String validateEmail(String email) {
+	public String validateEmail(Integer channelID, String email) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String createProfile(TmnProfile tmnProfile) {
-		// TODO Auto-generated method stub
-		return null;
+	public String createProfile(Integer channelID, TmnProfile tmnProfile) {
+		try {
+			return "abcd";
+		} catch (EwalletException e) {
+			throw new SignonServiceException(e.getCode(),
+				"tmnProfileAdminProxy.createProfile response" + e.getCode(), e.getNamespace());
+		} catch (ServiceUnavailableException e) {
+			throw new SignonServiceException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+				e.getMessage(), e.getNamespace());
+		}
 	}
 
 	@Override
-	public TmnProfile confirmCreateProfile(String mobileno, OTP otp) {
+	public TmnProfile confirmCreateProfile(Integer channelID, String mobileno, OTP otp) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -194,6 +207,10 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		this.tmnSecurityProxy = tmnSecurityProxy;
 	}
 
+	public void setTmnProfileAdminProxy(TmnProfileAdminProxy tmnProfileAdminProxy) {
+		this.tmnProfileAdminProxy = tmnProfileAdminProxy;
+	}
+	
 	public void setAccessTokenRepository(AccessTokenMemoryRepository accessTokenMemoryRepository) {
 		this.accessTokenRepo = accessTokenMemoryRepository;
 	}
@@ -206,5 +223,6 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 		return signonRequest;
 	}
+
 
 }
