@@ -9,26 +9,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
-import th.co.truemoney.serviceinventory.ewallet.client.config.EnvironmentConfig;
+import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
-import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
 public class P2PTransferServiceClient implements P2PTransferService {
-	
+
 	@Autowired
 	RestTemplate restTemplate;
 
 	@Autowired
-	private EnvironmentConfig environmentConfig;
+	private EndPoints endPoints;
 
 	@Autowired
 	private HttpHeaders headers;
-	
+
 	@Override
 	public P2PDraftTransaction createDraftTransaction(
 			P2PDraftRequest p2pDraftRequest, String accessTokenID) {
@@ -39,14 +38,14 @@ public class P2PTransferServiceClient implements P2PTransferService {
 	@Override
 	public P2PDraftTransaction getDraftTransactionDetail(
 			String draftTransactionID, String accessTokenID)  throws ServiceInventoryException {
-		
+
 		HttpEntity<P2PDraftTransaction> requestEntity = new HttpEntity<P2PDraftTransaction>(headers);
 
 		ResponseEntity<P2PDraftTransaction> responseEntity = restTemplate.exchange(
-				environmentConfig.getUserProfileUrl(),
+				endPoints.getUserProfileUrl(),
 					HttpMethod.GET, requestEntity, P2PDraftTransaction.class, accessTokenID);
 
-		P2PDraftTransaction p2pDraftTransaction = responseEntity.getBody();		
+		P2PDraftTransaction p2pDraftTransaction = responseEntity.getBody();
 		return p2pDraftTransaction;
 	}
 

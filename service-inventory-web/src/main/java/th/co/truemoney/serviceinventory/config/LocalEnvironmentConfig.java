@@ -12,11 +12,15 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapPro
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.ConfirmForgotPasswordRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateForgotPasswordRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateForgotPasswordResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBalanceResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsCreatableRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
@@ -25,8 +29,12 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.UpdateAccountRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
@@ -214,6 +222,53 @@ public class LocalEnvironmentConfig {
 				return new SmsProxyImpl().readXMLResponse(xmlResponse
 						.toString());
 			}
+		};
+	}
+
+	@Bean
+	public TmnProfileAdminProxy stubTmnProfileAdminProxy() {
+		return new TmnProfileAdminProxy() {
+
+			@Override
+			public VerifyForgotPasswordResponse verifyForgotPassword(
+					VerifyForgotPasswordRequest verifyForgotPasswordRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public StandardBizResponse confirmForgotPassword(
+					ConfirmForgotPasswordRequest confirmForgotPasswordRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public CreateForgotPasswordResponse createForgotPassword(
+					CreateForgotPasswordRequest createForgotPasswordRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public StandardBizResponse isCreatable(
+					IsCreatableRequest isCreatableRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public StandardBizResponse updateAccount(
+					UpdateAccountRequest updateAccountRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
 		};
 	}
 
