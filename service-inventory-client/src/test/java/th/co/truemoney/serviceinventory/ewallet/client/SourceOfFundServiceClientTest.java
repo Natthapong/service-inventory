@@ -36,11 +36,11 @@ public class SourceOfFundServiceClientTest {
 		}
 	}
 
-	@Test @Ignore
+	@Test
 	public void shouldSuccess(){
-		List<DirectDebit> debits = sourceOfFundServiceClient.getUserDirectDebitSources("user1.test.v1@gmail.com", "12345");
+		List<DirectDebit> debits = sourceOfFundServiceClient.getUserDirectDebitSources("username", "12345");
 		assertNotNull(debits);
-		assertEquals(1, debits.size());
+		assertEquals(3, debits.size());
 		assertEquals("SCB", debits.get(0).getBankCode());
 	}
 
