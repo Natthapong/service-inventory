@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
@@ -76,7 +77,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public Boolean validateEmail(String email) {
+	public String validateEmail(String email) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -88,7 +89,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile confirmCreateProfile(String mobileno, String OTPString) {
+	public TmnProfile confirmCreateProfile(String mobileno, OTP otp) {
 		// TODO Auto-generated method stub
 		return null;
 	}

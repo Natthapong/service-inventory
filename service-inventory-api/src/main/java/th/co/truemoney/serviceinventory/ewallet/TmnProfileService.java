@@ -17,7 +17,7 @@ public interface TmnProfileService {
 
 	public String logout(String accessTokenID) throws ServiceInventoryException;
 	
-	public Boolean validateEmail(String email);
+	public String validateEmail(String email);
 	
 	public String createProfile(TmnProfile tmnProfile);
 	
