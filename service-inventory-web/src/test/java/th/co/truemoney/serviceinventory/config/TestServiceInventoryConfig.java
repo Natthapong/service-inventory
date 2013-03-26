@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 
+import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -80,6 +81,11 @@ public class TestServiceInventoryConfig {
     @Bean
     public ExtendAccessTokenAsynService mockExtendAccessTokenAsynService() {
     	return Mockito.mock(ExtendAccessTokenAsynService.class);
+    }
+    
+	@Bean
+    public P2PTransferService mockP2pTransferService() {
+    	return Mockito.mock(P2PTransferService.class);
     }
     
 }

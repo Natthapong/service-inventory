@@ -84,12 +84,6 @@ public class TmnProfileController extends BaseController {
 		return tmnProfileService.confirmCreateProfile(mobileno, otp);
 	}
 	
-	@RequestMapping(value = "/profiles/{mobileno}/resend-otp", method = RequestMethod.POST)
-	public @ResponseBody String resendOTP(
-		@PathVariable String mobileno) {
-		return tmnProfileService.resendOTP(mobileno);
-	}
-	
 	private void extendExpireAccessToken(String accessTokenID) {
 		extendAccessTokenAsynService.setExpire(accessTokenID);
 	}

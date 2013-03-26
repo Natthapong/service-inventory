@@ -6,6 +6,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -37,7 +39,7 @@ public class TmnProfileServiceClientTest {
 
 	String SALT = "5dc77d2e2310519a97aae050d85bec6870b4651a63447f02dfc936814067dd45a2f90e3c662f016f20dad45a2760739860af7ae92b3de00c2fd557ecbc3cc0d5";
 
-	@Test @Ignore
+	@Test
 	public void wrongUserNameShouldFail() {
 
 		try {
@@ -48,7 +50,7 @@ public class TmnProfileServiceClientTest {
 		}
 	}
 
-	@Test @Ignore
+	@Test
 	public void correctUsernameAndPasswordWillProduceAccessToken() {
 
 		try {
@@ -58,7 +60,7 @@ public class TmnProfileServiceClientTest {
 		}
 	}
 
-	@Test @Ignore
+	@Test
 	public void getUserProfile() {
 		try {
 			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
@@ -70,10 +72,16 @@ public class TmnProfileServiceClientTest {
 			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
 		}
 	}
+	
+	@Test
+	public void getBalance() {
+		BigDecimal balance = client.getEwalletBalance("12345");
+		assertEquals(new BigDecimal("2000.00"), balance);
+	}
 
 	@Test @Ignore
 	public void checkUserProfileUrl() {
-		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/getprofile/{accesstokenID}/{checksum}";
+		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/profile/{accesstokenID}/{checksum}";
 		String checkSum = EncryptUtil.buildHmacSignature("12345", "12345"
 				+ SALT);
 		try {

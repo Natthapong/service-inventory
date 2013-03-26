@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import th.co.truemoney.serviceinventory.bean.OTPBean;
+import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -19,6 +20,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncService;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
+import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
@@ -141,6 +143,11 @@ public class ServiceInventoryConfig {
     @Bean 
     public ExtendAccessTokenAsynService getExtendAccessTokenAsynService() {
     	return new ExtendAccessTokenAsynService();
+    }
+    
+	@Bean
+    public P2PTransferService getP2pTransferService() {
+    	return new P2PTransferServiceImpl();
     }
     
 }

@@ -55,7 +55,7 @@ public class TmnTopupServiceClientURLTest {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Test @Ignore
+	@Test
 	public void checkCreateOrderFromDirectDebitUrl(){
 		String url = "http://localhost:8585/service-inventory-web/v1/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
 		try{
@@ -96,7 +96,7 @@ public class TmnTopupServiceClientURLTest {
 		}
 	}
 	
-	@Test @Ignore
+	@Test
 	public void createOrderFromDirectDebit() {
 		try{
 			QuoteRequest quoteRequest = new QuoteRequest();
@@ -108,19 +108,6 @@ public class TmnTopupServiceClientURLTest {
 		}catch(ServiceInventoryException e){
 			assertEquals("404", e.getErrorCode());
 			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
-		}
-	}
-	
-	@Test @Ignore
-	public void checkRequestPlaceOrder(){
-		try{
-			OTP otp = new OTP("112233", "663f78927872f867d883179378a12dde7ae6a71c");			
-			TopUpOrder topUpOrder = topupServiceClient.confirmPlaceOrder("1", otp, "12345");
-			assertNotNull(topUpOrder);
-			System.out.println("finished call remote:" + new Date());
-		} catch(ServiceInventoryException e){
-			System.out.println(e.getErrorCode());
-			assertEquals("1004", e.getErrorCode());
 		}
 	}
 	

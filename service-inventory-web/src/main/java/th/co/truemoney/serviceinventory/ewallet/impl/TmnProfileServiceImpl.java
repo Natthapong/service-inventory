@@ -186,12 +186,6 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		return null;
 	}
 
-	@Override
-	public String resendOTP(String mobileno) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
 		this.tmnProfileProxy = tmnProfileProxy;
 	}
