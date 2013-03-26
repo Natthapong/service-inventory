@@ -23,7 +23,5 @@ public interface TmnProfileService {
 	
 	public TmnProfile confirmCreateProfile(String mobileno, OTP otp);
 	
-	public String resendOTP(String mobileno);
-	
 }
 
