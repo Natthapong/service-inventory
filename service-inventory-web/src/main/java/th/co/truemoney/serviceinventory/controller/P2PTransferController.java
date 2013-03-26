@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
@@ -45,6 +47,46 @@ public class P2PTransferController extends BaseController {
 		return p2pDraftTransaction;
 	}
 	
+	@RequestMapping(value = "/draft-transaction/{draftTransactionID}/send-otp", method = RequestMethod.PUT)
+	public @ResponseBody P2PDraftTransaction sendOTP(
+			@PathVariable String draftTransactionID,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
+		throws ServiceInventoryException {
+		P2PDraftTransaction p2pDraftTransaction = p2pTransferService.sendOTP(draftTransactionID, accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		return p2pDraftTransaction;
+	}
+	
+	@RequestMapping(value = "/transaction/{draftTransactionID}", method = RequestMethod.POST)
+	public @ResponseBody P2PTransaction createTransaction(
+			@PathVariable String draftTransactionID,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
+		throws ServiceInventoryException {
+		P2PTransaction p2pTransaction = p2pTransferService.createTransaction(draftTransactionID, accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		return p2pTransaction;
+	}
+	
+	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
+	public @ResponseBody P2PTransactionStatus getTransactionStatus(
+			@PathVariable String transactionID,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
+		throws ServiceInventoryException {
+		P2PTransactionStatus p2pTransactionStatus = p2pTransferService.getTransactionStatus(transactionID, accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		return p2pTransactionStatus;
+	}
+	
+	@RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.GET)
+	public @ResponseBody P2PTransaction getTransactionInfo(
+			@PathVariable String transactionID,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
+		throws ServiceInventoryException {
+		P2PTransaction p2pTransaction = p2pTransferService.getTransactionDetail(transactionID, accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		return p2pTransaction;
+	}
+
 	private void extendExpireAccessToken(String accessTokenID) {
 		extendAccessTokenAsynService.setExpire(accessTokenID);
 	}
