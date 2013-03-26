@@ -11,6 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.endpoint.EwalletSoapEndPointProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.endpoint.TmnProfileAdminSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.endpoint.TmnProfileSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.endpoint.TmnSecuritySoapEndPointProxy;
 
@@ -22,32 +23,54 @@ public class TestDevProxyConfig {
 	@Value("${tmnprofile.endpoint}")
 	private String tmnProfileSoapEndpoint;
 	
+	@Value("${tmnprofile.timeout}")
+	private Integer tmnProfileSoapTimeout;
+	
 	@Value("${tmnsecurity.endpoint}")
 	private String tmnSecuritySoapEndpoint;
+	
+	@Value("${tmnsecurity.timeout}")
+	private Integer tmnSecuritySoapTimeout;
 	
 	@Value( "${ewalletsoap.endpoint}")
 	private String ewalletSoapEndpoint;
 	
+	@Value( "${ewalletsoap.timeout}")
+	private Integer ewalletSoapTimeout;
+	
+	@Value("${tmnprofileadmin.endpoint}")
+	private String tmnProfileAdminSoapEndpoint;
+	
+	@Value("${tmnprofileadmin.timeout}")
+	private Integer tmnProfileAdminSoapTimeout;
+	
 	@Bean
-	public TmnProfileSoapEndPointProxy tmnProfileSoapEndPointProxy() {
+	public TmnProfileSoapEndPointProxy getTmnProfileSoapEndPointProxy() {
 		TmnProfileSoapEndPointProxy endPointProxy = new TmnProfileSoapEndPointProxy(getTrueMoneyProfileSoapEndpoint());
-		endPointProxy.setTimeout(5000);
+		endPointProxy.setTimeout(tmnProfileSoapTimeout);
 		return endPointProxy;
 	}
 	
 	@Bean
-	public TmnSecuritySoapEndPointProxy tmnSecuritySoapEndPointProxy() {
+	public TmnSecuritySoapEndPointProxy getTmnSecuritySoapEndPointProxy() {
 		TmnSecuritySoapEndPointProxy endPointProxy = new TmnSecuritySoapEndPointProxy(getTrueMoneySecuritySoapEndpoint());
-		endPointProxy.setTimeout(5000);
+		endPointProxy.setTimeout(tmnSecuritySoapTimeout);
 		return endPointProxy;
 	}
 	
 	@Bean
 	public EwalletSoapEndPointProxy getEwalletSoapEndPointProxy() {
 		EwalletSoapEndPointProxy endPointProxy = new EwalletSoapEndPointProxy(getEwalletSoapEndpoint());
-		endPointProxy.setTimeout(5000);
+		endPointProxy.setTimeout(ewalletSoapTimeout);
 		return endPointProxy;
-	}	
+	}
+	
+	@Bean
+	public TmnProfileAdminSoapEndPointProxy getTmnProfileAdminSoapEndPointProxy() {
+		TmnProfileAdminSoapEndPointProxy endPointProxy = new TmnProfileAdminSoapEndPointProxy(getTrueMoneyProfileAdminSoapEndpoint());
+		endPointProxy.setTimeout(tmnProfileAdminSoapTimeout);
+		return endPointProxy;
+	}
 	
 	@Bean @Qualifier("tmnProfileSoapEndPoint")
 	public String getTrueMoneyProfileSoapEndpoint() {
@@ -63,7 +86,12 @@ public class TestDevProxyConfig {
 	public String getEwalletSoapEndpoint() {
 		return ewalletSoapEndpoint;
 	}
-
+	
+	@Bean @Qualifier("tmnProfileAdminSoapEndPoint")
+	public String getTrueMoneyProfileAdminSoapEndpoint() {
+		return tmnProfileAdminSoapEndpoint;
+	}
+	
 	@Bean
 	public static PropertyPlaceholderConfigurer endPointsProperties(){
 	  PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
