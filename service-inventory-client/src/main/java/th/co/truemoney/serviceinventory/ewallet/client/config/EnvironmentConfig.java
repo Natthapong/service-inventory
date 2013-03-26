@@ -14,4 +14,15 @@ public interface EnvironmentConfig {
 	String getConfirmPlaceOrderUrl();
 	String getTopUpOrderStatusUrl();
 	String getTopUpOrderDetailsUrl();
+	
+	String createDraftTransactionUrl();
+	String getgetDraftTransactionInfoUrl();
+	String sendOTPUrl();
+	String createTransactionUrl();
+	String getTransactionStatusUrl();
+	String getTransactionInfoUrl();
+	
+	String isExistRegisteredUrl();
+	String createProfileUrl();
+	String confirmCreateProfile();
 }

@@ -60,5 +60,50 @@ public class DevEnvironmentConfig implements EnvironmentConfig {
 	@Override
 	public String getTopUpOrderDetailsUrl() {
 		return "https://dev.truemoney.co.th/service-inventory-web/v1/top-up/order/{topUpOrderID}?accessTokenID={accessTokenID}";
-	}	
+	}
+
+	@Override
+	public String createDraftTransactionUrl() {
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/transfer/draft-transaction?accessTokenID={accessTokenID}";
+	}
+	
+	@Override
+	public String getgetDraftTransactionInfoUrl() {
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}?accessTokenID={accessTokenID}";
+	}
+
+	@Override
+	public String sendOTPUrl() {
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}/send-otp?accessTokenID={accessTokenID}";
+	}
+	
+	@Override
+	public String createTransactionUrl() {
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/transfer/transaction/{draftTransactionID}?accessTokenID={accessTokenID}";
+	}
+
+	@Override
+	public String getTransactionStatusUrl() {
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/transfer/transaction/{transactionID}/status?accessTokenID={accessTokenID}";
+	}
+
+	@Override
+	public String getTransactionInfoUrl() {
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/transfer/transaction/{transactionID}?accessTokenID={accessTokenID}";
+	}
+	
+	@Override
+	public String isExistRegisteredUrl() {
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet//profiles/validate-email";
+	}
+
+	@Override
+	public String createProfileUrl() {
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet/profiles";
+	}
+
+	@Override
+	public String confirmCreateProfile() {
+		return "https://dev.truemoney.co.th/service-inventory-web/v1/ewallet/profiles/{mobileno}/verify-otp";
+	}
 }
