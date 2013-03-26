@@ -18,7 +18,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AdminSecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBalanceResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsCreatableRequest;
@@ -33,13 +33,14 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
+import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
 public class TmnProfileServiceImpl implements TmnProfileService {
 
 	private static Logger logger = LoggerFactory.getLogger(TmnProfileServiceImpl.class);
 
-	@Autowired @Qualifier("accessTokenMemoryRepository")
+	@Autowired @Qualifier("accessTokenRedisRepository")
 	private AccessTokenRepository accessTokenRepo;
 
 	@Autowired
@@ -53,6 +54,15 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Autowired
 	private TmnProfileAdminProxy tmnProfileAdminProxy;
+	
+	@Autowired @Qualifier("tmnProfileInitiator")
+	private String tmnProfileInitiator;
+	
+	@Autowired @Qualifier("tmnProfilePin")
+	private String tmnProfilePin;
+	
+	@Autowired
+	private OTPService otpService;
 
 	@Override
 	public String login(Integer channelID, Login login)
@@ -116,10 +126,10 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			tmnProfile.setStatus(profileResponse.getStatusId());
 			return tmnProfile;
 		} catch (EwalletException e) {
-			throw new SignonServiceException(e.getCode(),
+			throw new ServiceInventoryException(e.getCode(),
 				"tmnProfileProxy.getBasicProfile response" + e.getCode(), e.getNamespace());
 		} catch (ServiceUnavailableException e) {
-			throw new SignonServiceException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
 				e.getMessage(), e.getNamespace());
 		}
 	}
@@ -138,10 +148,10 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			GetBalanceResponse balanceResponse = this.ewalletSoapProxy.getBalance(standardBizRequest);
 			return balanceResponse.getCurrentBalance();
 		} catch (EwalletException e) {
-			throw new SignonServiceException(e.getCode(),
+			throw new ServiceInventoryException(e.getCode(),
 				"ewalletSoapProxy.getBalance response" + e.getCode(), e.getNamespace());
 		} catch (ServiceUnavailableException e) {
-			throw new SignonServiceException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
 				e.getMessage(), e.getNamespace());
 		}
 	}
@@ -183,14 +193,27 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	@Override
 	public String createProfile(Integer channelID, TmnProfile tmnProfile) {
 		try {
-			return "abcd";
+			IsCreatableRequest isCreatableRequest = createIsCreatableRequest(channelID, tmnProfile.getMobileno());
+			
+			tmnProfileAdminProxy.isCreatable(isCreatableRequest);
+			
+			return otpService.send(tmnProfile.getMobileno());
 		} catch (EwalletException e) {
-			throw new SignonServiceException(e.getCode(),
-				"tmnProfileAdminProxy.createProfile response" + e.getCode(), e.getNamespace());
+			throw new ServiceInventoryException(e.getCode(),
+				"tmnProfileAdminProxy.isCreatable response" + e.getCode(), e.getNamespace());
 		} catch (ServiceUnavailableException e) {
-			throw new SignonServiceException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
 				e.getMessage(), e.getNamespace());
 		}
+	}
+
+	private IsCreatableRequest createIsCreatableRequest(Integer channelID, String loginID) {
+		IsCreatableRequest isCreatableRequest = new IsCreatableRequest();
+		isCreatableRequest.setChannelId(channelID);		
+		isCreatableRequest.setLoginId(loginID);
+		AdminSecurityContext adminSecurityContext = new AdminSecurityContext(tmnProfileInitiator, tmnProfilePin);
+		isCreatableRequest.setAdminSecurityContext(adminSecurityContext);
+		return isCreatableRequest;
 	}
 
 	@Override
@@ -206,15 +229,19 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	public void setTmnSecurityProxy(TmnSecurityProxy tmnSecurityProxy) {
 		this.tmnSecurityProxy = tmnSecurityProxy;
 	}
-
-	public void setTmnProfileAdminProxy(TmnProfileAdminProxy tmnProfileAdminProxy) {
-		this.tmnProfileAdminProxy = tmnProfileAdminProxy;
-	}
 	
 	public void setAccessTokenRepository(AccessTokenMemoryRepository accessTokenMemoryRepository) {
 		this.accessTokenRepo = accessTokenMemoryRepository;
 	}
 
+	public void setTmnProfileAdminProxy(TmnProfileAdminProxy tmnProfileAdminProxy) {
+		this.tmnProfileAdminProxy = tmnProfileAdminProxy;
+	}
+	
+	public void setOtpService(OTPService otpService) {
+		this.otpService = otpService;		
+	}
+	
 	private SignonRequest createSignOnRequest(Integer channelID, Login login) {
 		SignonRequest signonRequest = new SignonRequest();
 		signonRequest.setInitiator(login.getUsername());
@@ -223,6 +250,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 		return signonRequest;
 	}
+
 
 
 }

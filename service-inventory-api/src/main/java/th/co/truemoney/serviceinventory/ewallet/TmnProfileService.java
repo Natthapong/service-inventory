@@ -17,11 +17,11 @@ public interface TmnProfileService {
 
 	public String logout(String accessTokenID) throws ServiceInventoryException;
 	
-	public String validateEmail(Integer channelID, String email);
+	public String validateEmail(Integer channelID, String email) throws ServiceInventoryException;
 	
-	public String createProfile(Integer channelID, TmnProfile tmnProfile);
+	public String createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException;
 	
-	public TmnProfile confirmCreateProfile(Integer channelID, String mobileno, OTP otp);
+	public TmnProfile confirmCreateProfile(Integer channelID, String mobileno, OTP otp) throws ServiceInventoryException;
 	
 }
 
