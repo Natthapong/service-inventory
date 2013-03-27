@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
+import org.springframework.stereotype.Service;
+
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
@@ -7,6 +9,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
 
+@Service
 public class P2PTransferServiceImpl implements P2PTransferService {
 
 	@Override

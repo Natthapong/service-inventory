@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -19,6 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundReposit
 import th.co.truemoney.serviceinventory.exception.BaseException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
+@Service
 public class SourceOfFundServiceImpl implements SourceOfFundService {
 
 	private static Logger logger = LoggerFactory.getLogger(SourceOfFundServiceImpl.class);
@@ -34,21 +35,14 @@ public class SourceOfFundServiceImpl implements SourceOfFundService {
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-			if (accessToken == null) {
-				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
-			}
 			logger.debug("retrieve access Token: "+accessToken.toString());
 
 			if (!username.equals(accessToken.getUsername())) {
 				throw new ServiceInventoryException(BaseException.Code.GENERAL_ERROR, "Invalid user name.");
 			}
 
-			String truemoneyID = accessToken.getTruemoneyID();
-			Integer channelID = accessToken.getChannelID();
-			String sessionID = accessToken.getSessionID();
-
 			List<DirectDebit> userDirectDebitSources = sofRepo
-					.getUserDirectDebitSources(truemoneyID, channelID, sessionID);
+					.getUserDirectDebitSources(accessToken.getTruemoneyID(), accessToken.getChannelID(), accessToken.getSessionID());
 
 			return userDirectDebitSources;
 
