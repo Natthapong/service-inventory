@@ -36,7 +36,7 @@ public class SourceOfFundServiceClientTest {
 		}
 	}
 
-	@Test @Ignore
+	@Test 
 	public void shouldSuccess(){
 		List<DirectDebit> debits = sourceOfFundServiceClient.getUserDirectDebitSources("username", "12345");
 		assertNotNull(debits);
