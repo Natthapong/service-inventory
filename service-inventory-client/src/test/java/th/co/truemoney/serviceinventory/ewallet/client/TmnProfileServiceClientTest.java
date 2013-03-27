@@ -54,6 +54,27 @@ public class TmnProfileServiceClientTest {
 		assertNotNull(otp.getReferenceCode());
 	}
 	
+	@Test
+	public void shouldFailCreateProfile(){
+		try{
+			TmnProfile tmnProfile = new TmnProfile();
+			tmnProfile.setEmail("tanathip.se@email.com");
+			tmnProfile.setPassword("xxxxxx");
+			tmnProfile.setFullname("Tanathip");
+			tmnProfile.setThaiID("1212121212121");
+			OTP otp = client.createProfile(41, tmnProfile);
+		}catch(ServiceInventoryException e){
+			assertEquals("500", e.getErrorCode());
+			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
+		}
+	}
+	
+	@Test
+	public void shouldPassEmailIsExistRegistered(){
+		String response = client.validateEmail(41, "tanathip.se@email.com");
+		assertEquals("tanathip.se@email.com", response);
+	}
+	
 	@Test 
 	public void shouldFailCheckEmailIsExistRegistered(){
 		try {
