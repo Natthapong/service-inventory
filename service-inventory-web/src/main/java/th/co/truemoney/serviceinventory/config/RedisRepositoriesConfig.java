@@ -20,17 +20,17 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.ProfileRedisRe
 public class RedisRepositoriesConfig {
 
 	@Bean
-	public AccessTokenRepository getAccessTokenRedisRepository() {
+	public AccessTokenRepository redisAccessTokenRepository() {
 		return new AccessTokenRedisRepository();
 	}
 
 	@Bean
-	public OrderRepository getOrderRedisRepository() {
+	public OrderRepository redisTopUpRepository() {
 		return new OrderRedisRepository();
 	}
 
 	@Bean
-	public OTPRepository getOTPRedisRepository() {
+	public OTPRepository redisOTPRepository() {
 		return new OTPRedisRepository();
 	}
 	
@@ -40,7 +40,13 @@ public class RedisRepositoriesConfig {
 	}
 
 	@Bean
+	public ProfileRepository redisProfileRepository() {
+		return new ProfileRedisRepository();
+	}
+
+	@Bean
 	public RedisLoggingDao redisLoggingGateway() {
 		return new RedisLoggingDaoImpl();
 	}
+
 }

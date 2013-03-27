@@ -9,19 +9,19 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 @Configuration
-public class TmnProfileConfig {
-
+public class TestTmnProfileConfig {
+	
 	@Value("${tmnprofile.initiator}")
 	private String tmnProfileInitiator;
-
+	
 	@Value("${tmnprofile.pin}")
 	private String tmnProfilePin;
-
+	
 	@Bean @Qualifier("tmnProfileInitiator")
 	public String getTmnProfileInitiator() {
 		return tmnProfileInitiator;
 	}
-
+	
 	@Bean @Qualifier("tmnProfilePin")
 	public String getTmnProfilePin() {
 		return tmnProfilePin;
@@ -36,5 +36,5 @@ public class TmnProfileConfig {
 	  ppc.setIgnoreUnresolvablePlaceholders( true );
 	  return ppc;
 	}
-
+	
 }

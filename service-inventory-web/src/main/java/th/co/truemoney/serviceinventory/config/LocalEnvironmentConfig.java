@@ -59,7 +59,7 @@ public class LocalEnvironmentConfig {
 					throws EwalletException {
 				return new GetBasicProfileResponse("1", "0", "namespace",
 						new String[] { "key" }, new String[] { "value" },
-						"0861234567", "local@tmn.com", "0891231234",
+						"username", "local@tmn.com", "0891231234",
 						new BigDecimal(50.0d), "C", 3);
 			}
 
@@ -147,53 +147,6 @@ public class LocalEnvironmentConfig {
 		};
 	}
 	
-	@Bean @Primary
-	public TmnProfileAdminProxy stubTmnProfileAdminProxy() {
-		return new TmnProfileAdminProxy() {
-
-			@Override
-			public VerifyForgotPasswordResponse verifyForgotPassword(
-					VerifyForgotPasswordRequest verifyForgotPasswordRequest)
-					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public StandardBizResponse confirmForgotPassword(
-					ConfirmForgotPasswordRequest confirmForgotPasswordRequest)
-					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public CreateForgotPasswordResponse createForgotPassword(
-					CreateForgotPasswordRequest createForgotPasswordRequest)
-					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public StandardBizResponse isCreatable(
-					IsCreatableRequest isCreatableRequest)
-					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public StandardBizResponse updateAccount(
-					UpdateAccountRequest updateAccountRequest)
-					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-		};
-	}
-
 	@Bean
 	@Primary
 	public EwalletSoapProxy stubEWalletSoapProxy() {
@@ -269,6 +222,53 @@ public class LocalEnvironmentConfig {
 				return new SmsProxyImpl().readXMLResponse(xmlResponse
 						.toString());
 			}
+		};
+	}
+
+	@Bean
+	public TmnProfileAdminProxy stubTmnProfileAdminProxy() {
+		return new TmnProfileAdminProxy() {
+
+			@Override
+			public VerifyForgotPasswordResponse verifyForgotPassword(
+					VerifyForgotPasswordRequest verifyForgotPasswordRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public StandardBizResponse confirmForgotPassword(
+					ConfirmForgotPasswordRequest confirmForgotPasswordRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public CreateForgotPasswordResponse createForgotPassword(
+					CreateForgotPasswordRequest createForgotPasswordRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public StandardBizResponse isCreatable(
+					IsCreatableRequest isCreatableRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public StandardBizResponse updateAccount(
+					UpdateAccountRequest updateAccountRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
 		};
 	}
 

@@ -32,10 +32,10 @@ public class TestDevProxyConfig {
 	@Value("${tmnsecurity.timeout}")
 	private Integer tmnSecuritySoapTimeout;
 	
-	@Value( "${ewalletsoap.endpoint}")
+	@Value("${ewalletsoap.endpoint}")
 	private String ewalletSoapEndpoint;
 	
-	@Value( "${ewalletsoap.timeout}")
+	@Value("${ewalletsoap.timeout}")
 	private Integer ewalletSoapTimeout;
 	
 	@Value("${tmnprofileadmin.endpoint}")
@@ -91,6 +91,7 @@ public class TestDevProxyConfig {
 	public String getTrueMoneyProfileAdminSoapEndpoint() {
 		return tmnProfileAdminSoapEndpoint;
 	}
+	
 	
 	@Bean
 	public static PropertyPlaceholderConfigurer endPointsProperties(){

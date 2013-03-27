@@ -51,4 +51,8 @@ public class EndPoints {
 	public String getTopUpOrderDetailsUrl() {
 		return host + "/service-inventory-web/v1/top-up/order/{orderID}?accessTokenID={accessTokenID}";
 	}
+	
+	public String getValidateEmailUrl(){
+		return host + "/service-inventory-web/v1/ewallet/profiles/validate-email?channelID={channelID}";
+	}
 }

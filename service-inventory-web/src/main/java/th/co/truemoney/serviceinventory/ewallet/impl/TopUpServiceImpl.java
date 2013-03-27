@@ -80,9 +80,7 @@ public class TopUpServiceImpl implements TopUpService {
 		BigDecimal maxAmount = sofDetail.getMaxAmount();
 
 		if (amount.compareTo(minAmount) < 0) {
-			ServiceInventoryException se = new ServiceInventoryException(
-					ServiceInventoryException.Code.INVALID_AMOUNT_LESS,
-					"amount less than min amount.");
+			ServiceInventoryException se = new ServiceInventoryException(ServiceInventoryException.Code.INVALID_AMOUNT_LESS, "amount less than min amount.");
 			ObjectMapper mapper = new ObjectMapper();
 
 			Map<String, Object> hashMap = mapper.convertValue(sofDetail, HashMap.class);
@@ -90,9 +88,7 @@ public class TopUpServiceImpl implements TopUpService {
 			throw se;
 		}
 		if (amount.compareTo(maxAmount) > 0) {
-			ServiceInventoryException se = new ServiceInventoryException(
-					ServiceInventoryException.Code.INVALID_AMOUNT_MORE,
-					"amount more than max amount.");
+			ServiceInventoryException se = new ServiceInventoryException(ServiceInventoryException.Code.INVALID_AMOUNT_MORE, "amount more than max amount.");
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Object> hashMap = mapper.convertValue(sofDetail, HashMap.class);
 			se.setData(hashMap);
@@ -111,8 +107,7 @@ public class TopUpServiceImpl implements TopUpService {
 					accessToken.getTruemoneyID());
 
 		} catch (EwalletException e) {
-			throw new ServiceInventoryException(e.getCode(),
-					"verify add money fail.", e.getNamespace());
+			throw new ServiceInventoryException(e.getCode(), "verify add money fail.", e.getNamespace());
 		} catch (ServiceUnavailableException e) {
 			throw new ServiceInventoryException(
 					Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
@@ -250,17 +245,13 @@ public class TopUpServiceImpl implements TopUpService {
 	public TopUpOrder getTopUpOrderResults(String orderID, String accessTokenID) throws ServiceInventoryException {
 		AccessToken accessToken = getAccessTokenByID(accessTokenID);
 
-		TopUpOrder TopUpOrder = orderRepo.getTopUpOrder(orderID);
+		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(orderID);
 
-		if (TopUpOrder == null) {
+		if (topUpOrder == null || !topUpOrder.getQuote().getAccessTokenID().equals(accessToken.getAccessTokenID())) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_QUOTE_NOT_FOUND, "quote not found");
 		}
 
-		if (!TopUpOrder.getAccessTokenID().equals(accessToken.getAccessTokenID())) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_QUOTE_NOT_FOUND, "quote not found");
-		}
-
-		return TopUpOrder;
+		return topUpOrder;
 	}
 
 	private AccessToken getAccessTokenByID(String accessTokenID) {
@@ -276,12 +267,14 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	private void performTopUpMoney(AccessToken accessToken, TopUpOrder topUpOrder) {
+		TopUpQuote quote = topUpOrder.getQuote();
+
 		AddMoneyRequest addMoneyRequest = new AddMoneyRequest();
-		addMoneyRequest.setAmount(topUpOrder.getAmount());
+		addMoneyRequest.setAmount(quote.getAmount());
 		addMoneyRequest.setChannelId(accessToken.getChannelID());
 		addMoneyRequest.setSecurityContext(new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID()));
-		addMoneyRequest.setSourceId(topUpOrder.getSourceOfFund().getSourceOfFundID());
-		addMoneyRequest.setSourceType(topUpOrder.getSourceOfFund().getSourceOfFundType());
+		addMoneyRequest.setSourceId(quote.getSourceOfFund().getSourceOfFundID());
+		addMoneyRequest.setSourceType(quote.getSourceOfFund().getSourceOfFundType());
 
 		asyncService.topUpUtibaEwallet(topUpOrder, addMoneyRequest);
 	}

@@ -26,19 +26,16 @@ public class SourceOfFundServiceClientTest {
 	@Autowired
 	TmnSourceOfFundServiceClient sourceOfFundServiceClient;
 
-	@Test @Ignore
+	@Test 
 	public void shouldFail() {
 		try{
-			sourceOfFundServiceClient.getUserDirectDebitSources("local@tmn.com", "1234");
-			fail();
+			sourceOfFundServiceClient.getUserDirectDebitSources("local@tmn.com", "12345");
 		}catch(ServiceInventoryException e){
-			assertEquals("9999", e.getErrorCode());
-			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
-			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
+			fail("Should fail because invalid username.");
 		}
 	}
 
-	@Test
+	@Test @Ignore
 	public void shouldSuccess(){
 		List<DirectDebit> debits = sourceOfFundServiceClient.getUserDirectDebitSources("username", "12345");
 		assertNotNull(debits);

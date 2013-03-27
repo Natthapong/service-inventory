@@ -2,7 +2,8 @@ package th.co.truemoney.serviceinventory.sms;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -16,7 +17,7 @@ import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 
 public class OTPService {
 
-	private static Logger logger = Logger.getLogger(OTPService.class);
+	private static Logger logger = LoggerFactory.getLogger(OTPService.class);
 
 	@Autowired
 	private SmsProxy smsProxyImpl;
