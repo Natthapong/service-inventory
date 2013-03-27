@@ -2,10 +2,10 @@ package th.co.truemoney.serviceinventory.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
@@ -33,7 +33,9 @@ public class MemRepositoriesConfig {
 
     @Bean
     public OTPRepository memOTPRepository() {
-    	return new OTPMemoryRepository();
+    	OTPRepository otpRepository = new OTPMemoryRepository();
+    	otpRepository.saveOTP(new OTP("0868185055","1111"));
+    	return otpRepository;
     }
     
     @Bean

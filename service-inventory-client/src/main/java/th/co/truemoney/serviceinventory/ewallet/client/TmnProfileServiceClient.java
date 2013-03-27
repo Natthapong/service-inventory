@@ -84,7 +84,6 @@ public class TmnProfileServiceClient implements TmnProfileService {
 
 	@Override
 	public String validateEmail(Integer channelID, String email) {
-		
 		HttpEntity<String> requestEntity = new HttpEntity<String>(email,headers);
 		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getValidateEmailUrl(), HttpMethod.POST, requestEntity, String.class, channelID);
 		return responseEntity.getBody();
@@ -100,8 +99,10 @@ public class TmnProfileServiceClient implements TmnProfileService {
 
 	@Override
 	public TmnProfile confirmCreateProfile(Integer channelID, String mobileno, OTP otp) {
-		// TODO Auto-generated method stub
-		return null;
+		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
+		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getConfirmCreateTruemoneyProfileUrl(), HttpMethod.POST, 
+				requestEntity, TmnProfile.class, mobileno, channelID);
+		return responseEntity.getBody();
 	}
 
 }

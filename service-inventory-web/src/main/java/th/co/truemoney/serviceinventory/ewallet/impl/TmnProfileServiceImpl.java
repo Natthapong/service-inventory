@@ -240,7 +240,6 @@ public class TmnProfileServiceImpl implements TmnProfileService {
             if(!otpService.isValidOTP(otp)) {
                     throw new ServiceInventoryException(SignonServiceException.Code.OTP_NOT_MATCH, "otp string not match");
             }
-
             TmnProfile tmnProfile = profileRepository.getTmnProfile(mobileno);
 
             CreateTmnProfileRequest tmnProfileRequest = new CreateTmnProfileRequest();
