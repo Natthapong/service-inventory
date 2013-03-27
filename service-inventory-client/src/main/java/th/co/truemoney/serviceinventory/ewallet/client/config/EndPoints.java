@@ -55,4 +55,16 @@ public class EndPoints {
 	public String getValidateEmailUrl(){
 		return host + "/service-inventory-web/v1/ewallet/profiles/validate-email?channelID={channelID}";
 	}
+	
+	public String getCreateTruemoneyProfileUrl(){
+		return host + "/service-inventory-web/v1/ewallet/profiles?channelID={channelID}";
+	}
+	
+	public String getConfirmCreateTruemoneyProfileUrl(){
+		return host + "/service-inventory-web/v1/ewallet/profiles/{mobileno}/verify-otp?channelID={channelID}";
+	}
+	
+	public String getDraftTransactionDetail(){
+		return host + "/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}?accessTokenID={accessTokenID}";
+	}
 }

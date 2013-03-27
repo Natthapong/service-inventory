@@ -1,6 +1,9 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -23,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.util.EncryptUtil;
@@ -38,6 +42,39 @@ public class TmnProfileServiceClientTest {
 
 	String SALT = "5dc77d2e2310519a97aae050d85bec6870b4651a63447f02dfc936814067dd45a2f90e3c662f016f20dad45a2760739860af7ae92b3de00c2fd557ecbc3cc0d5";
 
+	@Test
+	public void shouldPassCreateProfile(){
+		TmnProfile tmnProfile = new TmnProfile();
+		tmnProfile.setEmail("tanathip.se@email.com");
+		tmnProfile.setPassword("xxxxxx");
+		tmnProfile.setFullname("Tanathip");
+		tmnProfile.setThaiID("1212121212121");
+		tmnProfile.setMobileno("0861234567");
+		OTP otp = client.createProfile(41, tmnProfile);
+		assertNotNull(otp.getReferenceCode());
+	}
+	
+	@Test
+	public void shouldFailCreateProfile(){
+		try{
+			TmnProfile tmnProfile = new TmnProfile();
+			tmnProfile.setEmail("tanathip.se@email.com");
+			tmnProfile.setPassword("xxxxxx");
+			tmnProfile.setFullname("Tanathip");
+			tmnProfile.setThaiID("1212121212121");
+			OTP otp = client.createProfile(41, tmnProfile);
+		}catch(ServiceInventoryException e){
+			assertEquals("500", e.getErrorCode());
+			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
+		}
+	}
+	
+	@Test
+	public void shouldPassEmailIsExistRegistered(){
+		String response = client.validateEmail(41, "tanathip.se@email.com");
+		assertEquals("tanathip.se@email.com", response);
+	}
+	
 	@Test 
 	public void shouldFailCheckEmailIsExistRegistered(){
 		try {

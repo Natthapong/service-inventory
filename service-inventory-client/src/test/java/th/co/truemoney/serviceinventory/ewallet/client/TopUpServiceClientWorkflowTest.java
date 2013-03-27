@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrderStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuoteStatus;
@@ -37,19 +38,23 @@ public class TopUpServiceClientWorkflowTest {
 	@Test
 	public void shouldSuccessTopUpEwalletUsingDirectDebitWorkflow() throws InterruptedException {
 
+		// login
 		String accessToken = profileService.login(41, TestData.createSuccessLogin());
 		assertNotNull(accessToken);
 
+		// create quote
 		TopUpQuote quote = topUpService.createTopUpQuoteFromDirectDebit("1", new BigDecimal(310), accessToken);
 
 		assertNotNull(quote);
 		assertNotNull(quote.getID());
 
+		// get quote details
 		quote = topUpService.getTopUpQuoteDetails(quote.getID(), accessToken);
 
 		assertNotNull(quote);
 		assertEquals(TopUpQuoteStatus.CREATED, quote.getStatus());
 
+		// request otp
 		OTP otp = topUpService.sendOTPConfirm(quote.getID(), accessToken);
 
 		assertNotNull(otp);
@@ -57,8 +62,10 @@ public class TopUpServiceClientWorkflowTest {
 
 		quote = topUpService.getTopUpQuoteDetails(quote.getID(), accessToken);
 
+		// quote status changed
 		assertEquals(TopUpQuoteStatus.OTP_SENT, quote.getStatus());
 
+		// confirm otp
 		otp.setOtpString("111111");
 		TopUpQuoteStatus quoteStatus = topUpService.confirmOTP(quote.getID(), otp, accessToken);
 
@@ -67,19 +74,30 @@ public class TopUpServiceClientWorkflowTest {
 
 		quote = topUpService.getTopUpQuoteDetails(quote.getID(), accessToken);
 
+		// quote status changed
 		assertEquals(TopUpQuoteStatus.OTP_CONFIRMED, quote.getStatus());
 
+		// get order status
 		Thread.sleep(100);
 		TopUpOrderStatus topUpOrderStatus = topUpService.getTopUpProcessingStatus(quote.getID(), accessToken);
 		assertNotNull(topUpOrderStatus);
 
+		// retry while processing
 		while (topUpOrderStatus == TopUpOrderStatus.PROCESSING) {
 			topUpOrderStatus = topUpService.getTopUpProcessingStatus(quote.getID(), accessToken);
 			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
 
+		// retry until success
 		assertEquals(TopUpOrderStatus.SUCCESS, topUpOrderStatus);
+
+		TopUpOrder topUpOrder = topUpService.getTopUpOrderResults(quote.getID(), accessToken);
+
+		assertNotNull(topUpOrder);
+		assertNotNull(topUpOrder.getQuote());
+		assertNotNull(topUpOrder.getConfirmationInfo());
+		assertEquals(TopUpOrderStatus.SUCCESS, topUpOrder.getStatus());
 	}
 
 	@Test

@@ -56,7 +56,6 @@ public class TmnTopUpServiceClient implements TopUpService {
 				requestEntity, TopUpQuote.class,
 				quoteID, accessTokenID);
 
-
 		return responseEntity.getBody();
 
 	}

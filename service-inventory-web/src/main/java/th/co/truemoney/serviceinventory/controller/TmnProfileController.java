@@ -75,7 +75,7 @@ public class TmnProfileController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/profiles", method = RequestMethod.POST)
-	public @ResponseBody String createTruemoneyProfile(
+	public @ResponseBody OTP createTruemoneyProfile(
 		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
 		@RequestBody TmnProfile tmnProfile) 
 			throws ServiceInventoryException {
@@ -83,14 +83,13 @@ public class TmnProfileController extends BaseController {
 		return tmnProfileService.createProfile(channelID, tmnProfile);
 	}
 	
-	@RequestMapping(value = "/profiles/{mobileno}/verify-otp", method = RequestMethod.POST)
+	@RequestMapping(value = "/profiles/verify-otp", method = RequestMethod.POST)
 	public @ResponseBody TmnProfile confirmCreateTruemoneyProfile(
-		@PathVariable String mobileno,
 		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
 		@RequestBody OTP otp) 
 			throws ServiceInventoryException {
 		validateRequestParam(channelID);
-		return tmnProfileService.confirmCreateProfile(channelID, mobileno, otp);
+		return tmnProfileService.confirmCreateProfile(channelID, otp);
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {

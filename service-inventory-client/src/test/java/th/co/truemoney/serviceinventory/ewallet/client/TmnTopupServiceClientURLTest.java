@@ -55,7 +55,7 @@ public class TmnTopupServiceClientURLTest {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test @Ignore
 	public void checkCreateOrderFromDirectDebitUrl(){
-		String url = "http://localhost:8585/service-inventory-web/v1/direct-debit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
+		String url = "http://localhost:8585/service-inventory-web/v1/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
 		try{
 
 			HashMap hashMap = new HashMap();

@@ -31,11 +31,12 @@ public class SourceOfFundServiceClientTest {
 		try{
 			sourceOfFundServiceClient.getUserDirectDebitSources("local@tmn.com", "12345");
 		}catch(ServiceInventoryException e){
-			fail("Should fail because invalid username.");
+			assertEquals("9999", e.getErrorCode());
+			assertEquals("Invalid user name.", e.getErrorDescription());
 		}
 	}
 
-	@Test @Ignore
+	@Test 
 	public void shouldSuccess(){
 		List<DirectDebit> debits = sourceOfFundServiceClient.getUserDirectDebitSources("username", "12345");
 		assertNotNull(debits);

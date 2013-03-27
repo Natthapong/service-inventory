@@ -43,8 +43,8 @@ public class P2PTransferServiceClient implements P2PTransferService {
 		HttpEntity<P2PDraftTransaction> requestEntity = new HttpEntity<P2PDraftTransaction>(headers);
 
 		ResponseEntity<P2PDraftTransaction> responseEntity = restTemplate.exchange(
-				endPoints.getUserProfileUrl(),
-					HttpMethod.GET, requestEntity, P2PDraftTransaction.class, accessTokenID);
+				endPoints.getDraftTransactionDetail(),
+					HttpMethod.GET, requestEntity, P2PDraftTransaction.class, draftTransactionID,accessTokenID);
 
 		P2PDraftTransaction p2pDraftTransaction = responseEntity.getBody();
 		return p2pDraftTransaction;

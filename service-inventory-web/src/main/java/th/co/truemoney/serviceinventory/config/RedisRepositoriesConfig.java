@@ -35,11 +35,6 @@ public class RedisRepositoriesConfig {
 	}
 	
 	@Bean
-	public ProfileRepository getProfileRepository() {
-		return new ProfileRedisRepository();
-	}
-
-	@Bean
 	public ProfileRepository redisProfileRepository() {
 		return new ProfileRedisRepository();
 	}
