@@ -9,9 +9,11 @@ import th.co.truemoney.serviceinventory.dao.impl.RedisLoggingDaoImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderRedisRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.ProfileRedisRepository;
 
 @Configuration
 @Profile("redis")
@@ -30,6 +32,11 @@ public class RedisRepositoriesConfig {
 	@Bean
 	public OTPRepository getOTPRedisRepository() {
 		return new OTPRedisRepository();
+	}
+	
+	@Bean
+	public ProfileRepository getProfileRepository() {
+		return new ProfileRedisRepository();
 	}
 
 	@Bean
