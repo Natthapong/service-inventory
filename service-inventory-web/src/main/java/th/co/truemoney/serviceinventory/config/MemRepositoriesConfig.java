@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
@@ -19,7 +20,9 @@ public class MemRepositoriesConfig {
 
     @Bean
     public AccessTokenRepository memAccessTokenRepository() {
-    	return new AccessTokenMemoryRepository();
+    	AccessTokenRepository accessTokenRepository = new AccessTokenMemoryRepository();
+    	accessTokenRepository.save(new AccessToken("12345", "666", "888", "username", "0868185055", "tanathip.se@gmail.com",41));
+    	return accessTokenRepository;
     }
 
     @Bean

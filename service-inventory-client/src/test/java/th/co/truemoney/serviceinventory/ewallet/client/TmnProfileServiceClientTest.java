@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -39,6 +38,15 @@ public class TmnProfileServiceClientTest {
 
 	String SALT = "5dc77d2e2310519a97aae050d85bec6870b4651a63447f02dfc936814067dd45a2f90e3c662f016f20dad45a2760739860af7ae92b3de00c2fd557ecbc3cc0d5";
 
+	@Test 
+	public void shouldFailCheckEmailIsExistRegistered(){
+		try {
+			client.validateEmail(-1, "tanathip.se@email.com");
+		} catch (ServiceInventoryException e) {
+			assertEquals("Validate error: channelID is null or empty.", e.getErrorDescription());
+		}
+	}
+	
 	@Test
 	public void wrongUserNameShouldFail() {
 
@@ -65,11 +73,9 @@ public class TmnProfileServiceClientTest {
 		try {
 			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
 			assertNotNull(tmnProfile);
-			assertEquals("Firstname lastname", tmnProfile.getFullname());
+			assertEquals("username", tmnProfile.getFullname());
 		} catch (ServiceInventoryException e) {
-			assertEquals("500", e.getErrorCode());
-			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
-			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
+			assertNotSame("0", e.getErrorCode());
 		}
 	}
 	
@@ -79,12 +85,12 @@ public class TmnProfileServiceClientTest {
 		assertEquals(new BigDecimal("2000.00"), balance);
 	}
 
-	@Test @Ignore
+	@Test 
 	public void checkUserProfileUrl() {
 		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/profile/{accesstokenID}/{checksum}";
 		String checkSum = EncryptUtil.buildHmacSignature("12345", "12345"
 				+ SALT);
-		try {
+		
 			RestTemplate restTemplate = mock(RestTemplate.class);
 
 			ResponseEntity<TmnProfile> responseEntity = new ResponseEntity<TmnProfile>(new TmnProfile(), HttpStatus.OK);
@@ -99,10 +105,5 @@ public class TmnProfileServiceClientTest {
 			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
 			assertNotNull(tmnProfile);
 
-		} catch (ServiceInventoryException e) {
-			assertEquals("500", e.getErrorCode());
-			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
-			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorNamespace());
-		}
 	}
 }

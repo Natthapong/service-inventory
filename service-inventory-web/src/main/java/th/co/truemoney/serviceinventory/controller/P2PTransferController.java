@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
@@ -60,9 +61,10 @@ public class P2PTransferController extends BaseController {
 	@RequestMapping(value = "/transaction/{draftTransactionID}", method = RequestMethod.POST)
 	public @ResponseBody P2PTransaction createTransaction(
 			@PathVariable String draftTransactionID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
+			@RequestBody OTP otp)
 		throws ServiceInventoryException {
-		P2PTransaction p2pTransaction = p2pTransferService.createTransaction(draftTransactionID, accessTokenID);
+		P2PTransaction p2pTransaction = p2pTransferService.createTransaction(draftTransactionID, otp, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 		return p2pTransaction;
 	}
