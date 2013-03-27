@@ -23,6 +23,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRespons
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 public class TmnRegisterImpServicelTest {
@@ -65,7 +66,7 @@ public class TmnRegisterImpServicelTest {
 
 			tmnProfileServiceImpl.setTmnProfileAdminProxy(tmnProfileAdminProxy);
 			tmnProfileServiceImpl.validateEmail(41, email);
-		} catch (ServiceUnavailableException exception) {
+		} catch (ServiceInventoryException exception) {
 			assertEquals("EWALLET-PROXY", exception.getNamespace());
 		}
 	}
@@ -80,7 +81,7 @@ public class TmnRegisterImpServicelTest {
 
 			tmnProfileServiceImpl.setTmnProfileAdminProxy(tmnProfileAdminProxy);
 			tmnProfileServiceImpl.validateEmail(41, email);
-		} catch (EwalletException exception) {
+		} catch (ServiceInventoryException exception) {
 			assertEquals("12345", exception.getCode());
 		}
 	}
@@ -104,7 +105,7 @@ public class TmnRegisterImpServicelTest {
 		when(otpService.isValidOTP(any(OTP.class))).thenReturn(true);
 		tmnProfileServiceImpl.setOtpService(otpService);
 
-		TmnProfile tmnProfile =  tmnProfileServiceImpl.confirmCreateProfile(41, "0861234567", otp);
+		TmnProfile tmnProfile =  tmnProfileServiceImpl.confirmCreateProfile(41, otp);
 		assertNotNull(tmnProfile);
 	}
 }

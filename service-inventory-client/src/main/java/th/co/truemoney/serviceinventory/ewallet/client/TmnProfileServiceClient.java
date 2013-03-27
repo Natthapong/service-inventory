@@ -90,18 +90,18 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public String createProfile(Integer channelID, TmnProfile tmnProfile) {
+	public OTP sendOTPConfirm(Integer channelID, TmnProfile tmnProfile) {
 		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(tmnProfile,headers);
-		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getCreateTruemoneyProfileUrl(), HttpMethod.POST, 
-				requestEntity, String.class, channelID);
+		ResponseEntity<OTP> responseEntity = restTemplate.exchange(endPoints.getCreateTruemoneyProfileUrl(), HttpMethod.POST, 
+				requestEntity, OTP.class, channelID);
 		return responseEntity.getBody();
 	}
 
 	@Override
-	public TmnProfile confirmCreateProfile(Integer channelID, String mobileno, OTP otp) {
+	public TmnProfile confirmCreateProfile(Integer channelID, OTP otp) {
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
 		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getConfirmCreateTruemoneyProfileUrl(), HttpMethod.POST, 
-				requestEntity, TmnProfile.class, mobileno, channelID);
+				requestEntity, TmnProfile.class, channelID);
 		return responseEntity.getBody();
 	}
 

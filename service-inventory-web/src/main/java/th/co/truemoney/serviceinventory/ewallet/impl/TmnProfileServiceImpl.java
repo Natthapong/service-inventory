@@ -32,7 +32,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfil
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
-import th.co.truemoney.serviceinventory.exception.BaseException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
@@ -118,9 +117,6 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			throws ServiceInventoryException {
 		try {
 			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-			if (accessToken == null) {
-				throw new ServiceInventoryException(BaseException.Code.ACCESS_TOKEN_NOT_FOUND, "AccessTokenID is expired or not found.");
-			}
 			logger.debug("retrieve access Token: "+accessToken.toString());
 
 			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
@@ -195,65 +191,35 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Override
     public String validateEmail(Integer channelID, String email) throws ServiceInventoryException {
-            AdminSecurityContext adminSecurityContext = new AdminSecurityContext();
-            adminSecurityContext.setInitiator("si.tmnprofile");
-            adminSecurityContext.setPin("0000");
-            IsCreatableRequest isCreatableRequest = new IsCreatableRequest();
-            isCreatableRequest.setAdminSecurityContext(adminSecurityContext);
-            isCreatableRequest.setChannelId(channelID);
-            isCreatableRequest.setLoginId(email);
-
-            tmnProfileAdminProxy.isCreatable(isCreatableRequest);
-
-            return email;
+		performIsCreatable(channelID, email);
+		return email;
     }
 
-    @Override
-    public String createProfile(Integer channelID, TmnProfile tmnProfile) {
-        try {
-                IsCreatableRequest isCreatableRequest = createIsCreatableRequest(channelID, tmnProfile.getMobileno());
-
-                tmnProfileAdminProxy.isCreatable(isCreatableRequest);
-
-                return otpService.send(tmnProfile.getMobileno()).getReferenceCode();
-        } catch (EwalletException e) {
-                throw new ServiceInventoryException(e.getCode(),
-                        "tmnProfileAdminProxy.isCreatable response" + e.getCode(), e.getNamespace());
-        } catch (ServiceUnavailableException e) {
-                throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
-                        e.getMessage(), e.getNamespace());
-        }
+	@Override
+    public OTP sendOTPConfirm(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
+       	performIsCreatable(channelID, tmnProfile.getMobileno());       	
+       	OTP otp = otpService.send(tmnProfile.getMobileno());
+       	TmnProfile tmnProfileFromRepo = profileRepository.getTmnProfile(tmnProfile.getMobileno());
+       	if (tmnProfileFromRepo != null) {
+       		profileRepository.saveProfile(tmnProfile);
+       	}
+       	return otp;
     }
+	
+	@Override
+	public TmnProfile confirmCreateProfile(Integer channelID, OTP otp) throws ServiceInventoryException {
+		if (!otpService.isValidOTP(otp)) {
+			throw new ServiceInventoryException(SignonServiceException.Code.OTP_NOT_MATCH,
+				"otp string not match");
+		}
+		TmnProfile tmnProfile = profileRepository.getTmnProfile(otp.getMobileNo());
 
-    private IsCreatableRequest createIsCreatableRequest(Integer channelID, String loginID) {
-            IsCreatableRequest isCreatableRequest = new IsCreatableRequest();
-            isCreatableRequest.setChannelId(channelID);
-            isCreatableRequest.setLoginId(loginID);
-            AdminSecurityContext adminSecurityContext = new AdminSecurityContext(tmnProfileInitiator, tmnProfilePin);
-            isCreatableRequest.setAdminSecurityContext(adminSecurityContext);
-            return isCreatableRequest;
-    }
-
-    @Override
-    public TmnProfile confirmCreateProfile(Integer channelID, String mobileno, OTP otp) {
-
-            if(!otpService.isValidOTP(otp)) {
-                    throw new ServiceInventoryException(SignonServiceException.Code.OTP_NOT_MATCH, "otp string not match");
-            }
-            TmnProfile tmnProfile = profileRepository.getTmnProfile(mobileno);
-
-            CreateTmnProfileRequest tmnProfileRequest = new CreateTmnProfileRequest();
-            tmnProfileRequest.setChannelId(channelID);
-            tmnProfileRequest.setEmail(tmnProfile.getEmail());
-            tmnProfileRequest.setFullName(tmnProfile.getFullname());
-            tmnProfileRequest.setMobile(tmnProfile.getMobileno());
-            tmnProfileRequest.setPassword(tmnProfile.getPassword());
-            tmnProfileRequest.setThaiId(tmnProfile.getThaiID());
-
-            tmnProfileProxy.createTmnProfile(tmnProfileRequest);
-
-            return tmnProfile;
-    }
+		CreateTmnProfileRequest createTmnProfileRequest = createTmnProfileRequest(channelID, tmnProfile);
+		 
+		tmnProfileProxy.createTmnProfile(createTmnProfileRequest);
+		
+		return tmnProfile;
+	}
 
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
 		this.tmnProfileProxy = tmnProfileProxy;
@@ -279,6 +245,39 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		this.profileRepository = profileRepository;
 	}
 
+    private void performIsCreatable(Integer channelID, String loginID) throws ServiceInventoryException {
+    	try {
+			IsCreatableRequest isCreatableRequest = createIsCreatableRequest(channelID, loginID);
+		    tmnProfileAdminProxy.isCreatable(isCreatableRequest);
+        } catch (EwalletException e) {
+            throw new ServiceInventoryException(e.getCode(),
+            		"tmnProfileAdminProxy.isCreatable response" + e.getCode(), e.getNamespace());
+        } catch (ServiceUnavailableException e) {
+            throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+                    e.getMessage(), e.getNamespace());
+        }
+    }
+
+    private IsCreatableRequest createIsCreatableRequest(Integer channelID, String loginID) {
+        IsCreatableRequest isCreatableRequest = new IsCreatableRequest();
+        isCreatableRequest.setChannelId(channelID);
+        isCreatableRequest.setLoginId(loginID);
+        AdminSecurityContext adminSecurityContext = new AdminSecurityContext(tmnProfileInitiator, tmnProfilePin);
+        isCreatableRequest.setAdminSecurityContext(adminSecurityContext);
+        return isCreatableRequest;
+    }
+    
+	private CreateTmnProfileRequest createTmnProfileRequest(Integer channelID, TmnProfile tmnProfile) {
+		CreateTmnProfileRequest tmnProfileRequest = new CreateTmnProfileRequest();
+		tmnProfileRequest.setChannelId(channelID);
+		tmnProfileRequest.setEmail(tmnProfile.getEmail());
+		tmnProfileRequest.setFullName(tmnProfile.getFullname());
+		tmnProfileRequest.setMobile(tmnProfile.getMobileno());
+		tmnProfileRequest.setPassword(tmnProfile.getPassword());
+		tmnProfileRequest.setThaiId(tmnProfile.getThaiID());
+		return tmnProfileRequest;
+	}
+	
 	private SignonRequest createSignOnRequest(Integer channelID, Login login) {
 		SignonRequest signonRequest = new SignonRequest();
 		signonRequest.setInitiator(login.getUsername());

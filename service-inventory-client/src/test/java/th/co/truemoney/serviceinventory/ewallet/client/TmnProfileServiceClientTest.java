@@ -1,6 +1,9 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -23,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.util.EncryptUtil;
@@ -41,8 +45,8 @@ public class TmnProfileServiceClientTest {
 	@Test
 	public void shouldPassCreateProfile(){
 		try{
-			String responseRefCode = client.createProfile(41, new TmnProfile("Mart", new BigDecimal(5000)));
-			assertNotNull(responseRefCode);
+			OTP otp = client.sendOTPConfirm(41, new TmnProfile("Mart", new BigDecimal(5000)));
+			assertNotNull(otp.getReferenceCode());
 		}catch(ServiceInventoryException e){
 			e.printStackTrace();
 		}

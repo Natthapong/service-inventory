@@ -107,7 +107,7 @@ public class TmnProfileStubbed {
 	}
 
 	public static Exception createFailedThrowServiceInventoryException() {
-		ServiceInventoryException e = new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");
+		ServiceInventoryException e = new ServiceInventoryException("error code", "error description", "error namespace");
 		return e;
 	}
 
