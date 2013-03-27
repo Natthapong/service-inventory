@@ -73,7 +73,7 @@ public class TmnProfileServiceClientTest {
 		try {
 			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
 			assertNotNull(tmnProfile);
-			assertEquals("Firstname lastname", tmnProfile.getFullname());
+			assertEquals("username", tmnProfile.getFullname());
 		} catch (ServiceInventoryException e) {
 			assertNotSame("0", e.getErrorCode());
 		}
