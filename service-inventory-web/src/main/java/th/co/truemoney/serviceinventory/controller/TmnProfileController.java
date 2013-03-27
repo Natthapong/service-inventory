@@ -75,12 +75,12 @@ public class TmnProfileController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/profiles", method = RequestMethod.POST)
-	public @ResponseBody OTP sendOTPConfirm(
+	public @ResponseBody OTP createTruemoneyProfile(
 		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
 		@RequestBody TmnProfile tmnProfile) 
 			throws ServiceInventoryException {
 		validateRequestParam(channelID);
-		return tmnProfileService.sendOTPConfirm(channelID, tmnProfile);
+		return tmnProfileService.createProfile(channelID, tmnProfile);
 	}
 	
 	@RequestMapping(value = "/profiles/verify-otp", method = RequestMethod.POST)

@@ -44,12 +44,14 @@ public class TmnProfileServiceClientTest {
 
 	@Test
 	public void shouldPassCreateProfile(){
-		try{
-			OTP otp = client.sendOTPConfirm(41, new TmnProfile("Mart", new BigDecimal(5000)));
-			assertNotNull(otp.getReferenceCode());
-		}catch(ServiceInventoryException e){
-			e.printStackTrace();
-		}
+		TmnProfile tmnProfile = new TmnProfile();
+		tmnProfile.setEmail("tanathip.se@email.com");
+		tmnProfile.setPassword("xxxxxx");
+		tmnProfile.setFullname("Tanathip");
+		tmnProfile.setThaiID("1212121212121");
+		tmnProfile.setMobileno("0861234567");
+		OTP otp = client.createProfile(41, tmnProfile);
+		assertNotNull(otp.getReferenceCode());
 	}
 	
 	@Test 

@@ -196,7 +196,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
     }
 
 	@Override
-    public OTP sendOTPConfirm(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
+    public OTP createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
        	performIsCreatable(channelID, tmnProfile.getMobileno());       	
        	OTP otp = otpService.send(tmnProfile.getMobileno());
        	TmnProfile tmnProfileFromRepo = profileRepository.getTmnProfile(tmnProfile.getMobileno());

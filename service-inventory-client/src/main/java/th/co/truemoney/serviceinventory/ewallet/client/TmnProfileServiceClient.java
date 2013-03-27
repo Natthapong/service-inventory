@@ -90,7 +90,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public OTP sendOTPConfirm(Integer channelID, TmnProfile tmnProfile) {
+	public OTP createProfile(Integer channelID, TmnProfile tmnProfile) {
 		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(tmnProfile,headers);
 		ResponseEntity<OTP> responseEntity = restTemplate.exchange(endPoints.getCreateTruemoneyProfileUrl(), HttpMethod.POST, 
 				requestEntity, OTP.class, channelID);

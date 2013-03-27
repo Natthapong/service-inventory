@@ -57,7 +57,7 @@ public class CreateTmnProfileTest {
 		//when
 		Integer channelID = 40;
 		TmnProfile tmnProfile = setTmnProfile();
-		OTP otp = this.tmnProfileServiceImpl.sendOTPConfirm(channelID, tmnProfile);
+		OTP otp = this.tmnProfileServiceImpl.createProfile(channelID, tmnProfile);
 
 		//then
 		assertEquals("abcd", otp.getReferenceCode());
@@ -78,7 +78,7 @@ public class CreateTmnProfileTest {
 		try {
 			Integer channelID = 40;
 			TmnProfile tmnProfile = setTmnProfile();
-			this.tmnProfileServiceImpl.sendOTPConfirm(channelID, tmnProfile);
+			this.tmnProfileServiceImpl.createProfile(channelID, tmnProfile);
 		} catch (ServiceInventoryException e) {
 			assertEquals("error code", e.getCode());
 			assertEquals("error namespace", e.getNamespace());
@@ -103,7 +103,7 @@ public class CreateTmnProfileTest {
 		try {
 			Integer channelID = 40;
 			TmnProfile tmnProfile = setTmnProfile();
-			this.tmnProfileServiceImpl.sendOTPConfirm(channelID, tmnProfile);
+			this.tmnProfileServiceImpl.createProfile(channelID, tmnProfile);
 		} catch (ServiceInventoryException e) {
 			assertEquals("error code", e.getCode());
 			assertEquals("error description", e.getDescription());

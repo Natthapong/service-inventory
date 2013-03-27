@@ -19,7 +19,7 @@ public interface TmnProfileService {
 
     public String validateEmail(Integer channelID, String email) throws ServiceInventoryException;
 
-    public OTP sendOTPConfirm(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException;
+    public OTP createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException;
 
     public TmnProfile confirmCreateProfile(Integer channelID, OTP otp) throws ServiceInventoryException;
 
