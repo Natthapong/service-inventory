@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
@@ -30,7 +31,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	}
 
 	@Override
-	public P2PTransaction createTransaction(String draftTransactionID,
+	public P2PTransaction createTransaction(String draftTransactionID, OTP otp,
 			String accessTokenID) {
 		// TODO Auto-generated method stub
 		return null;
