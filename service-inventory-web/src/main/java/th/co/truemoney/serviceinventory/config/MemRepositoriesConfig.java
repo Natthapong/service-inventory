@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -39,10 +40,5 @@ public class MemRepositoriesConfig {
 	public ProfileRepository memoProfileRepository() {
 		return new ProfileMemoryRepository();
 	}
-
-	@Bean
-	public ProfileRepository redisProfileRepository() {
-		return new ProfileMemoryRepository();
-	}
-
+	
 }
