@@ -210,19 +210,19 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
     @Override
     public String createProfile(Integer channelID, TmnProfile tmnProfile) {
-            try {
-                    IsCreatableRequest isCreatableRequest = createIsCreatableRequest(channelID, tmnProfile.getMobileno());
+        try {
+                IsCreatableRequest isCreatableRequest = createIsCreatableRequest(channelID, tmnProfile.getMobileno());
 
-                    tmnProfileAdminProxy.isCreatable(isCreatableRequest);
+                tmnProfileAdminProxy.isCreatable(isCreatableRequest);
 
-                    return otpService.send(tmnProfile.getMobileno()).getReferenceCode();
-            } catch (EwalletException e) {
-                    throw new ServiceInventoryException(e.getCode(),
-                            "tmnProfileAdminProxy.isCreatable response" + e.getCode(), e.getNamespace());
-            } catch (ServiceUnavailableException e) {
-                    throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
-                            e.getMessage(), e.getNamespace());
-            }
+                return otpService.send(tmnProfile.getMobileno()).getReferenceCode();
+        } catch (EwalletException e) {
+                throw new ServiceInventoryException(e.getCode(),
+                        "tmnProfileAdminProxy.isCreatable response" + e.getCode(), e.getNamespace());
+        } catch (ServiceUnavailableException e) {
+                throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+                        e.getMessage(), e.getNamespace());
+        }
     }
 
     private IsCreatableRequest createIsCreatableRequest(Integer channelID, String loginID) {
