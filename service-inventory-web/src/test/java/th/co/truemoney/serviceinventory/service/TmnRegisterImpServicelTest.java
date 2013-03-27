@@ -1,16 +1,23 @@
 package th.co.truemoney.serviceinventory.service;
 
-import java.rmi.RemoteException;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.rmi.RemoteException;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import th.co.truemoney.serviceinventory.config.TestTmnProfileConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
@@ -26,6 +33,8 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { TestTmnProfileConfig.class })
 public class TmnRegisterImpServicelTest {
 
 	private TmnProfileServiceImpl tmnProfileServiceImpl;
@@ -34,6 +43,13 @@ public class TmnRegisterImpServicelTest {
 	private ProfileRepository profileRepository;
 	private OTPService otpService;
 
+	@Autowired @Qualifier("tmnProfileInitiator")
+	private String tmnProfileInitiator;
+	
+	@Autowired @Qualifier("tmnProfilePin")
+	private String tmnProfilePin;
+	
+	
 	@Before
 	public void setup() {
 		tmnProfileServiceImpl = new TmnProfileServiceImpl();
@@ -41,6 +57,8 @@ public class TmnRegisterImpServicelTest {
 		tmnProfileProxy = mock(TmnProfileProxy.class);
 		profileRepository = mock(ProfileRepository.class);
 		otpService = mock(OTPService.class);
+		tmnProfileServiceImpl.setTmnProfileInitiator(tmnProfileInitiator);
+		tmnProfileServiceImpl.setTmnProfilePin(tmnProfilePin);
 	}
 
 	@Test

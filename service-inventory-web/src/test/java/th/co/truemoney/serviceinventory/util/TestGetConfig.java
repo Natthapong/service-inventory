@@ -9,11 +9,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import th.co.truemoney.serviceinventory.config.TestDevProxyConfig;
 import th.co.truemoney.serviceinventory.config.TestTmnProfileConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { TestTmnProfileConfig.class, TestDevProxyConfig.class })
+@ContextConfiguration(classes = { TestTmnProfileConfig.class })
 public class TestGetConfig {
 
 	@Autowired @Qualifier("tmnProfileInitiator")

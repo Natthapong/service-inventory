@@ -1,6 +1,8 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +32,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.util.HashPasswordUtil;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -191,8 +194,15 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Override
     public String validateEmail(Integer channelID, String email) throws ServiceInventoryException {
-		performIsCreatable(channelID, email);
-		return email;
+		try {
+			performIsCreatable(channelID, email);
+			return email;
+		} catch (ServiceInventoryException e) {
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put("email", email);
+			e.setData(data);
+			throw e;
+		}
     }
 
 	@Override
@@ -245,6 +255,14 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		this.profileRepository = profileRepository;
 	}
 
+	public void setTmnProfileInitiator(String tmnProfileInitiator) {
+		this.tmnProfileInitiator = tmnProfileInitiator;
+	}
+
+	public void setTmnProfilePin(String tmnProfilePin) {
+		this.tmnProfilePin = tmnProfilePin;
+	}
+	
     private void performIsCreatable(Integer channelID, String loginID) throws ServiceInventoryException {
     	try {
 			IsCreatableRequest isCreatableRequest = createIsCreatableRequest(channelID, loginID);
@@ -262,7 +280,11 @@ public class TmnProfileServiceImpl implements TmnProfileService {
         IsCreatableRequest isCreatableRequest = new IsCreatableRequest();
         isCreatableRequest.setChannelId(channelID);
         isCreatableRequest.setLoginId(loginID);
-        AdminSecurityContext adminSecurityContext = new AdminSecurityContext(tmnProfileInitiator, tmnProfilePin);
+        
+        tmnProfilePin = tmnProfileInitiator.toLowerCase()+tmnProfilePin;
+        String encryptedPin = HashPasswordUtil.encryptSHA1(tmnProfilePin).toLowerCase();
+        
+        AdminSecurityContext adminSecurityContext = new AdminSecurityContext(tmnProfileInitiator, encryptedPin);
         isCreatableRequest.setAdminSecurityContext(adminSecurityContext);
         return isCreatableRequest;
     }
@@ -286,5 +308,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 		return signonRequest;
 	}
+
+
 
 }
