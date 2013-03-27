@@ -92,8 +92,10 @@ public class TmnProfileServiceClient implements TmnProfileService {
 
 	@Override
 	public String createProfile(Integer channelID, TmnProfile tmnProfile) {
-		// TODO Auto-generated method stub
-		return null;
+		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(tmnProfile,headers);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getCreateTruemoneyProfileUrl(), HttpMethod.POST, 
+				requestEntity, String.class, channelID);
+		return responseEntity.getBody();
 	}
 
 	@Override
