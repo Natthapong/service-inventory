@@ -31,7 +31,8 @@ public class SourceOfFundServiceClientTest {
 		try{
 			sourceOfFundServiceClient.getUserDirectDebitSources("local@tmn.com", "12345");
 		}catch(ServiceInventoryException e){
-			fail("Should fail because invalid username.");
+			assertEquals("9999", e.getErrorCode());
+			assertEquals("Invalid user name.", e.getErrorDescription());
 		}
 	}
 
