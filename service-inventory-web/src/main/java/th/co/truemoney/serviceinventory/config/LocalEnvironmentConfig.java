@@ -59,7 +59,7 @@ public class LocalEnvironmentConfig {
 					throws EwalletException {
 				return new GetBasicProfileResponse("1", "0", "namespace",
 						new String[] { "key" }, new String[] { "value" },
-						"0861234567", "local@tmn.com", "0891231234",
+						"username", "local@tmn.com", "0891231234",
 						new BigDecimal(50.0d), "C", 3);
 			}
 
@@ -146,7 +146,7 @@ public class LocalEnvironmentConfig {
 			}
 		};
 	}
-
+	
 	@Bean
 	@Primary
 	public EwalletSoapProxy stubEWalletSoapProxy() {

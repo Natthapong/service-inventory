@@ -84,8 +84,10 @@ public class TmnProfileServiceClient implements TmnProfileService {
 
 	@Override
 	public String validateEmail(Integer channelID, String email) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		HttpEntity<String> requestEntity = new HttpEntity<String>(email,headers);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getValidateEmailUrl(), HttpMethod.POST, requestEntity, String.class, channelID);
+		return responseEntity.getBody();
 	}
 
 	@Override
