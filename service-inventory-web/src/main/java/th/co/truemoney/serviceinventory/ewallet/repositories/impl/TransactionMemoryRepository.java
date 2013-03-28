@@ -5,31 +5,31 @@ import java.util.LinkedHashMap;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-public class OrderMemoryRepository implements OrderRepository {
+public class TransactionMemoryRepository implements TransactionRepository {
 
 	public static HashMap<String, TopUpQuote> quotesMap = new LinkedHashMap<String, TopUpQuote>();
 	public static HashMap<String, TopUpOrder> ordersMap = new LinkedHashMap<String, TopUpOrder>();
 
 	@Override
-	public void saveTopUpQuote(TopUpQuote topupQuote) {
+	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote) {
 		quotesMap.put(topupQuote.getID(), topupQuote);
 	}
 
 	@Override
-	public TopUpQuote getTopUpQuote(String orderID) {
+	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID) {
 		return quotesMap.get(orderID);
 	}
 
 	@Override
-	public void saveTopUpOrder(TopUpOrder topupOrder) {
+	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder) {
 		ordersMap.put(topupOrder.getID(), topupOrder);
 	}
 
 	@Override
-	public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
+	public TopUpOrder getTopUpEwalletTransaction(String orderID) throws ServiceInventoryException {
 		TopUpOrder topUpOrder = ordersMap.get(orderID);
 		if(topUpOrder == null) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_ORDER_NOT_FOUND,
