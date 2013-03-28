@@ -8,11 +8,11 @@ import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.dao.impl.RedisLoggingDaoImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPRedisRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderRedisRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.ProfileRedisRepository;
 
 @Configuration
@@ -25,8 +25,8 @@ public class RedisRepositoriesConfig {
 	}
 
 	@Bean
-	public OrderRepository redisTopUpRepository() {
-		return new OrderRedisRepository();
+	public TransactionRepository redisTopUpRepository() {
+		return new TransactionRedisRepository();
 	}
 
 	@Bean

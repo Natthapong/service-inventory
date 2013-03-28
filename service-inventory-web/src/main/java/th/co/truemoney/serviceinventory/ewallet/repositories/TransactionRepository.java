@@ -5,11 +5,11 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-public interface OrderRepository {
-	public void saveTopUpQuote(TopUpQuote topupQuote);
-	public TopUpQuote getTopUpQuote(String orderID);
-	public void saveTopUpOrder(TopUpOrder topupOrder);
-	public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException;
+public interface TransactionRepository {
+	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote);
+	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID);
+	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder);
+	public TopUpOrder getTopUpEwalletTransaction(String orderID) throws ServiceInventoryException;
 	
 	public void saveP2PDraftTransaction(P2PDraftTransaction p2pDraftTransaction);
 	public P2PDraftTransaction getP2PDraftTransaction(String p2pDraftTransactionID);

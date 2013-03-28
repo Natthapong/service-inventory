@@ -8,11 +8,11 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OrderMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.ProfileMemoryRepository;
 
 @Configuration
@@ -27,8 +27,8 @@ public class MemRepositoriesConfig {
     }
 
     @Bean
-    public OrderRepository memOrderRepository() {
-    	return new OrderMemoryRepository();
+    public TransactionRepository memOrderRepository() {
+    	return new TransactionMemoryRepository();
     }
 
     @Bean

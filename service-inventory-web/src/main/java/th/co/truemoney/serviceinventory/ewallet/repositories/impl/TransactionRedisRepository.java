@@ -8,20 +8,20 @@ import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class OrderRedisRepository implements OrderRepository {
+public class TransactionRedisRepository implements TransactionRepository {
 
-	private static Logger logger = LoggerFactory.getLogger(OrderRedisRepository.class);
+	private static Logger logger = LoggerFactory.getLogger(TransactionRedisRepository.class);
 
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
 
 	@Override
-	public void saveTopUpQuote(TopUpQuote topupQuote) {
+	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			redisLoggingDao.addData("quote:"+topupQuote.getID(), mapper.writeValueAsString(topupQuote), 15L);
@@ -33,7 +33,7 @@ public class OrderRedisRepository implements OrderRepository {
 	}
 
 	@Override
-	public TopUpQuote getTopUpQuote(String orderID) {
+	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID) {
 		try {
 			String result = redisLoggingDao.getData("quote:"+orderID);
 			if(result == null) {
@@ -51,7 +51,7 @@ public class OrderRedisRepository implements OrderRepository {
 	}
 
 	@Override
-	public void saveTopUpOrder(TopUpOrder topupOrder) {
+	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			redisLoggingDao.addData("order:"+topupOrder.getID(), mapper.writeValueAsString(topupOrder), 15L);
@@ -62,7 +62,7 @@ public class OrderRedisRepository implements OrderRepository {
 	}
 
 	@Override
-	public TopUpOrder getTopUpOrder(String orderID) throws ServiceInventoryException {
+	public TopUpOrder getTopUpEwalletTransaction(String orderID) throws ServiceInventoryException {
 		try {
 			String result = redisLoggingDao.getData("order:"+orderID);
 			if(result == null) {
