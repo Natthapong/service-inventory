@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
+import th.co.truemoney.serviceinventory.email.EmailService;
+import th.co.truemoney.serviceinventory.email.StubEmailService;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
@@ -281,4 +283,10 @@ public class LocalEnvironmentConfig {
 	public OTPGenerator otpGenerator() {
 		return new UnSecureOTPGenerator();
 	}
+	
+	@Bean
+	public EmailService stubEmailService() {
+		return new StubEmailService();
+	}
+		
 }
