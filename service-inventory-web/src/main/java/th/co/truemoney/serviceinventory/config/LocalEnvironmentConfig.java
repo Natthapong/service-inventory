@@ -12,6 +12,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
+import th.co.truemoney.serviceinventory.email.EmailService;
+import th.co.truemoney.serviceinventory.email.StubEmailService;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -349,4 +351,10 @@ public class LocalEnvironmentConfig {
 	public OTPGenerator otpGenerator() {
 		return new UnSecureOTPGenerator();
 	}
+	
+	@Bean
+	public EmailService stubEmailService() {
+		return new StubEmailService();
+	}
+		
 }
