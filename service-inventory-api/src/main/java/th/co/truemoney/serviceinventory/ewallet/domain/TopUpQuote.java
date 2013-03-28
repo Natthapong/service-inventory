@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -10,15 +9,13 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class TopUpQuote implements Serializable {
+public class TopUpQuote extends DraftTransaction {
+
+	private static final String DRAFT_TYPE = "topUpQuote";
 
 	private static final long serialVersionUID = 2372537225330036311L;
 
-	private String ID;
-
 	private SourceOfFund sourceOfFund;
-
-	private String accessTokenID;
 
 	private String username;
 
@@ -28,13 +25,13 @@ public class TopUpQuote implements Serializable {
 
 	private String otpReferenceCode;
 
-	private TopUpQuoteStatus status;
-
 	public TopUpQuote() {
+		type = DRAFT_TYPE;
 	}
 
 	public TopUpQuote(BigDecimal amount) {
 		this.amount = amount;
+		type = DRAFT_TYPE;
 	}
 
 	public TopUpQuote(String ID, SourceOfFund sourceOfFund,
@@ -46,7 +43,8 @@ public class TopUpQuote implements Serializable {
 		this.username = username;
 		this.amount = amount;
 		this.topUpFee = topUpFee;
-		this.status = TopUpQuoteStatus.CREATED;
+		this.status = DraftTransaction.Status.CREATED;
+		type = DRAFT_TYPE;
 	}
 
 	public String getID() {
@@ -103,14 +101,6 @@ public class TopUpQuote implements Serializable {
 
 	public void setOtpReferenceCode(String otpReferenceCode) {
 		this.otpReferenceCode = otpReferenceCode;
-	}
-
-	public TopUpQuoteStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(TopUpQuoteStatus status) {
-		this.status = status;
 	}
 
 	@Override

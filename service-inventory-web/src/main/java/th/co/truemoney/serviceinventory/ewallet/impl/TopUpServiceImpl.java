@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrderStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuoteStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -74,7 +74,7 @@ public class TopUpServiceImpl implements TopUpService {
 		topUpQuote.setAmount(amount);
 		topUpQuote.setTopUpFee(topUpFee);
 		topUpQuote.setSourceOfFund(directDebitSource);
-		topUpQuote.setStatus(TopUpQuoteStatus.CREATED);
+		topUpQuote.setStatus(DraftTransaction.Status.CREATED);
 
 		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
 
@@ -134,7 +134,7 @@ public class TopUpServiceImpl implements TopUpService {
 
 		TopUpQuote topUpQuote = getTopUpQuoteDetails(quoteID, accessTokenID);
 		topUpQuote.setOtpReferenceCode(otp.getReferenceCode());
-		topUpQuote.setStatus(TopUpQuoteStatus.OTP_SENT);
+		topUpQuote.setStatus(DraftTransaction.Status.OTP_SENT);
 
 		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
 
@@ -142,7 +142,7 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	@Override
-	public TopUpQuoteStatus confirmOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException {
+	public DraftTransaction.Status confirmOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 		TopUpQuote topUpQuote = getTopUpQuoteDetails(quoteID, accessTokenID);
@@ -151,7 +151,7 @@ public class TopUpServiceImpl implements TopUpService {
 			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH, "Invalide OTP.");
 		}
 
-		topUpQuote.setStatus(TopUpQuoteStatus.OTP_CONFIRMED);
+		topUpQuote.setStatus(DraftTransaction.Status.OTP_CONFIRMED);
 		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
 
 		TopUpOrder topUpOrder = new TopUpOrder(topUpQuote);

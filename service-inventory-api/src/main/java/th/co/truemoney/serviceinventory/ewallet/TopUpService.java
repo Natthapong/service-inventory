@@ -2,11 +2,11 @@ package th.co.truemoney.serviceinventory.ewallet;
 
 import java.math.BigDecimal;
 
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrderStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuoteStatus;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface TopUpService {
@@ -17,7 +17,7 @@ public interface TopUpService {
 
 	public OTP sendOTPConfirm(String quoteID, String accessTokenID) throws ServiceInventoryException;
 
-	public TopUpQuoteStatus confirmOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException;
+	public DraftTransaction.Status confirmOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException;
 
 	public TopUpOrderStatus getTopUpProcessingStatus(String topUpOrderID, String accessTokenID) throws ServiceInventoryException;
 

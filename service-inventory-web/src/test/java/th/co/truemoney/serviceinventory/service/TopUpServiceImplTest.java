@@ -19,11 +19,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuoteStatus;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncService;
 import th.co.truemoney.serviceinventory.ewallet.impl.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
@@ -192,9 +192,9 @@ public class TopUpServiceImplTest {
 		topUpService.setOrderRepository(orderRepo);
 		topUpService.setOtpService(otpService);
 
-		TopUpQuoteStatus quoteStatus = topUpService.confirmOTP(quote.getID(), otp, "accessToken");
+		DraftTransaction.Status quoteStatus = topUpService.confirmOTP(quote.getID(), otp, "accessToken");
 
-		assertEquals(TopUpQuoteStatus.OTP_CONFIRMED, quoteStatus);
+		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, quoteStatus);
 		verify(asyncService).topUpUtibaEwallet(any(TopUpOrder.class), anyString(), any(AddMoneyRequest.class));
 	}
 

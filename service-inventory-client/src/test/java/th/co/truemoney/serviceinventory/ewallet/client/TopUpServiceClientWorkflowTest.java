@@ -16,11 +16,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrderStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuoteStatus;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -52,7 +52,7 @@ public class TopUpServiceClientWorkflowTest {
 		quote = topUpService.getTopUpQuoteDetails(quote.getID(), accessToken);
 
 		assertNotNull(quote);
-		assertEquals(TopUpQuoteStatus.CREATED, quote.getStatus());
+		assertEquals(DraftTransaction.Status.CREATED, quote.getStatus());
 
 		// request otp
 		OTP otp = topUpService.sendOTPConfirm(quote.getID(), accessToken);
@@ -63,19 +63,19 @@ public class TopUpServiceClientWorkflowTest {
 		quote = topUpService.getTopUpQuoteDetails(quote.getID(), accessToken);
 
 		// quote status changed
-		assertEquals(TopUpQuoteStatus.OTP_SENT, quote.getStatus());
+		assertEquals(DraftTransaction.Status.OTP_SENT, quote.getStatus());
 
 		// confirm otp
 		otp.setOtpString("111111");
-		TopUpQuoteStatus quoteStatus = topUpService.confirmOTP(quote.getID(), otp, accessToken);
+		DraftTransaction.Status quoteStatus = topUpService.confirmOTP(quote.getID(), otp, accessToken);
 
 		assertNotNull(quoteStatus);
-		assertEquals(TopUpQuoteStatus.OTP_CONFIRMED, quoteStatus);
+		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, quoteStatus);
 
 		quote = topUpService.getTopUpQuoteDetails(quote.getID(), accessToken);
 
 		// quote status changed
-		assertEquals(TopUpQuoteStatus.OTP_CONFIRMED, quote.getStatus());
+		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, quote.getStatus());
 
 		// get order status
 		Thread.sleep(100);

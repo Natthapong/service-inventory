@@ -12,11 +12,11 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrderStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuoteStatus;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
@@ -74,13 +74,13 @@ public class TmnTopUpServiceClient implements TopUpService {
 	}
 
 	@Override
-	public TopUpQuoteStatus confirmOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException {
+	public DraftTransaction.Status confirmOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException {
 
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp, headers);
 
-		ResponseEntity<TopUpQuoteStatus> responseEntity = restTemplate.exchange(
+		ResponseEntity<DraftTransaction.Status> responseEntity = restTemplate.exchange(
 				endPoints.getConfirmOTPUrl(), HttpMethod.PUT,
-				requestEntity, TopUpQuoteStatus.class,
+				requestEntity, DraftTransaction.Status.class,
 				quoteID, otp.getReferenceCode(), accessTokenID);
 
 		return responseEntity.getBody();
