@@ -3,6 +3,8 @@ package th.co.truemoney.serviceinventory.bean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import th.co.truemoney.serviceinventory.util.FeeUtil;
+
 public class DirectDebitConfigBean implements Serializable {
 
 	private static final long serialVersionUID = -34657460109959227L;
@@ -14,7 +16,9 @@ public class DirectDebitConfigBean implements Serializable {
     private String feeType;
     private BigDecimal minTotalFee;
     private BigDecimal maxTotalFee;
-    
+
+    private FeeUtil feeUtil = new FeeUtil();
+
 	public String getBankNameEn() {
 		return bankNameEn;
 	}
@@ -63,5 +67,7 @@ public class DirectDebitConfigBean implements Serializable {
 	public void setMaxTotalFee(BigDecimal maxTotalFee) {
 		this.maxTotalFee = maxTotalFee;
 	}
-	
+	public BigDecimal calculateTotalFee(BigDecimal amount) {
+		return feeUtil.calculateFee(amount, getFeeValue(), getFeeType(), getMinTotalFee(), getMaxTotalFee());
+	}
 }

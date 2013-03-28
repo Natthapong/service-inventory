@@ -24,7 +24,14 @@ public class TransactionMemoryRepository implements TransactionRepository {
 
 	@Override
 	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID) {
-		return quotesMap.get(orderID);
+		TopUpQuote topUpQuote = quotesMap.get(orderID);
+
+		if (topUpQuote == null) {
+			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND,
+					"TopUp quote not found.");
+		}
+
+		return topUpQuote;
 	}
 
 	@Override
@@ -51,18 +58,18 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	public P2PDraftTransaction getP2PDraftTransaction(
 			String p2pDraftTransactionID) {
 		P2PDraftTransaction p2pDraftTransaction = p2pDraftTransactionMap.get(p2pDraftTransactionID);
-		
+
 		if (p2pDraftTransaction == null) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND,
 					"TopUp order not found.");
 		}
-		
+
 		return p2pDraftTransaction;
 	}
 
 	@Override
 	public void saveP2PTransaction(P2PTransaction p2pTransaction) {
-		p2pTransactionMap.put(p2pTransaction.getID(), p2pTransaction);		
+		p2pTransactionMap.put(p2pTransaction.getID(), p2pTransaction);
 	}
 
 	@Override

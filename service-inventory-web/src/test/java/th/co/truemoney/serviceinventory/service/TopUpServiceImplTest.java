@@ -72,7 +72,6 @@ public class TopUpServiceImplTest {
 		directDebitDetail.setBankAccountNumber("xxxx5555");
 		directDebitDetail.setBankCode("SCB");
 		directDebitDetail.setBankNameEn("Siam Comercial Bank");
-		directDebitDetail.setBankNameTh("เน�เธ—เธขเธ�เธฒเธ“เธดเธ�เธขเน�");
 		directDebitDetail.setMinAmount(new BigDecimal(300));
 		directDebitDetail.setMaxAmount(new BigDecimal(30000));
 		directDebitDetail.setSourceOfFundID("111111111");
@@ -93,7 +92,7 @@ public class TopUpServiceImplTest {
 			.thenReturn(accessToken);
 		when(ewalletSoapProxyMock.verifyAddMoney(Mockito.any(VerifyAddMoneyRequest.class)))
 			.thenReturn(stubbedStandardMoneyResponse);
-		when(sourceOfFundRepoMock.getUserDirectDebitSourceByID(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyString()))
+		when(sourceOfFundRepoMock.getUserDirectDebitSourceByID(Mockito.anyString(), Mockito.any(AccessToken.class)))
 			.thenReturn(directDebitDetail);
 
 		//when
@@ -118,7 +117,7 @@ public class TopUpServiceImplTest {
 			.thenReturn(accessToken);
 		when(ewalletSoapProxyMock.verifyAddMoney(Mockito.any(VerifyAddMoneyRequest.class)))
 			.thenReturn(stubbedStandardMoneyResponse);
-		when(sourceOfFundRepoMock.getUserDirectDebitSourceByID(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyString()))
+		when(sourceOfFundRepoMock.getUserDirectDebitSourceByID(Mockito.anyString(), Mockito.any(AccessToken.class)))
 			.thenReturn(directDebitDetail);
 
 		//when
@@ -146,7 +145,7 @@ public class TopUpServiceImplTest {
 			.thenReturn(accessToken);
 		when(ewalletSoapProxyMock.verifyAddMoney(Mockito.any(VerifyAddMoneyRequest.class)))
 			.thenReturn(stubbedStandardMoneyResponse);
-		when(sourceOfFundRepoMock.getUserDirectDebitSourceByID(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyString()))
+		when(sourceOfFundRepoMock.getUserDirectDebitSourceByID(Mockito.anyString(), Mockito.any(AccessToken.class)))
 			.thenReturn(directDebitDetail);
 
 		//when

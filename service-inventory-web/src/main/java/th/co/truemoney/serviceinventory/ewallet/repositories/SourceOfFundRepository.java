@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
+import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
@@ -19,23 +20,27 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class SourceOfFundRepository {
-	
+
 	@Autowired
 	private TmnProfileProxy tmnProfileProxy;
-	
+
 	@Autowired
 	private DirectDebitConfig directDebitConfig;
-	
-	public DirectDebit getUserDirectDebitSourceByID(String sourceOfFundID, String truemoneyID, Integer channelID, String sessionID) {
+
+	public DirectDebit getUserDirectDebitSourceByID(String sourceOfFundID, AccessToken accessToken) {
+		String truemoneyID = accessToken.getTruemoneyID();
+		Integer channelID = accessToken.getChannelID();
+		String sessionID = accessToken.getSessionID();
+
 		List<DirectDebit> directDebitSources = getUserDirectDebitSources(truemoneyID, channelID, sessionID);
 		for (DirectDebit dd : directDebitSources) {
 			if (dd.getSourceOfFundID().equals(sourceOfFundID)) {
 				return dd;
 			}
-		}		
+		}
 		throw new ServiceInventoryException("404", "source of fund not found : " + sourceOfFundID);
 	}
-	
+
 	public List<DirectDebit> getUserDirectDebitSources(String truemoneyID, Integer channelID, String sessionID)
 			throws ServiceInventoryException {
 		try {
@@ -64,7 +69,7 @@ public class SourceOfFundRepository {
 					}
 					directDebitList.add(directDebit);
 				}
-			} 
+			}
 			return directDebitList;
 		} catch (EwalletException e) {
 			throw new ServiceInventoryException(e.getCode(),
@@ -74,11 +79,11 @@ public class SourceOfFundRepository {
 				e.getMessage(), e.getNamespace());
 		}
 	}
-	
+
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
 		this.tmnProfileProxy = tmnProfileProxy;
 	}
-	
+
 	private ListSourceRequest createListSourceRequest(Integer channelID, String truemoneyID, String sessionID) {
 		ListSourceRequest listSourceRequest = new ListSourceRequest();
 		listSourceRequest.setChannelId(channelID);
