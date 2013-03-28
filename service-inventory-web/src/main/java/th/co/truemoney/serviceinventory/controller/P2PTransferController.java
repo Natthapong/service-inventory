@@ -20,12 +20,12 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Controller
 @RequestMapping(value="/transfer")
-public class P2PTransferController extends BaseController {
+public class P2PTransferController {
 
 	@Autowired
 	private P2PTransferService p2pTransferService;
-	
-	@Autowired 
+
+	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
 	@RequestMapping(value = "/draft-transaction", method = RequestMethod.POST)
@@ -37,7 +37,7 @@ public class P2PTransferController extends BaseController {
 		extendExpireAccessToken(accessTokenID);
 		return p2pDraftTransaction;
 	}
-	
+
 	@RequestMapping(value = "/draft-transaction/{draftTransactionID}", method = RequestMethod.POST)
 	public @ResponseBody P2PDraftTransaction getDraftTransactionInfo(
 			@PathVariable String draftTransactionID,
@@ -47,7 +47,7 @@ public class P2PTransferController extends BaseController {
 		extendExpireAccessToken(accessTokenID);
 		return p2pDraftTransaction;
 	}
-	
+
 	@RequestMapping(value = "/draft-transaction/{draftTransactionID}/send-otp", method = RequestMethod.PUT)
 	public @ResponseBody OTP sendOTP(
 			@PathVariable String draftTransactionID,
@@ -57,7 +57,7 @@ public class P2PTransferController extends BaseController {
 		extendExpireAccessToken(accessTokenID);
 		return otp;
 	}
-	
+
 	@RequestMapping(value = "/transaction/{draftTransactionID}", method = RequestMethod.POST)
 	public @ResponseBody P2PTransactionStatus createTransaction(
 			@PathVariable String draftTransactionID,
@@ -68,7 +68,7 @@ public class P2PTransferController extends BaseController {
 		extendExpireAccessToken(accessTokenID);
 		return p2pTransactionStatus;
 	}
-	
+
 	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
 	public @ResponseBody P2PTransactionStatus getTransactionStatus(
 			@PathVariable String transactionID,
@@ -78,7 +78,7 @@ public class P2PTransferController extends BaseController {
 		extendExpireAccessToken(accessTokenID);
 		return p2pTransactionStatus;
 	}
-	
+
 	@RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.GET)
 	public @ResponseBody P2PTransaction getTransactionInfo(
 			@PathVariable String transactionID,
@@ -92,5 +92,5 @@ public class P2PTransferController extends BaseController {
 	private void extendExpireAccessToken(String accessTokenID) {
 		extendAccessTokenAsynService.setExpire(accessTokenID);
 	}
-	
+
 }
