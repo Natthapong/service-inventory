@@ -11,6 +11,7 @@ import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -62,12 +63,21 @@ public class LocalEnvironmentConfig {
 		return new P2PTransferServiceImpl(){
 			
 			@Override
+			public P2PTransactionStatus getTransactionStatus(String transactionID, String accessTokenID) {
+				if(transactionID.equals("0000")){
+					return P2PTransactionStatus.ORDER_VERIFIED;
+				}else{
+					return P2PTransactionStatus.UMARKET_FAILED;
+				} 
+			}
+			
+			@Override
 			public OTP sendOTP(String draftTransactionID,
 					String accessTokenID) {
 				if(accessTokenID.equals("12345")){
 					return new OTP("0868185055", "111111", "marty");
 				}else{
-					throw new ServiceInventoryException("9999","No Draft Transaction","SI-WEB");
+					throw new ServiceInventoryException("9999","Can't send OTP","SI-WEB");
 				}
 			}
 			
@@ -75,7 +85,7 @@ public class LocalEnvironmentConfig {
 			public P2PDraftTransaction getDraftTransactionDetails(
 					String draftTransactionID, String accessTokenID) {
 				if(accessTokenID.equals("12345")){
-					return new P2PDraftTransaction("0868185055",new BigDecimal(2500),"555","12345","fullName","111111");
+					return new P2PDraftTransaction("0868185055",new BigDecimal(2500),"555","12345","Mart FullName","111111");
 				}else{
 					throw new ServiceInventoryException("9999","No Draft Transaction","SI-WEB");
 				}

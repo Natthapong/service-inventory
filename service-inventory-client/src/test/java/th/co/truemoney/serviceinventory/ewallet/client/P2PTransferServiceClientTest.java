@@ -19,6 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryCl
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -68,12 +69,54 @@ public class P2PTransferServiceClientTest {
 		assertEquals("0868185055", otp.getMobileNumber());
 	}
 	
-	@Test @Ignore
+	@Test 
 	public void sendOTPFail() {
 		try {
 			p2pTransferServiceClient.sendOTP("3", "12355");
 		} catch (ServiceInventoryException serviceInventoryException) {
-			
+			assertEquals("Can't send OTP", serviceInventoryException.getErrorDescription());
 		}
+	}
+	
+	@Test
+	public void createTransactionSuccess(){
+		P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.createTransaction("3", new OTP("0868185055", "111111", "marty"), "12345");
+		assertEquals("ORDER_VERIFIED", p2pTransactionStatus.getP2pTransferStatus());
+	}
+	
+	@Test
+	public void createTransactionFail(){
+		try {
+			P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.createTransaction("3", new OTP("0868185055", "112211", "marty"), "12345");
+		} catch (ServiceInventoryException e) {
+			assertEquals("Invalide OTP.", e.getErrorDescription());
+		}
+	}
+	
+	@Test
+	public void getTransactionStatusSuccess(){
+		P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.getTransactionStatus("0000", "12345");
+		assertEquals("ORDER_VERIFIED", p2pTransactionStatus.getP2pTransferStatus());
+	}
+	
+	@Test
+	public void getTransactionStatusFail(){
+		try {
+			P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.getTransactionStatus("0001", "12345");
+		} catch (ServiceInventoryException e) {
+			assertEquals("Transfer order not found.", e.getErrorDescription());
+		}
+	}
+	
+	@Test
+	public void getTransactionResultSuccess(){
+		P2PDraftTransaction transaction = p2pTransferServiceClient.getDraftTransactionDetails("0000", "12345");
+		assertEquals(new BigDecimal(2500), transaction.getAmount());
+	}
+
+	@Test
+	public void getTransactionResultFail(){
+		P2PDraftTransaction transaction = p2pTransferServiceClient.getDraftTransactionDetails("0000", "12345");
+		assertEquals("Mart FullName", transaction.getFullname());
 	}
 }

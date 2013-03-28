@@ -151,7 +151,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		if(!otpService.isValidOTP(otp)){
 			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH, "Invalide OTP.");
 		}
-
+		
 		p2pDraftTransaction.setStatus(P2PDraftTransactionStatus.OTP_CONFIRMED);
 		transactionRepo.saveP2PDraftTransaction(p2pDraftTransaction);
 

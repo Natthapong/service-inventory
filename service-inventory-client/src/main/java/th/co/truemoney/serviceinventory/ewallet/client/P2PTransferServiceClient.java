@@ -36,7 +36,7 @@ public class P2PTransferServiceClient implements P2PTransferService {
 		HttpEntity<P2PDraftRequest> requestEntity = new HttpEntity<P2PDraftRequest>(p2pDraftRequest,headers);
 
 		ResponseEntity<P2PDraftTransaction> responseEntity = restTemplate.exchange(
-				endPoints.getCreateTransactionUrl(),
+				endPoints.getCreateDraftTransactionUrl(),
 					HttpMethod.POST, requestEntity, P2PDraftTransaction.class, accessTokenID);
 
 		P2PDraftTransaction p2pDraftTransaction = responseEntity.getBody();
@@ -50,7 +50,7 @@ public class P2PTransferServiceClient implements P2PTransferService {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<P2PDraftTransaction> responseEntity = restTemplate.exchange(
-				endPoints.getDraftTransactionDetail(),
+				endPoints.getDraftTransactionDetails(),
 					HttpMethod.POST, requestEntity, P2PDraftTransaction.class, draftTransactionID,accessTokenID);
 
 		P2PDraftTransaction p2pDraftTransaction = responseEntity.getBody();
@@ -94,7 +94,7 @@ public class P2PTransferServiceClient implements P2PTransferService {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<P2PTransactionStatus> responseEntity = restTemplate.exchange(
-				endPoints.getCreateTransactionUrl(),
+				endPoints.getTransactionStatusUrl(),
 					HttpMethod.GET, requestEntity, P2PTransactionStatus.class, transactionID,accessTokenID);
 
 		P2PTransactionStatus p2pTransactionStatus = responseEntity.getBody();
@@ -109,7 +109,7 @@ public class P2PTransferServiceClient implements P2PTransferService {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<P2PTransaction> responseEntity = restTemplate.exchange(
-				endPoints.getCreateTransactionUrl(),
+				endPoints.getTransactionStatusUrl(),
 					HttpMethod.GET, requestEntity, P2PTransaction.class, transactionID,accessTokenID);
 
 		P2PTransaction p2pTransaction = responseEntity.getBody();

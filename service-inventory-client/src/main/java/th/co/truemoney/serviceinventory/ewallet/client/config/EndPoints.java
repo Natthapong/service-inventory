@@ -64,7 +64,11 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/ewallet/profiles/{mobileNumber}/verify-otp?channelID={channelID}";
 	}
 	
-	public String getDraftTransactionDetail(){
+	public String getCreateDraftTransactionUrl(){
+		return host + "/service-inventory-web/v1/transfer/draft-transaction?accessTokenID={accessTokenID}";
+	}
+	
+	public String getDraftTransactionDetails(){
 		return host + "/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}?accessTokenID={accessTokenID}";
 	}
 	
@@ -73,7 +77,7 @@ public class EndPoints {
 	}
 	
 	public String getCreateTransactionUrl(){
-		return host + "/service-inventory-web/v1/transfer/draft-transaction?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/transfer/transaction/{draftTransactionID}?accessTokenID={accessTokenID}";
 	}
 	
 	public String getTransactionStatusUrl(){
