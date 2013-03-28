@@ -44,7 +44,7 @@ public class P2PTransferServiceClient implements P2PTransferService {
 	}
 
 	@Override
-	public P2PDraftTransaction getDraftTransactionDetail(
+	public P2PDraftTransaction getDraftTransactionDetails(
 			String draftTransactionID, String accessTokenID)  throws ServiceInventoryException {
 
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
@@ -58,33 +58,33 @@ public class P2PTransferServiceClient implements P2PTransferService {
 	}
 
 	@Override
-	public P2PDraftTransaction sendOTP(String draftTransactionID,
+	public OTP sendOTP(String draftTransactionID,
 			String accessTokenID) {
 		
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
-		ResponseEntity<P2PDraftTransaction> responseEntity = restTemplate.exchange(
+		ResponseEntity<OTP> responseEntity = restTemplate.exchange(
 				endPoints.getSendOTPUrl(),
-					HttpMethod.PUT, requestEntity, P2PDraftTransaction.class, draftTransactionID,accessTokenID);
+					HttpMethod.PUT, requestEntity, OTP.class, draftTransactionID,accessTokenID);
 
-		P2PDraftTransaction p2pDraftTransaction = responseEntity.getBody();
+		OTP otp = responseEntity.getBody();
 		
-		return p2pDraftTransaction;
+		return otp;
 	}
 
 	@Override
-	public P2PTransaction createTransaction(String draftTransactionID, OTP otp,
+	public P2PTransactionStatus createTransaction(String draftTransactionID, OTP otp,
 			String accessTokenID) {
 		
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
 
-		ResponseEntity<P2PTransaction> responseEntity = restTemplate.exchange(
+		ResponseEntity<P2PTransactionStatus> responseEntity = restTemplate.exchange(
 				endPoints.getCreateTransactionUrl(),
-					HttpMethod.POST, requestEntity, P2PTransaction.class, draftTransactionID,accessTokenID);
+					HttpMethod.POST, requestEntity, P2PTransactionStatus.class, draftTransactionID,accessTokenID);
 
-		P2PTransaction p2pDraftTransaction = responseEntity.getBody();
+		P2PTransactionStatus p2pTransactionStatus = responseEntity.getBody();
 		
-		return p2pDraftTransaction;
+		return p2pTransactionStatus;
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class P2PTransferServiceClient implements P2PTransferService {
 	}
 
 	@Override
-	public P2PTransaction getTransactionDetail(String transactionID,
+	public P2PTransaction getTransactionResult(String transactionID,
 			String accessTokenID) {
 		
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);

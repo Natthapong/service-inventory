@@ -15,6 +15,9 @@ public class P2PTransaction implements Serializable {
 	private P2PTransactionStatus status = P2PTransactionStatus.AWAITING_CONFIRM;
 	private P2PTransactionConfirmationInfo confirmationInfo;
 	
+	public P2PTransaction(P2PDraftTransaction p2pDraftTransaction) {
+
+	}
 	public String getMobileNumber() {
 		return mobileNumber;
 	}
@@ -62,6 +65,10 @@ public class P2PTransaction implements Serializable {
 	}
 	public void setConfirmationInfo(P2PTransactionConfirmationInfo confirmationInfo) {
 		this.confirmationInfo = confirmationInfo;
+	}
+	public AccessToken getDraftTransaction() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

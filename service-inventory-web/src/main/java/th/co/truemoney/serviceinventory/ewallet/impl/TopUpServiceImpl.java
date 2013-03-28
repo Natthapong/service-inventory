@@ -248,7 +248,7 @@ public class TopUpServiceImpl implements TopUpService {
 		TopUpOrder topUpOrder = orderRepo.getTopUpEwalletTransaction(orderID);
 
 		if (topUpOrder == null || !topUpOrder.getQuote().getAccessTokenID().equals(accessToken.getAccessTokenID())) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND, "quote not found");
+			throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND, "transaction not found");
 		}
 
 		return topUpOrder;

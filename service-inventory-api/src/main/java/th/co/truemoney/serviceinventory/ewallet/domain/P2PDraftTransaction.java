@@ -12,8 +12,10 @@ public class P2PDraftTransaction implements Serializable {
 	private String accessTokenID;
 	private String fullname;
 	private String otpReferenceCode;
-
+	private P2PDraftTransactionStatus status;
+	
 	public P2PDraftTransaction() {
+		super();
 	}
 	
 	public P2PDraftTransaction(String mobileNumber, BigDecimal amount,
@@ -74,5 +76,10 @@ public class P2PDraftTransaction implements Serializable {
 	public void setOtpReferenceCode(String otpReferenceCode) {
 		this.otpReferenceCode = otpReferenceCode;
 	}
-
+	public P2PDraftTransactionStatus getStatus() {
+		return status;
+	}
+	public void setStatus(P2PDraftTransactionStatus status) {
+		this.status = status;
+	}	
 }

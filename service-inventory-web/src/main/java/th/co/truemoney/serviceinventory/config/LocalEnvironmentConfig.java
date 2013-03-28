@@ -33,10 +33,12 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.TransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.UpdateAccountRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
@@ -59,7 +61,7 @@ public class LocalEnvironmentConfig {
 		return new P2PTransferServiceImpl(){
 			
 			@Override
-			public P2PDraftTransaction getDraftTransactionDetail(
+			public P2PDraftTransaction getDraftTransactionDetails(
 					String draftTransactionID, String accessTokenID) {
 				if(accessTokenID.equals("12345")){
 					return new P2PDraftTransaction("0868185055",new BigDecimal(2500),"555","12345","fullName","111111");
@@ -216,6 +218,21 @@ public class LocalEnvironmentConfig {
 				return moneyResponse;
 			}
 
+			@Override
+			public StandardMoneyResponse transfer(
+					TransferRequest transferRequest) throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public StandardMoneyResponse verifyTransfer(
+					VerifyTransferRequest verifyTransferRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
 		};
 	}
 

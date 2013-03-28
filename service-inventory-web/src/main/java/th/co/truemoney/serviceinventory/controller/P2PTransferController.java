@@ -43,30 +43,30 @@ public class P2PTransferController extends BaseController {
 			@PathVariable String draftTransactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
 		throws ServiceInventoryException {
-		P2PDraftTransaction p2pDraftTransaction = p2pTransferService.getDraftTransactionDetail(draftTransactionID, accessTokenID);
+		P2PDraftTransaction p2pDraftTransaction = p2pTransferService.getDraftTransactionDetails(draftTransactionID, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 		return p2pDraftTransaction;
 	}
 	
 	@RequestMapping(value = "/draft-transaction/{draftTransactionID}/send-otp", method = RequestMethod.PUT)
-	public @ResponseBody P2PDraftTransaction sendOTP(
+	public @ResponseBody OTP sendOTP(
 			@PathVariable String draftTransactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
 		throws ServiceInventoryException {
-		P2PDraftTransaction p2pDraftTransaction = p2pTransferService.sendOTP(draftTransactionID, accessTokenID);
+		OTP otp = p2pTransferService.sendOTP(draftTransactionID, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
-		return p2pDraftTransaction;
+		return otp;
 	}
 	
 	@RequestMapping(value = "/transaction/{draftTransactionID}", method = RequestMethod.POST)
-	public @ResponseBody P2PTransaction createTransaction(
+	public @ResponseBody P2PTransactionStatus createTransaction(
 			@PathVariable String draftTransactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 			@RequestBody OTP otp)
 		throws ServiceInventoryException {
-		P2PTransaction p2pTransaction = p2pTransferService.createTransaction(draftTransactionID, otp, accessTokenID);
+		P2PTransactionStatus p2pTransactionStatus = p2pTransferService.createTransaction(draftTransactionID, otp, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
-		return p2pTransaction;
+		return p2pTransactionStatus;
 	}
 	
 	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
@@ -84,7 +84,7 @@ public class P2PTransferController extends BaseController {
 			@PathVariable String transactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
 		throws ServiceInventoryException {
-		P2PTransaction p2pTransaction = p2pTransferService.getTransactionDetail(transactionID, accessTokenID);
+		P2PTransaction p2pTransaction = p2pTransferService.getTransactionResult(transactionID, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 		return p2pTransaction;
 	}

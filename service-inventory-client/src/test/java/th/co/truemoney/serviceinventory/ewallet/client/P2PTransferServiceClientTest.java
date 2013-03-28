@@ -1,6 +1,8 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 
 import java.math.BigDecimal;
 
@@ -14,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -36,14 +39,14 @@ public class P2PTransferServiceClientTest {
 	
 	@Test 
 	public void getDraftTransactionDetailSuccess() {
-		P2PDraftTransaction p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetail("1", "12345");
+		P2PDraftTransaction p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails("1", "12345");
 		assertNotNull(p2pDraftTransaction);		
 	}
 	
 	@Test 
 	public void getDraftTransactionDetailFail() {
 		try {
-			p2pTransferServiceClient.getDraftTransactionDetail("3", "12355");
+			p2pTransferServiceClient.getDraftTransactionDetails("3", "12355");
 		} catch (ServiceInventoryException serviceInventoryException) {
 			assertNotSame("0", serviceInventoryException.getErrorCode());
 		}			
@@ -51,8 +54,8 @@ public class P2PTransferServiceClientTest {
 	
 	@Test @Ignore
 	public void sendOTPSuccess() {
-		P2PDraftTransaction p2pDraftTransaction = p2pTransferServiceClient.sendOTP("1", "12345");
-		assertNotNull(p2pDraftTransaction);	
+		OTP otp = p2pTransferServiceClient.sendOTP("1", "12345");
+		assertNotNull(otp);	
 	}
 	
 	@Test @Ignore
