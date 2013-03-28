@@ -11,7 +11,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface TopUpService {
 
-	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID, BigDecimal amount , String accessTokenID) throws ServiceInventoryException;
+	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID, BigDecimal amount, String accessTokenID) throws ServiceInventoryException;
 
 	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID) throws ServiceInventoryException;
 

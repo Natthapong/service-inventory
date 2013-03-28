@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
@@ -31,10 +30,12 @@ public class P2PTransferController {
 	@RequestMapping(value = "/draft-transaction", method = RequestMethod.POST)
 	public @ResponseBody P2PDraftTransaction createDraftTransaction(
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-			@RequestBody P2PDraftRequest p2pDraftRequest)
+			@RequestBody P2PDraftTransaction draft)
 		throws ServiceInventoryException {
-		P2PDraftTransaction p2pDraftTransaction = p2pTransferService.createDraftTransaction(p2pDraftRequest, accessTokenID);
+
+		P2PDraftTransaction p2pDraftTransaction = p2pTransferService.createDraftTransaction(draft.getMobileNumber(), draft.getAmount(), accessTokenID);
 		extendExpireAccessToken(accessTokenID);
+
 		return p2pDraftTransaction;
 	}
 
@@ -43,8 +44,10 @@ public class P2PTransferController {
 			@PathVariable String draftTransactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
 		throws ServiceInventoryException {
+
 		P2PDraftTransaction p2pDraftTransaction = p2pTransferService.getDraftTransactionDetails(draftTransactionID, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
+
 		return p2pDraftTransaction;
 	}
 

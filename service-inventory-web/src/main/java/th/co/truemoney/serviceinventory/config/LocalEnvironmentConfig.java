@@ -7,13 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
-import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.email.StubEmailService;
+import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -58,21 +57,21 @@ import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 @Configuration
 @Profile("local")
 public class LocalEnvironmentConfig {
-	
+
 	@Bean
 	@Primary
 	public P2PTransferService stubP2PTransferService(){
 		return new P2PTransferServiceImpl(){
-			
+
 			@Override
 			public P2PTransactionStatus getTransactionStatus(String transactionID, String accessTokenID) {
 				if(transactionID.equals("0000")){
 					return P2PTransactionStatus.ORDER_VERIFIED;
 				}else{
 					return P2PTransactionStatus.UMARKET_FAILED;
-				} 
+				}
 			}
-			
+
 			@Override
 			public OTP sendOTP(String draftTransactionID,
 					String accessTokenID) {
@@ -82,20 +81,20 @@ public class LocalEnvironmentConfig {
 					throw new ServiceInventoryException("9999","Can't send OTP","SI-WEB");
 				}
 			}
-			
+
 			@Override
 			public P2PDraftTransaction getDraftTransactionDetails(
 					String draftTransactionID, String accessTokenID) {
 				if(accessTokenID.equals("12345")){
-					return new P2PDraftTransaction("0868185055",new BigDecimal(2500),"555","12345","Mart FullName","111111");
+					return new P2PDraftTransaction("0868185055", new BigDecimal(2500),"555","12345","Mart FullName","111111");
 				}else{
 					throw new ServiceInventoryException("9999","No Draft Transaction","SI-WEB");
 				}
 			}
-			
+
 			@Override
-			public P2PDraftTransaction createDraftTransaction(
-					P2PDraftRequest p2pDraftRequest, String accessTokenID) {
+			public P2PDraftTransaction createDraftTransaction(String mobileNumber, BigDecimal amount, String accessTokenID) {
+
 				if(accessTokenID.equals("12345")){
 					return new P2PDraftTransaction("0868185055",new BigDecimal(2500),"555","12345","fullName","111111");
 				}else{
@@ -104,7 +103,7 @@ public class LocalEnvironmentConfig {
 			}
 		};
 	}
-	
+
 	@Bean
 	@Primary
 	public TmnProfileProxy stubTmnProfileProxy() {
@@ -203,7 +202,7 @@ public class LocalEnvironmentConfig {
 			}
 		};
 	}
-	
+
 	@Bean
 	@Primary
 	public EwalletSoapProxy stubEWalletSoapProxy() {
@@ -351,10 +350,10 @@ public class LocalEnvironmentConfig {
 	public OTPGenerator otpGenerator() {
 		return new UnSecureOTPGenerator();
 	}
-	
+
 	@Bean
 	public EmailService stubEmailService() {
 		return new StubEmailService();
 	}
-		
+
 }

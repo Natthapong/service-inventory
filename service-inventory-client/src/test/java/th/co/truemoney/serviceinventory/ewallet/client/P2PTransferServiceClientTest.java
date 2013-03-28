@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotSame;
 
 import java.math.BigDecimal;
 
-import org.junit.Ignore;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -30,46 +29,46 @@ public class P2PTransferServiceClientTest {
 
 	@Autowired
 	P2PTransferServiceClient p2pTransferServiceClient;
-	
-	@Test 
+
+	@Test
 	public void createDraftTransactionSuccess(){
-		P2PDraftTransaction p2pDraftTransaction = p2pTransferServiceClient.createDraftTransaction(new P2PDraftRequest("0868185055",new BigDecimal(2000)), "12345");
-		assertNotNull(p2pDraftTransaction);	
+		P2PDraftTransaction p2pDraftTransaction = p2pTransferServiceClient.createDraftTransaction("0868185055", new BigDecimal(2000), "12345");
+		assertNotNull(p2pDraftTransaction);
 		assertEquals("fullName", p2pDraftTransaction.getFullname());
 	}
-	
-	@Test 
+
+	@Test
 	public void createDraftTransactionFail(){
 		try{
-			p2pTransferServiceClient.createDraftTransaction(new P2PDraftRequest("0868185055",new BigDecimal(2000)), "12341235");
+			p2pTransferServiceClient.createDraftTransaction("0868185055", new BigDecimal(2000), "12341235");
 		}catch(ServiceInventoryException e){
 			assertNotSame("0", e.getErrorCode());
 		}
 	}
-	
-	@Test 
+
+	@Test
 	public void getDraftTransactionDetailSuccess() {
 		P2PDraftTransaction p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails("1", "12345");
-		assertNotNull(p2pDraftTransaction);		
+		assertNotNull(p2pDraftTransaction);
 	}
-	
-	@Test 
+
+	@Test
 	public void getDraftTransactionDetailFail() {
 		try {
 			p2pTransferServiceClient.getDraftTransactionDetails("3", "12355");
 		} catch (ServiceInventoryException serviceInventoryException) {
 			assertNotSame("0", serviceInventoryException.getErrorCode());
-		}			
+		}
 	}
-	
-	@Test 
+
+	@Test
 	public void sendOTPSuccess() {
 		OTP otp = p2pTransferServiceClient.sendOTP("1", "12345");
-		assertNotNull(otp);	
+		assertNotNull(otp);
 		assertEquals("0868185055", otp.getMobileNumber());
 	}
-	
-	@Test 
+
+	@Test
 	public void sendOTPFail() {
 		try {
 			p2pTransferServiceClient.sendOTP("3", "12355");
@@ -77,37 +76,39 @@ public class P2PTransferServiceClientTest {
 			assertEquals("Can't send OTP", serviceInventoryException.getErrorDescription());
 		}
 	}
-	
+
 	@Test
 	public void createTransactionSuccess(){
 		P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.createTransaction("3", new OTP("0868185055", "111111", "marty"), "12345");
 		assertEquals("ORDER_VERIFIED", p2pTransactionStatus.getP2pTransferStatus());
 	}
-	
+
 	@Test
 	public void createTransactionFail(){
 		try {
-			P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.createTransaction("3", new OTP("0868185055", "112211", "marty"), "12345");
+			p2pTransferServiceClient.createTransaction("3", new OTP("0868185055", "112211", "marty"), "12345");
+			Assert.fail();
 		} catch (ServiceInventoryException e) {
 			assertEquals("Invalide OTP.", e.getErrorDescription());
 		}
 	}
-	
+
 	@Test
 	public void getTransactionStatusSuccess(){
 		P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.getTransactionStatus("0000", "12345");
 		assertEquals("ORDER_VERIFIED", p2pTransactionStatus.getP2pTransferStatus());
 	}
-	
+
 	@Test
 	public void getTransactionStatusFail(){
 		try {
-			P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.getTransactionStatus("0001", "12345");
+			p2pTransferServiceClient.getTransactionStatus("0001", "12345");
+			Assert.fail();
 		} catch (ServiceInventoryException e) {
 			assertEquals("Transfer order not found.", e.getErrorDescription());
 		}
 	}
-	
+
 	@Test
 	public void getTransactionResultSuccess(){
 		P2PDraftTransaction transaction = p2pTransferServiceClient.getDraftTransactionDetails("0000", "12345");

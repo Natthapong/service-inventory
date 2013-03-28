@@ -3,10 +3,16 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(Include.NON_NULL)
 public class P2PTransaction implements Serializable {
 
 	private static final long serialVersionUID = -3546197537668299129L;
-	private String mobileNumber;	
+	private String mobileNumber;
 	private BigDecimal amount;
 	private String ID;
 	private String accessTokenID;
@@ -14,7 +20,7 @@ public class P2PTransaction implements Serializable {
 	private String otpReferenceCode;
 	private P2PTransactionStatus status = P2PTransactionStatus.AWAITING_CONFIRM;
 	private P2PTransactionConfirmationInfo confirmationInfo;
-	
+
 	public P2PTransaction(P2PDraftTransaction p2pDraftTransaction) {
 
 	}
@@ -70,5 +76,5 @@ public class P2PTransaction implements Serializable {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }
