@@ -22,10 +22,10 @@ public class TransactionRedisRepository implements TransactionRepository {
 	private RedisLoggingDao redisLoggingDao;
 
 	@Override
-	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote) throws ServiceInventoryException {
+	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote, String accessTokenID) throws ServiceInventoryException {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			redisLoggingDao.addData("quote:"+topupQuote.getID(), mapper.writeValueAsString(topupQuote), 15L);
+			redisLoggingDao.addData("quote:" + accessTokenID + ":" + topupQuote.getID(), mapper.writeValueAsString(topupQuote), 15L);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
@@ -34,9 +34,9 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID) throws ServiceInventoryException {
+	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID, String accessTokenID) throws ServiceInventoryException {
 		try {
-			String result = redisLoggingDao.getData("quote:"+orderID);
+			String result = redisLoggingDao.getData("quote:" + accessTokenID + ":" + orderID);
 			if(result == null) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND,
 						"qoute not found.");
@@ -52,10 +52,10 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder) throws ServiceInventoryException {
+	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder, String accessTokenID) throws ServiceInventoryException {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			redisLoggingDao.addData("order:"+topupOrder.getID(), mapper.writeValueAsString(topupOrder), 15L);
+			redisLoggingDao.addData("order:" + accessTokenID + ":" + topupOrder.getID(), mapper.writeValueAsString(topupOrder), 15L);
 		} catch (Exception e) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
 					"Can not stored data in repository.");
@@ -63,9 +63,9 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public TopUpOrder getTopUpEwalletTransaction(String orderID) throws ServiceInventoryException {
+	public TopUpOrder getTopUpEwalletTransaction(String orderID, String accessTokenID) throws ServiceInventoryException {
 		try {
-			String result = redisLoggingDao.getData("order:"+orderID);
+			String result = redisLoggingDao.getData("order:" + accessTokenID + ":" + orderID);
 			if(result == null) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND,
 						"TopUp Ewallet order not found.");
@@ -100,14 +100,14 @@ public class TransactionRedisRepository implements TransactionRepository {
 						"P2P draft transaction not found.");
 			}
 			ObjectMapper mapper = new ObjectMapper();
-			
+
 			return mapper.readValue(result, P2PDraftTransaction.class);
 		} catch (ServiceInventoryException e) {
 			throw e;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		
+
 		return null;
 	}
 
@@ -119,7 +119,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 		} catch (Exception e) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
 					"Can not stored data in repository.");
-		}		
+		}
 	}
 
 	@Override
@@ -138,6 +138,6 @@ public class TransactionRedisRepository implements TransactionRepository {
 			logger.error(e.getMessage(), e);
 		}
 		return null;
-	}		
+	}
 
 }

@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import th.co.truemoney.serviceinventory.ewallet.DirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
@@ -77,7 +76,7 @@ public class TopUpServiceImpl implements TopUpService {
 		topUpQuote.setSourceOfFund(directDebitSource);
 		topUpQuote.setStatus(TopUpQuoteStatus.CREATED);
 
-		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote);
+		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
 
 		return topUpQuote;
 	}
@@ -122,14 +121,7 @@ public class TopUpServiceImpl implements TopUpService {
 	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID)
 			throws ServiceInventoryException {
 
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-		TopUpQuote topUpQuote = orderRepo.getTopUpEwalletDraftTransaction(quoteID);
-
-		if (!accessToken.getAccessTokenID().equals(topUpQuote.getAccessTokenID())) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND, "quote not found");
-		}
-
-		return topUpQuote;
+		return orderRepo.getTopUpEwalletDraftTransaction(quoteID, accessTokenID);
 	}
 
 	@Override
@@ -144,12 +136,10 @@ public class TopUpServiceImpl implements TopUpService {
 		topUpQuote.setOtpReferenceCode(otp.getReferenceCode());
 		topUpQuote.setStatus(TopUpQuoteStatus.OTP_SENT);
 
-		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote);
+		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
 
 		return otp;
-
 	}
-
 
 	@Override
 	public TopUpQuoteStatus confirmOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException {
@@ -162,11 +152,11 @@ public class TopUpServiceImpl implements TopUpService {
 		}
 
 		topUpQuote.setStatus(TopUpQuoteStatus.OTP_CONFIRMED);
-		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote);
+		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
 
 		TopUpOrder topUpOrder = new TopUpOrder(topUpQuote);
 		topUpOrder.setStatus(TopUpOrderStatus.ORDER_VERIFIED);
-		orderRepo.saveTopUpEwalletTransaction(topUpOrder);
+		orderRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
 
 		performTopUpMoney(accessToken, topUpOrder);
 
@@ -192,15 +182,7 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	public TopUpOrder getTopUpOrderResults(String orderID, String accessTokenID) throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-
-		TopUpOrder topUpOrder = orderRepo.getTopUpEwalletTransaction(orderID);
-
-		if (topUpOrder == null || !topUpOrder.getQuote().getAccessTokenID().equals(accessToken.getAccessTokenID())) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND, "transaction not found");
-		}
-
-		return topUpOrder;
+		return orderRepo.getTopUpEwalletTransaction(orderID, accessTokenID);
 	}
 
 	private void performTopUpMoney(AccessToken accessToken, TopUpOrder topUpOrder) {
@@ -213,10 +195,10 @@ public class TopUpServiceImpl implements TopUpService {
 		addMoneyRequest.setSourceId(quote.getSourceOfFund().getSourceOfFundID());
 		addMoneyRequest.setSourceType(quote.getSourceOfFund().getSourceOfFundType());
 
-		asyncService.topUpUtibaEwallet(topUpOrder, addMoneyRequest);
+		asyncService.topUpUtibaEwallet(topUpOrder, accessToken.getAccessTokenID(), addMoneyRequest);
 	}
 
-	public DirectDebitSourceOfFundService getDirectDebitSourceService() {
+	public EnhancedDirectDebitSourceOfFundService getDirectDebitSourceService() {
 		return directDebitSourceService;
 	}
 

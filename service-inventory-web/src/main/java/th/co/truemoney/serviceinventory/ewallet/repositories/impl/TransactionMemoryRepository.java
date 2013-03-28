@@ -18,13 +18,13 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	public static HashMap<String, P2PTransaction> p2pTransactionMap = new LinkedHashMap<String, P2PTransaction>();
 
 	@Override
-	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote) {
-		quotesMap.put(topupQuote.getID(), topupQuote);
+	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote, String accessTokenID) {
+		quotesMap.put(accessTokenID + ":" + topupQuote.getID(), topupQuote);
 	}
 
 	@Override
-	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID) {
-		TopUpQuote topUpQuote = quotesMap.get(orderID);
+	public TopUpQuote getTopUpEwalletDraftTransaction(String quoteID, String accessTokenID) {
+		TopUpQuote topUpQuote = quotesMap.get(accessTokenID + ":" + quoteID);
 
 		if (topUpQuote == null) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND,
@@ -35,13 +35,13 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder) {
-		ordersMap.put(topupOrder.getID(), topupOrder);
+	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder, String accessTokenID) {
+		ordersMap.put(accessTokenID + ":" + topupOrder.getID(), topupOrder);
 	}
 
 	@Override
-	public TopUpOrder getTopUpEwalletTransaction(String orderID) throws ServiceInventoryException {
-		TopUpOrder topUpOrder = ordersMap.get(orderID);
+	public TopUpOrder getTopUpEwalletTransaction(String orderID, String accessTokenID) throws ServiceInventoryException {
+		TopUpOrder topUpOrder = ordersMap.get(accessTokenID + ":" + orderID);
 		if(topUpOrder == null) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND,
 					"TopUp order not found.");

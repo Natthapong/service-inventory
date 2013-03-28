@@ -184,7 +184,7 @@ public class TopUpServiceImplTest {
 		asyncService = mock(AsyncService.class);
 		TransactionRepository orderRepo = mock(TransactionRepository.class);
 
-		when(orderRepo.getTopUpEwalletDraftTransaction(anyString())).thenReturn(quote);
+		when(orderRepo.getTopUpEwalletDraftTransaction(anyString(), anyString())).thenReturn(quote);
 		when(accessTokenRepoMock.getAccessToken(anyString())).thenReturn(accessToken);
 		when(otpService.isValidOTP(any(OTP.class))).thenReturn(true);
 
@@ -195,13 +195,13 @@ public class TopUpServiceImplTest {
 		TopUpQuoteStatus quoteStatus = topUpService.confirmOTP(quote.getID(), otp, "accessToken");
 
 		assertEquals(TopUpQuoteStatus.OTP_CONFIRMED, quoteStatus);
-		verify(asyncService).topUpUtibaEwallet(any(TopUpOrder.class), any(AddMoneyRequest.class));
+		verify(asyncService).topUpUtibaEwallet(any(TopUpOrder.class), anyString(), any(AddMoneyRequest.class));
 	}
 
 	@Test
 	public void confirmPlaceOrderFailAccessTokenNotFound() {
 		TransactionRepository orderRepo = mock(TransactionRepository.class);
-		when(orderRepo.getTopUpEwalletTransaction(anyString())).thenReturn(new TopUpOrder());
+		when(orderRepo.getTopUpEwalletTransaction(anyString(), anyString())).thenReturn(new TopUpOrder());
 		when(accessTokenRepoMock.getAccessToken(anyString())).thenThrow(new ServiceInventoryException(ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
 				"access token not found."));
 		topUpService.setOrderRepository(orderRepo);
@@ -220,7 +220,7 @@ public class TopUpServiceImplTest {
 		AccessToken accessToken = new AccessToken();
 		accessToken.setAccessTokenID("1");
 		when(accessTokenRepoMock.getAccessToken(anyString())).thenReturn(accessToken);
-		when(orderRepo.getTopUpEwalletDraftTransaction(anyString())).thenReturn(new TopUpQuote("1", directDebitDetail, "1", "username", new BigDecimal(300), new BigDecimal(20.0)));
+		when(orderRepo.getTopUpEwalletDraftTransaction(anyString(), anyString())).thenReturn(new TopUpQuote("1", directDebitDetail, "1", "username", new BigDecimal(300), new BigDecimal(20.0)));
 		when(otpService.isValidOTP(any(OTP.class))).thenThrow(new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND,"otp not found."));
 
 		topUpService.setOrderRepository(orderRepo);
@@ -246,7 +246,7 @@ public class TopUpServiceImplTest {
 		asyncService = mock(AsyncService.class);
 		TransactionRepository orderRepo = mock(TransactionRepository.class);
 
-		when(orderRepo.getTopUpEwalletDraftTransaction(anyString())).thenReturn(quote);
+		when(orderRepo.getTopUpEwalletDraftTransaction(anyString(), anyString())).thenReturn(quote);
 		when(accessTokenRepoMock.getAccessToken(anyString())).thenReturn(accessToken);
 		when(otpService.isValidOTP(any(OTP.class))).thenReturn(true);
 

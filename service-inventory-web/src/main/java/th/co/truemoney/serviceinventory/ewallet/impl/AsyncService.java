@@ -47,14 +47,14 @@ public class AsyncService {
 	}
 
 	@Async
-	public Future<TopUpOrder> topUpUtibaEwallet(TopUpOrder topUpOrder, AddMoneyRequest addMoneyRequest) {
+	public Future<TopUpOrder> topUpUtibaEwallet(TopUpOrder topUpOrder, String accessTokenID, AddMoneyRequest addMoneyRequest) {
 		try {
 
 
 			logger.debug("start time " + new Date());
 
 			topUpOrder.setStatus(TopUpOrderStatus.PROCESSING);
-			orderRepo.saveTopUpEwalletTransaction(topUpOrder);
+			orderRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
 
 			StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
 			logger.debug("finished time " + new Date());
@@ -90,7 +90,7 @@ public class AsyncService {
 			topUpOrder.setStatus(TopUpOrderStatus.FAILED);
 		}
 
-		orderRepo.saveTopUpEwalletTransaction(topUpOrder);
+		orderRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
 
 		return new AsyncResult<TopUpOrder> (topUpOrder);
 	}

@@ -6,11 +6,11 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 
 public interface TransactionRepository {
-	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote);
-	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID);
-	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder);
-	public TopUpOrder getTopUpEwalletTransaction(String orderID);
-	
+	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote, String accessTokenID);
+	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID, String accessTokenID);
+	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder, String accessTokenID);
+	public TopUpOrder getTopUpEwalletTransaction(String orderID, String accessTokenID);
+
 	public void saveP2PDraftTransaction(P2PDraftTransaction p2pDraftTransaction);
 	public P2PDraftTransaction getP2PDraftTransaction(String p2pDraftTransactionID);
 	public void saveP2PTransaction(P2PTransaction p2pTransaction);
