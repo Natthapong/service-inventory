@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
@@ -59,6 +60,16 @@ public class LocalEnvironmentConfig {
 	@Primary
 	public P2PTransferService stubP2PTransferService(){
 		return new P2PTransferServiceImpl(){
+			
+			@Override
+			public OTP sendOTP(String draftTransactionID,
+					String accessTokenID) {
+				if(accessTokenID.equals("12345")){
+					return new OTP("0868185055", "111111", "marty");
+				}else{
+					throw new ServiceInventoryException("9999","No Draft Transaction","SI-WEB");
+				}
+			}
 			
 			@Override
 			public P2PDraftTransaction getDraftTransactionDetails(
@@ -232,7 +243,6 @@ public class LocalEnvironmentConfig {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
 		};
 	}
 

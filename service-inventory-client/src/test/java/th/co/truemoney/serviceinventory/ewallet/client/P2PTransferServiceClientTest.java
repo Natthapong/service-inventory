@@ -33,8 +33,17 @@ public class P2PTransferServiceClientTest {
 	@Test 
 	public void createDraftTransactionSuccess(){
 		P2PDraftTransaction p2pDraftTransaction = p2pTransferServiceClient.createDraftTransaction(new P2PDraftRequest("0868185055",new BigDecimal(2000)), "12345");
-		assertEquals("fullName", p2pDraftTransaction.getFullname());
 		assertNotNull(p2pDraftTransaction);	
+		assertEquals("fullName", p2pDraftTransaction.getFullname());
+	}
+	
+	@Test 
+	public void createDraftTransactionFail(){
+		try{
+			p2pTransferServiceClient.createDraftTransaction(new P2PDraftRequest("0868185055",new BigDecimal(2000)), "12341235");
+		}catch(ServiceInventoryException e){
+			assertNotSame("0", e.getErrorCode());
+		}
 	}
 	
 	@Test 
@@ -52,10 +61,11 @@ public class P2PTransferServiceClientTest {
 		}			
 	}
 	
-	@Test @Ignore
+	@Test 
 	public void sendOTPSuccess() {
 		OTP otp = p2pTransferServiceClient.sendOTP("1", "12345");
 		assertNotNull(otp);	
+		assertEquals("0868185055", otp.getMobileNumber());
 	}
 	
 	@Test @Ignore
