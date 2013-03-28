@@ -22,17 +22,17 @@ import th.co.truemoney.serviceinventory.exception.ValidateException;
 
 @Controller
 @RequestMapping(value="/ewallet")
-public class TmnProfileController extends BaseController {
+public class TmnProfileController {
 
 	@Autowired
 	private TmnProfileService tmnProfileService;
-	
-	@Autowired 
+
+	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody String login(
-		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID, 
+		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
 		@RequestBody Login login)
 			throws SignonServiceException {
 		validateRequestParam(channelID);
@@ -56,50 +56,50 @@ public class TmnProfileController extends BaseController {
 		extendExpireAccessToken(accessTokenID);
 		return balance;
 	}
-	
+
 	@RequestMapping(value = "/logout/{accessTokenID}", method = RequestMethod.POST)
 	public @ResponseBody String logout(
 		@PathVariable String accessTokenID) {
 		return tmnProfileService.logout(accessTokenID);
 	}
-	
+
 	@RequestMapping(value = "/profiles/validate-email", method = RequestMethod.POST)
 	public @ResponseBody String isExistRegistered(
 		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		@RequestBody String email) 
+		@RequestBody String email)
 			throws ServiceInventoryException {
 		if (channelID == -1) {
 			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
 		}
 		return tmnProfileService.validateEmail(channelID, email);
 	}
-	
+
 	@RequestMapping(value = "/profiles", method = RequestMethod.POST)
 	public @ResponseBody OTP createTruemoneyProfile(
 		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		@RequestBody TmnProfile tmnProfile) 
+		@RequestBody TmnProfile tmnProfile)
 			throws ServiceInventoryException {
 		validateRequestParam(channelID);
 		return tmnProfileService.createProfile(channelID, tmnProfile);
 	}
-	
+
 	@RequestMapping(value = "/profiles/verify-otp", method = RequestMethod.POST)
 	public @ResponseBody TmnProfile confirmCreateTruemoneyProfile(
 		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		@RequestBody OTP otp) 
+		@RequestBody OTP otp)
 			throws ServiceInventoryException {
 		validateRequestParam(channelID);
 		return tmnProfileService.confirmCreateProfile(channelID, otp);
 	}
-	
+
 	private void extendExpireAccessToken(String accessTokenID) {
 		extendAccessTokenAsynService.setExpire(accessTokenID);
 	}
-	
+
 	private void validateRequestParam(Integer channelID) {
 		if (channelID == -1) {
 			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
-		}		
+		}
 	}
-	
+
 }

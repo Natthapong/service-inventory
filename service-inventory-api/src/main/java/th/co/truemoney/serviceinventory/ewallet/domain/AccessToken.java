@@ -13,7 +13,7 @@ public class AccessToken implements Serializable {
 	private String sessionID;
 	private String truemoneyID;
 	private String username;
-	private String mobileno;
+	private String mobileNumber;
 	private String email;
 	private Integer channelID;
 
@@ -22,12 +22,12 @@ public class AccessToken implements Serializable {
 		super();
 	}
 	
-	public AccessToken(String token, String sessionID, String truemoneyID, String username, String mobileno, String email, Integer channelID) {
+	public AccessToken(String token, String sessionID, String truemoneyID, String username, String mobileNumber, String email, Integer channelID) {
 		this.accessTokenID = token;
 		this.sessionID = sessionID;
 		this.truemoneyID = truemoneyID;
 		this.username = username;
-		this.mobileno = mobileno;
+		this.mobileNumber = mobileNumber;
 		this.email = email;
 		this.channelID = channelID;
 	}
@@ -71,15 +71,15 @@ public class AccessToken implements Serializable {
 	public void setChannelID(Integer channelID) {
 		this.channelID = channelID;
 	}
-	
-	public String getMobileno() {
-		return mobileno;
+		
+	public String getMobileNumber() {
+		return mobileNumber;
 	}
 
-	public void setMobileno(String mobileno) {
-		this.mobileno = mobileno;
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}
@@ -95,15 +95,15 @@ public class AccessToken implements Serializable {
 			.append("sessionID: ", this.sessionID)
 			.append("truemoneyID: ", this.truemoneyID)
 			.append("username: ", this.username)
-			.append("mobileno: ", this.mobileno)
+			.append("mobileNumber: ", this.mobileNumber)
 			.append("email: ", this.email)
 			.append("channelID: ", this.channelID)
 			.toString();
 	}
 	
-	public static AccessToken generateNewToken(String sessionID, String truemoneyID, String username, String mobileno, String email, Integer channelID) {
+	public static AccessToken generateNewToken(String sessionID, String truemoneyID, String username, String mobileNumber, String email, Integer channelID) {
 		String accessTokenID = UUID.randomUUID().toString();		
-		return new AccessToken(accessTokenID, sessionID, truemoneyID, username,  mobileno, email, channelID);
+		return new AccessToken(accessTokenID, sessionID, truemoneyID, username,  mobileNumber, email, channelID);
 	}
 	
 }

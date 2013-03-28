@@ -2,8 +2,6 @@ package th.co.truemoney.serviceinventory.exception;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import th.co.truemoney.serviceinventory.bean.ErrorBean;
 
 public abstract class BaseException extends RuntimeException {
@@ -19,13 +17,13 @@ public abstract class BaseException extends RuntimeException {
 		public static final String OTP_NOT_MATCH 	= "1001";
 		public static final String INVALID_CHECKSUM = "1002";
 		public static final String OTP_NOT_FOUND = "1003";
-		public static final String TOPUP_QUOTE_NOT_FOUND = "1004";
-		public static final String TOPUP_ORDER_NOT_FOUND = "1004";
+		public static final String DRAFT_TRANSACTION_NOT_FOUND = "1004";
+		public static final String TRANSACTION_NOT_FOUND = "1004";
 		public static final String CONFIRM_BANK_FAILED = "1005";
 		public static final String CONFIRM_UMARKET_FAILED = "1006";
 		public static final String CONFIRM_FAILED = "1007";
 		public static final String PROFILE_NOT_FOUND = "1008";
-				
+
 		//profile
 		public static final String INVALID_PROFILE_TYPE 	= "10000";
 		public static final String ACCESS_TOKEN_NOT_FOUND 	= "10001";
@@ -42,8 +40,6 @@ public abstract class BaseException extends RuntimeException {
 	private String developerMessage;
 	private String namespace;
 	public Map<String, Object> data;
-
-	public abstract ErrorBean handleExceptions(BaseException e, HttpServletResponse response);
 
 	public BaseException() {
 		super();
@@ -109,6 +105,10 @@ public abstract class BaseException extends RuntimeException {
 
 	public void setData(Map<String, Object> data) {
 		this.data = data;
+	}
+
+	public ErrorBean getErrorBean() {
+		return new ErrorBean(code, description, namespace, developerMessage, data);
 	}
 
 }

@@ -61,10 +61,30 @@ public class EndPoints {
 	}
 	
 	public String getConfirmCreateTruemoneyProfileUrl(){
-		return host + "/service-inventory-web/v1/ewallet/profiles/{mobileno}/verify-otp?channelID={channelID}";
+		return host + "/service-inventory-web/v1/ewallet/profiles/{mobileNumber}/verify-otp?channelID={channelID}";
 	}
 	
-	public String getDraftTransactionDetail(){
+	public String getCreateDraftTransactionUrl(){
+		return host + "/service-inventory-web/v1/transfer/draft-transaction?accessTokenID={accessTokenID}";
+	}
+	
+	public String getDraftTransactionDetails(){
 		return host + "/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}?accessTokenID={accessTokenID}";
+	}
+	
+	public String getSendOTPUrl(){
+		return host + "/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}/send-otp?accessTokenID={accessTokenID}";
+	}
+	
+	public String getCreateTransactionUrl(){
+		return host + "/service-inventory-web/v1/transfer/transaction/{draftTransactionID}?accessTokenID={accessTokenID}";
+	}
+	
+	public String getTransactionStatusUrl(){
+		return host + "/service-inventory-web/v1/transfer/transaction/{transactionID}/status?accessTokenID={accessTokenID}";
+	}
+	
+	public String getTransactionInfoUrl(){
+		return host + "/service-inventory-web/v1/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
 }

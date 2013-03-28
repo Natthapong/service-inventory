@@ -12,12 +12,12 @@ public class ProfileMemoryRepository implements ProfileRepository {
 	
 	@Override
 	public void saveProfile(TmnProfile tmnProfile) {
-		profilesMap.put(tmnProfile.getMobileno(), tmnProfile);
+		profilesMap.put(tmnProfile.getMobileNumber(), tmnProfile);
 	}
 
 	@Override
-	public TmnProfile getTmnProfile(String mobileNo) {
-		return profilesMap.get(mobileNo);
+	public TmnProfile getTmnProfile(String mobileNumber) {
+		return profilesMap.get(mobileNumber);
 	}
 
 }

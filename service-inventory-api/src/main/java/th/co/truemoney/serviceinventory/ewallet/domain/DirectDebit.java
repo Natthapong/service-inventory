@@ -5,8 +5,11 @@ import java.math.BigDecimal;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DirectDebit extends SourceOfFund implements Serializable {
-	
+
 	private static final long serialVersionUID = -4919139902060027547L;
 	private String bankCode;
 	private String bankNameEn;
@@ -14,7 +17,7 @@ public class DirectDebit extends SourceOfFund implements Serializable {
 	private String bankAccountNumber;
 	private BigDecimal minAmount;
 	private BigDecimal maxAmount;
-	
+
 	public DirectDebit() {
 		super();
 	}
@@ -89,5 +92,5 @@ public class DirectDebit extends SourceOfFund implements Serializable {
 		.append("maxAmount: ", this.maxAmount)
 		.toString();
 	}
-	
+
 }

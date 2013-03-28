@@ -7,23 +7,23 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class OTPBean implements Serializable {
 	
 	private static final long serialVersionUID = -4332227740146738592L;
-	private String mobileno;
+	private String mobileNumber;
 	private String otpString;
 	private String otpReferenceCode;
 		
 	public OTPBean() {
 		super();
 	}
-	public OTPBean(String mobileno, String otpString, String otpReferenceCode) {
-		this.mobileno = mobileno;
+	public OTPBean(String mobileNumber, String otpString, String otpReferenceCode) {
+		this.mobileNumber = mobileNumber;
 		this.otpString = otpString;
 		this.otpReferenceCode = otpReferenceCode;
 	}	
-	public String getMobileno() {
-		return mobileno;
+	public String getMobileNumber() {
+		return mobileNumber;
 	}
-	public void setMobileno(String mobileno) {
-		this.mobileno = mobileno;
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
 	}
 	public String getOtpString() {
 		return otpString;
@@ -40,7 +40,7 @@ public class OTPBean implements Serializable {
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
-			.append("mobileno: ", this.mobileno)
+			.append("mobileNumber: ", this.mobileNumber)
 			.append("otpString: ", this.otpString)
 			.append("otpReferenceCode: ", this.otpReferenceCode)
 			.toString();

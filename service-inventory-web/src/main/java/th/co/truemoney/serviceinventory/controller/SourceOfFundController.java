@@ -16,24 +16,25 @@ import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynServic
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Controller
-public class SourceOfFundController extends BaseController {
+public class SourceOfFundController {
 
 	@Autowired
 	private SourceOfFundService sourceOfFundService;
-	
-	@Autowired 
+
+	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
 	@RequestMapping(value = "/user/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
-	public @ResponseBody List<DirectDebit> listDirectDebitSources(
+	public @ResponseBody DirectDebit[] listDirectDebitSources(
 		@PathVariable String username,
 		@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID)
 			throws ServiceInventoryException {
 		List<DirectDebit> directDebits = sourceOfFundService.getUserDirectDebitSources(username, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
-		return directDebits;
+
+		return directDebits.toArray(new DirectDebit[directDebits.size()]);
 	}
-	
+
 	private void extendExpireAccessToken(String accessTokenID) {
 		extendAccessTokenAsynService.setExpire(accessTokenID);
 	}

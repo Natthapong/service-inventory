@@ -1,10 +1,12 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.junit.Ignore;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -26,19 +28,31 @@ public class SourceOfFundServiceClientTest {
 	@Autowired
 	TmnSourceOfFundServiceClient sourceOfFundServiceClient;
 
-	@Test 
+	@Autowired
+	TmnProfileServiceClient profileClient;
+
+	private String accessToken;
+
+	@Before
+	public void setUp() {
+		accessToken = profileClient.login(41, TestData.createSuccessLogin());
+	}
+
+	@Test
 	public void shouldFail() {
 		try{
-			sourceOfFundServiceClient.getUserDirectDebitSources("local@tmn.com", "12345");
+			sourceOfFundServiceClient.getUserDirectDebitSources("wrong_user@tmn.com", accessToken);
+			Assert.fail();
 		}catch(ServiceInventoryException e){
 			assertEquals("9999", e.getErrorCode());
 			assertEquals("Invalid user name.", e.getErrorDescription());
 		}
 	}
 
-	@Test 
+	@Test
 	public void shouldSuccess(){
-		List<DirectDebit> debits = sourceOfFundServiceClient.getUserDirectDebitSources("username", "12345");
+
+		List<DirectDebit> debits = sourceOfFundServiceClient.getUserDirectDebitSources("local@tmn.com", accessToken);
 		assertNotNull(debits);
 		assertEquals(3, debits.size());
 		assertEquals("SCB", debits.get(0).getBankCode());

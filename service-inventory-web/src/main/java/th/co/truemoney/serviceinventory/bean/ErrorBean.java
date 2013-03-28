@@ -30,6 +30,14 @@ public class ErrorBean implements Serializable {
 		this.developerMessage = developerMessage;
 	}
 
+	public ErrorBean(String errorCode, String errorDescription, String namespace, String developerMessage, Map<String, Object> data) {
+		this.errorCode = errorCode;
+		this.errorDescription = errorDescription;
+		this.errorNamespace = namespace;
+		this.developerMessage = developerMessage;
+		this.data = data;
+	}
+
 	public String getErrorCode() {
 		return errorCode;
 	}

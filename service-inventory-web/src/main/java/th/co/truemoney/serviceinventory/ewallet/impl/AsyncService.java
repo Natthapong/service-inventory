@@ -17,7 +17,7 @@ import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
-import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 
 @Service
 public class AsyncService {
@@ -25,16 +25,16 @@ public class AsyncService {
 	private static final Logger logger = LoggerFactory.getLogger(AsyncService.class);
 
 	@Autowired
-	private OrderRepository orderRepo;
+	private TransactionRepository orderRepo;
 
 	@Autowired
 	private EwalletSoapProxy ewalletProxy;
 
-	public OrderRepository getOrderRepo() {
+	public TransactionRepository getOrderRepo() {
 		return orderRepo;
 	}
 
-	public void setOrderRepo(OrderRepository orderRepo) {
+	public void setOrderRepo(TransactionRepository orderRepo) {
 		this.orderRepo = orderRepo;
 	}
 
@@ -54,7 +54,7 @@ public class AsyncService {
 			logger.debug("start time " + new Date());
 
 			topUpOrder.setStatus(TopUpOrderStatus.PROCESSING);
-			orderRepo.saveTopUpOrder(topUpOrder);
+			orderRepo.saveTopUpEwalletTransaction(topUpOrder);
 
 			StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
 			logger.debug("finished time " + new Date());
@@ -90,7 +90,7 @@ public class AsyncService {
 			topUpOrder.setStatus(TopUpOrderStatus.FAILED);
 		}
 
-		orderRepo.saveTopUpOrder(topUpOrder);
+		orderRepo.saveTopUpEwalletTransaction(topUpOrder);
 
 		return new AsyncResult<TopUpOrder> (topUpOrder);
 	}

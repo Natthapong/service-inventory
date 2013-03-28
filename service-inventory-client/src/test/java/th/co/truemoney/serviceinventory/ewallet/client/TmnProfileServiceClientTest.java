@@ -49,7 +49,7 @@ public class TmnProfileServiceClientTest {
 		tmnProfile.setPassword("xxxxxx");
 		tmnProfile.setFullname("Tanathip");
 		tmnProfile.setThaiID("1212121212121");
-		tmnProfile.setMobileno("0861234567");
+		tmnProfile.setMobileNumber("0861234567");
 		OTP otp = client.createProfile(41, tmnProfile);
 		assertNotNull(otp.getReferenceCode());
 	}

@@ -83,7 +83,7 @@ public class CreateTmnProfileTest {
 	}
 
 	@Test
-	public void createTmnProfileFailedValidateMobileno() {
+	public void createTmnProfileFailedValidateMobileNumber() {
 		//given
 		Exception ewalletException = TmnProfileStubbed.createFailedThrowEwalletException();
 		when(tmnProfileAdminProxyMock.isCreatable(any(IsCreatableRequest.class))).thenThrow(ewalletException);
@@ -138,7 +138,7 @@ public class CreateTmnProfileTest {
 		tmnProfile.setPassword("123456");
 		tmnProfile.setFullname("UnitTest");
 		tmnProfile.setThaiID("1212121212121");
-		tmnProfile.setMobileno("0891234567");
+		tmnProfile.setMobileNumber("0891234567");
 		return tmnProfile;
 	}
 

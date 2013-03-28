@@ -31,7 +31,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyRespo
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
-import th.co.truemoney.serviceinventory.ewallet.repositories.OrderRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
@@ -57,7 +57,7 @@ public class TopUpServiceImpl implements TopUpService {
 	private DirectDebitConfig directDebitConfig;
 
 	@Autowired
-	private OrderRepository orderRepo;
+	private TransactionRepository orderRepo;
 
 	@Autowired
 	private AsyncService asyncService;
@@ -134,7 +134,7 @@ public class TopUpServiceImpl implements TopUpService {
 		topUpQuote.setSourceOfFund(sofDetail);
 		topUpQuote.setStatus(TopUpQuoteStatus.CREATED);
 
-		orderRepo.saveTopUpQuote(topUpQuote);
+		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote);
 
 		return topUpQuote;
 	}
@@ -168,14 +168,14 @@ public class TopUpServiceImpl implements TopUpService {
 
 		AccessToken accessToken = getAccessTokenByID(accessTokenID);
 
-		TopUpQuote topUpQuote = orderRepo.getTopUpQuote(quoteID);
+		TopUpQuote topUpQuote = orderRepo.getTopUpEwalletDraftTransaction(quoteID);
 
 		if (topUpQuote == null) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_QUOTE_NOT_FOUND, "quote not found");
+			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND, "quote not found");
 		}
 
 		if (!accessToken.getAccessTokenID().equals(topUpQuote.getAccessTokenID())) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_QUOTE_NOT_FOUND, "quote not found");
+			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND, "quote not found");
 		}
 
 		return topUpQuote;
@@ -187,13 +187,13 @@ public class TopUpServiceImpl implements TopUpService {
 
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
-		OTP otp = otpService.send(accessToken.getMobileno());
+		OTP otp = otpService.send(accessToken.getMobileNumber());
 
 		TopUpQuote topUpQuote = getTopUpQuoteDetails(quoteID, accessTokenID);
 		topUpQuote.setOtpReferenceCode(otp.getReferenceCode());
 		topUpQuote.setStatus(TopUpQuoteStatus.OTP_SENT);
 
-		orderRepo.saveTopUpQuote(topUpQuote);
+		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote);
 
 		return otp;
 
@@ -211,11 +211,11 @@ public class TopUpServiceImpl implements TopUpService {
 		}
 
 		topUpQuote.setStatus(TopUpQuoteStatus.OTP_CONFIRMED);
-		orderRepo.saveTopUpQuote(topUpQuote);
+		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote);
 
 		TopUpOrder topUpOrder = new TopUpOrder(topUpQuote);
 		topUpOrder.setStatus(TopUpOrderStatus.ORDER_VERIFIED);
-		orderRepo.saveTopUpOrder(topUpOrder);
+		orderRepo.saveTopUpEwalletTransaction(topUpOrder);
 
 		performTopUpMoney(accessToken, topUpOrder);
 
@@ -245,10 +245,10 @@ public class TopUpServiceImpl implements TopUpService {
 	public TopUpOrder getTopUpOrderResults(String orderID, String accessTokenID) throws ServiceInventoryException {
 		AccessToken accessToken = getAccessTokenByID(accessTokenID);
 
-		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(orderID);
+		TopUpOrder topUpOrder = orderRepo.getTopUpEwalletTransaction(orderID);
 
 		if (topUpOrder == null || !topUpOrder.getQuote().getAccessTokenID().equals(accessToken.getAccessTokenID())) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_QUOTE_NOT_FOUND, "quote not found");
+			throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND, "transaction not found");
 		}
 
 		return topUpOrder;
@@ -328,11 +328,11 @@ public class TopUpServiceImpl implements TopUpService {
 		this.sofRepo = sourceOfFundRepo;
 	}
 
-	public OrderRepository getOrderRepo() {
+	public TransactionRepository getOrderRepo() {
 		return orderRepo;
 	}
 
-	public void setOrderRepository(OrderRepository orderRepo) {
+	public void setOrderRepository(TransactionRepository orderRepo) {
 		this.orderRepo = orderRepo;
 	}
 

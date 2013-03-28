@@ -20,7 +20,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
 @Controller
-public class TopUpEwalletController extends BaseController {
+public class TopUpEwalletController {
 
 	@Autowired
 	private TopUpService topupService;

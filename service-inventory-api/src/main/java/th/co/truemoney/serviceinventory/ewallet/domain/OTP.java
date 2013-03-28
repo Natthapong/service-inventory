@@ -14,20 +14,20 @@ public class OTP implements Serializable {
 
 	private static final long serialVersionUID = -4332227740146738592L;
 
-	private String mobileNo;
+	private String mobileNumber;
 	private String referenceCode;
 	private String otpString;
 
 	public OTP() {
 	}
 
-	public OTP(String mobileNo, String referenceCode) {
-		this.mobileNo = mobileNo;
+	public OTP(String mobileNumber, String referenceCode) {
+		this.mobileNumber = mobileNumber;
 		this.referenceCode = referenceCode;
 	}
 
-	public OTP(String mobileNo, String referenceCode, String otpString) {
-		this.mobileNo = mobileNo;
+	public OTP(String mobileNumber, String referenceCode, String otpString) {
+		this.mobileNumber = mobileNumber;
 		this.referenceCode = referenceCode;
 		this.otpString = otpString;
 	}
@@ -48,12 +48,12 @@ public class OTP implements Serializable {
 		this.referenceCode = referenceCode;
 	}
 
-	public String getMobileNo() {
-		return mobileNo;
+	public String getMobileNumber() {
+		return mobileNumber;
 	}
 
-	public void setMobileNo(String mobileNo) {
-		this.mobileNo = mobileNo;
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class OTP implements Serializable {
 		return new ToStringBuilder(this)
 			.append("ref code: ", this.referenceCode)
 			.append("otpString: ", this.otpString)
-			.append("mobile no: ", this.mobileNo)
+			.append("mobileNumber: ", this.mobileNumber)
 			.toString();
 	}
 

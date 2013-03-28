@@ -128,7 +128,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			standardBizRequest.setSecurityContext(securityContext);
 			GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
 			TmnProfile tmnProfile = new TmnProfile(profileResponse.getFullName(), profileResponse.getEwalletBalance());
-			tmnProfile.setMobileno(profileResponse.getMobile());
+			tmnProfile.setMobileNumber(profileResponse.getMobile());
 			tmnProfile.setEmail(profileResponse.getEmail());
 			tmnProfile.setType(profileResponse.getProfileType());
 			tmnProfile.setStatus(profileResponse.getStatusId());
@@ -207,9 +207,9 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Override
     public OTP createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
-       	performIsCreatable(channelID, tmnProfile.getMobileno());       	
-       	OTP otp = otpService.send(tmnProfile.getMobileno());
-       	TmnProfile tmnProfileFromRepo = profileRepository.getTmnProfile(tmnProfile.getMobileno());
+       	performIsCreatable(channelID, tmnProfile.getMobileNumber());       	
+       	OTP otp = otpService.send(tmnProfile.getMobileNumber());
+       	TmnProfile tmnProfileFromRepo = profileRepository.getTmnProfile(tmnProfile.getMobileNumber());
        	if (tmnProfileFromRepo != null) {
        		profileRepository.saveProfile(tmnProfile);
        	}
@@ -222,7 +222,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			throw new ServiceInventoryException(SignonServiceException.Code.OTP_NOT_MATCH,
 				"otp string not match");
 		}
-		TmnProfile tmnProfile = profileRepository.getTmnProfile(otp.getMobileNo());
+		TmnProfile tmnProfile = profileRepository.getTmnProfile(otp.getMobileNumber());
 
 		CreateTmnProfileRequest createTmnProfileRequest = createTmnProfileRequest(channelID, tmnProfile);
 		 
@@ -294,7 +294,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		tmnProfileRequest.setChannelId(channelID);
 		tmnProfileRequest.setEmail(tmnProfile.getEmail());
 		tmnProfileRequest.setFullName(tmnProfile.getFullname());
-		tmnProfileRequest.setMobile(tmnProfile.getMobileno());
+		tmnProfileRequest.setMobile(tmnProfile.getMobileNumber());
 		tmnProfileRequest.setPassword(tmnProfile.getPassword());
 		tmnProfileRequest.setThaiId(tmnProfile.getThaiID());
 		return tmnProfileRequest;
