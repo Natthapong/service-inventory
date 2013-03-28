@@ -7,7 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
+import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftRequest;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
+import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRequest;
@@ -29,10 +34,12 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.TransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.UpdateAccountRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
@@ -48,7 +55,44 @@ import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 @Configuration
 @Profile("local")
 public class LocalEnvironmentConfig {
-
+	
+	@Bean
+	@Primary
+	public P2PTransferService stubP2PTransferService(){
+		return new P2PTransferServiceImpl(){
+			
+			@Override
+			public OTP sendOTP(String draftTransactionID,
+					String accessTokenID) {
+				if(accessTokenID.equals("12345")){
+					return new OTP("0868185055", "111111", "marty");
+				}else{
+					throw new ServiceInventoryException("9999","No Draft Transaction","SI-WEB");
+				}
+			}
+			
+			@Override
+			public P2PDraftTransaction getDraftTransactionDetails(
+					String draftTransactionID, String accessTokenID) {
+				if(accessTokenID.equals("12345")){
+					return new P2PDraftTransaction("0868185055",new BigDecimal(2500),"555","12345","fullName","111111");
+				}else{
+					throw new ServiceInventoryException("9999","No Draft Transaction","SI-WEB");
+				}
+			}
+			
+			@Override
+			public P2PDraftTransaction createDraftTransaction(
+					P2PDraftRequest p2pDraftRequest, String accessTokenID) {
+				if(accessTokenID.equals("12345")){
+					return new P2PDraftTransaction("0868185055",new BigDecimal(2500),"555","12345","fullName","111111");
+				}else{
+					throw new ServiceInventoryException("9999","Can not create Draft Transaction","SI-WEB");
+				}
+			}
+		};
+	}
+	
 	@Bean
 	@Primary
 	public TmnProfileProxy stubTmnProfileProxy() {
@@ -185,6 +229,20 @@ public class LocalEnvironmentConfig {
 				return moneyResponse;
 			}
 
+			@Override
+			public StandardMoneyResponse transfer(
+					TransferRequest transferRequest) throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public StandardMoneyResponse verifyTransfer(
+					VerifyTransferRequest verifyTransferRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 	}
 

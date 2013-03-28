@@ -9,6 +9,15 @@ public class P2PDraftRequest implements Serializable {
 	private String mobileNumber;	
 	private BigDecimal amount;
 	
+	public P2PDraftRequest() {
+	}
+	
+	public P2PDraftRequest(String mobileNumber, BigDecimal amount) {
+		super();
+		this.mobileNumber = mobileNumber;
+		this.amount = amount;
+	}
+
 	public String getMobileNumber() {
 		return mobileNumber;
 	}
