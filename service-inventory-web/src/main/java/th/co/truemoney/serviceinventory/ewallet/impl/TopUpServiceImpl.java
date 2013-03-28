@@ -171,11 +171,11 @@ public class TopUpServiceImpl implements TopUpService {
 		TopUpQuote topUpQuote = orderRepo.getTopUpQuote(quoteID);
 
 		if (topUpQuote == null) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_QUOTE_NOT_FOUND, "quote not found");
+			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND, "quote not found");
 		}
 
 		if (!accessToken.getAccessTokenID().equals(topUpQuote.getAccessTokenID())) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_QUOTE_NOT_FOUND, "quote not found");
+			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND, "quote not found");
 		}
 
 		return topUpQuote;
@@ -248,7 +248,7 @@ public class TopUpServiceImpl implements TopUpService {
 		TopUpOrder topUpOrder = orderRepo.getTopUpOrder(orderID);
 
 		if (topUpOrder == null || !topUpOrder.getQuote().getAccessTokenID().equals(accessToken.getAccessTokenID())) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.TOPUP_QUOTE_NOT_FOUND, "quote not found");
+			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND, "quote not found");
 		}
 
 		return topUpOrder;

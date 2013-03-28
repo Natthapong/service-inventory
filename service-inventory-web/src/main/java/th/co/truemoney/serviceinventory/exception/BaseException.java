@@ -19,8 +19,8 @@ public abstract class BaseException extends RuntimeException {
 		public static final String OTP_NOT_MATCH 	= "1001";
 		public static final String INVALID_CHECKSUM = "1002";
 		public static final String OTP_NOT_FOUND = "1003";
-		public static final String TOPUP_QUOTE_NOT_FOUND = "1004";
-		public static final String TOPUP_ORDER_NOT_FOUND = "1004";
+		public static final String DRAFT_TRANSACTION_NOT_FOUND = "1004";
+		public static final String TRANSACTION_NOT_FOUND = "1004";
 		public static final String CONFIRM_BANK_FAILED = "1005";
 		public static final String CONFIRM_UMARKET_FAILED = "1006";
 		public static final String CONFIRM_FAILED = "1007";
