@@ -6,14 +6,14 @@ import java.math.BigDecimal;
 public class P2PDraftRequest implements Serializable {
 
 	private static final long serialVersionUID = 3809434703107475320L;
-	private String mobileno;	
+	private String mobileNumber;	
 	private BigDecimal amount;
 	
-	public String getMobileno() {
-		return mobileno;
+	public String getMobileNumber() {
+		return mobileNumber;
 	}
-	public void setMobileno(String mobileno) {
-		this.mobileno = mobileno;
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
 	}
 	public BigDecimal getAmount() {
 		return amount;

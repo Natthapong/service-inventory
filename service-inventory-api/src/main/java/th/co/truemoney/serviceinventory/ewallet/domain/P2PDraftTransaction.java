@@ -6,18 +6,18 @@ import java.math.BigDecimal;
 public class P2PDraftTransaction implements Serializable {
 
 	private static final long serialVersionUID = -5651007822743041981L;
-	private String mobileno;	
+	private String mobileNumber;	
 	private BigDecimal amount;
 	private String ID;
 	private String accessTokenID;
 	private String fullname;
 	private String otpReferenceCode;
 	
-	public String getMobileno() {
-		return mobileno;
+	public String getMobileNumber() {
+		return mobileNumber;
 	}
-	public void setMobileno(String mobileno) {
-		this.mobileno = mobileno;
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
 	}
 	public BigDecimal getAmount() {
 		return amount;

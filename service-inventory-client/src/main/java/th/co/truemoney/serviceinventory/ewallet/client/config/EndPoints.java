@@ -61,7 +61,7 @@ public class EndPoints {
 	}
 	
 	public String getConfirmCreateTruemoneyProfileUrl(){
-		return host + "/service-inventory-web/v1/ewallet/profiles/{mobileno}/verify-otp?channelID={channelID}";
+		return host + "/service-inventory-web/v1/ewallet/profiles/{mobileNumber}/verify-otp?channelID={channelID}";
 	}
 	
 	public String getDraftTransactionDetail(){

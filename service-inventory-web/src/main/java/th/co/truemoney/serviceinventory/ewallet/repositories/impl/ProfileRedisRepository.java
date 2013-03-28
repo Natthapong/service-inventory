@@ -22,7 +22,7 @@ public class ProfileRedisRepository implements ProfileRepository {
 	public void saveProfile(TmnProfile tmnProfile) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			redisLoggingDao.addData("profile:"+tmnProfile.getMobileno(), mapper.writeValueAsString(tmnProfile), 5L);
+			redisLoggingDao.addData("profile:"+tmnProfile.getMobileNumber(), mapper.writeValueAsString(tmnProfile), 5L);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
@@ -31,9 +31,9 @@ public class ProfileRedisRepository implements ProfileRepository {
 	}
 
 	@Override
-	public TmnProfile getTmnProfile(String mobileNo) {
+	public TmnProfile getTmnProfile(String mobileNumber) {
 		try {
-			String result = redisLoggingDao.getData("profile:"+mobileNo);
+			String result = redisLoggingDao.getData("profile:"+mobileNumber);
 			if(result == null) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.PROFILE_NOT_FOUND,
 						"profile not found.");

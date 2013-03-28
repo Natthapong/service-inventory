@@ -72,7 +72,7 @@ public class TopUpServiceImplTest {
 		directDebitDetail.setBankAccountNumber("xxxx5555");
 		directDebitDetail.setBankCode("SCB");
 		directDebitDetail.setBankNameEn("Siam Comercial Bank");
-		directDebitDetail.setBankNameTh("ไทยพาณิชย์");
+		directDebitDetail.setBankNameTh("เน�เธ—เธขเธ�เธฒเธ“เธดเธ�เธขเน�");
 		directDebitDetail.setMinAmount(new BigDecimal(300));
 		directDebitDetail.setMaxAmount(new BigDecimal(30000));
 		directDebitDetail.setSourceOfFundID("111111111");
@@ -163,7 +163,7 @@ public class TopUpServiceImplTest {
 	public void confirmPlaceOrder() {
 		AccessToken accessToken = new AccessToken();
 		accessToken.setAccessTokenID("1");
-		accessToken.setMobileno("0890123456");
+		accessToken.setMobileNumber("0890123456");
 		accessToken.setSessionID("sessionID");
 		accessToken.setTruemoneyID("truemoneyID");
 		accessToken.setChannelID(41);
@@ -239,7 +239,7 @@ public class TopUpServiceImplTest {
 	public void confirmPlaceOrderFailOTPNotMatch() {
 		AccessToken accessToken = new AccessToken();
 		accessToken.setAccessTokenID("1");
-		accessToken.setMobileno("0890123456");
+		accessToken.setMobileNumber("0890123456");
 		TopUpQuote quote = new TopUpQuote();
 		quote.setSourceOfFund(directDebitDetail);
 		quote.setAccessTokenID("1");

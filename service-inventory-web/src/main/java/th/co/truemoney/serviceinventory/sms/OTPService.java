@@ -31,25 +31,25 @@ public class OTPService {
 	@Autowired
 	private OTPGenerator otpGenerator;
 
-	public OTP send(String mobileNo) throws ServiceInventoryException {
+	public OTP send(String mobileNumber) throws ServiceInventoryException {
 		try {
-			OTP otp = otpGenerator.generateNewOTP(mobileNo);
+			OTP otp = otpGenerator.generateNewOTP(mobileNumber);
 
 			logger.debug("==============================");
-			logger.debug("mobileno = " + otp.getMobileNo());
+			logger.debug("mobileNumber = " + otp.getMobileNumber());
 			logger.debug("otp = " + otp.getOtpString());
 			logger.debug("refCode = " + otp.getReferenceCode());
 			logger.debug("==============================");
 
-			SmsRequest smsRequest = new SmsRequest(smsSender, mobileNo,
-					"รหัส OTP คือ " + otp.getOtpString() + " (Ref: " + otp.getReferenceCode() + ")");
+			SmsRequest smsRequest = new SmsRequest(smsSender, mobileNumber,
+					"เธฃเธซเธฑเธช OTP เธ�เธทเธญ " + otp.getOtpString() + " (Ref: " + otp.getReferenceCode() + ")");
 			SmsResponse smsResponse = smsProxyImpl.send(smsRequest);
 			if (!smsResponse.isSuccess()) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");
 			}
 			otpRepository.saveOTP(otp);
 
-			return new OTP(otp.getMobileNo(), otp.getReferenceCode(), otp.getOtpString().replaceAll(".", "x"));
+			return new OTP(otp.getMobileNumber(), otp.getReferenceCode(), otp.getOtpString().replaceAll(".", "x"));
 
 		} catch (ServiceUnavailableException e) {
 			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE), e.getMessage(), e.getNamespace());

@@ -187,7 +187,7 @@ public class TopUpServiceImpl implements TopUpService {
 
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
-		OTP otp = otpService.send(accessToken.getMobileno());
+		OTP otp = otpService.send(accessToken.getMobileNumber());
 
 		TopUpQuote topUpQuote = getTopUpQuoteDetails(quoteID, accessTokenID);
 		topUpQuote.setOtpReferenceCode(otp.getReferenceCode());

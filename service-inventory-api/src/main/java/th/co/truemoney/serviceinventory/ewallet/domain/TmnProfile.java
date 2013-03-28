@@ -10,7 +10,7 @@ public class TmnProfile implements Serializable {
 	private String password;
 	private String fullname;
 	private String thaiID;
-	private String mobileno;
+	private String mobileNumber;
 	private BigDecimal balance;
 	private String type;
 	private Integer status;
@@ -56,12 +56,12 @@ public class TmnProfile implements Serializable {
 		this.thaiID = thaiID;
 	}
 
-	public String getMobileno() {
-		return mobileno;
+	public String getMobileNumber() {
+		return mobileNumber;
 	}
 
-	public void setMobileno(String mobileno) {
-		this.mobileno = mobileno;
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
 	}
 
 	public BigDecimal getBalance() {

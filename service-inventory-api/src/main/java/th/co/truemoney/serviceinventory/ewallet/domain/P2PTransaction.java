@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 public class P2PTransaction implements Serializable {
 
 	private static final long serialVersionUID = -3546197537668299129L;
-	private String mobileno;	
+	private String mobileNumber;	
 	private BigDecimal amount;
 	private String ID;
 	private String accessTokenID;
@@ -15,11 +15,11 @@ public class P2PTransaction implements Serializable {
 	private P2PTransactionStatus status = P2PTransactionStatus.AWAITING_CONFIRM;
 	private P2PTransactionConfirmationInfo confirmationInfo;
 	
-	public String getMobileno() {
-		return mobileno;
+	public String getMobileNumber() {
+		return mobileNumber;
 	}
-	public void setMobileno(String mobileno) {
-		this.mobileno = mobileno;
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
 	}
 	public BigDecimal getAmount() {
 		return amount;
