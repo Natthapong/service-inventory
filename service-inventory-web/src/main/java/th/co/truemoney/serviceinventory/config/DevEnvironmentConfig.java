@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.endpoint.EwalletSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.endpoint.TmnProfileAdminSoapEndPointProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.endpoint.TmnProfileSoapEndPointProxy;
@@ -108,6 +109,11 @@ public class DevEnvironmentConfig {
 	@Bean
 	public OTPGenerator otpGenerator() {
 		return new RandomOTPGeneraor();
+	}
+	
+	@Bean
+	public EmailService emailService() {
+		return new EmailService();	
 	}
 	
 }
