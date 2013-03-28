@@ -26,7 +26,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class SourceOfFundServiceClientTest {
 
 	@Autowired
-	TmnSourceOfFundServiceClient sourceOfFundServiceClient;
+	TmnDirectDebitSourceOfFundServiceClient sourceOfFundServiceClient;
 
 	@Autowired
 	TmnProfileServiceClient profileClient;
@@ -41,11 +41,11 @@ public class SourceOfFundServiceClientTest {
 	@Test
 	public void shouldFail() {
 		try{
-			sourceOfFundServiceClient.getUserDirectDebitSources("wrong_user@tmn.com", accessToken);
+			sourceOfFundServiceClient.getUserDirectDebitSources("hacker", accessToken);
 			Assert.fail();
 		}catch(ServiceInventoryException e){
-			assertEquals("9999", e.getErrorCode());
-			assertEquals("Invalid user name.", e.getErrorDescription());
+			assertEquals("401", e.getErrorCode());
+			assertEquals("Unauthorized access", e.getErrorDescription());
 		}
 	}
 

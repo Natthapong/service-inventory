@@ -28,7 +28,7 @@ import th.co.truemoney.serviceinventory.config.SmsConfig;
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
-import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
+import th.co.truemoney.serviceinventory.ewallet.DirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -43,12 +43,12 @@ public class SourceOfFundControllerSuccessTest {
 	private WebApplicationContext wac;
 
 	@Autowired
-	private SourceOfFundService sourceOfFundServiceMock;
+	private DirectDebitSourceOfFundService sourceOfFundServiceMock;
 
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-		this.sourceOfFundServiceMock = wac.getBean(SourceOfFundService.class);
+		this.sourceOfFundServiceMock = wac.getBean(DirectDebitSourceOfFundService.class);
 	}
 
 	@After
@@ -63,7 +63,7 @@ public class SourceOfFundControllerSuccessTest {
 		when(sourceOfFundServiceMock.getUserDirectDebitSources(anyString(), anyString()))
 			.thenReturn(new ArrayList<DirectDebit>());
 
-		this.mockMvc.perform(get("/user/{username}/source-of-fund/direct-debits?channelID=41&accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "user1.test.v1@gmail.com")
+		this.mockMvc.perform(get("/profile/{username}/source-of-fund/direct-debits?channelID=41&accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "local@tmn.com")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(print());

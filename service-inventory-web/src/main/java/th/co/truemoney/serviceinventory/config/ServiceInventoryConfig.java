@@ -2,25 +2,23 @@ package th.co.truemoney.serviceinventory.config;
 
 import java.util.concurrent.Executor;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import th.co.truemoney.serviceinventory.ewallet.DirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
-import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncService;
+import th.co.truemoney.serviceinventory.ewallet.impl.DirectDebitSourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
-import th.co.truemoney.serviceinventory.ewallet.impl.SourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
-import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
@@ -35,8 +33,8 @@ public class ServiceInventoryConfig {
 	}
 
 	@Bean
-	public SourceOfFundService getSourceOfFundService() {
-		return new SourceOfFundServiceImpl();
+	public DirectDebitSourceOfFundService directDebitSourceService() {
+		return new DirectDebitSourceOfFundServiceImpl();
 	}
 
 	@Bean
@@ -47,11 +45,6 @@ public class ServiceInventoryConfig {
 	@Bean
     public OTPService getOtpService() {
     	return new OTPService();
-    }
-
-    @Bean
-    public SourceOfFundRepository sourceOfFundRepo() {
-    	return new SourceOfFundRepository();
     }
 
     @Bean

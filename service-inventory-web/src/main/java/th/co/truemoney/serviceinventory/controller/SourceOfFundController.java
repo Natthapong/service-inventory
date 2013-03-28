@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
+import th.co.truemoney.serviceinventory.ewallet.DirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -19,15 +19,15 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class SourceOfFundController {
 
 	@Autowired
-	private SourceOfFundService sourceOfFundService;
+	private DirectDebitSourceOfFundService sourceOfFundService;
 
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
-	@RequestMapping(value = "/user/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
+	@RequestMapping(value = "/profile/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
 	public @ResponseBody DirectDebit[] listDirectDebitSources(
-		@PathVariable String username,
-		@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID)
+			@PathVariable("username") String username,
+			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID)
 			throws ServiceInventoryException {
 		List<DirectDebit> directDebits = sourceOfFundService.getUserDirectDebitSources(username, accessTokenID);
 		extendExpireAccessToken(accessTokenID);

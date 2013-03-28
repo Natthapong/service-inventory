@@ -17,7 +17,7 @@ public class EndPoints {
 	}
 
 	public String getUserDirectDebitSourceOfFundsUrl() {
-		return host + "/service-inventory-web/v1/user/{username}/source-of-fund/direct-debits?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/profile/{username}/source-of-fund/direct-debits?accessTokenID={accessTokenID}";
 	}
 
 	public String getUserProfileUrl() {
@@ -51,39 +51,39 @@ public class EndPoints {
 	public String getTopUpOrderDetailsUrl() {
 		return host + "/service-inventory-web/v1/top-up/order/{orderID}?accessTokenID={accessTokenID}";
 	}
-	
+
 	public String getValidateEmailUrl(){
 		return host + "/service-inventory-web/v1/ewallet/profiles/validate-email?channelID={channelID}";
 	}
-	
+
 	public String getCreateTruemoneyProfileUrl(){
 		return host + "/service-inventory-web/v1/ewallet/profiles?channelID={channelID}";
 	}
-	
+
 	public String getConfirmCreateTruemoneyProfileUrl(){
 		return host + "/service-inventory-web/v1/ewallet/profiles/{mobileNumber}/verify-otp?channelID={channelID}";
 	}
-	
+
 	public String getCreateDraftTransactionUrl(){
 		return host + "/service-inventory-web/v1/transfer/draft-transaction?accessTokenID={accessTokenID}";
 	}
-	
+
 	public String getDraftTransactionDetails(){
 		return host + "/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}?accessTokenID={accessTokenID}";
 	}
-	
+
 	public String getSendOTPUrl(){
 		return host + "/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}/send-otp?accessTokenID={accessTokenID}";
 	}
-	
+
 	public String getCreateTransactionUrl(){
 		return host + "/service-inventory-web/v1/transfer/transaction/{draftTransactionID}?accessTokenID={accessTokenID}";
 	}
-	
+
 	public String getTransactionStatusUrl(){
 		return host + "/service-inventory-web/v1/transfer/transaction/{transactionID}/status?accessTokenID={accessTokenID}";
 	}
-	
+
 	public String getTransactionInfoUrl(){
 		return host + "/service-inventory-web/v1/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}

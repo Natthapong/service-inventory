@@ -11,13 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import th.co.truemoney.serviceinventory.ewallet.SourceOfFundService;
+import th.co.truemoney.serviceinventory.ewallet.DirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
-public class TmnSourceOfFundServiceClient implements SourceOfFundService {
+public class TmnDirectDebitSourceOfFundServiceClient implements DirectDebitSourceOfFundService {
 
 	@Autowired
 	RestTemplate restTemplate;
@@ -29,8 +29,7 @@ public class TmnSourceOfFundServiceClient implements SourceOfFundService {
 	private HttpHeaders headers;
 
 	@Override
-	public List<DirectDebit> getUserDirectDebitSources(String username,
-			String accessTokenID) throws ServiceInventoryException {
+	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenID) throws ServiceInventoryException {
 
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
@@ -41,5 +40,4 @@ public class TmnSourceOfFundServiceClient implements SourceOfFundService {
 
 		return Arrays.asList(responseEntity.getBody());
 	}
-
 }

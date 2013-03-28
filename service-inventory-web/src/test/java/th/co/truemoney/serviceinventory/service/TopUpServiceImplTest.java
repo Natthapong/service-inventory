@@ -25,6 +25,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuoteStatus;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncService;
+import th.co.truemoney.serviceinventory.ewallet.impl.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
@@ -32,8 +33,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyRespo
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
@@ -47,23 +46,22 @@ public class TopUpServiceImplTest {
 	private TopUpServiceImpl topUpService;
 	private EwalletSoapProxy ewalletSoapProxyMock;
 	private AccessTokenRepository accessTokenRepoMock;
-	private SourceOfFundRepository sourceOfFundRepoMock;
 	private OTPService otpService;
 
 	private DirectDebit directDebitDetail;
+	private EnhancedDirectDebitSourceOfFundService directDebitServiceMock;
 
 	@Before
 	public void setup() {
 		this.topUpService = new TopUpServiceImpl();
+		this.directDebitServiceMock = Mockito.mock(EnhancedDirectDebitSourceOfFundService.class);
 		this.ewalletSoapProxyMock = Mockito.mock(EwalletSoapProxy.class);
 		this.accessTokenRepoMock = Mockito.mock(AccessTokenRepository.class);
-		this.sourceOfFundRepoMock = Mockito.mock(SourceOfFundRepository.class);
 		this.otpService = mock(OTPService.class);
 
-		this.topUpService.setEWalletProxy(this.ewalletSoapProxyMock);
+		this.topUpService.setDirectDebitSourceService(directDebitServiceMock);
+		this.topUpService.setEwalletProxy(ewalletSoapProxyMock);
 		this.topUpService.setAccessTokenRepository(this.accessTokenRepoMock);
-		this.topUpService.setSourceOfFundRepository(this.sourceOfFundRepoMock);
-		this.topUpService.setDirectDebitConfig(new DirectDebitConfigImpl());
 		this.topUpService.setOrderRepository(new TransactionMemoryRepository());
 		this.topUpService.setOtpService(otpService);
 
@@ -92,7 +90,7 @@ public class TopUpServiceImplTest {
 			.thenReturn(accessToken);
 		when(ewalletSoapProxyMock.verifyAddMoney(Mockito.any(VerifyAddMoneyRequest.class)))
 			.thenReturn(stubbedStandardMoneyResponse);
-		when(sourceOfFundRepoMock.getUserDirectDebitSourceByID(Mockito.anyString(), Mockito.any(AccessToken.class)))
+		when(directDebitServiceMock.getUserDirectDebitSource(Mockito.anyString(), Mockito.anyString()))
 			.thenReturn(directDebitDetail);
 
 		//when
@@ -117,7 +115,7 @@ public class TopUpServiceImplTest {
 			.thenReturn(accessToken);
 		when(ewalletSoapProxyMock.verifyAddMoney(Mockito.any(VerifyAddMoneyRequest.class)))
 			.thenReturn(stubbedStandardMoneyResponse);
-		when(sourceOfFundRepoMock.getUserDirectDebitSourceByID(Mockito.anyString(), Mockito.any(AccessToken.class)))
+		when(directDebitServiceMock.getUserDirectDebitSource(Mockito.anyString(), Mockito.anyString()))
 			.thenReturn(directDebitDetail);
 
 		//when
@@ -145,7 +143,7 @@ public class TopUpServiceImplTest {
 			.thenReturn(accessToken);
 		when(ewalletSoapProxyMock.verifyAddMoney(Mockito.any(VerifyAddMoneyRequest.class)))
 			.thenReturn(stubbedStandardMoneyResponse);
-		when(sourceOfFundRepoMock.getUserDirectDebitSourceByID(Mockito.anyString(), Mockito.any(AccessToken.class)))
+		when(directDebitServiceMock.getUserDirectDebitSource(Mockito.anyString(), Mockito.anyString()))
 			.thenReturn(directDebitDetail);
 
 		//when

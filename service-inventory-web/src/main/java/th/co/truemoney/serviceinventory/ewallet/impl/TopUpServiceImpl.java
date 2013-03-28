@@ -1,7 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
+import th.co.truemoney.serviceinventory.ewallet.DirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
@@ -28,8 +27,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
-import th.co.truemoney.serviceinventory.ewallet.repositories.SourceOfFundRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
@@ -40,37 +37,35 @@ public class TopUpServiceImpl implements TopUpService {
 	private static final Logger logger = LoggerFactory.getLogger(TopUpServiceImpl.class);
 
 	@Autowired
-	private AccessTokenRepository accessTokenRepo;
+	private EnhancedDirectDebitSourceOfFundService directDebitSourceService;
 
 	@Autowired
-	private EwalletSoapProxy ewalletProxy;
-
-	@Autowired
-	private SourceOfFundRepository sofRepo;
-
-	@Autowired
-	private DirectDebitConfig directDebitConfig;
-
-	@Autowired
-	private TransactionRepository orderRepo;
+	private OTPService otpService;
 
 	@Autowired
 	private AsyncService asyncService;
 
 	@Autowired
-	private OTPService otpService;
+	private EwalletSoapProxy ewalletProxy;
+
+	@Autowired
+	private AccessTokenRepository accessTokenRepo;
+
+	@Autowired
+	private TransactionRepository orderRepo;
+
 
 	@Override
 	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID,
 			BigDecimal amount, String accessTokenID) {
 
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-		DirectDebit directDebitSource = sofRepo.getUserDirectDebitSourceByID(sourceOfFundID, accessToken);
+		DirectDebit directDebitSource = directDebitSourceService.getUserDirectDebitSource(sourceOfFundID, accessTokenID);
 
 		validateToppingUpValue(amount, directDebitSource);
 		verifyToppingUpCapability(amount, directDebitSource, accessToken);
 
-		BigDecimal topUpFee = calculateTopUpFee(amount, directDebitSource);
+		BigDecimal topUpFee = directDebitSourceService.calculateTopUpFee(amount, directDebitSource);
 
 		TopUpQuote topUpQuote = new TopUpQuote();
 		String orderID = UUID.randomUUID().toString();
@@ -103,7 +98,6 @@ public class TopUpServiceImpl implements TopUpService {
 		}
 	}
 
-	// --- Connect to Ewallet Client to verify amount on this
 	private void verifyToppingUpCapability(BigDecimal amount, SourceOfFund sof, AccessToken accessToken) {
 		try {
 
@@ -122,11 +116,6 @@ public class TopUpServiceImpl implements TopUpService {
 		} catch (ServiceUnavailableException e) {
 			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE), e.getMessage(), e.getNamespace());
 		}
-	}
-
-	private BigDecimal calculateTopUpFee(BigDecimal amount, DirectDebit sofDetail) {
-		DirectDebitConfigBean bankConfig = directDebitConfig.getBankDetail(sofDetail.getBankCode());
-		return (bankConfig != null) ? bankConfig.calculateTotalFee(amount) : BigDecimal.ZERO;
 	}
 
 	@Override
@@ -181,8 +170,6 @@ public class TopUpServiceImpl implements TopUpService {
 
 		performTopUpMoney(accessToken, topUpOrder);
 
-		logger.debug("time " + new Date());
-
 		return topUpQuote.getStatus();
 	}
 
@@ -229,20 +216,20 @@ public class TopUpServiceImpl implements TopUpService {
 		asyncService.topUpUtibaEwallet(topUpOrder, addMoneyRequest);
 	}
 
-	public EwalletSoapProxy getEwalletProxy() {
-		return ewalletProxy;
+	public DirectDebitSourceOfFundService getDirectDebitSourceService() {
+		return directDebitSourceService;
 	}
 
-	public void setEwalletProxy(EwalletSoapProxy ewalletProxy) {
-		this.ewalletProxy = ewalletProxy;
+	public void setDirectDebitSourceService(EnhancedDirectDebitSourceOfFundService directDebitSourceService) {
+		this.directDebitSourceService = directDebitSourceService;
 	}
 
-	public SourceOfFundRepository getSofRepo() {
-		return sofRepo;
+	public OTPService getOtpService() {
+		return otpService;
 	}
 
-	public void setSofRepo(SourceOfFundRepository sofRepo) {
-		this.sofRepo = sofRepo;
+	public void setOtpService(OTPService otpService) {
+		this.otpService = otpService;
 	}
 
 	public AsyncService getAsyncService() {
@@ -253,45 +240,27 @@ public class TopUpServiceImpl implements TopUpService {
 		this.asyncService = asyncService;
 	}
 
-	public AccessTokenRepository getAccessTokenRepo() {
-		return accessTokenRepo;
+	public EwalletSoapProxy getEwalletProxy() {
+		return ewalletProxy;
 	}
 
-	public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
-		this.accessTokenRepo = accessTokenRepo;
-	}
-
-	public void setEWalletProxy(EwalletSoapProxy ewalletProxy) {
+	public void setEwalletProxy(EwalletSoapProxy ewalletProxy) {
 		this.ewalletProxy = ewalletProxy;
+	}
+
+	public AccessTokenRepository getAccessTokenRepository() {
+		return accessTokenRepo;
 	}
 
 	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepo) {
 		this.accessTokenRepo = accessTokenRepo;
 	}
 
-	public void setDirectDebitConfig(DirectDebitConfig directDebitConfig) {
-		this.directDebitConfig = directDebitConfig;
-	}
-
-	public void setSourceOfFundRepository(
-			SourceOfFundRepository sourceOfFundRepo) {
-		this.sofRepo = sourceOfFundRepo;
-	}
-
-	public TransactionRepository getOrderRepo() {
+	public TransactionRepository getOrderRepository() {
 		return orderRepo;
 	}
 
 	public void setOrderRepository(TransactionRepository orderRepo) {
 		this.orderRepo = orderRepo;
 	}
-
-	public OTPService getOrderRepository() {
-		return otpService;
-	}
-
-	public void setOtpService(OTPService otpService) {
-		this.otpService = otpService;
-	}
-
 }

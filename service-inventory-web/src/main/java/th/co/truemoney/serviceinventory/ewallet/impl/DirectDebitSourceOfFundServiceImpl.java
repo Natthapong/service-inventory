@@ -1,11 +1,15 @@
-package th.co.truemoney.serviceinventory.ewallet.repositories;
+package th.co.truemoney.serviceinventory.ewallet.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -17,9 +21,17 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-public class SourceOfFundRepository {
+@Service
+public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSourceOfFundService {
+
+	private static Logger logger = LoggerFactory.getLogger(DirectDebitSourceOfFundServiceImpl.class);
+
+	@Autowired
+	private AccessTokenRepository accessTokenRepo;
 
 	@Autowired
 	private TmnProfileProxy tmnProfileProxy;
@@ -27,12 +39,36 @@ public class SourceOfFundRepository {
 	@Autowired
 	private DirectDebitConfig directDebitConfig;
 
-	public DirectDebit getUserDirectDebitSourceByID(String sourceOfFundID, AccessToken accessToken) {
-		String truemoneyID = accessToken.getTruemoneyID();
-		Integer channelID = accessToken.getChannelID();
-		String sessionID = accessToken.getSessionID();
+	@Override
+	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenID)
+			throws ServiceInventoryException {
+		try {
+			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+			logger.debug("retrieve access Token: "+accessToken.toString());
 
-		List<DirectDebit> directDebitSources = getUserDirectDebitSources(truemoneyID, channelID, sessionID);
+			if (!accessToken.getUsername().equals(username)) {
+				throw new ServiceInventoryException("401", "unauthorized access");
+			}
+
+			List<DirectDebit> userDirectDebitSources = getUserDirectDebitSources(accessToken.getTruemoneyID(), accessToken.getChannelID(), accessToken.getSessionID());
+
+			return userDirectDebitSources;
+
+		} catch (EwalletException e) {
+			throw new ServiceInventoryException(e.getCode(),
+				"tmnSecurityProxy.listSource response: " + e.getCode(), e.getNamespace());
+		} catch (ServiceUnavailableException e) {
+			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+				e.getMessage(), e.getNamespace());
+		}
+	}
+
+	@Override
+	public DirectDebit getUserDirectDebitSource(String sourceOfFundID, String accessTokenID) throws ServiceInventoryException {
+
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+
+		List<DirectDebit> directDebitSources = getUserDirectDebitSources(accessToken.getTruemoneyID(), accessToken.getChannelID(), accessToken.getSessionID());
 		for (DirectDebit dd : directDebitSources) {
 			if (dd.getSourceOfFundID().equals(sourceOfFundID)) {
 				return dd;
@@ -41,7 +77,14 @@ public class SourceOfFundRepository {
 		throw new ServiceInventoryException("404", "source of fund not found : " + sourceOfFundID);
 	}
 
-	public List<DirectDebit> getUserDirectDebitSources(String truemoneyID, Integer channelID, String sessionID)
+	@Override
+	public BigDecimal calculateTopUpFee(BigDecimal amount, DirectDebit sofDetail) throws ServiceInventoryException {
+		DirectDebitConfigBean bankConfig = directDebitConfig.getBankDetail(sofDetail.getBankCode());
+		return (bankConfig != null) ? bankConfig.calculateTotalFee(amount) : BigDecimal.ZERO;
+	}
+
+
+	private List<DirectDebit> getUserDirectDebitSources(String truemoneyID, Integer channelID, String sessionID)
 			throws ServiceInventoryException {
 		try {
 			List<DirectDebit> directDebitList = new ArrayList<DirectDebit>();
@@ -78,10 +121,6 @@ public class SourceOfFundRepository {
 			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
 				e.getMessage(), e.getNamespace());
 		}
-	}
-
-	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
-		this.tmnProfileProxy = tmnProfileProxy;
 	}
 
 	private ListSourceRequest createListSourceRequest(Integer channelID, String truemoneyID, String sessionID) {
