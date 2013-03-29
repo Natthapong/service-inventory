@@ -1,21 +1,21 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class TopUpOrder implements Serializable {
+public class TopUpOrder extends Transaction {
 
 	private static final long serialVersionUID = 2325219087645032462L;
 
-	private String ID;
-	private TopUpQuote quote;
-	private TopUpOrderStatus status = TopUpOrderStatus.ORDER_VERIFIED;
+	private FailStatus failStatus;
 	private TopUpConfirmationInfo confirmationInfo;
+
+	public static enum FailStatus {
+		BANK_FAILED, UMARKET_FAILED, UNKNOWN_FAILED;
+	}
 
 	public TopUpOrder() {
 	}
@@ -26,8 +26,8 @@ public class TopUpOrder implements Serializable {
 		}
 
 		this.ID = quote.getID();
-		this.quote = quote;
-		this.status = TopUpOrderStatus.ORDER_VERIFIED;
+		this.draftTransaction = quote;
+		this.status = Transaction.Status.VERIFIED;
 	}
 
 	public String getID() {
@@ -39,19 +39,11 @@ public class TopUpOrder implements Serializable {
 	}
 
 	public TopUpQuote getQuote() {
-		return quote;
+		return (TopUpQuote) getDraftTransaction();
 	}
 
 	public void setQuote(TopUpQuote quote) {
-		this.quote = quote;
-	}
-
-	public TopUpOrderStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(TopUpOrderStatus status) {
-		this.status = status;
+		setDraftTransaction(quote);
 	}
 
 	public TopUpConfirmationInfo getConfirmationInfo() {
@@ -62,9 +54,18 @@ public class TopUpOrder implements Serializable {
 		this.confirmationInfo = confirmationInfo;
 	}
 
+	public FailStatus getFailStatus() {
+		return failStatus;
+	}
+
+	public void setFailStatus(FailStatus failStatus) {
+		this.status = Transaction.Status.FAILED;
+		this.failStatus = failStatus;
+	}
+
 	@Override
 	public String toString() {
-		return "TopUpOrder [ID=" + ID + ", qoute=" + quote
+		return "TopUpOrder [ID=" + ID + ", qoute=" + draftTransaction
 				+ ", status=" + status + ", confirmationInfo=" + confirmationInfo + "]";
 	}
 

@@ -15,8 +15,8 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrderStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
@@ -87,13 +87,13 @@ public class TmnTopUpServiceClient implements TopUpService {
 	}
 
 	@Override
-	public TopUpOrderStatus getTopUpProcessingStatus(String orderID, String accessTokenID) {
+	public Transaction.Status getTopUpProcessingStatus(String orderID, String accessTokenID) {
 
-		HttpEntity<TopUpOrderStatus> requestEntity = new HttpEntity<TopUpOrderStatus>(headers);
+		HttpEntity<Transaction.Status> requestEntity = new HttpEntity<Transaction.Status>(headers);
 
-		ResponseEntity<TopUpOrderStatus> responseEntity = restTemplate.exchange(
+		ResponseEntity<Transaction.Status> responseEntity = restTemplate.exchange(
 				endPoints.getTopUpOrderStatusUrl(), HttpMethod.GET,
-				requestEntity, TopUpOrderStatus.class,
+				requestEntity, Transaction.Status.class,
 				orderID , accessTokenID);
 
 		return responseEntity.getBody();

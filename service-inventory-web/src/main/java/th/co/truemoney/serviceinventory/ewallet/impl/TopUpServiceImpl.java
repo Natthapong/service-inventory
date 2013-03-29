@@ -17,8 +17,9 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrderStatus;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -155,7 +156,7 @@ public class TopUpServiceImpl implements TopUpService {
 		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
 
 		TopUpOrder topUpOrder = new TopUpOrder(topUpQuote);
-		topUpOrder.setStatus(TopUpOrderStatus.ORDER_VERIFIED);
+		topUpOrder.setStatus(Transaction.Status.VERIFIED);
 		orderRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
 
 		performTopUpMoney(accessToken, topUpOrder);
@@ -164,18 +165,22 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	@Override
-	public TopUpOrderStatus getTopUpProcessingStatus(String orderID, String accessTokenID) throws ServiceInventoryException {
-		TopUpOrderStatus topUpStatus = getTopUpOrderResults(orderID, accessTokenID).getStatus();
+	public Transaction.Status getTopUpProcessingStatus(String orderID, String accessTokenID) throws ServiceInventoryException {
+		TopUpOrder topUpOrder = getTopUpOrderResults(orderID, accessTokenID);
+		Transaction.Status topUpStatus = topUpOrder.getStatus();
+		FailStatus failStatus = topUpOrder.getFailStatus();
 
-		if(topUpStatus == TopUpOrderStatus.BANK_FAILED) {
-			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_BANK_FAILED,
-					"bank confirmation processing fail.");
-		} else if (topUpStatus == TopUpOrderStatus.UMARKET_FAILED) {
-			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_UMARKET_FAILED,
-					"u-market confirmation processing fail.");
-		} else if (topUpStatus == TopUpOrderStatus.FAILED){
-			throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_FAILED,
-					"confirmation processing fail.");
+		if(topUpStatus == Transaction.Status.FAILED) {
+			if (failStatus == FailStatus.BANK_FAILED) {
+				throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_BANK_FAILED,
+						"bank confirmation processing fail.");
+			} else if (failStatus == FailStatus.UMARKET_FAILED) {
+				throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_UMARKET_FAILED,
+						"u-market confirmation processing fail.");
+			} else {
+				throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_FAILED,
+						"confirmation processing fail.");
+			}
 		}
 
 		return topUpStatus;

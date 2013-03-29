@@ -10,20 +10,22 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@class")
-@JsonSubTypes(value = { @Type(value = TopUpQuote.class, name = "topUpQuote") })
+@JsonSubTypes(value = { @Type(value = TopUpOrder.class, name = "topUpOrder") })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public abstract class DraftTransaction implements Serializable {
+public abstract class Transaction implements Serializable {
 
-	private static final long serialVersionUID = -6229800193403162563L;
+	private static final long serialVersionUID = 4025763625819165975L;
 
 	protected String ID;
-	protected String accessTokenID;
 	protected String type;
+	protected DraftTransaction draftTransaction;
 	protected Status status;
 
-	public static enum Status {
-		CREATED("CREATED"), OTP_SENT("SENT"), OTP_CONFIRMED("CONFIRMED");
+	public enum Status {
+
+		CREATED("CREATED"), VERIFIED("VERIFIED"), PROCESSING("PROCESSING"),
+		SUCCESS("SUCCESS"), FAILED("FAILED");
 
 		private String status;
 
@@ -44,20 +46,20 @@ public abstract class DraftTransaction implements Serializable {
 		ID = iD;
 	}
 
-	public String getAccessTokenID() {
-		return accessTokenID;
-	}
-
-	public void setAccessTokenID(String accessTokenID) {
-		this.accessTokenID = accessTokenID;
-	}
-
 	public String getType() {
 		return type;
 	}
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public DraftTransaction getDraftTransaction() {
+		return draftTransaction;
+	}
+
+	public void setDraftTransaction(DraftTransaction draftTransaction) {
+		this.draftTransaction = draftTransaction;
 	}
 
 	public Status getStatus() {

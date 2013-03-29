@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrderStatus;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
@@ -53,7 +53,7 @@ public class AsyncService {
 
 			logger.debug("start time " + new Date());
 
-			topUpOrder.setStatus(TopUpOrderStatus.PROCESSING);
+			topUpOrder.setStatus(Transaction.Status.PROCESSING);
 			orderRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
 
 			StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
@@ -69,25 +69,25 @@ public class AsyncService {
 				topUpOrder.setConfirmationInfo(info);
 			}
 
-			topUpOrder.setStatus(TopUpOrderStatus.SUCCESS);
+			topUpOrder.setStatus(Transaction.Status.SUCCESS);
 			logger.error("AsyncService.topUpUtibaEwallet.resultTransactionID: "+moneyResponse.getTransactionId());
 		} catch (EwalletException e) {
 			logger.error("AsyncService.topUpUtibaEwallet.resultCode: "+e.getCode());
 			logger.error("AsyncService.topUpUtibaEwallet.resultNamespace: "+e.getNamespace());
 			String errorCode = e.getCode();
 			if (errorCode.equals("24003") || errorCode.equals("24008") || errorCode.equals("24010") || errorCode.equals("25007")) {
-				topUpOrder.setStatus(TopUpOrderStatus.BANK_FAILED);
+				topUpOrder.setFailStatus(TopUpOrder.FailStatus.BANK_FAILED);
 			} else if (errorCode.equals("5") || errorCode.equals("6") ||
 					errorCode.equals("7") || errorCode.equals("19") ||
 					errorCode.equals("27") || errorCode.equals("38")) {
-				topUpOrder.setStatus(TopUpOrderStatus.UMARKET_FAILED);
+				topUpOrder.setFailStatus(TopUpOrder.FailStatus.UMARKET_FAILED);
 			} else {
-				topUpOrder.setStatus(TopUpOrderStatus.FAILED);
+				topUpOrder.setFailStatus(TopUpOrder.FailStatus.UNKNOWN_FAILED);
 			}
 			logger.error("AsyncService.topUpUtibaEwallet.resultCode: "+e.getCode());
 			logger.error("AsyncService.topUpUtibaEwallet.resultNamespace: "+e.getNamespace());
 		} catch (Exception e) {
-			topUpOrder.setStatus(TopUpOrderStatus.FAILED);
+			topUpOrder.setFailStatus(TopUpOrder.FailStatus.UNKNOWN_FAILED);
 		}
 
 		orderRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);

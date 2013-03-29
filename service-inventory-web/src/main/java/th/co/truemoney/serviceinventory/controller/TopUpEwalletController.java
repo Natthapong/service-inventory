@@ -13,8 +13,8 @@ import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrderStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
@@ -76,7 +76,7 @@ public class TopUpEwalletController {
 	}
 
 	@RequestMapping(value = "/top-up/order/{orderID}/status", method = RequestMethod.GET)
-	public @ResponseBody TopUpOrderStatus getOrderStatus(@PathVariable String orderID,
+	public @ResponseBody Transaction.Status getOrderStatus(@PathVariable String orderID,
 		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
 				throws ServiceInventoryException {
 

@@ -19,8 +19,8 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryCl
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrderStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -79,25 +79,25 @@ public class TopUpServiceClientWorkflowTest {
 
 		// get order status
 		Thread.sleep(100);
-		TopUpOrderStatus topUpOrderStatus = topUpService.getTopUpProcessingStatus(quote.getID(), accessToken);
+		Transaction.Status topUpOrderStatus = topUpService.getTopUpProcessingStatus(quote.getID(), accessToken);
 		assertNotNull(topUpOrderStatus);
 
 		// retry while processing
-		while (topUpOrderStatus == TopUpOrderStatus.PROCESSING) {
+		while (topUpOrderStatus == Transaction.Status.PROCESSING) {
 			topUpOrderStatus = topUpService.getTopUpProcessingStatus(quote.getID(), accessToken);
 			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
 
 		// retry until success
-		assertEquals(TopUpOrderStatus.SUCCESS, topUpOrderStatus);
+		assertEquals(Transaction.Status.SUCCESS, topUpOrderStatus);
 
 		TopUpOrder topUpOrder = topUpService.getTopUpOrderResults(quote.getID(), accessToken);
 
 		assertNotNull(topUpOrder);
 		assertNotNull(topUpOrder.getQuote());
 		assertNotNull(topUpOrder.getConfirmationInfo());
-		assertEquals(TopUpOrderStatus.SUCCESS, topUpOrder.getStatus());
+		assertEquals(Transaction.Status.SUCCESS, topUpOrder.getStatus());
 	}
 
 	@Test
@@ -125,7 +125,7 @@ public class TopUpServiceClientWorkflowTest {
 
 			// max == 3,000
 			try {
-				TopUpQuote quote = topUpService.createTopUpQuoteFromDirectDebit("1", new BigDecimal(3010), accessToken);
+				topUpService.createTopUpQuoteFromDirectDebit("1", new BigDecimal(3010), accessToken);
 				Assert.fail("should fail because user can not top up over 3000 baht");
 			} catch (ServiceInventoryException ex) {
 				Assert.assertEquals("20002", ex.getErrorCode());
