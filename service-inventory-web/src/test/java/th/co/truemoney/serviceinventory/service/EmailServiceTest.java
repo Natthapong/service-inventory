@@ -117,7 +117,7 @@ public class EmailServiceTest {
 		try {
 			doThrow(new MessagingException("MessagingException")).when(javaMailSender).send(any(MimeMessage.class));
 			emailService.sendWelcomeEmail("mart@tmn.com", null);
-			Assert.fail("fail with MessagingException");
+			verify(javaMailSender).send(any(MimeMessage.class));
 		} catch (Exception e) {
 			assertNotNull(e);
 		}
@@ -128,7 +128,7 @@ public class EmailServiceTest {
 		try {
 			when(configuration.getTemplate(anyString())).thenThrow(new IOException("IOException"));
 			emailService.sendWelcomeEmail("mart@tmn.com", null);
-			Assert.fail("fail with IOException");
+			verify(configuration).getTemplate(anyString());
 		} catch (IOException e) {
 			assertNotNull(e);			
 		}
@@ -139,7 +139,7 @@ public class EmailServiceTest {
 		try {
 			when(freeMarkerConfigurationFactory.createConfiguration()).thenThrow(new TemplateException("fail", Environment.getCurrentEnvironment()));
 			emailService.sendWelcomeEmail("mart@tmn.com", null);
-			Assert.fail("fail with TemplateException");
+			verify(freeMarkerConfigurationFactory).createConfiguration();
 		} catch (TemplateException e) {
 			assertNotNull(e);			
 		}

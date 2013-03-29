@@ -21,6 +21,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -30,6 +31,7 @@ import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
 public class P2PTransferServiceImpl implements P2PTransferService {
+	
 	private static final Logger logger = LoggerFactory.getLogger(P2PTransferServiceImpl.class);
 
 	@Autowired
@@ -55,15 +57,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 
 		//--- Send to verify amount ---//
 		StandardMoneyResponse verifyResponse;
-		try {
-			verifyResponse = verifyEwalletTransfer(toMobileNumber, amount, accessToken);
-		} catch (EwalletException e) {
-			throw new ServiceInventoryException(e.getCode(), "verify tranfer fail.", e.getNamespace());
-		} catch (ServiceUnavailableException e) {
-			throw new ServiceInventoryException(
-					Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
-					e.getMessage(), e.getNamespace());
-		}
+		verifyResponse = verifyEwalletTransfer(toMobileNumber, amount, accessToken);
 
 		//--- Generate Response ---//
 		String fullName = getFullNameFromStandardMoneyResponse(verifyResponse);
@@ -84,14 +78,25 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 
 	private StandardMoneyResponse verifyEwalletTransfer(String mobileNumber, BigDecimal amount,
 			AccessToken accessToken) {
-		VerifyTransferRequest verifyRequest = new VerifyTransferRequest();
-		verifyRequest.setChannelId(accessToken.getChannelID());
-		verifyRequest.setAmount(amount);
-		verifyRequest.setTarget(mobileNumber);
+		try {
+			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
+			
+			VerifyTransferRequest verifyRequest = new VerifyTransferRequest();
+			verifyRequest.setChannelId(accessToken.getChannelID());
+			verifyRequest.setAmount(amount);
+			verifyRequest.setTarget(mobileNumber);
+			verifyRequest.setSecurityContext(securityContext);
 
-		StandardMoneyResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
-
-		return verifyResponse;
+			StandardMoneyResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
+			
+			return verifyResponse;
+		} catch (EwalletException e) {
+			throw new ServiceInventoryException(e.getCode(), "verify tranfer fail.", e.getNamespace());
+		} catch (ServiceUnavailableException e) {
+			throw new ServiceInventoryException(
+					Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+					e.getMessage(), e.getNamespace());
+		}	
 	}
 
 	private String getFullNameFromStandardMoneyResponse(StandardMoneyResponse resp) {

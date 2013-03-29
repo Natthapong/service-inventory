@@ -5,8 +5,6 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +31,6 @@ import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
 public class TopUpServiceImpl implements TopUpService {
-
-	private static final Logger logger = LoggerFactory.getLogger(TopUpServiceImpl.class);
 
 	@Autowired
 	private EnhancedDirectDebitSourceOfFundService directDebitSourceService;

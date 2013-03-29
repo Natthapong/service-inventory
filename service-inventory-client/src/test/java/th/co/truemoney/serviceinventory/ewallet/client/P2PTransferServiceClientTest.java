@@ -101,12 +101,8 @@ public class P2PTransferServiceClientTest {
 
 	@Test
 	public void getTransactionStatusFail(){
-		try {
-			p2pTransferServiceClient.getTransactionStatus("0001", "12345");
-			Assert.fail();
-		} catch (ServiceInventoryException e) {
-			assertEquals("Transfer order not found.", e.getErrorDescription());
-		}
+		P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.getTransactionStatus("0001", "12345");
+		assertEquals("UMARKET_FAILED", p2pTransactionStatus.getP2pTransferStatus());
 	}
 
 	@Test

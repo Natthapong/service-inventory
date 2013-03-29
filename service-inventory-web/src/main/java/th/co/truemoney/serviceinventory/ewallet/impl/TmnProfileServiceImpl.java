@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
@@ -70,6 +71,9 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Autowired @Qualifier("tmnProfilePin")
 	private String tmnProfilePin;
+	
+	@Autowired
+	private EmailService emailService;
 
 
 	@Override
@@ -226,12 +230,16 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 				"otp string not match");
 		}
 		TmnProfile tmnProfile = profileRepository.getTmnProfile(otp.getMobileNumber());
-
-		CreateTmnProfileRequest createTmnProfileRequest = createTmnProfileRequest(channelID, tmnProfile);
-		 
-		tmnProfileProxy.createTmnProfile(createTmnProfileRequest);
+		
+		performCreateProfile(channelID, tmnProfile);
+		
+		performSendWelcomeEmail(tmnProfile.getEmail());
 		
 		return tmnProfile;
+	}
+
+	private void performSendWelcomeEmail(String email) {
+		emailService.sendWelcomeEmail(email, null);
 	}
 
 	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
@@ -272,11 +280,26 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		    tmnProfileAdminProxy.isCreatable(isCreatableRequest);
         } catch (EwalletException e) {
             throw new ServiceInventoryException(e.getCode(),
-            		"tmnProfileAdminProxy.isCreatable response " + e.getCode());
+            		"tmnProfileAdminProxy.isCreatable response " + e.getCode(),
+            		e.getNamespace());
         } catch (ServiceUnavailableException e) {
             throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
                     e.getMessage(), e.getNamespace());
         }
+    }
+    
+    private void performCreateProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
+    	try {
+    		CreateTmnProfileRequest createTmnProfileRequest = createTmnProfileRequest(channelID, tmnProfile);
+    		tmnProfileProxy.createTmnProfile(createTmnProfileRequest);
+        } catch (EwalletException e) {
+            throw new ServiceInventoryException(e.getCode(),
+            		"tmnProfileProxy.createTmnProfile response " + e.getCode(),
+            		e.getNamespace());
+        } catch (ServiceUnavailableException e) {
+            throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
+                    e.getMessage(), e.getNamespace());
+        }    	
     }
 
     private IsCreatableRequest createIsCreatableRequest(Integer channelID, String loginID) {
@@ -284,12 +307,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
         isCreatableRequest.setChannelId(channelID);
         isCreatableRequest.setLoginId(loginID);
         
-        logger.debug("initiator: "+tmnProfileInitiator);
-        logger.debug("pin: "+tmnProfilePin);
-        
 		String encryptedPin = HashPasswordUtil.encryptSHA1(tmnProfileInitiator.toLowerCase()+tmnProfilePin).toLowerCase();
-
-        logger.debug("pin encrypted: "+encryptedPin);
         
         AdminSecurityContext adminSecurityContext = new AdminSecurityContext(tmnProfileInitiator, encryptedPin);
         isCreatableRequest.setAdminSecurityContext(adminSecurityContext);
@@ -314,6 +332,10 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		signonRequest.setChannelId(channelID);
 
 		return signonRequest;
+	}
+
+	public void setEmailService(EmailService emailService) {
+		this.emailService = emailService;
 	}
 
 

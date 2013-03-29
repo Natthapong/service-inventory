@@ -41,11 +41,11 @@ public class EmailService {
 	@Autowired
 	FreeMarkerConfigurationFactory freeMarkerConfigurationFactory;	
 	
-	public void sendWelcomeEmail(String receiverEmail, Map<String, String> map) throws IOException, TemplateException {
+	public void sendWelcomeEmail(String receiverEmail, Map<String, String> map) {
 		sendEmail(receiverEmail, welcomeSubject, welcomeTemplate, map);
 	}
 	
-	public void sendEmail(String receiverEmail, String subject, String emailTemplate, Map<String, String> map) throws IOException, TemplateException {
+	public void sendEmail(String receiverEmail, String subject, String emailTemplate, Map<String, String> map) {
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper;
 		try {
@@ -63,10 +63,15 @@ public class EmailService {
 			logger.error(e.getMessage());			
 			logger.error("EmailService.sendWelcomeEmail.receiver.email : "+receiverEmail);
 		} catch (IOException e) {
-			throw e;
+			logger.error(e.getMessage());			
+			logger.error("EmailService.sendWelcomeEmail.receiver.email : "+receiverEmail);
 		} catch (TemplateException e) {
-			throw e;
-		} 	
+			logger.error(e.getMessage());			
+			logger.error("EmailService.sendWelcomeEmail.receiver.email : "+receiverEmail);
+		} catch (Throwable e) {
+			logger.error(e.getMessage());			
+			logger.error("EmailService.sendWelcomeEmail.receiver.email : "+receiverEmail);
+		}	
 	}
 	
 	public void setJavaMailSender(JavaMailSender javaMailSender) {

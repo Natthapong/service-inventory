@@ -26,6 +26,7 @@ public abstract class BaseException extends RuntimeException {
 		public static final String CONFIRM_UMARKET_FAILED = "1006";
 		public static final String CONFIRM_FAILED = "1007";
 		public static final String PROFILE_NOT_FOUND = "1008";
+		public static final String SEND_EMAIL_FAIL	 = "1009";
 
 		//profile
 		public static final String INVALID_PROFILE_TYPE 	= "10000";

@@ -45,7 +45,7 @@ public class SourceOfFundServiceClientTest {
 			Assert.fail();
 		}catch(ServiceInventoryException e){
 			assertEquals("401", e.getErrorCode());
-			assertEquals("Unauthorized access", e.getErrorDescription());
+			assertEquals("unauthorized access", e.getErrorDescription());
 		}
 	}
 
