@@ -98,7 +98,6 @@ public class CreateTmnProfileTest {
 			this.tmnProfileServiceImpl.createProfile(channelID, tmnProfile);
 		} catch (ServiceInventoryException e) {
 			assertEquals("error code", e.getCode());
-			assertEquals("error namespace", e.getNamespace());
 		}
 
 		//then

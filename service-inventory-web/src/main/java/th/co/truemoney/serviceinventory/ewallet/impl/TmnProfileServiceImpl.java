@@ -209,9 +209,12 @@ public class TmnProfileServiceImpl implements TmnProfileService {
     public OTP createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
        	performIsCreatable(channelID, tmnProfile.getMobileNumber());       	
        	OTP otp = otpService.send(tmnProfile.getMobileNumber());
-       	TmnProfile tmnProfileFromRepo = profileRepository.getTmnProfile(tmnProfile.getMobileNumber());
-       	if (tmnProfileFromRepo != null) {
-       		profileRepository.saveProfile(tmnProfile);
+       	try {
+	       	profileRepository.getTmnProfile(tmnProfile.getMobileNumber());
+       	} catch (ServiceInventoryException e) {
+	       	if (e.getCode() != null && e.getCode().equals(ServiceInventoryException.Code.PROFILE_NOT_FOUND)) {
+	       		profileRepository.saveProfile(tmnProfile);
+	       	}
        	}
        	return otp;
     }
@@ -269,7 +272,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		    tmnProfileAdminProxy.isCreatable(isCreatableRequest);
         } catch (EwalletException e) {
             throw new ServiceInventoryException(e.getCode(),
-            		"tmnProfileAdminProxy.isCreatable response" + e.getCode(), e.getNamespace());
+            		"tmnProfileAdminProxy.isCreatable response " + e.getCode());
         } catch (ServiceUnavailableException e) {
             throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
                     e.getMessage(), e.getNamespace());
@@ -281,8 +284,12 @@ public class TmnProfileServiceImpl implements TmnProfileService {
         isCreatableRequest.setChannelId(channelID);
         isCreatableRequest.setLoginId(loginID);
         
-        tmnProfilePin = tmnProfileInitiator.toLowerCase()+tmnProfilePin;
-        String encryptedPin = HashPasswordUtil.encryptSHA1(tmnProfilePin).toLowerCase();
+        logger.debug("initiator: "+tmnProfileInitiator);
+        logger.debug("pin: "+tmnProfilePin);
+        
+		String encryptedPin = HashPasswordUtil.encryptSHA1(tmnProfileInitiator.toLowerCase()+tmnProfilePin).toLowerCase();
+
+        logger.debug("pin encrypted: "+encryptedPin);
         
         AdminSecurityContext adminSecurityContext = new AdminSecurityContext(tmnProfileInitiator, encryptedPin);
         isCreatableRequest.setAdminSecurityContext(adminSecurityContext);

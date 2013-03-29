@@ -42,7 +42,7 @@ public class OTPService {
 			logger.debug("==============================");
 
 			SmsRequest smsRequest = new SmsRequest(smsSender, mobileNumber,
-					"เธฃเธซเธฑเธช OTP เธ�เธทเธญ " + otp.getOtpString() + " (Ref: " + otp.getReferenceCode() + ")");
+					"รหัส OTP คือ " + otp.getOtpString() + " (Ref: " + otp.getReferenceCode() + ")");
 			SmsResponse smsResponse = smsProxyImpl.send(smsRequest);
 			if (!smsResponse.isSuccess()) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");

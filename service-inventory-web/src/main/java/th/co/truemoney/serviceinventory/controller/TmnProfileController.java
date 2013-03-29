@@ -68,9 +68,7 @@ public class TmnProfileController {
 		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
 		@RequestBody String email)
 			throws ServiceInventoryException {
-		if (channelID == -1) {
-			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
-		}
+		validateRequestParam(channelID);
 		return tmnProfileService.validateEmail(channelID, email);
 	}
 

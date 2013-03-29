@@ -89,6 +89,7 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 		try {
 			List<DirectDebit> directDebitList = new ArrayList<DirectDebit>();
 			ListSourceRequest listSourceRequest = createListSourceRequest(channelID, truemoneyID, sessionID);
+			listSourceRequest.setSourceType("debit");
 			ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(listSourceRequest);
 			SourceContext[] sourceContexts = listSourceResponse.getSourceList();
 			if (sourceContexts != null && sourceContexts.length > 0) {
