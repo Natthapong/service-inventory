@@ -53,7 +53,7 @@ public class TmnProfileServiceClientTest {
 		OTP otp = client.createProfile(41, tmnProfile);
 		assertNotNull(otp.getReferenceCode());
 	}
-	
+
 	@Test
 	public void shouldFailCreateProfile(){
 		try{
@@ -63,27 +63,29 @@ public class TmnProfileServiceClientTest {
 			tmnProfile.setFullname("Tanathip");
 			tmnProfile.setThaiID("1212121212121");
 			OTP otp = client.createProfile(41, tmnProfile);
+			fail();
 		}catch(ServiceInventoryException e){
 			assertEquals("500", e.getErrorCode());
 			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
 		}
 	}
-	
+
 	@Test
 	public void shouldPassEmailIsExistRegistered(){
 		String response = client.validateEmail(41, "tanathip.se@email.com");
 		assertEquals("tanathip.se@email.com", response);
 	}
-	
-	@Test 
+
+	@Test
 	public void shouldFailCheckEmailIsExistRegistered(){
 		try {
 			client.validateEmail(-1, "tanathip.se@email.com");
+			fail();
 		} catch (ServiceInventoryException e) {
 			assertEquals("Validate error: channelID is null or empty.", e.getErrorDescription());
 		}
 	}
-	
+
 	@Test
 	public void wrongUserNameShouldFail() {
 
@@ -115,19 +117,19 @@ public class TmnProfileServiceClientTest {
 			assertNotSame("0", e.getErrorCode());
 		}
 	}
-	
+
 	@Test
 	public void getBalance() {
 		BigDecimal balance = client.getEwalletBalance("12345");
 		assertEquals(new BigDecimal("2000.00"), balance);
 	}
 
-	@Test 
+	@Test
 	public void checkUserProfileUrl() {
 		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/profile/{accesstokenID}/{checksum}";
 		String checkSum = EncryptUtil.buildHmacSignature("12345", "12345"
 				+ SALT);
-		
+
 			RestTemplate restTemplate = mock(RestTemplate.class);
 
 			ResponseEntity<TmnProfile> responseEntity = new ResponseEntity<TmnProfile>(new TmnProfile(), HttpStatus.OK);
