@@ -10,6 +10,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
@@ -34,9 +35,16 @@ public class MemRepositoriesConfig {
 	@Bean
 	public TransactionRepository memOrderRepository() {
 		TransactionRepository transactionRepository = new TransactionMemoryRepository();
+		
 		transactionRepository.saveP2PTransaction(new P2PTransaction(
 				new P2PDraftTransaction("0868185055", new BigDecimal("1111"),
 						"777", "12345", "Tanathip", "9898")));
+		
+		TopUpQuote topUpQuote =  new TopUpQuote();
+		topUpQuote.setID("xxxx");
+		topUpQuote.setAccessTokenID("12345");
+		transactionRepository.saveTopUpEwalletDraftTransaction(topUpQuote, topUpQuote.getAccessTokenID());
+		
 		return transactionRepository;
 	}
 
