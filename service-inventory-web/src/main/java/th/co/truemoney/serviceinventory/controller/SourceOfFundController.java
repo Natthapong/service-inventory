@@ -24,7 +24,7 @@ public class SourceOfFundController {
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
-	@RequestMapping(value = "/profile/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
+	@RequestMapping(value = "/ewallet/profile/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
 	public @ResponseBody DirectDebit[] listDirectDebitSources(
 			@PathVariable("username") String username,
 			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID)

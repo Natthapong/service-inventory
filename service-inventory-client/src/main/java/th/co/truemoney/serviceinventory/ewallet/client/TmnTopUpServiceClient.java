@@ -39,7 +39,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 		HttpEntity<TopUpQuote> requestEntity = new HttpEntity<TopUpQuote>(quote, headers);
 
 		ResponseEntity<TopUpQuote> responseEntity = restTemplate.exchange(
-				endPoints.getCreateTopUpQuoteFromDirectDebitUrl(), HttpMethod.POST,
+				endPoints.getCreateTopUpQuoteFromDirectDebitURL(), HttpMethod.POST,
 				requestEntity, TopUpQuote.class,
 				sourceOfFundID, accessTokenID);
 
@@ -52,7 +52,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 		HttpEntity<TopUpQuote> requestEntity = new HttpEntity<TopUpQuote>(headers);
 
 		ResponseEntity<TopUpQuote> responseEntity = restTemplate.exchange(
-				endPoints.getTopUpQuoteDetailsUrl(), HttpMethod.GET,
+				endPoints.getTopUpQuoteDetailsURL(), HttpMethod.GET,
 				requestEntity, TopUpQuote.class,
 				quoteID, accessTokenID);
 
@@ -66,7 +66,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 		HttpEntity<TopUpOrder> requestEntity = new HttpEntity<TopUpOrder>(headers);
 
 		ResponseEntity<OTP> responseEntity = restTemplate.exchange(
-				endPoints.getsendOTPConfirmUrl(), HttpMethod.POST,
+				endPoints.getsendOTPConfirmURL(), HttpMethod.POST,
 				requestEntity, OTP.class,
 				quoteID, accessTokenID);
 
@@ -79,7 +79,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp, headers);
 
 		ResponseEntity<DraftTransaction.Status> responseEntity = restTemplate.exchange(
-				endPoints.getConfirmOTPUrl(), HttpMethod.PUT,
+				endPoints.getConfirmOTPURL(), HttpMethod.PUT,
 				requestEntity, DraftTransaction.Status.class,
 				quoteID, otp.getReferenceCode(), accessTokenID);
 
@@ -92,7 +92,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 		HttpEntity<Transaction.Status> requestEntity = new HttpEntity<Transaction.Status>(headers);
 
 		ResponseEntity<Transaction.Status> responseEntity = restTemplate.exchange(
-				endPoints.getTopUpOrderStatusUrl(), HttpMethod.GET,
+				endPoints.getTopUpOrderStatusURL(), HttpMethod.GET,
 				requestEntity, Transaction.Status.class,
 				orderID , accessTokenID);
 
@@ -105,7 +105,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 		HttpEntity<TopUpOrder> requestEntity = new HttpEntity<TopUpOrder>(headers);
 
 		ResponseEntity<TopUpOrder> responseEntity = restTemplate.exchange(
-				endPoints.getTopUpOrderDetailsUrl(), HttpMethod.GET,
+				endPoints.getTopUpOrderDetailsURL(), HttpMethod.GET,
 				requestEntity, TopUpOrder.class, orderID, accessTokenID);
 
 		return responseEntity.getBody();

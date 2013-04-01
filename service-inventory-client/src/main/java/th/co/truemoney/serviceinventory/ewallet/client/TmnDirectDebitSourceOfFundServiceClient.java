@@ -34,7 +34,7 @@ public class TmnDirectDebitSourceOfFundServiceClient implements DirectDebitSourc
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<DirectDebit[]> responseEntity = restTemplate.exchange(
-				environmentConfig.getUserDirectDebitSourceOfFundsUrl(), HttpMethod.GET,
+				environmentConfig.getUserDirectDebitSourceOfFundsURL(), HttpMethod.GET,
 				requestEntity, DirectDebit[].class,
 				username, accessTokenID);
 

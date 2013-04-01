@@ -39,7 +39,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 
 		HttpEntity<Login> requestEntity = new HttpEntity<Login>(login, headers);
 
-		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getLoginUrl(), HttpMethod.POST, requestEntity, String.class, channelID);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getLoginURL(), HttpMethod.POST, requestEntity, String.class, channelID);
 
 		String accessToken = responseEntity.getBody();
 
@@ -52,7 +52,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(headers);
 
 		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(
-				endPoints.getUserProfileUrl(),
+				endPoints.getUserProfileURL(),
 					HttpMethod.GET, requestEntity, TmnProfile.class, accesstokenID);
 
 		TmnProfile tmnProfile = responseEntity.getBody();
@@ -67,7 +67,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 
 		HttpEntity<BigDecimal> requestEntity = new HttpEntity<BigDecimal>(headers);
 		ResponseEntity<BigDecimal> responseEntity = restTemplate.exchange(
-				endPoints.getBalance(),
+				endPoints.getBalanceURL(),
 					HttpMethod.GET, requestEntity, BigDecimal.class, accessTokenID);
 
 		return responseEntity.getBody();
@@ -78,21 +78,21 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	public String logout(String accessTokenID) throws ServiceInventoryException {
 
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
-		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getLogoutUrl(), HttpMethod.POST, requestEntity, String.class, accessTokenID);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getLogoutURL(), HttpMethod.POST, requestEntity, String.class, accessTokenID);
 		return responseEntity.getBody();
 	}
 
 	@Override
 	public String validateEmail(Integer channelID, String email) {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(email,headers);
-		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getValidateEmailUrl(), HttpMethod.POST, requestEntity, String.class, channelID);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getValidateEmailURL(), HttpMethod.POST, requestEntity, String.class, channelID);
 		return responseEntity.getBody();
 	}
 
 	@Override
 	public OTP createProfile(Integer channelID, TmnProfile tmnProfile) {
 		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(tmnProfile,headers);
-		ResponseEntity<OTP> responseEntity = restTemplate.exchange(endPoints.getCreateTruemoneyProfileUrl(), HttpMethod.POST, 
+		ResponseEntity<OTP> responseEntity = restTemplate.exchange(endPoints.getCreateTruemoneyProfileURL(), HttpMethod.POST, 
 				requestEntity, OTP.class, channelID);
 		return responseEntity.getBody();
 	}
@@ -100,7 +100,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	@Override
 	public TmnProfile confirmCreateProfile(Integer channelID, OTP otp) {
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
-		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getConfirmCreateTruemoneyProfileUrl(), HttpMethod.POST, 
+		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getConfirmCreateTruemoneyProfileURL(), HttpMethod.POST, 
 				requestEntity, TmnProfile.class, channelID);
 		return responseEntity.getBody();
 	}

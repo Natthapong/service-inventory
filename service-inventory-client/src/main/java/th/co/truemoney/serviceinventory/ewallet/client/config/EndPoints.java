@@ -8,59 +8,59 @@ public class EndPoints {
 	@Autowired @Qualifier("endpoint.host")
 	private String host = "https://dev.truemoney.co.th";
 
-	public String getLoginUrl() {
+	public String getLoginURL() {
 		return host + "/service-inventory-web/v1/ewallet/login?channelID={channelID}";
 	}
 
-	public String getLogoutUrl() {
+	public String getLogoutURL() {
 		return host + "/service-inventory-web/v1/ewallet/logout/{accessTokenID}";
 	}
 
-	public String getUserDirectDebitSourceOfFundsUrl() {
-		return host + "/service-inventory-web/v1/profile/{username}/source-of-fund/direct-debits?accessTokenID={accessTokenID}";
+	public String getUserDirectDebitSourceOfFundsURL() {
+		return host + "/service-inventory-web/v1/ewallet/profile/{username}/source-of-fund/direct-debits?accessTokenID={accessTokenID}";
 	}
 
-	public String getUserProfileUrl() {
+	public String getUserProfileURL() {
 		return host + "/service-inventory-web/v1/ewallet/profile/{accesstokenID}";
 	}
 
-	public String getBalance() {
+	public String getBalanceURL() {
 		return host + "/service-inventory-web/v1/ewallet/balance/{accesstokenID}";
 	}
 
-	public String getCreateTopUpQuoteFromDirectDebitUrl() {
+	public String getCreateTopUpQuoteFromDirectDebitURL() {
 		return host + "/service-inventory-web/v1/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}";
 	}
 
-	public String getTopUpQuoteDetailsUrl() {
+	public String getTopUpQuoteDetailsURL() {
 		return host + "/service-inventory-web/v1/top-up/quote/{quoteID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getsendOTPConfirmUrl() {
+	public String getsendOTPConfirmURL() {
 		return host + "/service-inventory-web/v1/top-up/quote/{quoteID}/otp?accessTokenID={accessTokenID}";
 	}
 
-	public String getConfirmOTPUrl() {
+	public String getConfirmOTPURL() {
 		return host + "/service-inventory-web/v1/top-up/quote/{quoteID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
 
-	public String getTopUpOrderStatusUrl() {
+	public String getTopUpOrderStatusURL() {
 		return host + "/service-inventory-web/v1/top-up/order/{orderID}/status?accessTokenID={accessTokenID}";
 	}
 
-	public String getTopUpOrderDetailsUrl() {
+	public String getTopUpOrderDetailsURL() {
 		return host + "/service-inventory-web/v1/top-up/order/{orderID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getValidateEmailUrl(){
+	public String getValidateEmailURL(){
 		return host + "/service-inventory-web/v1/ewallet/profiles/validate-email?channelID={channelID}";
 	}
 
-	public String getCreateTruemoneyProfileUrl(){
+	public String getCreateTruemoneyProfileURL(){
 		return host + "/service-inventory-web/v1/ewallet/profiles?channelID={channelID}";
 	}
 
-	public String getConfirmCreateTruemoneyProfileUrl(){
+	public String getConfirmCreateTruemoneyProfileURL(){
 		return host + "/service-inventory-web/v1/ewallet/profiles/verify-otp?channelID={channelID}";
 	}
 
