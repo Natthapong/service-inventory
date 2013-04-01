@@ -33,7 +33,7 @@ public class TmnTransferServiceClientTest {
 	@Autowired
 	TmnTransferServiceClient p2pTransferServiceClient;
 
-	@Test
+	@Test 
 	public void createDraftTransactionSuccess(){
 		P2PDraftTransaction p2pDraftTransaction = p2pTransferServiceClient.createDraftTransaction("0868185055", new BigDecimal(2000), "12345");
 		assertNotNull(p2pDraftTransaction);

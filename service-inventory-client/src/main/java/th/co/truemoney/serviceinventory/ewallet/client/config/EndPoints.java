@@ -77,7 +77,7 @@ public class EndPoints {
 	}
 
 	public String getP2PConfirmDraftTransactionURL(){
-		return host + "/service-inventory-web/v1/transfer/transaction/{draftTransactionID}/otp/{refCode}?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
 
 	public String getP2PTransactionStatusURL(){
@@ -85,6 +85,6 @@ public class EndPoints {
 	}
 
 	public String getP2PTransactionInfoURL(){
-		return host + "/service-inventory-web/v1/transaction/{transactionID}?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/transfer/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
 }

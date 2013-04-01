@@ -104,7 +104,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<P2PTransaction> responseEntity = restTemplate.exchange(
-				endPoints.getP2PTransactionStatusURL(), HttpMethod.GET,
+				endPoints.getP2PTransactionInfoURL(), HttpMethod.GET,
 				requestEntity, P2PTransaction.class,
 				transactionID, accessTokenID);
 
