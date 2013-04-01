@@ -25,17 +25,17 @@ public class AsyncTopUpEwalletProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(AsyncTopUpEwalletProcessor.class);
 
 	@Autowired
-	private TransactionRepository orderRepo;
+	private TransactionRepository transactionRepo;
 
 	@Autowired
 	private EwalletSoapProxy ewalletProxy;
 
-	public TransactionRepository getOrderRepo() {
-		return orderRepo;
+	public TransactionRepository getTransactionRepo() {
+		return transactionRepo;
 	}
 
-	public void setOrderRepo(TransactionRepository orderRepo) {
-		this.orderRepo = orderRepo;
+	public void setTransactionRepo(TransactionRepository transactionRepo) {
+		this.transactionRepo = transactionRepo;
 	}
 
 	public EwalletSoapProxy getEwalletProxy() {
@@ -54,7 +54,7 @@ public class AsyncTopUpEwalletProcessor {
 			logger.debug("start time " + new Date());
 
 			topUpOrder.setStatus(Transaction.Status.PROCESSING);
-			orderRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
+			transactionRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
 
 			StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
 			logger.debug("finished time " + new Date());
@@ -90,7 +90,7 @@ public class AsyncTopUpEwalletProcessor {
 			topUpOrder.setFailStatus(TopUpOrder.FailStatus.UNKNOWN_FAILED);
 		}
 
-		orderRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
+		transactionRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
 
 		return new AsyncResult<TopUpOrder> (topUpOrder);
 	}

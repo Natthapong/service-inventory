@@ -48,7 +48,7 @@ public class TopUpServiceImpl implements TopUpService {
 	private AccessTokenRepository accessTokenRepo;
 
 	@Autowired
-	private TransactionRepository orderRepo;
+	private TransactionRepository transactionRepo;
 
 
 	@Override
@@ -73,7 +73,7 @@ public class TopUpServiceImpl implements TopUpService {
 		topUpQuote.setSourceOfFund(directDebitSource);
 		topUpQuote.setStatus(DraftTransaction.Status.CREATED);
 
-		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
+		transactionRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
 
 		return topUpQuote;
 	}
@@ -118,7 +118,7 @@ public class TopUpServiceImpl implements TopUpService {
 	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID)
 			throws ServiceInventoryException {
 
-		return orderRepo.getTopUpEwalletDraftTransaction(quoteID, accessTokenID);
+		return transactionRepo.getTopUpEwalletDraftTransaction(quoteID, accessTokenID);
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class TopUpServiceImpl implements TopUpService {
 		topUpQuote.setOtpReferenceCode(otp.getReferenceCode());
 		topUpQuote.setStatus(DraftTransaction.Status.OTP_SENT);
 
-		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
+		transactionRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
 
 		return otp;
 	}
@@ -149,11 +149,11 @@ public class TopUpServiceImpl implements TopUpService {
 		}
 
 		topUpQuote.setStatus(DraftTransaction.Status.OTP_CONFIRMED);
-		orderRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
+		transactionRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
 
 		TopUpOrder topUpOrder = new TopUpOrder(topUpQuote);
 		topUpOrder.setStatus(Transaction.Status.VERIFIED);
-		orderRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
+		transactionRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
 
 		performTopUpMoney(accessToken, topUpOrder);
 
@@ -183,7 +183,7 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	public TopUpOrder getTopUpOrderResults(String orderID, String accessTokenID) throws ServiceInventoryException {
-		return orderRepo.getTopUpEwalletTransaction(orderID, accessTokenID);
+		return transactionRepo.getTopUpEwalletTransaction(orderID, accessTokenID);
 	}
 
 	private void performTopUpMoney(AccessToken accessToken, TopUpOrder topUpOrder) {
@@ -240,10 +240,10 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	public TransactionRepository getOrderRepository() {
-		return orderRepo;
+		return transactionRepo;
 	}
 
 	public void setOrderRepository(TransactionRepository orderRepo) {
-		this.orderRepo = orderRepo;
+		this.transactionRepo = orderRepo;
 	}
 }

@@ -26,17 +26,17 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMem
 public class AsyncServiceTest {
 
 	private AsyncTopUpEwalletProcessor asyncService;
-	private TransactionRepository orderRepo;
+	private TransactionRepository transactionRepo;
 	private EwalletSoapProxy ewalletProxy;
 	private TopUpOrder topUpOrderParams;
 
 	@Before
 	public void setup() {
 		asyncService = new AsyncTopUpEwalletProcessor();
-		orderRepo = new TransactionMemoryRepository();
+		transactionRepo = new TransactionMemoryRepository();
 		ewalletProxy = mock(EwalletSoapProxy.class);
 
-		asyncService.setOrderRepo(orderRepo);
+		asyncService.setTransactionRepo(transactionRepo);
 		asyncService.setEwalletProxy(ewalletProxy);
 
 		topUpOrderParams = new TopUpOrder();
@@ -57,7 +57,7 @@ public class AsyncServiceTest {
 
 		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, "tokenID", new AddMoneyRequest());
 		assertEquals(true, topUpOrder.isDone());
-		assertEquals(Transaction.Status.SUCCESS, orderRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
+		assertEquals(Transaction.Status.SUCCESS, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
 	}
 
 	@Test
@@ -68,8 +68,8 @@ public class AsyncServiceTest {
 
 		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, "tokenID", new AddMoneyRequest());
 		assertEquals(true, topUpOrder.isDone());
-		assertEquals(Transaction.Status.FAILED, orderRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
-		assertEquals(FailStatus.BANK_FAILED, orderRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getFailStatus());
+		assertEquals(Transaction.Status.FAILED, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
+		assertEquals(FailStatus.BANK_FAILED, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getFailStatus());
 	}
 
 	@Test
@@ -80,8 +80,8 @@ public class AsyncServiceTest {
 
 		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, "tokenID", new AddMoneyRequest());
 		assertEquals(true, topUpOrder.isDone());
-		assertEquals(Transaction.Status.FAILED, orderRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
-		assertEquals(FailStatus.UMARKET_FAILED, orderRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getFailStatus());
+		assertEquals(Transaction.Status.FAILED, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
+		assertEquals(FailStatus.UMARKET_FAILED, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getFailStatus());
 	}
 
 	@Test
@@ -92,7 +92,7 @@ public class AsyncServiceTest {
 
 		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, "tokenID", new AddMoneyRequest());
 		assertEquals(true, topUpOrder.isDone());
-		assertEquals(Transaction.Status.FAILED, orderRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
+		assertEquals(Transaction.Status.FAILED, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
 	}
 
 	@Test
@@ -103,6 +103,6 @@ public class AsyncServiceTest {
 
 		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, "tokenID", new AddMoneyRequest());
 		assertEquals(true, topUpOrder.isDone());
-		assertEquals(Transaction.Status.FAILED, orderRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
+		assertEquals(Transaction.Status.FAILED, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
 	}
 }
