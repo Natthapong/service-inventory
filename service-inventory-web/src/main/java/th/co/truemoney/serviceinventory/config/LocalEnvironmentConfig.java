@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
+import th.co.truemoney.serviceinventory.email.EmailService;
+import th.co.truemoney.serviceinventory.email.StubEmailService;
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
@@ -43,6 +45,8 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequ
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
+import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.ProfileMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
@@ -343,9 +347,14 @@ public class LocalEnvironmentConfig {
 
 		};
 	}
-
+	
 	@Bean
 	public OTPGenerator otpGenerator() {
 		return new UnSecureOTPGenerator();
+	}
+	
+	@Bean
+	public EmailService emailService(){
+		return new StubEmailService();
 	}
 }

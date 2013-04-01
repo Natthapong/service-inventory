@@ -24,6 +24,20 @@ public class TmnProfile implements Serializable {
 		this.balance = balance;
 	}
 
+	public TmnProfile(String email, String password, String fullname,
+			String thaiID, String mobileNumber, BigDecimal balance,
+			String type, Integer status) {
+		super();
+		this.email = email;
+		this.password = password;
+		this.fullname = fullname;
+		this.thaiID = thaiID;
+		this.mobileNumber = mobileNumber;
+		this.balance = balance;
+		this.type = type;
+		this.status = status;
+	}
+
 	public String getEmail() {
 		return email;
 	}

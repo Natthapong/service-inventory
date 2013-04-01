@@ -63,7 +63,8 @@ public class MemRepositoriesConfig {
 
 	@Bean
 	public ProfileRepository memoProfileRepository() {
-		return new ProfileMemoryRepository();
+		ProfileMemoryRepository profile = new ProfileMemoryRepository();
+		return profile;
 	}
 
 }

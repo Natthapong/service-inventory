@@ -80,10 +80,10 @@ public class ServiceInventoryConfig {
     	return new P2PTransferServiceImpl();
     }
 	
-	@Bean
-	public EmailService getEmailService() {
-		return new EmailService();
-	}
+//	@Bean
+//	public EmailService getEmailService() {
+//		return new EmailService();
+//	}
 
     @Bean
     public AsyncP2PTransferProcessor getAsyncP2PTransferProcessor() {

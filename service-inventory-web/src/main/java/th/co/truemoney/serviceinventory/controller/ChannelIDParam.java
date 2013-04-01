@@ -7,6 +7,9 @@ public class ChannelIDParam {
 	@NotNull
 	private Integer channelID;
 
+	public ChannelIDParam() {
+	}
+	
 	public Integer getChannelID() {
 		return channelID;
 	}

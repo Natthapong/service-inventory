@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class ProfileMemoryRepository implements ProfileRepository {
 
@@ -17,6 +18,10 @@ public class ProfileMemoryRepository implements ProfileRepository {
 
 	@Override
 	public TmnProfile getTmnProfile(String mobileNumber) {
+			if(profilesMap.get(mobileNumber)==null){
+				throw new ServiceInventoryException(ServiceInventoryException.Code.PROFILE_NOT_FOUND,
+						"profile not found.");
+			}
 		return profilesMap.get(mobileNumber);
 	}
 
