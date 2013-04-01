@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Profile;
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -62,11 +62,11 @@ public class LocalEnvironmentConfig {
 		return new P2PTransferServiceImpl(){
 
 			@Override
-			public Transaction.Status getTransactionStatus(String transactionID, String accessTokenID) {
+			public P2PTransactionStatus getTransactionStatus(String transactionID, String accessTokenID) {
 				if(transactionID.equals("0000")){
-					return Transaction.Status.VERIFIED;
+					return P2PTransactionStatus.ORDER_VERIFIED;
 				}else{
-					return Transaction.Status.FAILED;
+					return P2PTransactionStatus.UMARKET_FAILED;
 				}
 			}
 
