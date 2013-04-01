@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
@@ -18,7 +17,6 @@ import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.TransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 
 @Service
@@ -27,17 +25,17 @@ public class AsyncTopUpEwalletProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(AsyncTopUpEwalletProcessor.class);
 
 	@Autowired
-	private TransactionRepository transactionRepo;
+	private TransactionRepository orderRepo;
 
 	@Autowired
 	private EwalletSoapProxy ewalletProxy;
 
-	public TransactionRepository getTransactionRepo() {
-		return transactionRepo;
+	public TransactionRepository getOrderRepo() {
+		return orderRepo;
 	}
 
-	public void setTransactionRepo(TransactionRepository transactionRepo) {
-		this.transactionRepo = transactionRepo;
+	public void setOrderRepo(TransactionRepository orderRepo) {
+		this.orderRepo = orderRepo;
 	}
 
 	public EwalletSoapProxy getEwalletProxy() {
@@ -56,7 +54,7 @@ public class AsyncTopUpEwalletProcessor {
 			logger.debug("start time " + new Date());
 
 			topUpOrder.setStatus(Transaction.Status.PROCESSING);
-			transactionRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
+			orderRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
 
 			StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
 			logger.debug("finished time " + new Date());
@@ -92,14 +90,9 @@ public class AsyncTopUpEwalletProcessor {
 			topUpOrder.setFailStatus(TopUpOrder.FailStatus.UNKNOWN_FAILED);
 		}
 
-		transactionRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
+		orderRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
 
 		return new AsyncResult<TopUpOrder> (topUpOrder);
-	}
-	
-	@Async
-	public Future<P2PTransaction> transferEwallet(P2PTransaction p2pTransaction, String accessTokenID, TransferRequest transferRequest) {
-		return new AsyncResult<P2PTransaction> (p2pTransaction);
 	}
 
 }
