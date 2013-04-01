@@ -24,7 +24,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.impl.AsyncService;
+import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -42,7 +42,7 @@ import th.co.truemoney.serviceinventory.stub.TopUpStubbed;
 @RunWith(MockitoJUnitRunner.class)
 public class TopUpServiceImplTest {
 
-	private AsyncService asyncService;
+	private AsyncTopUpEwalletProcessor asyncService;
 	private TopUpServiceImpl topUpService;
 	private EwalletSoapProxy ewalletSoapProxyMock;
 	private AccessTokenRepository accessTokenRepoMock;
@@ -181,7 +181,7 @@ public class TopUpServiceImplTest {
 
 		quote.setSourceOfFund(debit);
 
-		asyncService = mock(AsyncService.class);
+		asyncService = mock(AsyncTopUpEwalletProcessor.class);
 		TransactionRepository orderRepo = mock(TransactionRepository.class);
 
 		when(orderRepo.getTopUpEwalletDraftTransaction(anyString(), anyString())).thenReturn(quote);
@@ -243,7 +243,7 @@ public class TopUpServiceImplTest {
 		quote.setID("1");
 		OTP otp = new OTP("0890123456", "refCode", "otpString");
 
-		asyncService = mock(AsyncService.class);
+		asyncService = mock(AsyncTopUpEwalletProcessor.class);
 		TransactionRepository orderRepo = mock(TransactionRepository.class);
 
 		when(orderRepo.getTopUpEwalletDraftTransaction(anyString(), anyString())).thenReturn(quote);

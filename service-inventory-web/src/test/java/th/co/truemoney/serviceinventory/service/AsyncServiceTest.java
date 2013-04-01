@@ -16,7 +16,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.impl.AsyncService;
+import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
@@ -25,14 +25,14 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMem
 
 public class AsyncServiceTest {
 
-	private AsyncService asyncService;
+	private AsyncTopUpEwalletProcessor asyncService;
 	private TransactionRepository orderRepo;
 	private EwalletSoapProxy ewalletProxy;
 	private TopUpOrder topUpOrderParams;
 
 	@Before
 	public void setup() {
-		asyncService = new AsyncService();
+		asyncService = new AsyncTopUpEwalletProcessor();
 		orderRepo = new TransactionMemoryRepository();
 		ewalletProxy = mock(EwalletSoapProxy.class);
 

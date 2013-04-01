@@ -20,9 +20,9 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyRespo
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 
 @Service
-public class AsyncService {
+public class AsyncTopUpEwalletProcessor {
 
-	private static final Logger logger = LoggerFactory.getLogger(AsyncService.class);
+	private static final Logger logger = LoggerFactory.getLogger(AsyncTopUpEwalletProcessor.class);
 
 	@Autowired
 	private TransactionRepository orderRepo;

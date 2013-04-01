@@ -39,7 +39,7 @@ public class TopUpServiceImpl implements TopUpService {
 	private OTPService otpService;
 
 	@Autowired
-	private AsyncService asyncService;
+	private AsyncTopUpEwalletProcessor asyncService;
 
 	@Autowired
 	private EwalletSoapProxy ewalletProxy;
@@ -215,11 +215,11 @@ public class TopUpServiceImpl implements TopUpService {
 		this.otpService = otpService;
 	}
 
-	public AsyncService getAsyncService() {
+	public AsyncTopUpEwalletProcessor getAsyncService() {
 		return asyncService;
 	}
 
-	public void setAsyncService(AsyncService asyncService) {
+	public void setAsyncService(AsyncTopUpEwalletProcessor asyncService) {
 		this.asyncService = asyncService;
 	}
 

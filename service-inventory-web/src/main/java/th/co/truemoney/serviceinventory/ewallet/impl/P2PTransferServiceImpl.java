@@ -44,7 +44,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	private TransactionRepository transactionRepo;
 
 	@Autowired
-	private AsyncService asyncService;
+	private AsyncTopUpEwalletProcessor asyncService;
 
 	@Autowired
 	private OTPService otpService;

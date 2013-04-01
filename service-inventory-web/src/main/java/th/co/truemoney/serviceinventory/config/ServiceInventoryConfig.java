@@ -12,7 +12,7 @@ import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
-import th.co.truemoney.serviceinventory.ewallet.impl.AsyncService;
+import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.DirectDebitSourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
@@ -54,8 +54,8 @@ public class ServiceInventoryConfig {
     }
 
     @Bean
-    public AsyncService getAsyncService() {
-    	return new AsyncService();
+    public AsyncTopUpEwalletProcessor getAsyncService() {
+    	return new AsyncTopUpEwalletProcessor();
     }
 
     @Bean
