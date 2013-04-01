@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
@@ -40,7 +39,7 @@ public class P2PTransferController {
 		return p2pDraftTransaction;
 	}
 
-	@RequestMapping(value = "/draft-transaction/{draftTransactionID}", method = RequestMethod.GET)
+	@RequestMapping(value = "/draft-transaction/{draftTransactionID}", method = RequestMethod.POST)
 	public @ResponseBody P2PDraftTransaction getDraftTransactionInfo(
 			@PathVariable String draftTransactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
@@ -52,7 +51,7 @@ public class P2PTransferController {
 		return p2pDraftTransaction;
 	}
 
-	@RequestMapping(value = "/draft-transaction/{draftTransactionID}/otp", method = RequestMethod.POST)
+	@RequestMapping(value = "/draft-transaction/{draftTransactionID}/send-otp", method = RequestMethod.PUT)
 	public @ResponseBody OTP sendOTP(
 			@PathVariable String draftTransactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
@@ -62,24 +61,23 @@ public class P2PTransferController {
 		return otp;
 	}
 
-	@RequestMapping(value = "/transaction/{draftTransactionID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody DraftTransaction.Status confirmDraftTransaction(
+	@RequestMapping(value = "/transaction/{draftTransactionID}", method = RequestMethod.POST)
+	public @ResponseBody P2PTransactionStatus createTransaction(
 			@PathVariable String draftTransactionID,
-			@PathVariable String refCode,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 			@RequestBody OTP otp)
 		throws ServiceInventoryException {
-		DraftTransaction.Status p2pTransactionStatus = p2pTransferService.confirmDraftTransaction(draftTransactionID, otp, accessTokenID);
+		P2PTransactionStatus p2pTransactionStatus = p2pTransferService.createTransaction(draftTransactionID, otp, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 		return p2pTransactionStatus;
 	}
 
 	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
-	public @ResponseBody Transaction.Status getTransactionStatus(
+	public @ResponseBody P2PTransactionStatus getTransactionStatus(
 			@PathVariable String transactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID)
 		throws ServiceInventoryException {
-		Transaction.Status p2pTransactionStatus = p2pTransferService.getTransactionStatus(transactionID, accessTokenID);
+		P2PTransactionStatus p2pTransactionStatus = p2pTransferService.getTransactionStatus(transactionID, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 		return p2pTransactionStatus;
 	}

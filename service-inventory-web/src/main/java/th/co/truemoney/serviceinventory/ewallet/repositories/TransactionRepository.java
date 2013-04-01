@@ -11,8 +11,8 @@ public interface TransactionRepository {
 	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder, String accessTokenID);
 	public TopUpOrder getTopUpEwalletTransaction(String orderID, String accessTokenID);
 
-	public void saveP2PDraftTransaction(P2PDraftTransaction p2pDraftTransaction, String accessTokenID);
-	public P2PDraftTransaction getP2PDraftTransaction(String p2pDraftTransactionID, String accessTokenID);
-	public void saveP2PTransaction(P2PTransaction p2pTransaction, String accessTokenID);
-	public P2PTransaction getP2PTransaction(String p2pTransactionID, String accessTokenID);
+	public void saveP2PDraftTransaction(P2PDraftTransaction p2pDraftTransaction);
+	public P2PDraftTransaction getP2PDraftTransaction(String p2pDraftTransactionID);
+	public void saveP2PTransaction(P2PTransaction p2pTransaction);
+	public P2PTransaction getP2PTransaction(String p2pTransactionID);
 }

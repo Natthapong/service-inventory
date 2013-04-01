@@ -81,10 +81,10 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveP2PDraftTransaction(P2PDraftTransaction p2pDraftTransaction, String accessTokenID) {
+	public void saveP2PDraftTransaction(P2PDraftTransaction p2pDraftTransaction) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			redisLoggingDao.addData("p2pdraft:" + accessTokenID + ":" +p2pDraftTransaction.getID(), mapper.writeValueAsString(p2pDraftTransaction), 15L);
+			redisLoggingDao.addData("p2pdraft:"+p2pDraftTransaction.getID(), mapper.writeValueAsString(p2pDraftTransaction), 15L);
 		} catch (Exception e) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
 					"Can not stored data in repository.");
@@ -92,9 +92,9 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public P2PDraftTransaction getP2PDraftTransaction(String p2pDraftTransactionID, String accessTokenID) {
+	public P2PDraftTransaction getP2PDraftTransaction(String p2pDraftTransactionID) {
 		try {
-			String result = redisLoggingDao.getData("p2pdraft:" + accessTokenID + ":" +p2pDraftTransactionID);
+			String result = redisLoggingDao.getData("p2pdraft:"+p2pDraftTransactionID);
 			if(result == null) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND,
 						"P2P draft transaction not found.");
@@ -112,10 +112,10 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveP2PTransaction(P2PTransaction p2pTransaction, String accessTokenID) {
+	public void saveP2PTransaction(P2PTransaction p2pTransaction) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			redisLoggingDao.addData("p2pTrans:" + accessTokenID + ":" +p2pTransaction.getID(), mapper.writeValueAsString(p2pTransaction), 15L);
+			redisLoggingDao.addData("p2pTrans:"+p2pTransaction.getID(), mapper.writeValueAsString(p2pTransaction), 15L);
 		} catch (Exception e) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
 					"Can not stored data in repository.");
@@ -123,9 +123,9 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public P2PTransaction getP2PTransaction(String p2pTransactionID, String accessTokenID) {
+	public P2PTransaction getP2PTransaction(String p2pTransactionID) {
 		try {
-			String result = redisLoggingDao.getData("p2pTrans:" + accessTokenID + ":" +p2pTransactionID);
+			String result = redisLoggingDao.getData("p2pTrans:"+p2pTransactionID);
 			if(result == null) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND,
 						"TopUp Ewallet order not found.");
