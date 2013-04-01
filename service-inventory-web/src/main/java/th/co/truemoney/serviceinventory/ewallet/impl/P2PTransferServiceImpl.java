@@ -1,13 +1,10 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
-
 import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +20,9 @@ import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.TransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -34,8 +31,6 @@ import th.co.truemoney.serviceinventory.sms.OTPService;
 @Service
 public class P2PTransferServiceImpl implements P2PTransferService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(P2PTransferServiceImpl.class);
-
 	@Autowired
 	private AccessTokenRepository accessTokenRepo;
 
@@ -58,11 +53,10 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
 		//--- Send to verify amount ---//
-		StandardMoneyResponse verifyResponse;
-		verifyResponse = verifyEwalletTransfer(toMobileNumber, amount, accessToken);
+		VerifyTransferResponse verifyResponse = verifyEwalletTransfer(toMobileNumber, amount, accessToken);
 
 		//--- Generate Response ---//
-		String fullName = getFullNameFromStandardMoneyResponse(verifyResponse);
+		String fullName = verifyResponse.getTargetFullname();
 		String markFullName = markFullName(fullName);
 
 		String draftID = UUID.randomUUID().toString();
@@ -79,7 +73,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		return draft;
 	}
 
-	private StandardMoneyResponse verifyEwalletTransfer(String mobileNumber, BigDecimal amount, AccessToken accessToken) {
+	private VerifyTransferResponse verifyEwalletTransfer(String mobileNumber, BigDecimal amount, AccessToken accessToken) {
 		try {
 			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
 			
@@ -89,7 +83,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 			verifyRequest.setTarget(mobileNumber);
 			verifyRequest.setSecurityContext(securityContext);
 
-			StandardMoneyResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
+			VerifyTransferResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
 			
 			return verifyResponse;
 		} catch (EwalletException e) {
@@ -99,21 +93,6 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 					Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
 					e.getMessage(), e.getNamespace());
 		}	
-	}
-
-	private String getFullNameFromStandardMoneyResponse(StandardMoneyResponse resp) {
-		String fullName = "";
-		try {
-			for (int i=0; i<resp.getDetailKey().length; ++i) {
-				if ("fullName".equals(resp.getDetailKey()[i])) {
-					fullName = resp.getDetailValue()[i];
-					break;
-				}
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return fullName;
 	}
 
 	@Override

@@ -15,8 +15,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
 import th.co.truemoney.serviceinventory.stub.AccessTokenRepositoryStubbed;
@@ -49,17 +49,18 @@ public class P2PTransferServiceImplTest {
 
 		//given
 		AccessToken accessToken = AccessTokenRepositoryStubbed.createSuccessAccessToken();
-		StandardMoneyResponse stubbedStandardMoneyResponse = P2PTransferStubbed.createSuccessStubbedStandardMoneyResponse();
+		VerifyTransferResponse stubbedVerifyTransferResponse = P2PTransferStubbed.createSuccessStubbedVerifyTransferResponse();
 
 		//when
 		when(accessTokenRepoMock.getAccessToken(Mockito.anyString()))
 			.thenReturn(accessToken);
 		when(ewalletSoapProxyMock.verifyTransfer(Mockito.any(VerifyTransferRequest.class)))
-			.thenReturn(stubbedStandardMoneyResponse);
+			.thenReturn(stubbedVerifyTransferResponse);
 
 		P2PDraftTransaction draftTrans = this.p2pService.createDraftTransaction(mobileNumber, amount, accessToken.getAccessTokenID());
 
 		//then
 		assertNotNull(draftTrans);
+		assertNotNull(draftTrans.getFullname());
 	}
 }

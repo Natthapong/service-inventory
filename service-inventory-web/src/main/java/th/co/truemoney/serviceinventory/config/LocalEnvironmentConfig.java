@@ -37,6 +37,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequ
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
@@ -204,12 +205,12 @@ public class LocalEnvironmentConfig {
 			}
 
 			@Override
-			public StandardMoneyResponse verifyTransfer(
+			public VerifyTransferResponse verifyTransfer(
 					VerifyTransferRequest verifyTransferRequest)
 					throws EwalletException {
-				return new StandardMoneyResponse("1234", "0", "namespce",
+				return new VerifyTransferResponse("1234", "0", "namespce",
 						new String[] { "key" }, new String[] { "value" },
-						"stub@local.com", new BigDecimal(100.00));
+						"stub@local.com", new BigDecimal(100.00), "Target Fullname");
 			}
 		};
 	}
