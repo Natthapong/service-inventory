@@ -16,19 +16,20 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class })
 @ActiveProfiles(profiles = "local")
 @Category(IntegrationTest.class)
-public class P2PTransferServiceClientTest {
+public class TmnTransferServiceClientTest {
 
 	@Autowired
-	P2PTransferServiceClient p2pTransferServiceClient;
+	TmnTransferServiceClient p2pTransferServiceClient;
 
 	@Test
 	public void createDraftTransactionSuccess(){
@@ -71,7 +72,7 @@ public class P2PTransferServiceClientTest {
 	@Test
 	public void sendOTPFail() {
 		try {
-			p2pTransferServiceClient.sendOTP("3", "12355");
+			p2pTransferServiceClient.sendOTP("3", "12345");
 		} catch (ServiceInventoryException serviceInventoryException) {
 			assertEquals("Can't send OTP", serviceInventoryException.getErrorDescription());
 		}
@@ -79,14 +80,14 @@ public class P2PTransferServiceClientTest {
 
 	@Test
 	public void createTransactionSuccess(){
-		P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.createTransaction("3", new OTP("0868185055", "111111", "marty"), "12345");
-		assertEquals("ORDER_VERIFIED", p2pTransactionStatus.getP2pTransferStatus());
+		DraftTransaction.Status p2pTransactionStatus = p2pTransferServiceClient.confirmDraftTransaction("3", new OTP("0868185055", "111111", "marty"), "12345");
+		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, p2pTransactionStatus);
 	}
 
 	@Test
 	public void createTransactionFail(){
 		try {
-			p2pTransferServiceClient.createTransaction("3", new OTP("0868185055", "112211", "marty"), "12345");
+			p2pTransferServiceClient.confirmDraftTransaction("3", new OTP("0868185055", "112211", "marty"), "12345");
 			Assert.fail();
 		} catch (ServiceInventoryException e) {
 			assertEquals("Invalide OTP.", e.getErrorDescription());
@@ -95,14 +96,14 @@ public class P2PTransferServiceClientTest {
 
 	@Test
 	public void getTransactionStatusSuccess(){
-		P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.getTransactionStatus("0000", "12345");
-		assertEquals("ORDER_VERIFIED", p2pTransactionStatus.getP2pTransferStatus());
+		Transaction.Status p2pTransactionStatus = p2pTransferServiceClient.getTransactionStatus("0000", "12345");
+		assertEquals(Transaction.Status.VERIFIED, p2pTransactionStatus);
 	}
 
 	@Test
 	public void getTransactionStatusFail(){
-		P2PTransactionStatus p2pTransactionStatus = p2pTransferServiceClient.getTransactionStatus("0001", "12345");
-		assertEquals("UMARKET_FAILED", p2pTransactionStatus.getP2pTransferStatus());
+		Transaction.Status p2pTransactionStatus = p2pTransferServiceClient.getTransactionStatus("0001", "12345");
+		assertEquals(Transaction.Status.FAILED, p2pTransactionStatus);
 	}
 
 	@Test
