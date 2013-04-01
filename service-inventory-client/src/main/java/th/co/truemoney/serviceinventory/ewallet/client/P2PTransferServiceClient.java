@@ -12,15 +12,14 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionStatus;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
-public class TmnTransferServiceClient implements P2PTransferService {
+public class P2PTransferServiceClient implements P2PTransferService {
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -39,7 +38,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 		HttpEntity<P2PDraftTransaction> requestEntity = new HttpEntity<P2PDraftTransaction>(draft,headers);
 
 		ResponseEntity<P2PDraftTransaction> responseEntity = restTemplate.exchange(
-				endPoints.getP2PCreateDraftTransactionURL(),HttpMethod.POST,
+				endPoints.getCreateDraftTransactionUrl(),HttpMethod.POST,
 				requestEntity, P2PDraftTransaction.class,
 				accessTokenID);
 
@@ -52,7 +51,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<P2PDraftTransaction> responseEntity = restTemplate.exchange(
-				endPoints.getP2PDraftTransactionDetailsURL(), HttpMethod.GET,
+				endPoints.getDraftTransactionDetails(), HttpMethod.POST,
 				requestEntity, P2PDraftTransaction.class,
 				draftTransactionID, accessTokenID);
 
@@ -65,34 +64,34 @@ public class TmnTransferServiceClient implements P2PTransferService {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<OTP> responseEntity = restTemplate.exchange(
-				endPoints.getP2PSendOTPURL(), HttpMethod.POST,
+				endPoints.getSendOTPUrl(), HttpMethod.PUT,
 				requestEntity, OTP.class,
 				draftTransactionID, accessTokenID);
 
 		return responseEntity.getBody();
 	}
 
-	@Override 
-	public DraftTransaction.Status confirmDraftTransaction(String draftTransactionID, OTP otp, String accessTokenID) {
+	@Override
+	public P2PTransactionStatus createTransaction(String draftTransactionID, OTP otp, String accessTokenID) {
 
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
 
-		ResponseEntity<DraftTransaction.Status> responseEntity = restTemplate.exchange(
-				endPoints.getP2PConfirmDraftTransactionURL(), HttpMethod.PUT,
-				requestEntity, DraftTransaction.Status.class,
-				draftTransactionID, otp.getReferenceCode(), accessTokenID);
+		ResponseEntity<P2PTransactionStatus> responseEntity = restTemplate.exchange(
+				endPoints.getCreateTransactionUrl(), HttpMethod.POST,
+				requestEntity, P2PTransactionStatus.class,
+				draftTransactionID, accessTokenID);
 
 		return responseEntity.getBody();
 	}
 
 	@Override
-	public Transaction.Status getTransactionStatus(String transactionID, String accessTokenID) {
+	public P2PTransactionStatus getTransactionStatus(String transactionID, String accessTokenID) {
 
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
-		ResponseEntity<Transaction.Status> responseEntity = restTemplate.exchange(
-				endPoints.getP2PTransactionStatusURL(), HttpMethod.GET,
-				requestEntity, Transaction.Status.class,
+		ResponseEntity<P2PTransactionStatus> responseEntity = restTemplate.exchange(
+				endPoints.getTransactionStatusUrl(), HttpMethod.GET,
+				requestEntity, P2PTransactionStatus.class,
 				transactionID, accessTokenID);
 
 		return responseEntity.getBody();
@@ -104,7 +103,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<P2PTransaction> responseEntity = restTemplate.exchange(
-				endPoints.getP2PTransactionStatusURL(), HttpMethod.GET,
+				endPoints.getTransactionStatusUrl(), HttpMethod.GET,
 				requestEntity, P2PTransaction.class,
 				transactionID, accessTokenID);
 
