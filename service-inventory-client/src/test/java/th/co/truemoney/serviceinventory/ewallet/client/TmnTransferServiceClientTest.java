@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotSame;
 import java.math.BigDecimal;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -26,6 +27,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class })
 @ActiveProfiles(profiles = "local")
 @Category(IntegrationTest.class)
+@Ignore
 public class TmnTransferServiceClientTest {
 
 	@Autowired

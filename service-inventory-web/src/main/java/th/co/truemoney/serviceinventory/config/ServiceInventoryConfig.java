@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -80,11 +79,6 @@ public class ServiceInventoryConfig {
     	return new P2PTransferServiceImpl();
     }
 	
-//	@Bean
-//	public EmailService getEmailService() {
-//		return new EmailService();
-//	}
-
     @Bean
     public AsyncP2PTransferProcessor getAsyncP2PTransferProcessor() {
     	return new AsyncP2PTransferProcessor();
