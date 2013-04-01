@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
@@ -15,7 +16,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,13 +26,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
+import th.co.truemoney.serviceinventory.config.EmailConfig;
+import th.co.truemoney.serviceinventory.email.EmailService;
 import freemarker.core.Environment;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-
-import th.co.truemoney.serviceinventory.config.EmailConfig;
-import th.co.truemoney.serviceinventory.email.EmailService;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

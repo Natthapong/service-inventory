@@ -3,9 +3,9 @@ package th.co.truemoney.serviceinventory.exception;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import th.co.truemoney.serviceinventory.bean.ErrorBean;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class BaseException extends RuntimeException {
 
@@ -110,9 +110,10 @@ public abstract class BaseException extends RuntimeException {
 	public void setData(Map<String, Object> data) {
 		this.data = data;
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	public void marshallToData(Object object) {
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();		
 		Map<String, Object> hashMap = mapper.convertValue(object, HashMap.class);
 		this.setData(hashMap);
 	}
