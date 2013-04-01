@@ -72,7 +72,8 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		draft.setAmount(amount);
 		draft.setMobileNumber(toMobileNumber);
 		draft.setFullname(markFullName);
-
+		draft.setStatus(DraftTransaction.Status.CREATED);
+		
 		transactionRepo.saveP2PDraftTransaction(draft, accessToken.getAccessTokenID());
 		
 		return draft;

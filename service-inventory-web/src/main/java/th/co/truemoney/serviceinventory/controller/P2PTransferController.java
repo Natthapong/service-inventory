@@ -62,7 +62,7 @@ public class P2PTransferController {
 		return otp;
 	}
 
-	@RequestMapping(value = "/transaction/{draftTransactionID}/otp/{refCode}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/draft-transaction/{draftTransactionID}/otp/{refCode}", method = RequestMethod.PUT)
 	public @ResponseBody DraftTransaction.Status confirmDraftTransaction(
 			@PathVariable String draftTransactionID,
 			@PathVariable String refCode,
