@@ -1,75 +1,80 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class P2PTransaction extends Transaction {
+public class P2PTransaction implements Serializable {
 
 	private static final long serialVersionUID = -3546197537668299129L;
-	
-	private FailStatus failStatus;
-	
+	private String mobileNumber;
+	private BigDecimal amount;
+	private String ID;
+	private String accessTokenID;
+	private String fullname;
+	private String otpReferenceCode;
+	private P2PTransactionStatus status = P2PTransactionStatus.AWAITING_CONFIRM;
 	private P2PTransactionConfirmationInfo confirmationInfo;
 
-	public static enum FailStatus {
-		UMARKET_FAILED, UNKNOWN_FAILED;
-	}
-	
-	public P2PTransaction() {
-
-	}
-	
 	public P2PTransaction(P2PDraftTransaction p2pDraftTransaction) {
-		if (p2pDraftTransaction == null || p2pDraftTransaction.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
-			throw new IllegalArgumentException("passing in bad quote data");
-		}
-		this.ID = p2pDraftTransaction.getID();
-		this.draftTransaction = p2pDraftTransaction;
-		this.status = Transaction.Status.VERIFIED;
-	}
 
+	}
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+	public BigDecimal getAmount() {
+		return amount;
+	}
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
 	public String getID() {
 		return ID;
 	}
-
-	public void setID(String ID) {
-		this.ID = ID;
+	public void setID(String iD) {
+		ID = iD;
 	}
-
-	public P2PDraftTransaction getDraftTransaction() {
-		return (P2PDraftTransaction) super.getDraftTransaction();
+	public String getAccessTokenID() {
+		return accessTokenID;
 	}
-
-	public void setDraftTransaction(P2PDraftTransaction p2pDraftTransaction) {
-		super.setDraftTransaction(p2pDraftTransaction);
+	public void setAccessTokenID(String accessTokenID) {
+		this.accessTokenID = accessTokenID;
 	}
-	
-	public FailStatus getFailStatus() {
-		return failStatus;
+	public String getFullname() {
+		return fullname;
 	}
-
-	public void setFailStatus(FailStatus failStatus) {
-		this.status = Transaction.Status.FAILED;
-		this.failStatus = failStatus;
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
 	}
-
+	public String getOtpReferenceCode() {
+		return otpReferenceCode;
+	}
+	public void setOtpReferenceCode(String otpReferenceCode) {
+		this.otpReferenceCode = otpReferenceCode;
+	}
+	public P2PTransactionStatus getStatus() {
+		return status;
+	}
+	public void setStatus(P2PTransactionStatus status) {
+		this.status = status;
+	}
 	public P2PTransactionConfirmationInfo getConfirmationInfo() {
 		return confirmationInfo;
 	}
-
 	public void setConfirmationInfo(P2PTransactionConfirmationInfo confirmationInfo) {
 		this.confirmationInfo = confirmationInfo;
 	}
-
-	@Override
-	public String toString() {
-		return "P2PTransaction [failStatus=" + failStatus
-				+ ", confirmationInfo=" + confirmationInfo + ", ID=" + ID
-				+ ", type=" + type + ", draftTransaction=" + draftTransaction
-				+ ", status=" + status + "]";
+	public AccessToken getDraftTransaction() {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	
+
 }
