@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -9,32 +8,36 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class P2PDraftTransaction implements Serializable {
+public class P2PDraftTransaction extends DraftTransaction {
 
+	private static final String DRAFT_TYPE = "P2PTransfer";
+	
 	private static final long serialVersionUID = -5651007822743041981L;
+	
 	private String mobileNumber;
+	
 	private BigDecimal amount;
-	private String ID;
-	private String accessTokenID;
+	
 	private String fullname;
+	
 	private String otpReferenceCode;
-	private P2PDraftTransactionStatus status;
 
 	public P2PDraftTransaction() {
-		super();
+		type = DRAFT_TYPE;
 	}
 
 	public P2PDraftTransaction(String mobileNumber, BigDecimal amount) {
 		this.mobileNumber = mobileNumber;
 		this.amount = amount;
+		type = DRAFT_TYPE;
 	}
 
 	public P2PDraftTransaction(String mobileNumber, BigDecimal amount,
-			String iD, String accessTokenID, String fullname,
+			String ID, String accessTokenID, String fullname,
 			String otpReferenceCode) {
 		this.mobileNumber = mobileNumber;
 		this.amount = amount;
-		ID = iD;
+		this.ID = ID;
 		this.accessTokenID = accessTokenID;
 		this.fullname = fullname;
 		this.otpReferenceCode = otpReferenceCode;
@@ -87,10 +90,14 @@ public class P2PDraftTransaction implements Serializable {
 	public void setOtpReferenceCode(String otpReferenceCode) {
 		this.otpReferenceCode = otpReferenceCode;
 	}
-	public P2PDraftTransactionStatus getStatus() {
-		return status;
+
+	@Override
+	public String toString() {
+		return "P2PDraftTransaction [mobileNumber=" + mobileNumber
+				+ ", amount=" + amount + ", fullname=" + fullname
+				+ ", otpReferenceCode=" + otpReferenceCode + ", ID=" + ID
+				+ ", accessTokenID=" + accessTokenID + ", type=" + type
+				+ ", status=" + status + "]";
 	}
-	public void setStatus(P2PDraftTransactionStatus status) {
-		this.status = status;
-	}
+		
 }

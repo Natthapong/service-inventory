@@ -36,7 +36,7 @@ public class AsyncServiceTest {
 		orderRepo = new TransactionMemoryRepository();
 		ewalletProxy = mock(EwalletSoapProxy.class);
 
-		asyncService.setOrderRepo(orderRepo);
+		asyncService.setTransactionRepo(orderRepo);
 		asyncService.setEwalletProxy(ewalletProxy);
 
 		topUpOrderParams = new TopUpOrder();
