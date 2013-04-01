@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class P2PDraftTransaction extends DraftTransaction {
 
-	private static final String DRAFT_TYPE = "P2PTransfer";
+	private static final String DRAFT_TYPE = "p2pDraftTransaction";
 	
 	private static final long serialVersionUID = -5651007822743041981L;
 	

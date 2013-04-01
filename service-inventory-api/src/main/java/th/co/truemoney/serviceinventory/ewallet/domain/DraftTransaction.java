@@ -10,7 +10,10 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@class")
-@JsonSubTypes(value = { @Type(value = TopUpQuote.class, name = "topUpQuote") })
+@JsonSubTypes(value = { 
+		@Type(value = TopUpQuote.class, name = "topUpQuote"),
+		@Type(value = P2PDraftTransaction.class, name = "p2pDraftTransaction") 
+		})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
 public abstract class DraftTransaction implements Serializable {
