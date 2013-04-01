@@ -50,34 +50,33 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveP2PDraftTransaction(P2PDraftTransaction p2pDraftTransaction) {
-		p2pDraftTransactionMap.put(p2pDraftTransaction.getID(), p2pDraftTransaction);
+	public void saveP2PDraftTransaction(P2PDraftTransaction p2pDraftTransaction, String accessTokenID) {
+		p2pDraftTransactionMap.put(accessTokenID + ":" + p2pDraftTransaction.getID(), p2pDraftTransaction);
 	}
 
 	@Override
-	public P2PDraftTransaction getP2PDraftTransaction(
-			String p2pDraftTransactionID) {
-		P2PDraftTransaction p2pDraftTransaction = p2pDraftTransactionMap.get(p2pDraftTransactionID);
+	public P2PDraftTransaction getP2PDraftTransaction(String p2pDraftTransactionID, String accessTokenID) {
+		P2PDraftTransaction p2pDraftTransaction = p2pDraftTransactionMap.get(accessTokenID + ":" +p2pDraftTransactionID);
 
 		if (p2pDraftTransaction == null) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND,
-					"TopUp order not found.");
+					"Draft transfer transaction not found.");
 		}
 
 		return p2pDraftTransaction;
 	}
 
 	@Override
-	public void saveP2PTransaction(P2PTransaction p2pTransaction) {
-		p2pTransactionMap.put(p2pTransaction.getID(), p2pTransaction);
+	public void saveP2PTransaction(P2PTransaction p2pTransaction, String accessTokenID) {
+		p2pTransactionMap.put(accessTokenID + ":" + p2pTransaction.getID(), p2pTransaction);
 	}
 
 	@Override
-	public P2PTransaction getP2PTransaction(String p2pTransactionID) {
-		P2PTransaction p2pTransaction = p2pTransactionMap.get(p2pTransactionID);
+	public P2PTransaction getP2PTransaction(String p2pTransactionID, String accessTokenID) {
+		P2PTransaction p2pTransaction = p2pTransactionMap.get(accessTokenID + ":" +p2pTransactionID);
 		if(p2pTransaction == null) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND,
-					"Transfer order not found.");
+					"Transfer transaction not found.");
 		}
 		return p2pTransaction;
 	}
