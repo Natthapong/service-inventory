@@ -213,14 +213,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
     public OTP createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
        	performIsCreatable(channelID, tmnProfile.getMobileNumber());       	
        	OTP otp = otpService.send(tmnProfile.getMobileNumber());
-       	try {
-	       	profileRepository.getTmnProfile(tmnProfile.getMobileNumber());
-       	} catch (ServiceInventoryException e) {
-	       	if (e.getCode() != null && e.getCode().equals(ServiceInventoryException.Code.PROFILE_NOT_FOUND)) {
-	       		profileRepository.saveProfile(tmnProfile);
-	       	}
-       	}
-
+       	profileRepository.saveProfile(tmnProfile);
        	return otp;
     }
 	
