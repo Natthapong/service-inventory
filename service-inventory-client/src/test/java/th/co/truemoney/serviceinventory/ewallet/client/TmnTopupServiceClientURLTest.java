@@ -33,7 +33,10 @@ public class TmnTopupServiceClientURLTest {
 
 	@Autowired
 	TmnTopUpServiceClient topupServiceClient;
-
+	
+	@Autowired
+	TmnProfileServiceClient client;
+	
 	RestTemplate restTemplate;
 
 	@Before
@@ -64,26 +67,44 @@ public class TmnTopupServiceClientURLTest {
 		hashMap.put("topUpFee", "10");
 		hashMap.put("accessTokenID", "99999");
 
-		
+		String accessToken = client.login(41, TestData.createSuccessLogin());
 		// create quote
-		TopUpQuote quote = topupServiceClient.createTopUpQuoteFromDirectDebit("1", new BigDecimal(310), "12345");
+		TopUpQuote quote = topupServiceClient.createTopUpQuoteFromDirectDebit("1", new BigDecimal(310), accessToken);
 
 		assertNotNull(quote);
 		assertNotNull(quote.getID());;
 	}
 
 	@Test 
-	public void checkRequestPlaceOrderUrl(){
+	public void confirmOTPSuccess(){
+		
+		// login
+		String accessToken = client.login(41, TestData.createSuccessLogin());
+		assertNotNull(accessToken);
+
+		// create quote
+		TopUpQuote quote = topupServiceClient.createTopUpQuoteFromDirectDebit("1", new BigDecimal(310), accessToken);
+
+		assertNotNull(quote);
+		assertNotNull(quote.getID());
+
+		// get quote details
+		quote = topupServiceClient.getTopUpQuoteDetails(quote.getID(), accessToken);
+
+		assertNotNull(quote);
+		assertEquals(DraftTransaction.Status.CREATED, quote.getStatus());
+		
 		// request otp
-		OTP otp = topupServiceClient.sendOTPConfirm("xxxx", "12345");
+		OTP otp = topupServiceClient.sendOTPConfirm(quote.getID(), accessToken);
 
 		assertNotNull(otp);
 		assertNotNull(otp.getReferenceCode());
 
-		TopUpQuote quote = topupServiceClient.getTopUpQuoteDetails("xxxx", "12345");
+		quote = topupServiceClient.getTopUpQuoteDetails(quote.getID(), accessToken);
 
 		// quote status changed
 		assertEquals(DraftTransaction.Status.OTP_SENT, quote.getStatus());
+		
 	}
 
 }

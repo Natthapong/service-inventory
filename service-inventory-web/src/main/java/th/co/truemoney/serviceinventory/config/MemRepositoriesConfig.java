@@ -27,10 +27,7 @@ public class MemRepositoriesConfig {
 
 	@Bean
 	public AccessTokenRepository memAccessTokenRepository() {
-		AccessTokenRepository accessTokenRepository = new AccessTokenMemoryRepository();
-		accessTokenRepository.save(new AccessToken("12345", "666", "888",
-				"username", "0868185055", "tanathip.se@gmail.com", 41));
-		return accessTokenRepository;
+		return new AccessTokenMemoryRepository();
 	}
 
 	@Bean
@@ -56,9 +53,7 @@ public class MemRepositoriesConfig {
 
 	@Bean
 	public OTPRepository memOTPRepository() {
-		OTPRepository otpRepository = new OTPMemoryRepository();
-		otpRepository.saveOTP(new OTP("0868185055", "111111", "marty"));
-		return otpRepository;
+		return new OTPMemoryRepository();
 	}
 
 	@Bean
