@@ -3,6 +3,7 @@ package th.co.truemoney.serviceinventory.ewallet.client;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 
@@ -195,7 +196,8 @@ public class TmnTransferServiceClientTest {
 
 			Transaction.Status p2pTransactionStatus = p2pTransferServiceClient
 					.getTransactionStatus(p2pDraftTransaction.getID(), accessToken);
-			
+			assertNotNull(p2pTransactionStatus);
+			fail("Should Fail.");
 		}catch(ServiceInventoryException e){
 			assertEquals("OTP not matched.",e.getErrorDescription());
 		}

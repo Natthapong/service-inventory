@@ -7,11 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
-import th.co.truemoney.serviceinventory.bean.Adam;
-import th.co.truemoney.serviceinventory.bean.Eve;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.email.StubEmailService;
-import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
@@ -50,6 +47,8 @@ import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.firsthop.proxy.impl.SmsProxyImpl;
+import th.co.truemoney.serviceinventory.persona.Adam;
+import th.co.truemoney.serviceinventory.persona.Eve;
 import th.co.truemoney.serviceinventory.sms.OTPGenerator;
 import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 

@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.bean;
+package th.co.truemoney.serviceinventory.persona;
 
 import java.math.BigDecimal;
 
@@ -18,7 +18,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
-import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
 public class Eve implements Persona {
 
@@ -84,7 +83,7 @@ public class Eve implements Persona {
 							"sessionId", "EveTmnMoneyId");
 				}
 
-				throw new SignonServiceException("4", "");
+				throw new EwalletException("4", "");
 			}
 
 			@Override

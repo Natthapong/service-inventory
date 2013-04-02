@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.bean;
+package th.co.truemoney.serviceinventory.persona;
 
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;

@@ -21,6 +21,10 @@
 		<dependency>
 			<groupId>th.co.truemoney.serviceinventory</groupId>
 			<artifactId>ewallet-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>th.co.truemoney.serviceinventory</groupId>
+			<artifactId>service-inventory-persona</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

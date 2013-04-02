@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>th.co.truemoney.serviceinventory</groupId>
+		<artifactId>service-inventory</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>service-inventory-persona</artifactId>
+	<name>service-inventory-persona</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>th.co.truemoney.serviceinventory</groupId>
+			<artifactId>service-inventory-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>th.co.truemoney.serviceinventory</groupId>
+			<artifactId>ewallet-client</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
