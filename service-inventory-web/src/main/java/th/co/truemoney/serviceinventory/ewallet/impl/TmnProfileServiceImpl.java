@@ -226,10 +226,9 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	
 	@Override
 	public TmnProfile confirmCreateProfile(Integer channelID, OTP otp) throws ServiceInventoryException {
-		if (!otpService.isValidOTP(otp)) {
-			throw new ServiceInventoryException(SignonServiceException.Code.OTP_NOT_MATCH,
-				"otp string not match");
-		}
+		
+		otpService.isValidOTP(otp);
+		
 		TmnProfile tmnProfile = profileRepository.getTmnProfile(otp.getMobileNumber());
 		
 		performCreateProfile(channelID, tmnProfile);
