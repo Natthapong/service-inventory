@@ -55,7 +55,7 @@ public class EmailService {
 			helper.setSubject(subject);
 			helper.setFrom(emailSender);
 			Configuration configuration = freeMarkerConfigurationFactory.createConfiguration();
-			Template template = configuration.getTemplate(emailTemplate);
+			Template template = configuration.getTemplate(emailTemplate, emailEncoding);
 			String message = FreeMarkerTemplateUtils.processTemplateIntoString(template, map);
 			helper.setText(message, true);
 			javaMailSender.send(helper.getMimeMessage());
