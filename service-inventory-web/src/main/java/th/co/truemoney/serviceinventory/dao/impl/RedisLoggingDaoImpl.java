@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
+import th.co.truemoney.serviceinventory.util.EncryptUtil;
 
 public class RedisLoggingDaoImpl implements RedisLoggingDao {
 
@@ -14,12 +15,12 @@ public class RedisLoggingDaoImpl implements RedisLoggingDao {
 
 	@Override
 	public void addData(String key, String value, Long expired) {
-		redisTemplate.opsForValue().set(key, value, expired.longValue(), TimeUnit.MINUTES);
+		redisTemplate.opsForValue().set(key, EncryptUtil.encrypt(value), expired.longValue(), TimeUnit.MINUTES);
 	}
 
 	@Override
 	public void addData(String key, String value) {
-		redisTemplate.opsForValue().set(key, value);
+		redisTemplate.opsForValue().set(key, EncryptUtil.encrypt(value));
 	}
 
 	@Override
@@ -29,7 +30,7 @@ public class RedisLoggingDaoImpl implements RedisLoggingDao {
 
 	@Override
 	public String getData(String key) {
-		return redisTemplate.opsForValue().get(key);
+		return EncryptUtil.decrypt(redisTemplate.opsForValue().get(key));
 	}
 
 	@Override
