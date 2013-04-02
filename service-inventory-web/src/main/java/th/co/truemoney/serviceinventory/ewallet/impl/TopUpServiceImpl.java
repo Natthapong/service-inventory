@@ -11,17 +11,14 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
@@ -34,10 +31,10 @@ public class TopUpServiceImpl implements TopUpService {
 	private OTPService otpService;
 
 	@Autowired
-	private AsyncTopUpEwalletProcessor asyncService;
+	private AsyncTopUpEwalletProcessor asyncTopUpProcessor;
 
 	@Autowired
-	private EwalletSoapProxy ewalletProxy;
+	private TopUpFacade.DSLBuilder topUpFacade;
 
 	@Autowired
 	private AccessTokenRepository accessTokenRepo;
@@ -54,7 +51,11 @@ public class TopUpServiceImpl implements TopUpService {
 		DirectDebit directDebitSource = directDebitSourceService.getUserDirectDebitSource(sourceOfFundID, accessTokenID);
 
 		validateToppingUpValue(amount, directDebitSource);
-		verifyToppingUpCapability(amount, directDebitSource, accessToken);
+
+		topUpFacade.withAmount(amount)
+			.usingSourceOfFund(directDebitSource)
+			.fromUser(accessToken)
+			.verifyTopUp();
 
 		BigDecimal topUpFee = directDebitSourceService.calculateTopUpFee(amount, directDebitSource);
 
@@ -87,19 +88,6 @@ public class TopUpServiceImpl implements TopUpService {
 			se.marshallToData(sofDetail);
 			throw se;
 		}
-	}
-
-	private void verifyToppingUpCapability(BigDecimal amount, SourceOfFund sof, AccessToken accessToken) {
-
-		VerifyAddMoneyRequest request = new VerifyAddMoneyRequest();
-
-		request.setAmount(amount);
-		request.setSourceId(sof.getSourceOfFundID());
-		request.setSourceType(sof.getSourceOfFundType());
-		request.setChannelId(accessToken.getChannelID());
-		request.setSecurityContext(new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID()));
-
-		ewalletProxy.verifyAddMoney(request);
 	}
 
 	@Override
@@ -147,7 +135,7 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	private void performTopUp(TopUpOrder topUpOrder, AccessToken accessToken) {
-		asyncService.topUpUtibaEwallet(topUpOrder, accessToken);
+		asyncTopUpProcessor.topUpUtibaEwallet(topUpOrder, accessToken);
 	}
 
 	@Override
@@ -184,40 +172,20 @@ public class TopUpServiceImpl implements TopUpService {
 		this.directDebitSourceService = directDebitSourceService;
 	}
 
-	public OTPService getOtpService() {
-		return otpService;
-	}
-
 	public void setOtpService(OTPService otpService) {
 		this.otpService = otpService;
 	}
 
-	public AsyncTopUpEwalletProcessor getAsyncService() {
-		return asyncService;
+	public void setTopUpFacadeBuilder(TopUpFacade.DSLBuilder topUpFacadeBuilder) {
+		this.topUpFacade = topUpFacadeBuilder;
 	}
 
-	public void setAsyncService(AsyncTopUpEwalletProcessor asyncService) {
-		this.asyncService = asyncService;
-	}
-
-	public EwalletSoapProxy getEwalletProxy() {
-		return ewalletProxy;
-	}
-
-	public void setEwalletProxy(EwalletSoapProxy ewalletProxy) {
-		this.ewalletProxy = ewalletProxy;
-	}
-
-	public AccessTokenRepository getAccessTokenRepository() {
-		return accessTokenRepo;
+	public void setAsyncTopUpProcessor(AsyncTopUpEwalletProcessor asyncTopUpProcessor) {
+		this.asyncTopUpProcessor = asyncTopUpProcessor;
 	}
 
 	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepo) {
 		this.accessTokenRepo = accessTokenRepo;
-	}
-
-	public TransactionRepository getOrderRepository() {
-		return transactionRepo;
 	}
 
 	public void setOrderRepository(TransactionRepository orderRepo) {

@@ -23,7 +23,7 @@ public class OTPRedisRepository implements OTPRepository {
 	@Override
 	public void saveOTP(OTP otp) {
 		try {
-			redisLoggingDao.addData(otp.getReferenceCode(), mapper.writeValueAsString(otp), 3L);
+			redisLoggingDao.addData(createKey(otp.getMobileNumber(), otp.getReferenceCode()), mapper.writeValueAsString(otp), 3L);
 		} catch (Exception e) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR, "Can not stored data in repository.");
 		}
@@ -31,10 +31,10 @@ public class OTPRedisRepository implements OTPRepository {
 	}
 
 	@Override
-	public OTP getOTPByRefCode(String refCode) {
+	public OTP getOTPByRefCode(String mobileNumber, String refCode) {
 		try {
 
-			String result = redisLoggingDao.getData(refCode);
+			String result = redisLoggingDao.getData(createKey(mobileNumber, refCode));
 
 			if(result == null) {
 				throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "OTP not found.");
@@ -47,6 +47,10 @@ public class OTPRedisRepository implements OTPRepository {
 		}
 
 	    return null;
+	}
+
+	private String createKey(String mobileNumber, String referenceCode) {
+		return "otp:" + mobileNumber + ":" + referenceCode;
 	}
 
 }

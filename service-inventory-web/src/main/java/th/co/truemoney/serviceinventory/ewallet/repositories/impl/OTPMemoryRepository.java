@@ -12,12 +12,15 @@ public class OTPMemoryRepository implements OTPRepository {
 
 	@Override
 	public void saveOTP(OTP otp) {
-		otpsMap.put(otp.getReferenceCode(), otp);
+		otpsMap.put(createKey(otp.getMobileNumber(), otp.getReferenceCode()), otp);
 	}
 
 	@Override
-	public OTP getOTPByRefCode(String refCode) {
-		return otpsMap.get(refCode);
+	public OTP getOTPByRefCode(String mobileNumber, String refCode) {
+		return otpsMap.get(createKey(mobileNumber, refCode));
 	}
 
+	private String createKey(String mobileNumber, String referenceCode) {
+		return mobileNumber + ":" + referenceCode;
+	}
 }

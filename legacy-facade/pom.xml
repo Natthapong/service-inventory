@@ -23,7 +23,6 @@
 		<dependency>
 			<groupId>th.co.truemoney.serviceinventory</groupId>
 			<artifactId>ewallet-client</artifactId>
-			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -31,6 +30,7 @@
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
 
 	</dependencies>
 

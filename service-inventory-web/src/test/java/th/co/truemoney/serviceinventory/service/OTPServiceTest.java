@@ -18,21 +18,21 @@ import th.co.truemoney.serviceinventory.sms.OTPService;
 public class OTPServiceTest {
 
 	private OTPService otpService;
-	
+
 	private OTPRepository otpRepositoryMock;
 
 	@Before
 	public void setup() {
-		this.otpService = new OTPService();		
+		this.otpService = new OTPService();
 		this.otpRepositoryMock = Mockito.mock(OTPRepository.class);
 		this.otpService.setOTPRepository(otpRepositoryMock);
 	}
-	
+
 	@Test
 	public void shouldOTPNotFound() {
-		//given 
-		when(otpRepositoryMock.getOTPByRefCode(anyString())).thenThrow(new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "OTP not found."));
-		
+		//given
+		when(otpRepositoryMock.getOTPByRefCode(anyString(), anyString())).thenThrow(new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "OTP not found."));
+
 		//when
 		try {
 			OTP otp = new OTP("0866013468", "abcd", "111111");
@@ -43,15 +43,15 @@ public class OTPServiceTest {
 			Assert.assertEquals("OTP not found.", e.getDescription());
 		}
 		//then
-		verify(otpRepositoryMock).getOTPByRefCode(anyString());
+		verify(otpRepositoryMock).getOTPByRefCode(anyString(), anyString());
 	}
-	
+
 	@Test
 	public void shouldOTPNotMatched() {
-		//given 
+		//given
 		OTP stubbedOTP = new OTP("0866013468", "defg", "222222");
-		when(otpRepositoryMock.getOTPByRefCode(anyString())).thenReturn(stubbedOTP);
-		
+		when(otpRepositoryMock.getOTPByRefCode(anyString(), anyString())).thenReturn(stubbedOTP);
+
 		//when
 		try {
 			OTP otp = new OTP("0866013468", "abcd", "111111");
@@ -62,14 +62,14 @@ public class OTPServiceTest {
 			Assert.assertEquals("OTP not matched.", e.getDescription());
 		}
 		//then
-		verify(otpRepositoryMock).getOTPByRefCode(anyString());
+		verify(otpRepositoryMock).getOTPByRefCode(anyString(), anyString());
 	}
-	
+
 	@Test
 	public void shouldInvalidOTP() {
-		//given 
-		when(otpRepositoryMock.getOTPByRefCode(anyString())).thenReturn(null);
-		
+		//given
+		when(otpRepositoryMock.getOTPByRefCode(anyString(), anyString())).thenReturn(null);
+
 		//when
 		try {
 			otpService.isValidOTP(null);
@@ -79,21 +79,21 @@ public class OTPServiceTest {
 			Assert.assertEquals("invalid OTP.", e.getDescription());
 		}
 		//then
-		verify(otpRepositoryMock, never()).getOTPByRefCode(anyString());
+		verify(otpRepositoryMock, never()).getOTPByRefCode(anyString(), anyString());
 	}
-	
+
 	@Test
 	public void shouldOTPMatched() {
-		//given 
+		//given
 		OTP stubbedOTP = new OTP("0866013468", "abcd", "111111");
-		when(otpRepositoryMock.getOTPByRefCode(anyString())).thenReturn(stubbedOTP);
-		
+		when(otpRepositoryMock.getOTPByRefCode(anyString(), anyString())).thenReturn(stubbedOTP);
+
 		//when
 		OTP otp = new OTP("0866013468", "abcd", "111111");
 		otpService.isValidOTP(otp);
 
 		//then
-		verify(otpRepositoryMock).getOTPByRefCode(anyString());
+		verify(otpRepositoryMock).getOTPByRefCode(anyString(), anyString());
 	}
-	
+
 }

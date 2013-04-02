@@ -52,7 +52,8 @@ public class TmnProfileServiceClientTest {
 			tmnProfile.setPassword("xxxxxx");
 			tmnProfile.setFullname("Tanathip");
 			tmnProfile.setThaiID("1212121212121");
-			OTP otp = client.createProfile(41, tmnProfile);
+
+			client.createProfile(41, tmnProfile);
 			fail();
 		}catch(ServiceInventoryException e){
 			assertEquals("500", e.getErrorCode());

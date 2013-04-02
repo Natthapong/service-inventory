@@ -108,7 +108,7 @@ public class TopUpServiceClientWorkflowTest {
 
 			// min == 300
 			try {
-				TopUpQuote quote = topUpService.createTopUpQuoteFromDirectDebit("1", new BigDecimal(10), accessToken);
+				topUpService.createTopUpQuoteFromDirectDebit("1", new BigDecimal(10), accessToken);
 				Assert.fail("should fail because user can not top up under 300 baht");
 			} catch (ServiceInventoryException ex) {
 				Assert.assertEquals("20001", ex.getErrorCode());

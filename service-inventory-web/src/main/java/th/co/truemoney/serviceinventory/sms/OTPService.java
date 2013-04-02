@@ -60,9 +60,9 @@ public class OTPService {
 		if (inputOTP == null || inputOTP.getReferenceCode() == null) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.INVALID_OTP, "invalid OTP.");
 		}
-		
-		OTP otp = otpRepository.getOTPByRefCode(inputOTP.getReferenceCode());
-		
+
+		OTP otp = otpRepository.getOTPByRefCode(inputOTP.getMobileNumber(), inputOTP.getReferenceCode());
+
 		if (otp != null && !otp.getOtpString().equals(inputOTP.getOtpString())) {
 			throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_MATCH, "OTP not matched.");
 		}
