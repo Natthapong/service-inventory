@@ -15,7 +15,9 @@ import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
+import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
+import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
+import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
@@ -42,25 +44,18 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 	@Override
 	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenID)
 			throws ServiceInventoryException {
-		try {
-			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-			logger.debug("retrieve access Token: "+accessToken.toString());
 
-			if (!accessToken.getUsername().equals(username)) {
-				throw new ServiceInventoryException("401", "unauthorized access");
-			}
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		logger.debug("retrieve access Token: "+accessToken.toString());
 
-			List<DirectDebit> userDirectDebitSources = getUserDirectDebitSources(accessToken.getTruemoneyID(), accessToken.getChannelID(), accessToken.getSessionID());
-
-			return userDirectDebitSources;
-
-		} catch (EwalletException e) {
-			throw new ServiceInventoryException(e.getCode(),
-				"tmnSecurityProxy.listSource response: " + e.getCode(), e.getNamespace());
-		} catch (ServiceUnavailableException e) {
-			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
-				e.getMessage(), e.getNamespace());
+		if (!accessToken.getUsername().equals(username)) {
+			throw new ServiceInventoryException("401", "unauthorized access");
 		}
+
+		List<DirectDebit> userDirectDebitSources = getUserDirectDebitSources(accessToken.getTruemoneyID(), accessToken.getChannelID(), accessToken.getSessionID());
+
+		return userDirectDebitSources;
+
 	}
 
 	@Override
@@ -115,10 +110,7 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 				}
 			}
 			return directDebitList;
-		} catch (EwalletException e) {
-			throw new ServiceInventoryException(e.getCode(),
-				"tmnProfileProxy.listSource response: " + e.getCode(), e.getNamespace());
-		} catch (ServiceUnavailableException e) {
+		} catch (EwalletUnExpectedException e) {
 			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
 				e.getMessage(), e.getNamespace());
 		}

@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class AccessToken implements Serializable {
-	
+
 	private static final long serialVersionUID = -1447834526746021542L;
 
 	private String accessTokenID;
@@ -17,11 +17,14 @@ public class AccessToken implements Serializable {
 	private String email;
 	private Integer channelID;
 
-	
+
 	public AccessToken() {
-		super();
 	}
-	
+
+	public AccessToken(String token) {
+		this.accessTokenID = token;
+	}
+
 	public AccessToken(String token, String sessionID, String truemoneyID, String username, String mobileNumber, String email, Integer channelID) {
 		this.accessTokenID = token;
 		this.sessionID = sessionID;
@@ -31,7 +34,7 @@ public class AccessToken implements Serializable {
 		this.email = email;
 		this.channelID = channelID;
 	}
-	
+
 	public String getAccessTokenID() {
 		return accessTokenID;
 	}
@@ -71,7 +74,7 @@ public class AccessToken implements Serializable {
 	public void setChannelID(Integer channelID) {
 		this.channelID = channelID;
 	}
-		
+
 	public String getMobileNumber() {
 		return mobileNumber;
 	}
@@ -100,10 +103,10 @@ public class AccessToken implements Serializable {
 			.append("channelID: ", this.channelID)
 			.toString();
 	}
-	
+
 	public static AccessToken generateNewToken(String sessionID, String truemoneyID, String username, String mobileNumber, String email, Integer channelID) {
-		String accessTokenID = UUID.randomUUID().toString();		
+		String accessTokenID = UUID.randomUUID().toString();
 		return new AccessToken(accessTokenID, sessionID, truemoneyID, username,  mobileNumber, email, channelID);
 	}
-	
+
 }

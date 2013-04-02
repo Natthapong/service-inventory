@@ -3,6 +3,7 @@ package th.co.truemoney.serviceinventory.persona;
 import java.math.BigDecimal;
 
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
+import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
@@ -24,7 +25,7 @@ public class Eve implements Persona {
 	@Override
 	public TmnProfileProxy getTmnProfile() {
 		return new TmnProfileProxy() {
-			
+
 			@Override
 			public GetBasicProfileResponse getBasicProfile(
 					StandardBizRequest standardBizRequest)
@@ -77,13 +78,13 @@ public class Eve implements Persona {
 
 				if ("eve@tmn.com".equals(initiator)
 						&& "password".equals(password)) {
-					
+
 					return new SignonResponse("1", "0", "namespace",
 							new String[] { "key" }, new String[] { "value" },
 							"sessionId", "EveTmnMoneyId");
 				}
 
-				throw new EwalletException("4", "");
+				throw new FailResultCodeException("4", "");
 			}
 
 			@Override

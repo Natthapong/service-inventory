@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +16,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
-import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AdminSecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
@@ -71,7 +67,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Autowired @Qualifier("tmnProfilePin")
 	private String tmnProfilePin;
-	
+
 	@Autowired
 	private EmailService emailService;
 
@@ -79,120 +75,94 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	@Override
 	public String login(Integer channelID, Login login)
 				throws SignonServiceException {
-		try {
-			// Create Request ID
-			SignonRequest signonRequest = createSignOnRequest(channelID, login);
-			SignonResponse signonResponse = this.tmnSecurityProxy.signon(signonRequest);
 
-			SecurityContext securityContext = new SecurityContext(signonResponse.getSessionId(), signonResponse.getTmnId());
-			StandardBizRequest standardBizRequest = new StandardBizRequest();
-			standardBizRequest.setChannelId(channelID);
-			standardBizRequest.setSecurityContext(securityContext);
-			GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
+		// Create Request ID
+		SignonRequest signonRequest = createSignOnRequest(channelID, login);
+		SignonResponse signonResponse = this.tmnSecurityProxy.signon(signonRequest);
 
-			if (profileResponse != null && !profileResponse.getProfileType().equals("C")) {
-				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_TYPE, "Invalid profile type, is not a customer.");
-			} else if (profileResponse != null && profileResponse.getStatusId() != 3) {
-				throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_STATUS, "Invalid profile status. ("+profileResponse.getStatusId()+")");
-			}
+		SecurityContext securityContext = new SecurityContext(signonResponse.getSessionId(), signonResponse.getTmnId());
+		StandardBizRequest standardBizRequest = new StandardBizRequest();
+		standardBizRequest.setChannelId(channelID);
+		standardBizRequest.setSecurityContext(securityContext);
+		GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
 
-			AccessToken accessToken = AccessToken.generateNewToken(signonResponse.getSessionId(),
-					signonResponse.getTmnId(),
-					login.getUsername(),
-					profileResponse.getMobile(),
-					profileResponse.getEmail(),
-					channelID);
-
-			// add session id and mapping access token into redis
-			logger.info("Access token created: " + accessToken);
-
-			accessTokenRepo.save(accessToken);
-
-			return accessToken.getAccessTokenID();
-
-		} catch (EwalletException e) {
-			throw new SignonServiceException(e.getCode(),
-				"tmnSecurityProxy.signon response: " + e.getCode(), e.getNamespace());
-		} catch (ServiceUnavailableException e) {
-			throw new SignonServiceException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
-				e.getMessage(), e.getNamespace());
+		if (profileResponse != null && !profileResponse.getProfileType().equals("C")) {
+			throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_TYPE, "Invalid profile type, is not a customer.");
+		} else if (profileResponse != null && profileResponse.getStatusId() != 3) {
+			throw new SignonServiceException(SignonServiceException.Code.INVALID_PROFILE_STATUS, "Invalid profile status. ("+profileResponse.getStatusId()+")");
 		}
+
+		AccessToken accessToken = AccessToken.generateNewToken(signonResponse.getSessionId(),
+				signonResponse.getTmnId(),
+				login.getUsername(),
+				profileResponse.getMobile(),
+				profileResponse.getEmail(),
+				channelID);
+
+		// add session id and mapping access token into redis
+		logger.info("Access token created: " + accessToken);
+
+		accessTokenRepo.save(accessToken);
+
+		return accessToken.getAccessTokenID();
 	}
 
 	@Override
 	public TmnProfile getTruemoneyProfile(String accessTokenID)
 			throws ServiceInventoryException {
-		try {
-			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-			logger.debug("retrieve access Token: "+accessToken.toString());
 
-			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
-			StandardBizRequest standardBizRequest = new StandardBizRequest();
-			standardBizRequest.setChannelId(accessToken.getChannelID());
-			standardBizRequest.setSecurityContext(securityContext);
-			GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
-			TmnProfile tmnProfile = new TmnProfile(profileResponse.getFullName(), profileResponse.getEwalletBalance());
-			tmnProfile.setMobileNumber(profileResponse.getMobile());
-			tmnProfile.setEmail(profileResponse.getEmail());
-			tmnProfile.setType(profileResponse.getProfileType());
-			tmnProfile.setStatus(profileResponse.getStatusId());
-			return tmnProfile;
-		} catch (EwalletException e) {
-			throw new ServiceInventoryException(e.getCode(),
-				"tmnProfileProxy.getBasicProfile response" + e.getCode(), e.getNamespace());
-		} catch (ServiceUnavailableException e) {
-			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
-				e.getMessage(), e.getNamespace());
-		}
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		logger.debug("retrieve access Token: "+accessToken.toString());
+
+		SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
+		StandardBizRequest standardBizRequest = new StandardBizRequest();
+		standardBizRequest.setChannelId(accessToken.getChannelID());
+		standardBizRequest.setSecurityContext(securityContext);
+		GetBasicProfileResponse profileResponse = this.tmnProfileProxy.getBasicProfile(standardBizRequest);
+		TmnProfile tmnProfile = new TmnProfile(profileResponse.getFullName(), profileResponse.getEwalletBalance());
+		tmnProfile.setMobileNumber(profileResponse.getMobile());
+		tmnProfile.setEmail(profileResponse.getEmail());
+		tmnProfile.setType(profileResponse.getProfileType());
+		tmnProfile.setStatus(profileResponse.getStatusId());
+
+		return tmnProfile;
 	}
 
 	@Override
 	public BigDecimal getEwalletBalance(String accessTokenID)
 			throws ServiceInventoryException {
-		try {
-			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-			logger.debug("retrieve access Token: "+accessToken.toString());
 
-			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
-			StandardBizRequest standardBizRequest = new StandardBizRequest();
-			standardBizRequest.setChannelId(accessToken.getChannelID());
-			standardBizRequest.setSecurityContext(securityContext);
-			GetBalanceResponse balanceResponse = this.ewalletSoapProxy.getBalance(standardBizRequest);
-			return balanceResponse.getCurrentBalance();
-		} catch (EwalletException e) {
-			throw new ServiceInventoryException(e.getCode(),
-				"ewalletSoapProxy.getBalance response" + e.getCode(), e.getNamespace());
-		} catch (ServiceUnavailableException e) {
-			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
-				e.getMessage(), e.getNamespace());
-		}
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		logger.debug("retrieve access Token: "+accessToken.toString());
+
+		SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
+		StandardBizRequest standardBizRequest = new StandardBizRequest();
+		standardBizRequest.setChannelId(accessToken.getChannelID());
+		standardBizRequest.setSecurityContext(securityContext);
+		GetBalanceResponse balanceResponse = this.ewalletSoapProxy.getBalance(standardBizRequest);
+		return balanceResponse.getCurrentBalance();
 	}
 
 	@Override
 	public String logout(String accessTokenID) {
-		try {
-			// --- Get Account Detail from accessToken ---//
-			AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-			if (accessToken == null) return "";
 
-			accessTokenRepo.remove(accessTokenID);
+		// --- Get Account Detail from accessToken ---//
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		if (accessToken == null) return "";
 
-			//--- Terminate Session Utiba ---//
-			SecurityContext securityContext = new SecurityContext();
-			securityContext.setSessionId(accessToken.getSessionID());
-			securityContext.setTmnId(accessToken.getTruemoneyID());
+		accessTokenRepo.remove(accessTokenID);
 
-			StandardBizRequest standardBizRequest = new StandardBizRequest();
-			standardBizRequest.setSecurityContext(securityContext);
-			standardBizRequest.setChannelId(accessToken.getChannelID());
+		//--- Terminate Session Utiba ---//
+		SecurityContext securityContext = new SecurityContext();
+		securityContext.setSessionId(accessToken.getSessionID());
+		securityContext.setTmnId(accessToken.getTruemoneyID());
 
-			this.tmnSecurityProxy.terminateSession(standardBizRequest);
+		StandardBizRequest standardBizRequest = new StandardBizRequest();
+		standardBizRequest.setSecurityContext(securityContext);
+		standardBizRequest.setChannelId(accessToken.getChannelID());
 
-		} catch (EwalletException e) {
-			logger.error(e.getMessage(), e);
-		} catch (ServiceUnavailableException e) {
-			logger.error(e.getMessage(), e);
-		}
+		this.tmnSecurityProxy.terminateSession(standardBizRequest);
+
 		return "";
 	}
 
@@ -211,23 +181,23 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Override
     public OTP createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
-       	performIsCreatable(channelID, tmnProfile.getMobileNumber());       	
+       	performIsCreatable(channelID, tmnProfile.getMobileNumber());
        	OTP otp = otpService.send(tmnProfile.getMobileNumber());
        	profileRepository.saveProfile(tmnProfile);
        	return otp;
     }
-	
+
 	@Override
 	public TmnProfile confirmCreateProfile(Integer channelID, OTP otp) throws ServiceInventoryException {
-		
+
 		otpService.isValidOTP(otp);
-		
+
 		TmnProfile tmnProfile = profileRepository.getTmnProfile(otp.getMobileNumber());
-		
+
 		performCreateProfile(channelID, tmnProfile);
-		
+
 		performSendWelcomeEmail(tmnProfile.getEmail());
-		
+
 		return tmnProfile;
 	}
 
@@ -266,47 +236,29 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	public void setTmnProfilePin(String tmnProfilePin) {
 		this.tmnProfilePin = tmnProfilePin;
 	}
-	
+
     private void performIsCreatable(Integer channelID, String loginID) throws ServiceInventoryException {
-    	try {
-			IsCreatableRequest isCreatableRequest = createIsCreatableRequest(channelID, loginID);
-		    tmnProfileAdminProxy.isCreatable(isCreatableRequest);
-        } catch (EwalletException e) {
-            throw new ServiceInventoryException(e.getCode(),
-            		"tmnProfileAdminProxy.isCreatable response " + e.getCode(),
-            		e.getNamespace());
-        } catch (ServiceUnavailableException e) {
-            throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
-                    e.getMessage(), e.getNamespace());
-        }
+		IsCreatableRequest isCreatableRequest = createIsCreatableRequest(channelID, loginID);
+		tmnProfileAdminProxy.isCreatable(isCreatableRequest);
     }
-    
+
     private void performCreateProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
-    	try {
-    		CreateTmnProfileRequest createTmnProfileRequest = createTmnProfileRequest(channelID, tmnProfile);
-    		tmnProfileProxy.createTmnProfile(createTmnProfileRequest);
-        } catch (EwalletException e) {
-            throw new ServiceInventoryException(e.getCode(),
-            		"tmnProfileProxy.createTmnProfile response " + e.getCode(),
-            		e.getNamespace());
-        } catch (ServiceUnavailableException e) {
-            throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
-                    e.getMessage(), e.getNamespace());
-        }    	
+		CreateTmnProfileRequest createTmnProfileRequest = createTmnProfileRequest(channelID, tmnProfile);
+		tmnProfileProxy.createTmnProfile(createTmnProfileRequest);
     }
 
     private IsCreatableRequest createIsCreatableRequest(Integer channelID, String loginID) {
         IsCreatableRequest isCreatableRequest = new IsCreatableRequest();
         isCreatableRequest.setChannelId(channelID);
         isCreatableRequest.setLoginId(loginID);
-        
+
 		String encryptedPin = HashPasswordUtil.encryptSHA1(tmnProfileInitiator.toLowerCase()+tmnProfilePin).toLowerCase();
-        
+
         AdminSecurityContext adminSecurityContext = new AdminSecurityContext(tmnProfileInitiator, encryptedPin);
         isCreatableRequest.setAdminSecurityContext(adminSecurityContext);
         return isCreatableRequest;
     }
-    
+
 	private CreateTmnProfileRequest createTmnProfileRequest(Integer channelID, TmnProfile tmnProfile) {
 		CreateTmnProfileRequest tmnProfileRequest = new CreateTmnProfileRequest();
 		tmnProfileRequest.setChannelId(channelID);
@@ -317,7 +269,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		tmnProfileRequest.setThaiId(tmnProfile.getThaiID());
 		return tmnProfileRequest;
 	}
-	
+
 	private SignonRequest createSignOnRequest(Integer channelID, Login login) {
 		SignonRequest signonRequest = new SignonRequest();
 		signonRequest.setInitiator(login.getUsername());

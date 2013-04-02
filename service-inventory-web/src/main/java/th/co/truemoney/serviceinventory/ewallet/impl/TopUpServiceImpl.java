@@ -3,8 +3,6 @@ package th.co.truemoney.serviceinventory.ewallet.impl;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +16,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -95,23 +90,16 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	private void verifyToppingUpCapability(BigDecimal amount, SourceOfFund sof, AccessToken accessToken) {
-		try {
 
-			VerifyAddMoneyRequest request = new VerifyAddMoneyRequest();
+		VerifyAddMoneyRequest request = new VerifyAddMoneyRequest();
 
-			request.setAmount(amount);
-			request.setSourceId(sof.getSourceOfFundID());
-			request.setSourceType(sof.getSourceOfFundType());
-			request.setChannelId(accessToken.getChannelID());
-			request.setSecurityContext(new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID()));
+		request.setAmount(amount);
+		request.setSourceId(sof.getSourceOfFundID());
+		request.setSourceType(sof.getSourceOfFundType());
+		request.setChannelId(accessToken.getChannelID());
+		request.setSecurityContext(new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID()));
 
-			ewalletProxy.verifyAddMoney(request);
-
-		} catch (EwalletException e) {
-			throw new ServiceInventoryException(e.getCode(), "verify add money fail.", e.getNamespace());
-		} catch (ServiceUnavailableException e) {
-			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE), e.getMessage(), e.getNamespace());
-		}
+		ewalletProxy.verifyAddMoney(request);
 	}
 
 	@Override
@@ -153,9 +141,13 @@ public class TopUpServiceImpl implements TopUpService {
 		topUpOrder.setStatus(Transaction.Status.VERIFIED);
 		transactionRepo.saveTopUpEwalletTransaction(topUpOrder, accessTokenID);
 
-		performTopUpMoney(accessToken, topUpOrder);
+		performTopUp(topUpOrder, accessToken);
 
 		return topUpQuote.getStatus();
+	}
+
+	private void performTopUp(TopUpOrder topUpOrder, AccessToken accessToken) {
+		asyncService.topUpUtibaEwallet(topUpOrder, accessToken);
 	}
 
 	@Override
@@ -182,19 +174,6 @@ public class TopUpServiceImpl implements TopUpService {
 
 	public TopUpOrder getTopUpOrderResults(String orderID, String accessTokenID) throws ServiceInventoryException {
 		return transactionRepo.getTopUpEwalletTransaction(orderID, accessTokenID);
-	}
-
-	private void performTopUpMoney(AccessToken accessToken, TopUpOrder topUpOrder) {
-		TopUpQuote quote = topUpOrder.getQuote();
-
-		AddMoneyRequest addMoneyRequest = new AddMoneyRequest();
-		addMoneyRequest.setAmount(quote.getAmount());
-		addMoneyRequest.setChannelId(accessToken.getChannelID());
-		addMoneyRequest.setSecurityContext(new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID()));
-		addMoneyRequest.setSourceId(quote.getSourceOfFund().getSourceOfFundID());
-		addMoneyRequest.setSourceType(quote.getSourceOfFund().getSourceOfFundType());
-
-		asyncService.topUpUtibaEwallet(topUpOrder, accessToken.getAccessTokenID(), addMoneyRequest);
 	}
 
 	public EnhancedDirectDebitSourceOfFundService getDirectDebitSourceService() {

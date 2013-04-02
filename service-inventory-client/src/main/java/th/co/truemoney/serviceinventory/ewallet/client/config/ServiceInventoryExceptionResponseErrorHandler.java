@@ -20,7 +20,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class ServiceInventoryExceptionResponseErrorHandler extends DefaultResponseErrorHandler {
 
-	public static final ServiceInventoryException SERVICE_NOT_AVAILABLE = new ServiceInventoryException("503", "Service Not Available", "TMN-PRODUCT");
+	public static final ServiceInventoryException SERVICE_NOT_AVAILABLE = new ServiceInventoryException(503, "503", "Service Not Available", "TMN-PRODUCT");
 
 	public void handleError(ClientHttpResponse response) throws IOException {
 		HttpStatus statusCode = getHttpStatusCode(response);

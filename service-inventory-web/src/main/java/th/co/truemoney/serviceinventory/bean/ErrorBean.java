@@ -3,6 +3,12 @@ package th.co.truemoney.serviceinventory.bean;
 import java.io.Serializable;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(Include.NON_NULL)
 public class ErrorBean implements Serializable {
 
 	private static final long serialVersionUID = 3740830271398781986L;

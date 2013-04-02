@@ -24,8 +24,8 @@ import th.co.truemoney.serviceinventory.config.TestTmnProfileConfig;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
-import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
+import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
+import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileResponse;
@@ -34,7 +34,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRespons
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -50,11 +49,11 @@ public class TmnRegisterImpServicelTest {
 
 	@Autowired @Qualifier("tmnProfileInitiator")
 	private String tmnProfileInitiator;
-	
+
 	@Autowired @Qualifier("tmnProfilePin")
 	private String tmnProfilePin;
-	
-	
+
+
 	@Before
 	public void setup() {
 		tmnProfileServiceImpl = new TmnProfileServiceImpl();
@@ -86,11 +85,11 @@ public class TmnRegisterImpServicelTest {
 			String email = "user1.test.v1@gmail.com";
 			StandardBizResponse bizResponse = new StandardBizResponse();
 			bizResponse.setResultCode(StandardBizResponse.SUCCESS_CODE);
-			when(tmnProfileAdminProxy.isCreatable(any(IsCreatableRequest.class))).thenThrow(new ServiceUnavailableException(new RemoteException()));
+			when(tmnProfileAdminProxy.isCreatable(any(IsCreatableRequest.class))).thenThrow(new EwalletUnExpectedException(new RemoteException()));
 
 			tmnProfileServiceImpl.setTmnProfileAdminProxy(tmnProfileAdminProxy);
 			tmnProfileServiceImpl.validateEmail(41, email);
-		} catch (ServiceInventoryException exception) {
+		} catch (EwalletUnExpectedException exception) {
 			assertEquals("EWALLET-PROXY", exception.getNamespace());
 		}
 	}
@@ -101,11 +100,11 @@ public class TmnRegisterImpServicelTest {
 			String email = "user1.test.v1@gmail.com";
 			StandardBizResponse bizResponse = new StandardBizResponse();
 			bizResponse.setResultCode(StandardBizResponse.SUCCESS_CODE);
-			when(tmnProfileAdminProxy.isCreatable(any(IsCreatableRequest.class))).thenThrow(new EwalletException("12345", "EWALLET-PROXY"));
+			when(tmnProfileAdminProxy.isCreatable(any(IsCreatableRequest.class))).thenThrow(new FailResultCodeException("12345", "EWALLET-PROXY"));
 
 			tmnProfileServiceImpl.setTmnProfileAdminProxy(tmnProfileAdminProxy);
 			tmnProfileServiceImpl.validateEmail(41, email);
-		} catch (ServiceInventoryException exception) {
+		} catch (FailResultCodeException exception) {
 			assertEquals("12345", exception.getCode());
 		}
 	}
@@ -134,10 +133,10 @@ public class TmnRegisterImpServicelTest {
 
 		doNothing().when(emailService).sendWelcomeEmail(anyString(), any(Map.class));
 		tmnProfileServiceImpl.setEmailService(emailService);
-		
+
 		TmnProfile tmnProfile =  tmnProfileServiceImpl.confirmCreateProfile(41, otp);
-		
-		assertNotNull(tmnProfile);		
+
+		assertNotNull(tmnProfile);
 		verify(emailService).sendWelcomeEmail(anyString(), any(Map.class));
 	}
 }

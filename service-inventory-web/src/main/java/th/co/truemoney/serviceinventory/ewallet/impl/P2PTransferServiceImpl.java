@@ -3,8 +3,6 @@ package th.co.truemoney.serviceinventory.ewallet.impl;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +14,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.exception.ServiceUnavailableException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.TransferRequest;
@@ -30,7 +26,6 @@ import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
 public class P2PTransferServiceImpl implements P2PTransferService {
-	
 	@Autowired
 	private AccessTokenRepository accessTokenRepo;
 
@@ -67,32 +62,26 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		draft.setMobileNumber(toMobileNumber);
 		draft.setFullname(markFullName);
 		draft.setStatus(DraftTransaction.Status.CREATED);
-		
+
 		transactionRepo.saveP2PDraftTransaction(draft, accessToken.getAccessTokenID());
-		
+
 		return draft;
 	}
 
 	private VerifyTransferResponse verifyEwalletTransfer(String mobileNumber, BigDecimal amount, AccessToken accessToken) {
-		try {
-			SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
-			
-			VerifyTransferRequest verifyRequest = new VerifyTransferRequest();
-			verifyRequest.setChannelId(accessToken.getChannelID());
-			verifyRequest.setAmount(amount);
-			verifyRequest.setTarget(mobileNumber);
-			verifyRequest.setSecurityContext(securityContext);
 
-			VerifyTransferResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
-			
-			return verifyResponse;
-		} catch (EwalletException e) {
-			throw new ServiceInventoryException(e.getCode(), "verify tranfer fail.", e.getNamespace());
-		} catch (ServiceUnavailableException e) {
-			throw new ServiceInventoryException(
-					Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
-					e.getMessage(), e.getNamespace());
-		}	
+		SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
+
+		VerifyTransferRequest verifyRequest = new VerifyTransferRequest();
+		verifyRequest.setChannelId(accessToken.getChannelID());
+		verifyRequest.setAmount(amount);
+		verifyRequest.setTarget(mobileNumber);
+		verifyRequest.setSecurityContext(securityContext);
+
+		VerifyTransferResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
+
+		return verifyResponse;
+
 	}
 
 	@Override
@@ -144,10 +133,10 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	@Override
 	public Transaction.Status getTransactionStatus(String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
-		P2PTransaction p2pTransaction = getTransactionResult(transactionID, accessTokenID);  
+		P2PTransaction p2pTransaction = getTransactionResult(transactionID, accessTokenID);
 		Transaction.Status p2pTransactionStatus = p2pTransaction.getStatus();
 		FailStatus failStatus = p2pTransaction.getFailStatus();
-		
+
 		if(p2pTransactionStatus == Transaction.Status.FAILED) {
 			if (failStatus == FailStatus.UMARKET_FAILED) {
 				throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_UMARKET_FAILED,
@@ -173,14 +162,14 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 
 	private void performTransferMoney(AccessToken accessToken, P2PTransaction p2pTransaction) {
 		P2PDraftTransaction p2pDraftTransaction = p2pTransaction.getDraftTransaction();
-		
+
 		TransferRequest transferRequest = new TransferRequest();
 		transferRequest.setAmount(p2pDraftTransaction.getAmount());
 		transferRequest.setChannelId(accessToken.getChannelID());
 		transferRequest.setSecurityContext(new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID()));
 		transferRequest.setTarget(p2pDraftTransaction.getMobileNumber());
 
-		asyncP2PTransferProcessor.transferEwallet(p2pTransaction, accessToken.getAccessTokenID(), transferRequest);		
+		asyncP2PTransferProcessor.transferEwallet(p2pTransaction, accessToken.getAccessTokenID(), transferRequest);
 	}
 
 	private String markFullName(String fullName)
@@ -188,7 +177,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		String markName = "";
 
 		fullName = fullName != null ? fullName.trim() : "";
-		
+
 		if (fullName == null || "".equals(fullName)) {
 			markName = "-";
 			return markName;

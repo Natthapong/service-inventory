@@ -195,7 +195,7 @@ public class TopUpServiceImplTest {
 		DraftTransaction.Status quoteStatus = topUpService.confirmOTP(quote.getID(), otp, "accessToken");
 
 		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, quoteStatus);
-		verify(asyncService).topUpUtibaEwallet(any(TopUpOrder.class), anyString(), any(AddMoneyRequest.class));
+		verify(asyncService).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
 	}
 
 	@Test

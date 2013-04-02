@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import th.co.truemoney.serviceinventory.bean.ErrorBean;
+import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
+import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.exception.BaseException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
@@ -21,6 +23,20 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class GlobalExceptionsHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(GlobalExceptionsHandler.class);
+
+	@ExceptionHandler
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public @ResponseBody ErrorBean handleEwalletFailResultCodeExceptions(FailResultCodeException exception) {
+		return new ErrorBean(exception.getCode() , "Ewallet return error code: " + exception.getCode(), exception.getNamespace(), exception.getMessage());
+	}
+
+	@ExceptionHandler
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public @ResponseBody ErrorBean handleEwalletUnExpectedExceptions(EwalletUnExpectedException exception) {
+		return new ErrorBean("503", "Internal server error", exception.getNamespace(), exception.getMessage());
+	}
+
+
 
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.BAD_REQUEST)

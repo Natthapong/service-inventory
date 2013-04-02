@@ -8,12 +8,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true, value="status")
 @JsonInclude(Include.NON_NULL)
 public class ServiceInventoryException extends RuntimeException {
 
 	private static final long serialVersionUID = 3961433822995791383L;
 
+	private Integer httpStatus;
 	private String errorCode;
 	private String errorDescription;
 	private String errorNamespace;
@@ -31,20 +32,24 @@ public class ServiceInventoryException extends RuntimeException {
 	public ServiceInventoryException() {
 	}
 
-	public ServiceInventoryException(String errorCode, String errorDescription, String errorNamespace) {
-		this(errorCode, errorDescription, errorNamespace, null, null);
+	public ServiceInventoryException(Integer httpStatus, String errorCode, String errorDescription, String errorNamespace) {
+		this(httpStatus, errorCode, errorDescription, errorNamespace, null, null);
 	}
 
-	public ServiceInventoryException(String errorCode, String errorDescription, String errorNamespace, String developerMessage) {
-		this(errorCode, errorDescription, errorNamespace, developerMessage, null);
+	public ServiceInventoryException(Integer httpStatus, String errorCode, String errorDescription,
+			String errorNamespace, String developerMessage) {
+		this(httpStatus, errorCode, errorDescription, errorNamespace, developerMessage, null);
 	}
 
-	public ServiceInventoryException(@JsonProperty("errorCode") String errorCode,
+	public ServiceInventoryException(
+			@JsonProperty("httpStatus") Integer httpStatus,
+			@JsonProperty("errorCode") String errorCode,
 			@JsonProperty("errorDescription") String errorDescription,
-			@JsonProperty("errorNamespace")  String errorNamespace,
+			@JsonProperty("errorNamespace") String errorNamespace,
 			@JsonProperty("developerMessage") String developerMessage,
 			@JsonProperty("data") HashMap<String, Object> data) {
 		super(errorDescription);
+		this.httpStatus = httpStatus;
 		this.errorCode = errorCode;
 		this.errorDescription = errorDescription;
 		this.errorNamespace = errorNamespace;
@@ -52,6 +57,13 @@ public class ServiceInventoryException extends RuntimeException {
 		this.data = data;
 	}
 
+	public Integer getHttpStatus() {
+		return httpStatus;
+	}
+
+	public void setHttpStatus(Integer httpStatus) {
+		this.httpStatus = httpStatus;
+	}
 
 	public String getErrorCode() {
 		return errorCode;

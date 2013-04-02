@@ -19,6 +19,7 @@
 
 	<modules>
 		<module>service-inventory-api</module>
+		<module>legacy-facade</module>
 		<module>service-inventory-persona</module>
 		<module>service-inventory-web</module>
 		<module>service-inventory-client</module>

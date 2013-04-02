@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import th.co.truemoney.serviceinventory.config.TestTmnProfileConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
+import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsCreatableRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
@@ -40,11 +42,11 @@ public class CreateTmnProfileTest {
 
 	@Autowired @Qualifier("tmnProfileInitiator")
 	private String tmnProfileInitiator;
-	
+
 	@Autowired @Qualifier("tmnProfilePin")
 	private String tmnProfilePin;
-	
-	
+
+
 	@Before
 	public void setup() {
 		this.tmnProfileServiceImpl = new TmnProfileServiceImpl();
@@ -70,7 +72,7 @@ public class CreateTmnProfileTest {
 		when(otpServiceMock.send(any(String.class))).thenReturn(new OTP("0861234567", stubbedOtpReferenceCode));
 
 		doNothing().when(profileRepositoryMock).saveProfile(any(TmnProfile.class));
-		
+
 		//when
 		Integer channelID = 40;
 		TmnProfile tmnProfile = setTmnProfile();
@@ -96,7 +98,8 @@ public class CreateTmnProfileTest {
 			Integer channelID = 40;
 			TmnProfile tmnProfile = setTmnProfile();
 			this.tmnProfileServiceImpl.createProfile(channelID, tmnProfile);
-		} catch (ServiceInventoryException e) {
+			Assert.fail();
+		} catch (FailResultCodeException e) {
 			assertEquals("error code", e.getCode());
 		}
 
