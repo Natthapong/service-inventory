@@ -16,9 +16,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.exception.SignonServiceException;
-import th.co.truemoney.serviceinventory.exception.ValidateException;
+import th.co.truemoney.serviceinventory.exception.ValidationException;
 
 @Controller
 @RequestMapping(value="/ewallet")
@@ -32,61 +30,68 @@ public class TmnProfileController {
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody String login(
-		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		@RequestBody Login login)
-			throws SignonServiceException {
+		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		   @RequestBody Login login) {
+
 		validateRequestParam(channelID);
+
 		return tmnProfileService.login(channelID, login);
 	}
 
 	@RequestMapping(value = "/profile/{accessTokenID}", method = RequestMethod.GET)
-	public @ResponseBody TmnProfile getTruemoneyProfile(
-		@PathVariable String accessTokenID)
-			throws ServiceInventoryException {
+	public @ResponseBody TmnProfile getTruemoneyProfile(@PathVariable String accessTokenID) {
+
 		TmnProfile tmnProfile = tmnProfileService.getTruemoneyProfile(accessTokenID);
+
 		extendExpireAccessToken(accessTokenID);
+
 		return tmnProfile;
 	}
 
 	@RequestMapping(value = "/balance/{accessTokenID}", method = RequestMethod.GET)
-	public @ResponseBody BigDecimal getBalance(
-		@PathVariable String accessTokenID)
-			throws ServiceInventoryException {
+	public @ResponseBody BigDecimal getBalance(@PathVariable String accessTokenID) {
+
 		BigDecimal balance = tmnProfileService.getEwalletBalance(accessTokenID);
+
 		extendExpireAccessToken(accessTokenID);
+
 		return balance;
 	}
 
 	@RequestMapping(value = "/logout/{accessTokenID}", method = RequestMethod.POST)
 	public @ResponseBody String logout(
-		@PathVariable String accessTokenID) {
+		   @PathVariable String accessTokenID) {
+
 		return tmnProfileService.logout(accessTokenID);
 	}
 
 	@RequestMapping(value = "/profiles/validate-email", method = RequestMethod.POST)
 	public @ResponseBody String isExistRegistered(
-		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		@RequestBody String email)
-			throws ServiceInventoryException {
+		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		   @RequestBody String email) {
+
 		validateRequestParam(channelID);
+
 		return tmnProfileService.validateEmail(channelID, email);
 	}
 
 	@RequestMapping(value = "/profiles", method = RequestMethod.POST)
 	public @ResponseBody OTP createTruemoneyProfile(
-		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		@RequestBody TmnProfile tmnProfile)
-			throws ServiceInventoryException {
+		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		   @RequestBody TmnProfile tmnProfile) {
+
 		validateRequestParam(channelID);
+
 		return tmnProfileService.createProfile(channelID, tmnProfile);
 	}
 
 	@RequestMapping(value = "/profiles/verify-otp", method = RequestMethod.POST)
 	public @ResponseBody TmnProfile confirmCreateTruemoneyProfile(
-		@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		@RequestBody OTP otp)
-			throws ServiceInventoryException {
+		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		   @RequestBody OTP otp) {
+
 		validateRequestParam(channelID);
+
 		return tmnProfileService.confirmCreateProfile(channelID, otp);
 	}
 
@@ -96,7 +101,7 @@ public class TmnProfileController {
 
 	private void validateRequestParam(Integer channelID) {
 		if (channelID == -1) {
-			throw new ValidateException("-1", "Validate error: channelID is null or empty.");
+			throw new ValidationException("-1", "Validate error: channelID is null or empty.");
 		}
 	}
 

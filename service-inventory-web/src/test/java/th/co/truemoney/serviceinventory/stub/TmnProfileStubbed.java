@@ -11,7 +11,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionRespo
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 
 public class TmnProfileStubbed {
 
@@ -103,12 +103,12 @@ public class TmnProfileStubbed {
 	}
 
 	public static Exception createFailedThrowEwalletException() {
-		EwalletException e = new FailResultCodeException("error code", "error namespace");
+		EwalletException e = new FailResultCodeException("error code", "error description");
 		return e;
 	}
 
 	public static Exception createFailedThrowServiceInventoryException() {
-		ServiceInventoryException e = new ServiceInventoryException("error code", "error description", "error namespace");
+		ServiceInventoryWebException e = new ServiceInventoryWebException(400, "error code", "error description");
 		return e;
 	}
 

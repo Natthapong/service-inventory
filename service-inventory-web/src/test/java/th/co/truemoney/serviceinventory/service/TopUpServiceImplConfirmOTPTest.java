@@ -29,7 +29,7 @@ import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.stub.AccessTokenRepositoryStubbed;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -95,8 +95,8 @@ public class TopUpServiceImplConfirmOTPTest {
 
 		try {
 			topUpService.confirmOTP(quote.getID(), invalidOTP, "unknown access token");
-		} catch (ServiceInventoryException e) {
-			assertEquals("10001", e.getCode());
+		} catch (ServiceInventoryWebException e) {
+			assertEquals("10001", e.getErrorCode());
 		}
 
 		//should never call the processor
@@ -111,7 +111,7 @@ public class TopUpServiceImplConfirmOTPTest {
 		try {
 			topUpService.confirmOTP(quote.getID(), new OTP(), accessToken.getAccessTokenID());
 			Assert.fail();
-		} catch (ServiceInventoryException e) {}
+		} catch (ServiceInventoryWebException e) {}
 
 		//then
 		Assert.assertEquals(quote.getStatus(), DraftTransaction.Status.OTP_SENT);
@@ -119,7 +119,7 @@ public class TopUpServiceImplConfirmOTPTest {
 		try {
 			transactionRepo.getTopUpEwalletTransaction(quote.getID(), accessToken.getAccessTokenID());
 			Assert.fail("should not create/persist any top up order");
-		} catch(ServiceInventoryException e) {}
+		} catch(ServiceInventoryWebException e) {}
 
 		//should never call the processor
 		verify(asyncServiceMock, Mockito.never()).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));

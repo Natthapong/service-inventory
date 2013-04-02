@@ -29,33 +29,33 @@ import th.co.truemoney.serviceinventory.stub.TmnProfileStubbed;
 @RunWith(MockitoJUnitRunner.class)
 public class TmnProfileServiceImplTest {
 
-	private TmnProfileServiceImpl tmnProfileServiceImpl;	
-	private TmnSecurityProxy tmnSecurityProxyMock;	
-	private TmnProfileProxy tmnProfileProxyMock;	
-	
+	private TmnProfileServiceImpl tmnProfileServiceImpl;
+	private TmnSecurityProxy tmnSecurityProxyMock;
+	private TmnProfileProxy tmnProfileProxyMock;
+
 	@Before
 	public void setup() {
 		this.tmnProfileServiceImpl = new TmnProfileServiceImpl();
 		this.tmnSecurityProxyMock = Mockito.mock(TmnSecurityProxyImpl.class);
 		this.tmnProfileProxyMock = Mockito.mock(TmnProfileProxyImpl.class);
-		
+
 		this.tmnProfileServiceImpl.setTmnSecurityProxy(tmnSecurityProxyMock);
 		this.tmnProfileServiceImpl.setTmnProfileProxy(tmnProfileProxyMock);
 		this.tmnProfileServiceImpl.setAccessTokenRepository(new AccessTokenMemoryRepository());
 	}
-	
+
 	@Test
 	public void shouldLoginSuccess() {
-		
+
 		//given
 		SignonResponse stubbedSignonResponse = TmnProfileStubbed.createSuccessStubbedSignonResponse();
-		
+
 		GetBasicProfileResponse stubbedProfileResponse = TmnProfileStubbed.createSuccessStubbedProfileResponse();
 
-		when(tmnSecurityProxyMock.signon(Mockito.any(SignonRequest.class))).thenReturn(stubbedSignonResponse);	
-		
-		when(tmnProfileProxyMock.getBasicProfile(Mockito.any(th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest.class))).thenReturn(stubbedProfileResponse);	
-		
+		when(tmnSecurityProxyMock.signon(Mockito.any(SignonRequest.class))).thenReturn(stubbedSignonResponse);
+
+		when(tmnProfileProxyMock.getBasicProfile(Mockito.any(th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest.class))).thenReturn(stubbedProfileResponse);
+
 		//when
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
 		String result = this.tmnProfileServiceImpl.login(41, login);
@@ -64,14 +64,14 @@ public class TmnProfileServiceImplTest {
 		assertNotNull(result);
 
 	}
-	
+
 	//@Test
-	public void shouldLoginFailWithSignon() {		
-		
+	public void shouldLoginFailWithSignon() {
+
 		//given
 		when(tmnSecurityProxyMock.signon(any(SignonRequest.class)))
 			.thenThrow(TmnProfileStubbed.createFailedThrowEwalletException());
-		
+
 		//when
 		try {
 
@@ -79,13 +79,13 @@ public class TmnProfileServiceImplTest {
 			this.tmnProfileServiceImpl.login(41, login);
 			Assert.fail();
 		} catch (SignonServiceException ex) {
-			assertEquals("error code", ex.getCode());
-			assertEquals("error namespace", ex.getNamespace());
+			assertEquals("error code", ex.getErrorCode());
+			assertEquals("error namespace", ex.getErrorNamespace());
 		}
-		
+
 		//then
 		verify(tmnSecurityProxyMock).signon(any(SignonRequest.class));
 
 	}
-		
+
 }

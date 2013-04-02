@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import th.co.truemoney.serviceinventory.bean.ErrorBean;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
-import th.co.truemoney.serviceinventory.exception.BaseException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 
 @ControllerAdvice
 public class GlobalExceptionsHandler {
@@ -27,13 +27,13 @@ public class GlobalExceptionsHandler {
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public @ResponseBody ErrorBean handleEwalletFailResultCodeExceptions(FailResultCodeException exception) {
-		return new ErrorBean(exception.getCode() , "Ewallet return error code: " + exception.getCode(), exception.getNamespace(), exception.getMessage());
+		return new ErrorBean(400, exception.getCode() , "Ewallet return error code: " + exception.getCode(), exception.getNamespace(), exception.getMessage());
 	}
 
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public @ResponseBody ErrorBean handleEwalletUnExpectedExceptions(EwalletUnExpectedException exception) {
-		return new ErrorBean("503", "Internal server error", exception.getNamespace(), exception.getMessage());
+		return new ErrorBean(503, "503", "Internal server error", exception.getNamespace(), exception.getMessage());
 	}
 
 
@@ -45,7 +45,7 @@ public class GlobalExceptionsHandler {
 		FieldError fieldError = exception.getBindingResult().getFieldError();
 		String developerMessage = fieldError.getDefaultMessage() + ": " + fieldError.getField();
 
-		return new ErrorBean("400", "Validation failed", ServiceInventoryException.NAMESPACE, developerMessage);
+		return new ErrorBean(412, "412", "Validation failed", ServiceInventoryWebException.NAMESPACE, developerMessage);
 	}
 
 	@ExceptionHandler
@@ -55,18 +55,21 @@ public class GlobalExceptionsHandler {
 		FieldError fieldError = exception.getBindingResult().getFieldError();
 		String developerMessage = fieldError.getDefaultMessage() + ": " + fieldError.getField();
 
-		return new ErrorBean("400", "Validation failed", ServiceInventoryException.NAMESPACE, developerMessage);
+		return new ErrorBean(412, "400", "Validation failed", ServiceInventoryWebException.NAMESPACE, developerMessage);
 	}
 
 	@ExceptionHandler
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public @ResponseBody ErrorBean handleSystemException(BaseException exception) {
+	public @ResponseBody ErrorBean handleSystemException(ServiceInventoryException exception, HttpServletResponse response) {
 
 		logger.debug("==========================================");
 		logger.debug(exception.getMessage(), exception);
 		logger.debug("==========================================");
 
-		return exception.getErrorBean();
+		Integer httpStatus = exception.getHttpStatus() != null ? exception.getHttpStatus() : 400;
+		exception.setHttpStatus(httpStatus);
+		response.setStatus(httpStatus);
+
+		return new ErrorBean(exception);
 	}
 
 

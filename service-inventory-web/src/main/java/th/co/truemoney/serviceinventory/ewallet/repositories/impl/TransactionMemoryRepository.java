@@ -8,7 +8,9 @@ import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 
 public class TransactionMemoryRepository implements TransactionRepository {
 
@@ -27,8 +29,7 @@ public class TransactionMemoryRepository implements TransactionRepository {
 		TopUpQuote topUpQuote = quotesMap.get(accessTokenID + ":" + quoteID);
 
 		if (topUpQuote == null) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND,
-					"TopUp quote not found.");
+			throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "TopUp quote not found.");
 		}
 
 		return topUpQuote;
@@ -40,11 +41,10 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public TopUpOrder getTopUpEwalletTransaction(String orderID, String accessTokenID) throws ServiceInventoryException {
+	public TopUpOrder getTopUpEwalletTransaction(String orderID, String accessTokenID) throws ServiceInventoryWebException {
 		TopUpOrder topUpOrder = ordersMap.get(accessTokenID + ":" + orderID);
 		if(topUpOrder == null) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND,
-					"TopUp order not found.");
+			throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "TopUp order not found.");
 		}
 		return topUpOrder;
 	}
@@ -56,11 +56,10 @@ public class TransactionMemoryRepository implements TransactionRepository {
 
 	@Override
 	public P2PDraftTransaction getP2PDraftTransaction(String p2pDraftTransactionID, String accessTokenID) {
-		P2PDraftTransaction p2pDraftTransaction = p2pDraftTransactionMap.get(accessTokenID + ":" +p2pDraftTransactionID);
+		P2PDraftTransaction p2pDraftTransaction = p2pDraftTransactionMap.get(accessTokenID + ":" + p2pDraftTransactionID);
 
 		if (p2pDraftTransaction == null) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND,
-					"Draft transfer transaction not found.");
+			throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "Draft transfer transaction not found.");
 		}
 
 		return p2pDraftTransaction;
@@ -73,10 +72,9 @@ public class TransactionMemoryRepository implements TransactionRepository {
 
 	@Override
 	public P2PTransaction getP2PTransaction(String p2pTransactionID, String accessTokenID) {
-		P2PTransaction p2pTransaction = p2pTransactionMap.get(accessTokenID + ":" +p2pTransactionID);
+		P2PTransaction p2pTransaction = p2pTransactionMap.get(accessTokenID + ":" + p2pTransactionID);
 		if(p2pTransaction == null) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND,
-					"Transfer transaction not found.");
+			throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "Transfer transaction not found.");
 		}
 		return p2pTransaction;
 	}

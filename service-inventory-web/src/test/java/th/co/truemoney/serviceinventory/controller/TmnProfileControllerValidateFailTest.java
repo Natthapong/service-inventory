@@ -68,7 +68,7 @@ public class TmnProfileControllerValidateFailTest {
 		this.mockMvc.perform(post("/ewallet/login")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(login)))
-			.andExpect(status().isBadRequest())
+			.andExpect(status().isPreconditionFailed())
 			.andDo(print());
 
 	}

@@ -41,7 +41,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResp
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
@@ -307,7 +307,7 @@ public class LocalEnvironmentConfig {
 					IsCreatableRequest isCreatableRequest)
 					throws EwalletException {
 				if(isCreatableRequest.getLoginId().equals("user1@test.com")){
-					throw new ServiceInventoryException("40000","This user already register.");
+					throw new ServiceInventoryWebException("40000","This user already register.");
 				}else{
 					return new StandardBizResponse("1", "0", "namespace",
 						new String[] { "email" }, new String[] { isCreatableRequest.getLoginId() });

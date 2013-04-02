@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
-import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
@@ -23,6 +20,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 
 @Service
 public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSourceOfFundService {
@@ -46,7 +44,7 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 		logger.debug("retrieve access Token: "+accessToken.toString());
 
 		if (!accessToken.getUsername().equals(username)) {
-			throw new ServiceInventoryException("401", "unauthorized access");
+			throw new ServiceInventoryWebException("401", "unauthorized access");
 		}
 
 		List<DirectDebit> userDirectDebitSources = getUserDirectDebitSources(accessToken.getTruemoneyID(), accessToken.getChannelID(), accessToken.getSessionID());
@@ -66,7 +64,7 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 				return dd;
 			}
 		}
-		throw new ServiceInventoryException("404", "source of fund not found : " + sourceOfFundID);
+		throw new ServiceInventoryWebException("404", "source of fund not found : " + sourceOfFundID);
 	}
 
 	@Override
@@ -78,39 +76,35 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 
 	private List<DirectDebit> getUserDirectDebitSources(String truemoneyID, Integer channelID, String sessionID)
 			throws ServiceInventoryException {
-		try {
-			List<DirectDebit> directDebitList = new ArrayList<DirectDebit>();
-			ListSourceRequest listSourceRequest = createListSourceRequest(channelID, truemoneyID, sessionID);
-			listSourceRequest.setSourceType("debit");
-			ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(listSourceRequest);
-			SourceContext[] sourceContexts = listSourceResponse.getSourceList();
-			if (sourceContexts != null && sourceContexts.length > 0) {
-				directDebitList = new ArrayList<DirectDebit>();
-				for (int i=0; i<sourceContexts.length; i++) {
-					SourceContext sourceContext = sourceContexts[i];
-					String[] sourceDetail = sourceContext.getSourceDetail();
-					DirectDebit directDebit = new DirectDebit();
-					if (sourceDetail != null && sourceDetail.length > 0) {
-						DirectDebitConfigBean directDebitConfigBean = directDebitConfig.getBankDetail(sourceDetail[0] != null ? sourceDetail[0].trim() : "");
-						if (directDebitConfigBean != null) {
-							directDebit.setSourceOfFundID(sourceContext.getSourceId());
-							directDebit.setSourceOfFundType(sourceContext.getSourceType());
-							directDebit.setBankCode(sourceDetail[0] != null ? sourceDetail[0].trim() : "");
-							directDebit.setBankAccountNumber(sourceDetail[0] != null ? sourceDetail[1].trim() : "");
-							directDebit.setBankNameEn(directDebitConfigBean.getBankNameEn());
-							directDebit.setBankNameTh(directDebitConfigBean.getBankNameTh());
-							directDebit.setMinAmount(directDebitConfigBean.getMinAmount());
-							directDebit.setMaxAmount(directDebitConfigBean.getMaxAmount());
-						}
+
+		List<DirectDebit> directDebitList = new ArrayList<DirectDebit>();
+		ListSourceRequest listSourceRequest = createListSourceRequest(channelID, truemoneyID, sessionID);
+		listSourceRequest.setSourceType("debit");
+		ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(listSourceRequest);
+		SourceContext[] sourceContexts = listSourceResponse.getSourceList();
+		if (sourceContexts != null && sourceContexts.length > 0) {
+			directDebitList = new ArrayList<DirectDebit>();
+			for (int i=0; i<sourceContexts.length; i++) {
+				SourceContext sourceContext = sourceContexts[i];
+				String[] sourceDetail = sourceContext.getSourceDetail();
+				DirectDebit directDebit = new DirectDebit();
+				if (sourceDetail != null && sourceDetail.length > 0) {
+					DirectDebitConfigBean directDebitConfigBean = directDebitConfig.getBankDetail(sourceDetail[0] != null ? sourceDetail[0].trim() : "");
+					if (directDebitConfigBean != null) {
+						directDebit.setSourceOfFundID(sourceContext.getSourceId());
+						directDebit.setSourceOfFundType(sourceContext.getSourceType());
+						directDebit.setBankCode(sourceDetail[0] != null ? sourceDetail[0].trim() : "");
+						directDebit.setBankAccountNumber(sourceDetail[0] != null ? sourceDetail[1].trim() : "");
+						directDebit.setBankNameEn(directDebitConfigBean.getBankNameEn());
+						directDebit.setBankNameTh(directDebitConfigBean.getBankNameTh());
+						directDebit.setMinAmount(directDebitConfigBean.getMinAmount());
+						directDebit.setMaxAmount(directDebitConfigBean.getMaxAmount());
 					}
-					directDebitList.add(directDebit);
 				}
+				directDebitList.add(directDebit);
 			}
-			return directDebitList;
-		} catch (EwalletUnExpectedException e) {
-			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE),
-				e.getMessage(), e.getNamespace());
 		}
+		return directDebitList;
 	}
 
 	private ListSourceRequest createListSourceRequest(Integer channelID, String truemoneyID, String sessionID) {

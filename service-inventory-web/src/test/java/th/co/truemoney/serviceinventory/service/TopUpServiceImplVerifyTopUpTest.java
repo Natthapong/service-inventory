@@ -22,7 +22,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapPro
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
 import th.co.truemoney.serviceinventory.stub.AccessTokenRepositoryStubbed;
 import th.co.truemoney.serviceinventory.stub.TopUpStubbed;
@@ -96,9 +96,9 @@ public class TopUpServiceImplVerifyTopUpTest {
 		try {
 			this.topUpService.createTopUpQuoteFromDirectDebit(sourceOfFundID, amount, accessTokenID);
 			Assert.fail();
-		} catch (ServiceInventoryException e) {
+		} catch (ServiceInventoryWebException e) {
 			//then
-			assertEquals("20001", e.getCode());
+			assertEquals("20001", e.getErrorCode());
 		}
 	}
 
@@ -112,9 +112,9 @@ public class TopUpServiceImplVerifyTopUpTest {
 		try {
 			this.topUpService.createTopUpQuoteFromDirectDebit(sourceOfFundID, amount, accessTokenID);
 			Assert.fail();
-		} catch (ServiceInventoryException e) {
+		} catch (ServiceInventoryWebException e) {
 			//then
-			assertEquals("20002", e.getCode());
+			assertEquals("20002", e.getErrorCode());
 		}
 	}
 

@@ -9,24 +9,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.InternalServerErrorException;
+import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 
 public class ProfileRedisRepository implements ProfileRepository {
 
 	private static Logger logger = LoggerFactory.getLogger(ProfileRedisRepository.class);
 
+	private ObjectMapper mapper = new ObjectMapper();
+
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
-	
+
 	@Override
 	public void saveProfile(TmnProfile tmnProfile) {
 		try {
-			ObjectMapper mapper = new ObjectMapper();
-			redisLoggingDao.addData("profile:"+tmnProfile.getMobileNumber(), mapper.writeValueAsString(tmnProfile), 5L);
+			redisLoggingDao.addData("profile:" + tmnProfile.getMobileNumber(), mapper.writeValueAsString(tmnProfile), 5L);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
-					"Can not stored data in repository.");
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
 	}
 
@@ -35,17 +38,19 @@ public class ProfileRedisRepository implements ProfileRepository {
 		try {
 			String result = redisLoggingDao.getData("profile:"+mobileNumber);
 			if(result == null) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.PROFILE_NOT_FOUND,
+				throw new ResourceNotFoundException(Code.PROFILE_NOT_FOUND,
 						"profile not found.");
 			}
-			ObjectMapper mapper = new ObjectMapper();
+
 			return mapper.readValue(result, TmnProfile.class);
-		} catch (ServiceInventoryException e) {
+
+		} catch (ServiceInventoryWebException e) {
 			throw e;
 		} catch (Exception e) {
+
 			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
 		}
-		return null;
 	}
 
 }

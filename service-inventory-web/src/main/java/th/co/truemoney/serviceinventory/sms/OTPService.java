@@ -1,16 +1,14 @@
 package th.co.truemoney.serviceinventory.sms;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
@@ -31,40 +29,37 @@ public class OTPService {
 	@Autowired
 	private OTPGenerator otpGenerator;
 
-	public OTP send(String mobileNumber) throws ServiceInventoryException {
-		try {
-			OTP otp = otpGenerator.generateNewOTP(mobileNumber);
+	public OTP send(String mobileNumber) throws ServiceInventoryWebException {
 
-			logger.debug("==============================");
-			logger.debug("mobileNumber = " + otp.getMobileNumber());
-			logger.debug("otp = " + otp.getOtpString());
-			logger.debug("refCode = " + otp.getReferenceCode());
-			logger.debug("==============================");
+		OTP otp = otpGenerator.generateNewOTP(mobileNumber);
 
-			SmsRequest smsRequest = new SmsRequest(smsSender, mobileNumber,
-					"รหัส OTP คือ " + otp.getOtpString() + " (Ref: " + otp.getReferenceCode() + ")");
-			SmsResponse smsResponse = smsProxyImpl.send(smsRequest);
-			if (!smsResponse.isSuccess()) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.SEND_OTP_FAIL, "send OTP failed.");
-			}
-			otpRepository.saveOTP(otp);
+		logger.debug("==============================");
+		logger.debug("mobileNumber = " + otp.getMobileNumber());
+		logger.debug("otp = " + otp.getOtpString());
+		logger.debug("refCode = " + otp.getReferenceCode());
+		logger.debug("==============================");
 
-			return new OTP(otp.getMobileNumber(), otp.getReferenceCode(), otp.getOtpString().replaceAll(".", "x"));
-
-		} catch (EwalletUnExpectedException e) {
-			throw new ServiceInventoryException(Integer.toString(HttpServletResponse.SC_SERVICE_UNAVAILABLE), e.getMessage(), e.getNamespace());
+		SmsRequest smsRequest = new SmsRequest(smsSender, mobileNumber,
+				"รหัส OTP คือ " + otp.getOtpString() + " (Ref: " + otp.getReferenceCode() + ")");
+		SmsResponse smsResponse = smsProxyImpl.send(smsRequest);
+		if (!smsResponse.isSuccess()) {
+			throw new ServiceInventoryWebException(Code.SEND_OTP_FAIL, "send OTP failed.");
 		}
+		otpRepository.saveOTP(otp);
+
+		return new OTP(otp.getMobileNumber(), otp.getReferenceCode(), otp.getOtpString().replaceAll(".", "x"));
+
 	}
 
-	public boolean isValidOTP(OTP inputOTP) throws ServiceInventoryException {
+	public boolean isValidOTP(OTP inputOTP) throws ServiceInventoryWebException {
 		if (inputOTP == null || inputOTP.getReferenceCode() == null) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.INVALID_OTP, "invalid OTP.");
+			throw new ServiceInventoryWebException(Code.INVALID_OTP, "invalid OTP.");
 		}
 
 		OTP otp = otpRepository.getOTPByRefCode(inputOTP.getMobileNumber(), inputOTP.getReferenceCode());
 
 		if (otp != null && !otp.getOtpString().equals(inputOTP.getOtpString())) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_MATCH, "OTP not matched.");
+			throw new ServiceInventoryWebException(Code.OTP_NOT_MATCH, "OTP not matched.");
 		}
 		return true;
 	}
