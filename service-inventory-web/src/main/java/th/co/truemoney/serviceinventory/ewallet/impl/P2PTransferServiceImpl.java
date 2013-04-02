@@ -185,11 +185,13 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 
 	private String markFullName(String fullName)
 	{
-		fullName = fullName.trim();
-		String markName;
+		String markName = "";
 
+		fullName = fullName != null ? fullName.trim() : "";
+		
 		if (fullName == null || "".equals(fullName)) {
 			markName = "-";
+			return markName;
 		} else if (fullName.contains(" ")) {
 			String[] name = fullName.split("\\s{1,}"); // split space 1 or more
 			String markLastName = "";
