@@ -197,7 +197,7 @@ public class TmnTransferServiceClientTest {
 					.getTransactionStatus(p2pDraftTransaction.getID(), accessToken);
 			
 		}catch(ServiceInventoryException e){
-			assertEquals("Invalide OTP.",e.getErrorDescription());
+			assertEquals("OTP not matched.",e.getErrorDescription());
 		}
 	}
 
