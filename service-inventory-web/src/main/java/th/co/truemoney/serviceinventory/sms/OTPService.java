@@ -57,17 +57,24 @@ public class OTPService {
 	}
 
 	public boolean isValidOTP(OTP inputOTP) throws ServiceInventoryException {
-
 		if (inputOTP == null || inputOTP.getReferenceCode() == null) {
-			return false;
+			throw new ServiceInventoryException(ServiceInventoryException.Code.INVALID_OTP, "invalid OTP.");
 		}
-
+		
 		OTP otp = otpRepository.getOTPByRefCode(inputOTP.getReferenceCode());
-
-		return otp != null && otp.getOtpString().equals(inputOTP.getOtpString());
-
+		
+		if (otp != null && !otp.getOtpString().equals(inputOTP.getOtpString())) {
+			throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_MATCH, "OTP not matched.");
+		}
+		return true;
 	}
 
+	public void setOTPRepository(OTPRepository otpRepository) {
+		this.otpRepository = otpRepository;
+	}
 
+	public void setOTPGenerator(OTPGenerator otpGenerator) {
+		this.otpGenerator = otpGenerator;
+	}
 
 }

@@ -144,9 +144,7 @@ public class TopUpServiceImpl implements TopUpService {
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 		TopUpQuote topUpQuote = getTopUpQuoteDetails(quoteID, accessTokenID);
 
-		if(!otpService.isValidOTP(otp)){
-			throw new ServiceInventoryException( ServiceInventoryException.Code.OTP_NOT_MATCH, "Invalide OTP.");
-		}
+		otpService.isValidOTP(otp);
 
 		topUpQuote.setStatus(DraftTransaction.Status.OTP_CONFIRMED);
 		transactionRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);

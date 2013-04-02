@@ -127,9 +127,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 		P2PDraftTransaction p2pDraftTransaction = getDraftTransactionDetails(draftTransactionID, accessTokenID);
 
-		if(!otpService.isValidOTP(otp)){
-			throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_MATCH, "Invalide OTP.");
-		}
+		otpService.isValidOTP(otp);
 
 		p2pDraftTransaction.setStatus(DraftTransaction.Status.OTP_CONFIRMED);
 		transactionRepo.saveP2PDraftTransaction(p2pDraftTransaction, accessToken.getAccessTokenID());

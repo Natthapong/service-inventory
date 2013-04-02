@@ -37,7 +37,7 @@ public class OTPRedisRepository implements OTPRepository {
 			String result = redisLoggingDao.getData(refCode);
 
 			if(result == null) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "otp not found.");
+				throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "OTP not found.");
 			}
 
 			return mapper.readValue(result, OTP.class);
