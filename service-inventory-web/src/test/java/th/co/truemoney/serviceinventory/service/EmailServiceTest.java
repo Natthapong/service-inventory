@@ -72,7 +72,7 @@ public class EmailServiceTest {
 		template = mock(Template.class);
 		
 		when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
-		when(configuration.getTemplate(anyString())).thenReturn(template);
+		when(configuration.getTemplate(anyString(), anyString())).thenReturn(template);
 		when(freeMarkerConfigurationFactory.createConfiguration()).thenReturn(configuration);
 		
 		emailService.setJavaMailSender(javaMailSender);
@@ -127,7 +127,7 @@ public class EmailServiceTest {
 		try {
 			when(configuration.getTemplate(anyString())).thenThrow(new IOException("IOException"));
 			emailService.sendWelcomeEmail("mart@tmn.com", null);
-			verify(configuration).getTemplate(anyString());
+			verify(configuration).getTemplate(anyString(), anyString());
 		} catch (IOException e) {
 			assertNotNull(e);			
 		}
