@@ -7,8 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
+import th.co.truemoney.serviceinventory.bean.Adam;
+import th.co.truemoney.serviceinventory.bean.Eve;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.email.StubEmailService;
+import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
@@ -54,19 +57,29 @@ import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 @Profile("local")
 public class LocalEnvironmentConfig {
 
+	Adam adam = new Adam();
+	Eve eve = new Eve();
+	
 	@Bean
 	@Primary
 	public TmnProfileProxy stubTmnProfileProxy() {
+	
 		return new TmnProfileProxy() {
-
+			
 			@Override
 			public GetBasicProfileResponse getBasicProfile(
 					StandardBizRequest standardBizRequest)
 					throws EwalletException {
-				return new GetBasicProfileResponse("1", "0", "namespace",
-						new String[] { "key" }, new String[] { "value" },
-						"username", "local@tmn.com", "0891231234",
-						new BigDecimal(50.0d), "C", 3);
+				if(standardBizRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
+					return adam.getTmnProfile().getBasicProfile(standardBizRequest);
+				}else if(standardBizRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
+					return eve.getTmnProfile().getBasicProfile(standardBizRequest);
+				}else{
+					return new GetBasicProfileResponse("1", "0", "namespace",
+							new String[] { "key" }, new String[] { "value" },
+							"username", "local@tmn.com", "0891231234",
+							new BigDecimal(50.0d), "C", 3);
+				}
 			}
 
 			@Override
@@ -118,11 +131,20 @@ public class LocalEnvironmentConfig {
 				String initiator = signOnRequest.getInitiator();
 				String password = signOnRequest.getPin();
 
-				if ("local@tmn.com".equals(initiator)
+				if ("adam@tmn.com".equals(initiator)
 						&& "password".equals(password)) {
+					return adam.getTmnSecurity().signon(signOnRequest);
+					
+				}else if("eve@tmn.com".equals(initiator)
+						&& "password".equals(password)){
+					return eve.getTmnSecurity().signon(signOnRequest);
+					
+				}else if("local@tmn.com".equals(initiator)
+						&& "password".equals(password)){
 					return new SignonResponse("1", "0", "namespace",
 							new String[] { "key" }, new String[] { "value" },
 							"sessionId", "trueMoneyId");
+					
 				}
 
 				throw new SignonServiceException("4", "");

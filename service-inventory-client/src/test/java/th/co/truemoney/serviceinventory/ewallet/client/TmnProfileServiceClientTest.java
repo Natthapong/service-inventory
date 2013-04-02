@@ -4,10 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
@@ -15,21 +11,15 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.util.EncryptUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class })
@@ -88,7 +78,6 @@ public class TmnProfileServiceClientTest {
 
 	@Test
 	public void wrongUserNameShouldFail() {
-
 		try {
 			client.login(41, new Login("randomUsername", "hackypassword"));
 			fail();
@@ -99,7 +88,6 @@ public class TmnProfileServiceClientTest {
 
 	@Test
 	public void correctUsernameAndPasswordWillProduceAccessToken() {
-
 		try {
 			client.login(41, TestData.createSuccessLogin());
 		} catch (ServiceInventoryException e) {
@@ -109,40 +97,38 @@ public class TmnProfileServiceClientTest {
 
 	@Test
 	public void getUserProfile() {
-		try {
-			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
-			assertNotNull(tmnProfile);
-			assertEquals("username", tmnProfile.getFullname());
-		} catch (ServiceInventoryException e) {
-			assertNotSame("0", e.getErrorCode());
-		}
+		String accessToken = client.login(41, TestData.createSuccessLogin());
+		TmnProfile tmnProfile = client.getTruemoneyProfile(accessToken);
+		assertNotNull(tmnProfile);
+		assertEquals("username", tmnProfile.getFullname());
 	}
 
 	@Test
 	public void getBalance() {
-		BigDecimal balance = client.getEwalletBalance("12345");
+		String accessToken = client.login(41, TestData.createSuccessLogin());
+		BigDecimal balance = client.getEwalletBalance(accessToken);
 		assertEquals(new BigDecimal("2000.00"), balance);
 	}
 
-	@Test
-	public void checkUserProfileUrl() {
-		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/profile/{accesstokenID}/{checksum}";
-		String checkSum = EncryptUtil.buildHmacSignature("12345", "12345"
-				+ SALT);
-
-			RestTemplate restTemplate = mock(RestTemplate.class);
-
-			ResponseEntity<TmnProfile> responseEntity = new ResponseEntity<TmnProfile>(new TmnProfile(), HttpStatus.OK);
-
-			when(
-					restTemplate.exchange(eq(url), eq(HttpMethod.GET),
-							any(HttpEntity.class), eq(TmnProfile.class), eq("12345"),
-							eq(checkSum))).thenReturn(responseEntity);
-
+//	@Test
+//	public void checkUserProfileUrl() {
+//		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/profile/{accesstokenID}/{checksum}";
+//		String checkSum = EncryptUtil.buildHmacSignature("12345", "12345"
+//				+ SALT);
+//
+//			RestTemplate restTemplate = mock(RestTemplate.class);
+//
+//			ResponseEntity<TmnProfile> responseEntity = new ResponseEntity<TmnProfile>(new TmnProfile(), HttpStatus.OK);
+//
+//			when(
+//					restTemplate.exchange(eq(url), eq(HttpMethod.GET),
+//							any(HttpEntity.class), eq(TmnProfile.class), eq("12345"),
+//							eq(checkSum))).thenReturn(responseEntity);
+//
 //			this.client.restTemplate = restTemplate;
-
-			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
-			assertNotNull(tmnProfile);
-
-	}
+//
+//			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
+//			assertNotNull(tmnProfile);
+//
+//	}
 }
