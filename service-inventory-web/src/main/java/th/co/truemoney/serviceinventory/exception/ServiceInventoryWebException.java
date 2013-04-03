@@ -48,7 +48,9 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
 		//topup eWallet
 		public static final String INVALID_AMOUNT_LESS ="20001";
 		public static final String INVALID_AMOUNT_MORE ="20002";
-
+		
+		//transfer
+		public static final String INVALID_TARGET_MOBILE_NUMBER = "30000";
 	}
 
 	@SuppressWarnings("unchecked")
