@@ -129,28 +129,6 @@ public class P2PTransferServiceImplTest {
 		
 		verify(asyncP2PTransferProcessor).transferEwallet(any(P2PTransaction.class), eq(accessToken.getAccessTokenID()), any(TransferRequest.class));
 		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, status);
-	}
-	
-	@Test
-	public void confirmDraftTransactionFailWithInvalidOTP() {
-		try {
-			when(otpService.isValidOTP(any(OTP.class))).thenThrow(new ServiceInventoryException(ServiceInventoryException.Code.INVALID_OTP, "invalid OTP."));
-			this.p2pService.confirmDraftTransaction("draftTransactionID", new OTP(), accessToken.getAccessTokenID());
-			fail("fail with invalid OTP");
-		} catch (ServiceInventoryException si) {
-			assertEquals(ServiceInventoryException.Code.INVALID_OTP, si.getCode());
-		}		
-	}
-	
-	@Test
-	public void confirmDraftTransactionFailWithOTPNotMatch() {
-		try {
-			when(otpService.isValidOTP(any(OTP.class))).thenThrow(new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_MATCH, "OTP not matched."));
-			this.p2pService.confirmDraftTransaction("draftTransactionID", new OTP(), accessToken.getAccessTokenID());
-			fail("fail with OTP not matched");
-		} catch (ServiceInventoryException si) {
-			assertEquals(ServiceInventoryException.Code.OTP_NOT_MATCH, si.getCode());
-		}		
 	}	
 	
 	@Test
@@ -166,31 +144,5 @@ public class P2PTransferServiceImplTest {
 		p2pTransaction.setStatus(Transaction.Status.SUCCESS);
 		status =  this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());		
 		assertEquals(Transaction.Status.SUCCESS, status);
-	}
-	
-	@Test
-	public void getTransactionStatusFailUMARKET() {
-		try {
-			p2pTransaction.setStatus(Transaction.Status.FAILED);
-			Transaction.Status status =  this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());
-			assertEquals(Transaction.Status.FAILED, status);
-			
-			p2pTransaction.setFailStatus(FailStatus.UMARKET_FAILED);
-			this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());
-			fail("u-market confirmation processing fail.");
-		} catch (ServiceInventoryException si) {
-			assertEquals(ServiceInventoryException.Code.CONFIRM_UMARKET_FAILED, si.getCode());
-		}		
-	}
-	
-	@Test
-	public void getTransactionStatusFailUNKNOWN() {
-		try {
-			p2pTransaction.setFailStatus(FailStatus.UNKNOWN_FAILED);
-			this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());
-			fail("u-market confirmation processing fail.");
-		} catch (ServiceInventoryException si) {
-			assertEquals(ServiceInventoryException.Code.CONFIRM_FAILED, si.getCode());
-		}		
 	}
 }
