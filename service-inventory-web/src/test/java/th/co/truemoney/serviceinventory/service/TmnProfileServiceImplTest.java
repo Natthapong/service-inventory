@@ -24,6 +24,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityPro
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.impl.TmnSecurityProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
 import th.co.truemoney.serviceinventory.stub.TmnProfileStubbed;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -39,8 +40,12 @@ public class TmnProfileServiceImplTest {
 		this.tmnSecurityProxyMock = Mockito.mock(TmnSecurityProxyImpl.class);
 		this.tmnProfileProxyMock = Mockito.mock(TmnProfileProxyImpl.class);
 
-		this.tmnProfileServiceImpl.setTmnSecurityProxy(tmnSecurityProxyMock);
-		this.tmnProfileServiceImpl.setTmnProfileProxy(tmnProfileProxyMock);
+		ProfileFacade profileFacade = new ProfileFacade();
+
+		profileFacade.setTmnSecurityProxy(tmnSecurityProxyMock);
+		profileFacade.setTmnProfileProxy(tmnProfileProxyMock);
+
+		this.tmnProfileServiceImpl.setProfileFacade(profileFacade);
 		this.tmnProfileServiceImpl.setAccessTokenRepository(new AccessTokenMemoryRepository());
 	}
 

@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.exception;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -95,6 +96,14 @@ public class ServiceInventoryException extends RuntimeException {
 
 	public void setDeveloperMessage(String developerMessage) {
 		this.developerMessage = developerMessage;
+	}
+
+	public void putDate(String key, String value) {
+		if (this.data == null) {
+			this.data = new LinkedHashMap<String, Object>();
+		}
+
+		this.data.put(key, value);
 	}
 
 }

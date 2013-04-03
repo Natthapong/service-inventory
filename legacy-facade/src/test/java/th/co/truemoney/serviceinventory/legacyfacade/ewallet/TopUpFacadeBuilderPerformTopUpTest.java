@@ -13,18 +13,18 @@ import org.junit.Test;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade.TopUpBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.TopUpBuilder;
 
 
 public class TopUpFacadeBuilderPerformTopUpTest {
 
 	private TopUpBuilder topUpFacadeBuilder;
-	private EwalletFacade facadeMock;
+	private BalanceFacade facadeMock;
 
 	@Before
 	public void setup() {
-		facadeMock = mock(EwalletFacade.class);
-		topUpFacadeBuilder = new EwalletFacade.TopUpBuilder(facadeMock);
+		facadeMock = mock(BalanceFacade.class);
+		topUpFacadeBuilder = new BalanceFacade.TopUpBuilder(facadeMock);
 	}
 
 	@Test

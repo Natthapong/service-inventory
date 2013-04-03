@@ -21,13 +21,13 @@ import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeExceptio
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade.TopUpBankSystemFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade.TopUpUMarketSystemFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.TopUpBankSystemFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.TopUpUMarketSystemFailException;
 
 @RunWith(Parameterized.class)
 public class TopUpFacadePerformTopUpFailTest {
 
-	private EwalletFacade topUpFacade;
+	private BalanceFacade topUpFacade;
 
 	private EwalletSoapProxy ewalletProxy;
 
@@ -64,7 +64,7 @@ public class TopUpFacadePerformTopUpFailTest {
 		FailResultCodeException failResultCodeException = new FailResultCodeException(resultCode, "HELLO");
 		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(failResultCodeException);
 
-		topUpFacade = new EwalletFacade();
+		topUpFacade = new BalanceFacade();
 		topUpFacade.setEwalletProxy(ewalletProxy);
 	}
 

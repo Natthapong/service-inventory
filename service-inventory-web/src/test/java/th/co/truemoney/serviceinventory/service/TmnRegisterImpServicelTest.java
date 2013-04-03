@@ -34,6 +34,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRespons
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -52,7 +53,7 @@ public class TmnRegisterImpServicelTest {
 
 	@Autowired @Qualifier("tmnProfilePin")
 	private String tmnProfilePin;
-
+	private ProfileFacade profileFacade;
 
 	@Before
 	public void setup() {
@@ -62,8 +63,13 @@ public class TmnRegisterImpServicelTest {
 		profileRepository = mock(ProfileRepository.class);
 		otpService = mock(OTPService.class);
 		emailService = mock(EmailService.class);
-		tmnProfileServiceImpl.setTmnProfileInitiator(tmnProfileInitiator);
-		tmnProfileServiceImpl.setTmnProfilePin(tmnProfilePin);
+
+		profileFacade = new ProfileFacade();
+		profileFacade.setTmnProfileAdminProxy(tmnProfileAdminProxy);
+		profileFacade.setTmnProfileInitiator(tmnProfileInitiator);
+		profileFacade.setTmnProfilePin(tmnProfilePin);
+
+		this.tmnProfileServiceImpl.setProfileFacade(profileFacade);
 	}
 
 	@Test
@@ -73,7 +79,7 @@ public class TmnRegisterImpServicelTest {
 		bizResponse.setResultCode(StandardBizResponse.SUCCESS_CODE);
 		when(tmnProfileAdminProxy.isCreatable(any(IsCreatableRequest.class))).thenReturn(bizResponse);
 
-		tmnProfileServiceImpl.setTmnProfileAdminProxy(tmnProfileAdminProxy);
+		profileFacade.setTmnProfileAdminProxy(tmnProfileAdminProxy);
 		String result = tmnProfileServiceImpl.validateEmail(41, email);
 
 		assertEquals(result , email);
@@ -87,7 +93,7 @@ public class TmnRegisterImpServicelTest {
 			bizResponse.setResultCode(StandardBizResponse.SUCCESS_CODE);
 			when(tmnProfileAdminProxy.isCreatable(any(IsCreatableRequest.class))).thenThrow(new EwalletUnExpectedException(new RemoteException()));
 
-			tmnProfileServiceImpl.setTmnProfileAdminProxy(tmnProfileAdminProxy);
+			profileFacade.setTmnProfileAdminProxy(tmnProfileAdminProxy);
 			tmnProfileServiceImpl.validateEmail(41, email);
 		} catch (EwalletUnExpectedException exception) {
 			assertEquals("EWALLET-PROXY", exception.getNamespace());
@@ -102,7 +108,7 @@ public class TmnRegisterImpServicelTest {
 			bizResponse.setResultCode(StandardBizResponse.SUCCESS_CODE);
 			when(tmnProfileAdminProxy.isCreatable(any(IsCreatableRequest.class))).thenThrow(new FailResultCodeException("12345", "EWALLET-PROXY"));
 
-			tmnProfileServiceImpl.setTmnProfileAdminProxy(tmnProfileAdminProxy);
+			profileFacade.setTmnProfileAdminProxy(tmnProfileAdminProxy);
 			tmnProfileServiceImpl.validateEmail(41, email);
 		} catch (FailResultCodeException exception) {
 			assertEquals("12345", exception.getCode());
@@ -121,7 +127,7 @@ public class TmnRegisterImpServicelTest {
 		profileResponse.setTransactionId("transactionId");
 
 		when(tmnProfileProxy.createTmnProfile(any(CreateTmnProfileRequest.class))).thenReturn(profileResponse);
-		tmnProfileServiceImpl.setTmnProfileProxy(tmnProfileProxy);
+		profileFacade.setTmnProfileProxy(tmnProfileProxy);
 
 		TmnProfile stubbedTmnProfile = new TmnProfile();
 		stubbedTmnProfile.setEmail("email@gmail.com");

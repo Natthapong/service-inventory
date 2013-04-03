@@ -20,7 +20,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyRespo
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-public class EwalletFacade {
+public class BalanceFacade {
 
 	private SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -103,13 +103,13 @@ public class EwalletFacade {
 
 	public static class TopUpBuilder {
 
-		private EwalletFacade facade;
+		private BalanceFacade facade;
 		private AccessToken accessToken;
 		private BigDecimal amount;
 		private SourceOfFund sourceOfFund;
 
 		@Autowired(required = false)
-		public TopUpBuilder(EwalletFacade facade) {
+		public TopUpBuilder(BalanceFacade facade) {
 			this.facade = facade;
 		}
 
