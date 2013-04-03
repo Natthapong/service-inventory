@@ -227,4 +227,13 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		this.transactionRepo = transactionRepo;
 	}
 
+	public void setOtpService(OTPService otpService) {
+		this.otpService = otpService;
+	}
+
+	public void setAsyncP2PTransferProcessor(
+			AsyncP2PTransferProcessor asyncP2PTransferProcessor) {
+		this.asyncP2PTransferProcessor = asyncP2PTransferProcessor;
+	}
+
 }
