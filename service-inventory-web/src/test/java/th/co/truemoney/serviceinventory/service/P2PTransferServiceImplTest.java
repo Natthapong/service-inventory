@@ -22,7 +22,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncP2PTransferProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -31,7 +30,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequ
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.stub.AccessTokenRepositoryStubbed;
 import th.co.truemoney.serviceinventory.stub.P2PTransferStubbed;
