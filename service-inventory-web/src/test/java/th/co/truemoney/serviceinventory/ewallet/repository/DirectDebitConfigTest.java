@@ -6,22 +6,22 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import th.co.truemoney.serviceinventory.bean.DirectDebitConfigBean;
-import th.co.truemoney.serviceinventory.ewallet.repositories.DirectDebitConfig;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitConfigImpl;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitPreference;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.SourceOfFundPreference;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.SourceOfFundPreferenceImpl;
 
 public class DirectDebitConfigTest {
-	DirectDebitConfig directDebitConfig;
-	
+	SourceOfFundPreference directDebitConfig;
+
 	@Before
 	public void setup() {
-		directDebitConfig = new DirectDebitConfigImpl();
+		directDebitConfig = new SourceOfFundPreferenceImpl();
 	}
 
 	@Test
 	public void testGetBankDetail() {
-		DirectDebitConfigBean directDebit = directDebitConfig.getBankDetail("SCB"); 
-		assertNotNull(directDebit);
-		assertEquals("The Siam Commercial Bank", directDebit.getBankNameEn());
+		 DirectDebitPreference directDebitPref = directDebitConfig.getBankPreference("SCB");
+		assertNotNull(directDebitPref);
+		assertEquals("The Siam Commercial Bank", directDebitPref.getBankNameEn());
 	}
 }

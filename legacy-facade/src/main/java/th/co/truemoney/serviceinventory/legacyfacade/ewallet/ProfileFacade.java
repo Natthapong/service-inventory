@@ -61,7 +61,7 @@ public class ProfileFacade {
 				channelID);
 	}
 
-	public TmnProfile getTmnProfile(AccessToken accessToken) {
+	public TmnProfile getProfile(AccessToken accessToken) {
 
 		Integer channelID = accessToken.getChannelID();
 		String sessionID = accessToken.getSessionID();
@@ -78,6 +78,7 @@ public class ProfileFacade {
 
 		return tmnProfile;
 	}
+
 
 	public void logout(AccessToken accessToken) {
 

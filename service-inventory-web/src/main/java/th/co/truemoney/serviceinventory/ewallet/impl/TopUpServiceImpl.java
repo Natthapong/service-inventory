@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
@@ -80,12 +81,12 @@ public class TopUpServiceImpl implements TopUpService {
 		BigDecimal minAmount = sofDetail.getMinAmount();
 		BigDecimal maxAmount = sofDetail.getMaxAmount();
 
-		if (amount.compareTo(minAmount) < 0) {
+		if (minAmount != null && amount.compareTo(minAmount) < 0) {
 			ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_AMOUNT_LESS, "amount less than min amount.");
 			se.marshallToData(sofDetail);
 			throw se;
 		}
-		if (amount.compareTo(maxAmount) > 0) {
+		if (maxAmount != null && amount.compareTo(maxAmount) > 0) {
 			ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_AMOUNT_MORE, "amount more than max amount.");
 			se.marshallToData(sofDetail);
 			throw se;

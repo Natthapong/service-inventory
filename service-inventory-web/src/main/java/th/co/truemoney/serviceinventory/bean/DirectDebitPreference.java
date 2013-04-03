@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 import th.co.truemoney.serviceinventory.util.FeeUtil;
 
-public class DirectDebitConfigBean implements Serializable {
+public class DirectDebitPreference implements Serializable {
 
 	private static final long serialVersionUID = -34657460109959227L;
 	private String bankNameEn;

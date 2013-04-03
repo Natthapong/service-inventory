@@ -69,7 +69,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 		logger.debug("retrieve access Token: "+accessToken.toString());
 
-		return profileFacade.getTmnProfile(accessToken);
+		return profileFacade.getProfile(accessToken);
 	}
 
 	@Override
