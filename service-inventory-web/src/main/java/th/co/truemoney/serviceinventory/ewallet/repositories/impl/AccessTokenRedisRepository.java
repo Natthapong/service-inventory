@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.exception.InternalServerErrorException;
+import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -15,18 +19,18 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 
 	private static Logger logger = LoggerFactory.getLogger(AccessTokenRedisRepository.class);
 
+	private ObjectMapper mapper = new ObjectMapper();
+
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
 
 	@Override
 	public void save(AccessToken token) {
 		try {
-			ObjectMapper mapper = new ObjectMapper();
 			redisLoggingDao.addData(token.getAccessTokenID(), mapper.writeValueAsString(token), 15L);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
-					"Can not stored data in repository.");
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
 	}
 
@@ -35,17 +39,16 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 		try {
 			String result = redisLoggingDao.getData(accessTokenID);
 			if(result == null) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.ACCESS_TOKEN_NOT_FOUND,
-						"access token not found.");
+				throw new ResourceNotFoundException(Code.ACCESS_TOKEN_NOT_FOUND, "access token not found.");
 			}
-			ObjectMapper mapper = new ObjectMapper();
+
 			return mapper.readValue(result, AccessToken.class);
-		} catch (ServiceInventoryException e) {
+		} catch (ResourceNotFoundException e) {
 			throw e;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
-		return null;
 	}
 
 	@Override
@@ -54,8 +57,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 			redisLoggingDao.delete(accessTokenID);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
-					"Can not removed data in repository.");
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not remove data in repository.", e);
 		}
 	}
 
@@ -65,9 +67,8 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 			redisLoggingDao.setExpire(accessTokenID, 15L);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
-					"Can not stored data in repository.");
-		}		
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
+		}
 	}
-	
+
 }

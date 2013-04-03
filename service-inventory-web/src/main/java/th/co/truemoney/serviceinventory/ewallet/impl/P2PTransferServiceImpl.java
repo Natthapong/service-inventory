@@ -22,6 +22,8 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResp
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
@@ -77,6 +79,12 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		verifyRequest.setAmount(amount);
 		verifyRequest.setTarget(mobileNumber);
 		verifyRequest.setSecurityContext(securityContext);
+		
+		String sourceMobileNumber = accessToken.getMobileNumber();
+		
+		if (sourceMobileNumber != null && sourceMobileNumber.equals(verifyRequest.getTarget())) {
+			throw new ServiceInventoryWebException(Code.INVALID_TARGET_MOBILE_NUMBER, "Invalid target mobile number");
+		}
 
 		VerifyTransferResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
 
@@ -139,10 +147,10 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 
 		if(p2pTransactionStatus == Transaction.Status.FAILED) {
 			if (failStatus == FailStatus.UMARKET_FAILED) {
-				throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_UMARKET_FAILED,
+				throw new ServiceInventoryWebException(Code.CONFIRM_UMARKET_FAILED,
 						"u-market confirmation processing fail.");
 			} else if (failStatus == FailStatus.UNKNOWN_FAILED){
-				throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_FAILED,
+				throw new ServiceInventoryWebException(Code.CONFIRM_FAILED,
 						"confirmation processing fail.");
 			}
 		}

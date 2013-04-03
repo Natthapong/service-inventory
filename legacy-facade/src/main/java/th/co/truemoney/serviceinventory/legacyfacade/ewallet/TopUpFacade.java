@@ -10,11 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
+import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
+import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class TopUpFacade {
 
@@ -45,13 +48,37 @@ public class TopUpFacade {
 		addMoneyRequest.setSourceId(sof.getSourceOfFundID());
 		addMoneyRequest.setSourceType(sof.getSourceOfFundType());
 
-		StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
+		try {
 
-		TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
-		confirmationInfo.setTransactionID(moneyResponse.getTransactionId());
-		confirmationInfo.setTransactionDate(df.format(new Date()));
+			StandardMoneyResponse moneyResponse = ewalletProxy.addMoney(addMoneyRequest);
 
-		return confirmationInfo;
+			TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();
+			confirmationInfo.setTransactionID(moneyResponse.getTransactionId());
+			confirmationInfo.setTransactionDate(df.format(new Date()));
+
+			return confirmationInfo;
+
+		} catch (FailResultCodeException ex) {
+
+			String errorCode = ex.getCode();
+
+			if (errorCode.equals("24003") ||
+				errorCode.equals("24008") ||
+				errorCode.equals("24010") ||
+				errorCode.equals("25007")) {
+				throw new TopUpBankSystemFailException(ex);
+			} else if (
+				errorCode.equals("5")  ||
+				errorCode.equals("6")  ||
+				errorCode.equals("7")  ||
+				errorCode.equals("19") ||
+				errorCode.equals("27") ||
+				errorCode.equals("38")) {
+				throw new TopUpUMarketSystemFailException(ex);
+			} else {
+				throw new TopUpUnknownSystemFailException(ex);
+			}
+		}
 	}
 
 	public void setEwalletProxy(EwalletSoapProxy ewalletProxy) {
@@ -103,6 +130,31 @@ public class TopUpFacade {
 			Validate.notNull(sourceOfFund, "data missing. using withc source of fund to top up?");
 
 			return facade.topUpMoney(amount, sourceOfFund, accessToken);
+		}
+	}
+
+
+	public static class TopUpBankSystemFailException extends ServiceInventoryException {
+		private static final long serialVersionUID = -118404790410428078L;
+
+		public TopUpBankSystemFailException(EwalletException ex) {
+			super(500, ex.getCode(), "bank system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
+		}
+	}
+
+	public static class TopUpUMarketSystemFailException extends ServiceInventoryException {
+		private static final long serialVersionUID = -162603460464737250L;
+
+		public TopUpUMarketSystemFailException(EwalletException ex) {
+			super(500, ex.getCode(), "umarket system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
+		}
+	}
+
+	public static class TopUpUnknownSystemFailException extends ServiceInventoryException {
+		private static final long serialVersionUID = 8166679317640543498L;
+
+		public TopUpUnknownSystemFailException(EwalletException ex) {
+			super(500, ex.getCode(),  "unknown system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
 		}
 	}
 

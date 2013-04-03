@@ -10,7 +10,10 @@ import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.InternalServerErrorException;
+import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -18,76 +21,69 @@ public class TransactionRedisRepository implements TransactionRepository {
 
 	private static Logger logger = LoggerFactory.getLogger(TransactionRedisRepository.class);
 
+	private ObjectMapper mapper = new ObjectMapper();
+
 	@Autowired
 	private RedisLoggingDao redisLoggingDao;
 
 	@Override
-	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote, String accessTokenID) throws ServiceInventoryException {
+	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote, String accessTokenID) throws ServiceInventoryWebException {
 		try {
-			ObjectMapper mapper = new ObjectMapper();
 			redisLoggingDao.addData("quote:" + accessTokenID + ":" + topupQuote.getID(), mapper.writeValueAsString(topupQuote), 15L);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
-					"Can not stored data in repository.");
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
 	}
 
 	@Override
-	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID, String accessTokenID) throws ServiceInventoryException {
+	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID, String accessTokenID) throws ServiceInventoryWebException {
 		try {
 			String result = redisLoggingDao.getData("quote:" + accessTokenID + ":" + orderID);
 			if(result == null) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND,
-						"qoute not found.");
+				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "qoute not found.");
 			}
-			ObjectMapper mapper = new ObjectMapper();
 			return mapper.readValue(result, TopUpQuote.class);
-		} catch (ServiceInventoryException e) {
+		} catch (ResourceNotFoundException e) {
 			throw e;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
 		}
-		return null;
 	}
 
 	@Override
-	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder, String accessTokenID) throws ServiceInventoryException {
+	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder, String accessTokenID) throws ServiceInventoryWebException {
 		try {
-			ObjectMapper mapper = new ObjectMapper();
 			redisLoggingDao.addData("order:" + accessTokenID + ":" + topupOrder.getID(), mapper.writeValueAsString(topupOrder), 15L);
 		} catch (Exception e) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
-					"Can not stored data in repository.");
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
 	}
 
 	@Override
-	public TopUpOrder getTopUpEwalletTransaction(String orderID, String accessTokenID) throws ServiceInventoryException {
+	public TopUpOrder getTopUpEwalletTransaction(String orderID, String accessTokenID) throws ServiceInventoryWebException {
 		try {
 			String result = redisLoggingDao.getData("order:" + accessTokenID + ":" + orderID);
 			if(result == null) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND,
-						"TopUp Ewallet order not found.");
+				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "TopUp Ewallet order not found.");
 			}
-			ObjectMapper mapper = new ObjectMapper();
+
 			return mapper.readValue(result, TopUpOrder.class);
-		} catch (ServiceInventoryException e) {
+		} catch (ResourceNotFoundException e) {
 			throw e;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
 		}
-		return null;
 	}
 
 	@Override
 	public void saveP2PDraftTransaction(P2PDraftTransaction p2pDraftTransaction, String accessTokenID) {
 		try {
-			ObjectMapper mapper = new ObjectMapper();
 			redisLoggingDao.addData("p2pdraft:" + accessTokenID + ":" +p2pDraftTransaction.getID(), mapper.writeValueAsString(p2pDraftTransaction), 15L);
 		} catch (Exception e) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
-					"Can not stored data in repository.");
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not stored data in repository.", e);
 		}
 	}
 
@@ -96,48 +92,42 @@ public class TransactionRedisRepository implements TransactionRepository {
 		try {
 			String result = redisLoggingDao.getData("p2pdraft:" + accessTokenID + ":" +p2pDraftTransactionID);
 			if(result == null) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.DRAFT_TRANSACTION_NOT_FOUND,
-						"P2P draft transaction not found.");
+				throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "P2P draft transaction not found.");
 			}
-			ObjectMapper mapper = new ObjectMapper();
 
 			return mapper.readValue(result, P2PDraftTransaction.class);
-		} catch (ServiceInventoryException e) {
+		} catch (ResourceNotFoundException e) {
 			throw e;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
 		}
-
-		return null;
 	}
 
 	@Override
 	public void saveP2PTransaction(P2PTransaction p2pTransaction, String accessTokenID) {
 		try {
-			ObjectMapper mapper = new ObjectMapper();
 			redisLoggingDao.addData("p2pTrans:" + accessTokenID + ":" +p2pTransaction.getID(), mapper.writeValueAsString(p2pTransaction), 15L);
 		} catch (Exception e) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR,
-					"Can not stored data in repository.");
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
 	}
 
 	@Override
 	public P2PTransaction getP2PTransaction(String p2pTransactionID, String accessTokenID) {
 		try {
-			String result = redisLoggingDao.getData("p2pTrans:" + accessTokenID + ":" +p2pTransactionID);
+			String result = redisLoggingDao.getData("p2pTrans:" + accessTokenID + ":" + p2pTransactionID);
 			if(result == null) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.TRANSACTION_NOT_FOUND,
-						"TopUp Ewallet order not found.");
+				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "TopUp Ewallet order not found.");
 			}
-			ObjectMapper mapper = new ObjectMapper();
+
 			return mapper.readValue(result, P2PTransaction.class);
-		} catch (ServiceInventoryException e) {
+		} catch (ServiceInventoryWebException e) {
 			throw e;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
 		}
-		return null;
 	}
 
 }

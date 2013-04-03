@@ -12,7 +12,8 @@ import org.mockito.Mockito;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 public class OTPServiceTest {
@@ -31,16 +32,16 @@ public class OTPServiceTest {
 	@Test
 	public void shouldOTPNotFound() {
 		//given
-		when(otpRepositoryMock.getOTPByRefCode(anyString(), anyString())).thenThrow(new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "OTP not found."));
+		when(otpRepositoryMock.getOTPByRefCode(anyString(), anyString())).thenThrow(new ServiceInventoryWebException(Code.OTP_NOT_FOUND, "OTP not found."));
 
 		//when
 		try {
 			OTP otp = new OTP("0866013468", "abcd", "111111");
 			otpService.isValidOTP(otp);
 			Assert.fail();
-		} catch (ServiceInventoryException e) {
-			Assert.assertEquals(ServiceInventoryException.Code.OTP_NOT_FOUND, e.getCode());
-			Assert.assertEquals("OTP not found.", e.getDescription());
+		} catch (ServiceInventoryWebException e) {
+			Assert.assertEquals(Code.OTP_NOT_FOUND, e.getErrorCode());
+			Assert.assertEquals("OTP not found.", e.getErrorDescription());
 		}
 		//then
 		verify(otpRepositoryMock).getOTPByRefCode(anyString(), anyString());
@@ -57,9 +58,9 @@ public class OTPServiceTest {
 			OTP otp = new OTP("0866013468", "abcd", "111111");
 			otpService.isValidOTP(otp);
 			Assert.fail();
-		} catch (ServiceInventoryException e) {
-			Assert.assertEquals(ServiceInventoryException.Code.OTP_NOT_MATCH, e.getCode());
-			Assert.assertEquals("OTP not matched.", e.getDescription());
+		} catch (ServiceInventoryWebException e) {
+			Assert.assertEquals(Code.OTP_NOT_MATCH, e.getErrorCode());
+			Assert.assertEquals("OTP not matched.", e.getErrorDescription());
 		}
 		//then
 		verify(otpRepositoryMock).getOTPByRefCode(anyString(), anyString());
@@ -74,9 +75,9 @@ public class OTPServiceTest {
 		try {
 			otpService.isValidOTP(null);
 			Assert.fail();
-		} catch (ServiceInventoryException e) {
-			Assert.assertEquals(ServiceInventoryException.Code.INVALID_OTP, e.getCode());
-			Assert.assertEquals("invalid OTP.", e.getDescription());
+		} catch (ServiceInventoryWebException e) {
+			Assert.assertEquals(Code.INVALID_OTP, e.getErrorCode());
+			Assert.assertEquals("invalid OTP.", e.getErrorDescription());
 		}
 		//then
 		verify(otpRepositoryMock, never()).getOTPByRefCode(anyString(), anyString());

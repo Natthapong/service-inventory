@@ -1,7 +1,7 @@
 package th.co.truemoney.serviceinventory.exception;
 
 
-public class SignonServiceException extends BaseException {
+public class SignonServiceException extends ServiceInventoryWebException {
 
 	private static final long serialVersionUID = 7328535407875381185L;
 
@@ -9,7 +9,4 @@ public class SignonServiceException extends BaseException {
 		super(code, description);
 	}
 
-	public SignonServiceException(String code, String description, String namespace) {
-		super(code, description, namespace);
-	}
 }

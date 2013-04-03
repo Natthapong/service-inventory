@@ -4,12 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.InternalServerErrorException;
+import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OTPRedisRepository implements OTPRepository {
 
@@ -25,7 +27,7 @@ public class OTPRedisRepository implements OTPRepository {
 		try {
 			redisLoggingDao.addData(createKey(otp.getMobileNumber(), otp.getReferenceCode()), mapper.writeValueAsString(otp), 3L);
 		} catch (Exception e) {
-			throw new ServiceInventoryException(ServiceInventoryException.Code.GENERAL_ERROR, "Can not stored data in repository.");
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
 
 	}
@@ -37,16 +39,15 @@ public class OTPRedisRepository implements OTPRepository {
 			String result = redisLoggingDao.getData(createKey(mobileNumber, refCode));
 
 			if(result == null) {
-				throw new ServiceInventoryException(ServiceInventoryException.Code.OTP_NOT_FOUND, "OTP not found.");
+				throw new ResourceNotFoundException(Code.OTP_NOT_FOUND, "OTP not found.");
 			}
 
 			return mapper.readValue(result, OTP.class);
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
 		}
-
-	    return null;
 	}
 
 	private String createKey(String mobileNumber, String referenceCode) {

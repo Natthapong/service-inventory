@@ -33,6 +33,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.util.HashPasswordUtil;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
@@ -108,8 +109,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile getTruemoneyProfile(String accessTokenID)
-			throws ServiceInventoryException {
+	public TmnProfile getTruemoneyProfile(String accessTokenID) throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 		logger.debug("retrieve access Token: "+accessToken.toString());
@@ -129,8 +129,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public BigDecimal getEwalletBalance(String accessTokenID)
-			throws ServiceInventoryException {
+	public BigDecimal getEwalletBalance(String accessTokenID) throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 		logger.debug("retrieve access Token: "+accessToken.toString());
@@ -171,7 +170,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		try {
 			performIsCreatable(channelID, email);
 			return email;
-		} catch (ServiceInventoryException e) {
+		} catch (ServiceInventoryWebException e) {
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("email", email);
 			e.setData(data);

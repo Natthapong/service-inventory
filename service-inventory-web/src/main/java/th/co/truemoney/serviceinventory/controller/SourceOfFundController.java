@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import th.co.truemoney.serviceinventory.ewallet.DirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Controller
 public class SourceOfFundController {
@@ -27,8 +26,7 @@ public class SourceOfFundController {
 	@RequestMapping(value = "/ewallet/profile/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
 	public @ResponseBody DirectDebit[] listDirectDebitSources(
 			@PathVariable("username") String username,
-			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID)
-			throws ServiceInventoryException {
+			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID) {
 		List<DirectDebit> directDebits = sourceOfFundService.getUserDirectDebitSources(username, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 

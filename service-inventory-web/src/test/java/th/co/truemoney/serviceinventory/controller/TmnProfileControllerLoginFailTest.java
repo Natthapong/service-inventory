@@ -64,8 +64,7 @@ public class TmnProfileControllerLoginFailTest {
 		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class))).thenThrow(
 				new SignonServiceException(
 						"1",
-						"error description",
-						"error namespace"));
+						"error description"));
 
 		ObjectMapper mapper = new ObjectMapper();
 		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
@@ -75,7 +74,7 @@ public class TmnProfileControllerLoginFailTest {
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.errorCode").value("1"))
 			.andExpect(jsonPath("$.errorDescription").value("error description"))
-			.andExpect(jsonPath("$.errorNamespace").value("error namespace"))
+			.andExpect(jsonPath("$.errorNamespace").value("TMN-SERVICE-INVENTORY"))
 			.andDo(print());
 
 	}

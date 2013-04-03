@@ -18,6 +18,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
@@ -79,12 +81,12 @@ public class TopUpServiceImpl implements TopUpService {
 		BigDecimal maxAmount = sofDetail.getMaxAmount();
 
 		if (amount.compareTo(minAmount) < 0) {
-			ServiceInventoryException se = new ServiceInventoryException(ServiceInventoryException.Code.INVALID_AMOUNT_LESS, "amount less than min amount.");
+			ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_AMOUNT_LESS, "amount less than min amount.");
 			se.marshallToData(sofDetail);
 			throw se;
 		}
 		if (amount.compareTo(maxAmount) > 0) {
-			ServiceInventoryException se = new ServiceInventoryException(ServiceInventoryException.Code.INVALID_AMOUNT_MORE, "amount more than max amount.");
+			ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_AMOUNT_MORE, "amount more than max amount.");
 			se.marshallToData(sofDetail);
 			throw se;
 		}
@@ -115,7 +117,7 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	@Override
-	public DraftTransaction.Status confirmOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException {
+	public DraftTransaction.Status confirmOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryWebException {
 
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 		TopUpQuote topUpQuote = getTopUpQuoteDetails(quoteID, accessTokenID);
@@ -139,20 +141,20 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	@Override
-	public Transaction.Status getTopUpProcessingStatus(String orderID, String accessTokenID) throws ServiceInventoryException {
+	public Transaction.Status getTopUpProcessingStatus(String orderID, String accessTokenID) throws ServiceInventoryWebException {
 		TopUpOrder topUpOrder = getTopUpOrderResults(orderID, accessTokenID);
 		Transaction.Status topUpStatus = topUpOrder.getStatus();
 		FailStatus failStatus = topUpOrder.getFailStatus();
 
 		if(topUpStatus == Transaction.Status.FAILED) {
 			if (failStatus == FailStatus.BANK_FAILED) {
-				throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_BANK_FAILED,
+				throw new ServiceInventoryWebException(Code.CONFIRM_BANK_FAILED,
 						"bank confirmation processing fail.");
 			} else if (failStatus == FailStatus.UMARKET_FAILED) {
-				throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_UMARKET_FAILED,
+				throw new ServiceInventoryWebException(Code.CONFIRM_UMARKET_FAILED,
 						"u-market confirmation processing fail.");
 			} else {
-				throw new ServiceInventoryException( ServiceInventoryException.Code.CONFIRM_FAILED,
+				throw new ServiceInventoryWebException(Code.CONFIRM_FAILED,
 						"confirmation processing fail.");
 			}
 		}

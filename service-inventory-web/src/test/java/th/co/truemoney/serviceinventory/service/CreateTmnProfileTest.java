@@ -27,7 +27,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRespons
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.impl.TmnProfileAdminProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.stub.TmnProfileStubbed;
 
@@ -123,10 +123,9 @@ public class CreateTmnProfileTest {
 			Integer channelID = 40;
 			TmnProfile tmnProfile = setTmnProfile();
 			this.tmnProfileServiceImpl.createProfile(channelID, tmnProfile);
-		} catch (ServiceInventoryException e) {
-			assertEquals("error code", e.getCode());
-			assertEquals("error description", e.getDescription());
-			assertEquals("error namespace", e.getNamespace());
+		} catch (ServiceInventoryWebException e) {
+			assertEquals("error code", e.getErrorCode());
+			assertEquals("error description", e.getErrorDescription());
 		}
 
 		//then

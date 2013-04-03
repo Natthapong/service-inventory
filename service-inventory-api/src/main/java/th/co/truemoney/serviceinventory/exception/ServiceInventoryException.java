@@ -14,12 +14,12 @@ public class ServiceInventoryException extends RuntimeException {
 
 	private static final long serialVersionUID = 3961433822995791383L;
 
-	private Integer httpStatus;
-	private String errorCode;
-	private String errorDescription;
-	private String errorNamespace;
-	private String developerMessage;
-	private Map<String, Object> data;
+	protected Integer httpStatus;
+	protected String errorCode;
+	protected String errorDescription;
+	protected String errorNamespace;
+	protected String developerMessage;
+	protected Map<String, Object> data;
 
 	public Map<String, Object> getData() {
 		return data;

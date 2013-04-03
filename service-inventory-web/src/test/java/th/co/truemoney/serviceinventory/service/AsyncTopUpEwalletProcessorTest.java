@@ -26,8 +26,9 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
 
-public class AsyncServiceTest {
+public class AsyncTopUpEwalletProcessorTest {
 
 	private AsyncTopUpEwalletProcessor asyncService;
 	private TransactionRepository transactionRepo;
@@ -40,8 +41,11 @@ public class AsyncServiceTest {
 		transactionRepo = new TransactionMemoryRepository();
 		ewalletProxy = mock(EwalletSoapProxy.class);
 
+		TopUpFacade facade = new TopUpFacade();
+		facade.setEwalletProxy(ewalletProxy);
+
 		asyncService.setTransactionRepo(transactionRepo);
-		asyncService.setEwalletProxy(ewalletProxy);
+		asyncService.setTopUpFacade(new TopUpFacade.DSLBuilder(facade));
 
 		topUpOrderParams = new TopUpOrder();
 		topUpOrderParams.setID("1");
@@ -73,7 +77,7 @@ public class AsyncServiceTest {
 	public void topUpUtibaEwalletBankFail() {
 		StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
 		moneyResponse.setResultCode("24010");
-		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("24010","umarket"));
+		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("24010","bank fail"));
 
 		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, new AccessToken("tokenID"));
 		assertEquals(true, topUpOrder.isDone());
@@ -85,7 +89,7 @@ public class AsyncServiceTest {
 	public void topUpUtibaEwalletUMarketFail() {
 		StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
 		moneyResponse.setResultCode("27");
-		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("27","umarket"));
+		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("27","umarket fail"));
 
 		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams,  new AccessToken());
 		assertEquals(true, topUpOrder.isDone());
