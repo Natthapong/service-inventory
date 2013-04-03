@@ -19,6 +19,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileRegisteringFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
@@ -37,6 +38,9 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Autowired
 	private ProfileFacade profileFacade;
+
+	@Autowired
+	private ProfileRegisteringFacade registeringFacade;
 
 	@Autowired
 	private BalanceFacade ewalletFacade;
@@ -88,13 +92,13 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Override
     public String validateEmail(Integer channelID, String registeringEmail) throws ServiceInventoryException {
-		profileFacade.verifyValidRegisteringEmail(channelID, registeringEmail);
+		registeringFacade.verifyValidRegisteringEmail(channelID, registeringEmail);
 		return registeringEmail;
     }
 
 	@Override
     public OTP createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
-		profileFacade.verifyValidRegisteringMobileNumber(channelID, tmnProfile.getMobileNumber());
+		registeringFacade.verifyValidRegisteringMobileNumber(channelID, tmnProfile.getMobileNumber());
        	OTP otp = otpService.send(tmnProfile.getMobileNumber());
        	profileRepository.saveProfile(tmnProfile);
        	return otp;
@@ -115,7 +119,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	private void performCreateProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
-		profileFacade.register(channelID, tmnProfile);
+		registeringFacade.register(channelID, tmnProfile);
     }
 
 	private void sendOutWelcomeEmail(String email) {
@@ -124,6 +128,14 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	public void setProfileFacade(ProfileFacade profileFacade) {
 		this.profileFacade = profileFacade;
+	}
+
+	public void setRegisteringFacade(ProfileRegisteringFacade registeringFacade) {
+		this.registeringFacade = registeringFacade;
+	}
+
+	public void setEwalletFacade(BalanceFacade ewalletFacade) {
+		this.ewalletFacade = ewalletFacade;
 	}
 
 	public void setOtpService(OTPService otpService) {

@@ -28,7 +28,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfil
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.impl.TmnProfileAdminProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileRegisteringFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.stub.TmnProfileStubbed;
 
@@ -55,12 +55,12 @@ public class CreateTmnProfileTest {
 		this.otpServiceMock = Mockito.mock(OTPService.class);
 		this.profileRepositoryMock = Mockito.mock(ProfileRepository.class);
 
-		ProfileFacade profileFacade = new ProfileFacade();
-		profileFacade.setTmnProfileAdminProxy(tmnProfileAdminProxyMock);
-		profileFacade.setTmnProfileInitiator(tmnProfileInitiator);
-		profileFacade.setTmnProfilePin(tmnProfilePin);
+		ProfileRegisteringFacade registeringFacade = new ProfileRegisteringFacade();
+		registeringFacade.setTmnProfileAdminProxy(tmnProfileAdminProxyMock);
+		registeringFacade.setTmnProfileInitiator(tmnProfileInitiator);
+		registeringFacade.setTmnProfilePin(tmnProfilePin);
 
-		this.tmnProfileServiceImpl.setProfileFacade(profileFacade);
+		this.tmnProfileServiceImpl.setRegisteringFacade(registeringFacade);
 		this.tmnProfileServiceImpl.setOtpService(otpServiceMock);
 		this.tmnProfileServiceImpl.setProfileRepository(profileRepositoryMock);
 

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileRegisteringFacade;
 
 @Configuration
 public class LegacyFacadeConfig {
@@ -22,6 +23,11 @@ public class LegacyFacadeConfig {
 	@Bean
 	public ProfileFacade profileFacade() {
 		return new ProfileFacade();
+	}
+
+	@Bean
+	public ProfileRegisteringFacade registeringFacade() {
+		return new ProfileRegisteringFacade();
 	}
 
 }
