@@ -19,7 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyRespo
 
 public class TopUpFacadePerformTopUpSuccessTest {
 
-	private TopUpFacade topUpFacade;
+	private EwalletFacade topUpFacade;
 
 	private EwalletSoapProxy ewalletProxy;
 
@@ -36,7 +36,7 @@ public class TopUpFacadePerformTopUpSuccessTest {
 		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenReturn(moneyResponse);
 
 
-		topUpFacade = new TopUpFacade();
+		topUpFacade = new EwalletFacade();
 		topUpFacade.setEwalletProxy(ewalletProxy);
 	}
 

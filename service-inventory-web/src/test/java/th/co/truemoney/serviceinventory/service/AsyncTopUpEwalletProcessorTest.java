@@ -26,7 +26,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade;
 
 public class AsyncTopUpEwalletProcessorTest {
 
@@ -41,11 +41,11 @@ public class AsyncTopUpEwalletProcessorTest {
 		transactionRepo = new TransactionMemoryRepository();
 		ewalletProxy = mock(EwalletSoapProxy.class);
 
-		TopUpFacade facade = new TopUpFacade();
+		EwalletFacade facade = new EwalletFacade();
 		facade.setEwalletProxy(ewalletProxy);
 
 		asyncService.setTransactionRepo(transactionRepo);
-		asyncService.setTopUpFacade(new TopUpFacade.DSLBuilder(facade));
+		asyncService.setTopUpFacade(new EwalletFacade.TopUpBuilder(facade));
 
 		topUpOrderParams = new TopUpOrder();
 		topUpOrderParams.setID("1");

@@ -15,9 +15,9 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade.TopUpBankSystemFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade.TopUpUMarketSystemFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade.TopUpBankSystemFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade.TopUpUMarketSystemFailException;
 
 @Service
 public class AsyncTopUpEwalletProcessor {
@@ -28,7 +28,7 @@ public class AsyncTopUpEwalletProcessor {
 	private TransactionRepository transactionRepo;
 
 	@Autowired
-	private TopUpFacade.DSLBuilder topUpFacade;
+	private EwalletFacade.TopUpBuilder topUpFacade;
 
 	@Async
 	public Future<TopUpOrder> topUpUtibaEwallet(TopUpOrder topUpOrder, AccessToken accessToken) {
@@ -66,7 +66,7 @@ public class AsyncTopUpEwalletProcessor {
 		this.transactionRepo = transactionRepo;
 	}
 
-	public void setTopUpFacade(TopUpFacade.DSLBuilder topUpFacade) {
+	public void setTopUpFacade(EwalletFacade.TopUpBuilder topUpFacade) {
 		this.topUpFacade = topUpFacade;
 	}
 

@@ -9,19 +9,19 @@ import static org.mockito.Mockito.*;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade.DSLBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade.TopUpBuilder;
 
 
 public class TopUpFacadeBuilderVerifyTopUpTest {
 
-	private DSLBuilder topUpFacadeBuilder;
-	private TopUpFacade facadeMock;
+	private TopUpBuilder topUpFacadeBuilder;
+	private EwalletFacade facadeMock;
 
 	@Before
 	public void setup() {
-		facadeMock = mock(TopUpFacade.class);
-		topUpFacadeBuilder = new TopUpFacade.DSLBuilder(facadeMock);
+		facadeMock = mock(EwalletFacade.class);
+		topUpFacadeBuilder = new EwalletFacade.TopUpBuilder(facadeMock);
 	}
 
 	@Test

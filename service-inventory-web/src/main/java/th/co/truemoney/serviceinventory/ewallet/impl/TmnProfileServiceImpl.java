@@ -16,10 +16,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AdminSecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBalanceResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsCreatableRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
@@ -35,6 +33,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
@@ -51,17 +50,17 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	@Autowired
 	private OTPService otpService;
 
-	@Autowired
-	private TmnSecurityProxy tmnSecurityProxy;
+//	@Autowired
+//	private TmnSecurityProxy tmnSecurityProxy;
+//
+//	@Autowired
+//	private TmnProfileProxy tmnProfileProxy;
+//
+//	@Autowired
+//	private TmnProfileAdminProxy tmnProfileAdminProxy;
 
 	@Autowired
-	private TmnProfileProxy tmnProfileProxy;
-
-	@Autowired
-	private EwalletSoapProxy ewalletSoapProxy;
-
-	@Autowired
-	private TmnProfileAdminProxy tmnProfileAdminProxy;
+	private EwalletFacade ewalletFacade;
 
 	@Autowired @Qualifier("tmnProfileInitiator")
 	private String tmnProfileInitiator;
@@ -130,16 +129,8 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 	@Override
 	public BigDecimal getEwalletBalance(String accessTokenID) throws ServiceInventoryException {
-
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-		logger.debug("retrieve access Token: "+accessToken.toString());
-
-		SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
-		StandardBizRequest standardBizRequest = new StandardBizRequest();
-		standardBizRequest.setChannelId(accessToken.getChannelID());
-		standardBizRequest.setSecurityContext(securityContext);
-		GetBalanceResponse balanceResponse = this.ewalletSoapProxy.getBalance(standardBizRequest);
-		return balanceResponse.getCurrentBalance();
+		return ewalletFacade.getCurrentBalance(accessToken);
 	}
 
 	@Override

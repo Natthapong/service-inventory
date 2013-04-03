@@ -3,19 +3,19 @@ package th.co.truemoney.serviceinventory.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade;
 
 @Configuration
 public class LegacyFacadeConfig {
 
 	@Bean
-	public TopUpFacade topUpFacade() {
-		return new TopUpFacade();
+	public EwalletFacade topUpFacade() {
+		return new EwalletFacade();
 	}
 
 	@Bean
-	public TopUpFacade.DSLBuilder topUpFacadeBuilder() {
-		return new TopUpFacade.DSLBuilder(topUpFacade());
+	public EwalletFacade.TopUpBuilder topUpFacadeBuilder() {
+		return new EwalletFacade.TopUpBuilder(topUpFacade());
 	}
 
 }

@@ -23,7 +23,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequ
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade;
 import th.co.truemoney.serviceinventory.stub.AccessTokenRepositoryStubbed;
 import th.co.truemoney.serviceinventory.stub.TopUpStubbed;
 
@@ -43,12 +43,12 @@ public class TopUpServiceImplVerifyTopUpTest {
 		EnhancedDirectDebitSourceOfFundService direcDebitServiceMock = Mockito.mock(EnhancedDirectDebitSourceOfFundService.class);
 		EwalletSoapProxy ewalletProxyMock = Mockito.mock(EwalletSoapProxy.class);
 
-		TopUpFacade topUpFacade = new TopUpFacade();
+		EwalletFacade topUpFacade = new EwalletFacade();
 		topUpFacade.setEwalletProxy(ewalletProxyMock);
 
 		AccessTokenMemoryRepository accessTokenRepo = new AccessTokenMemoryRepository();
 
-		this.topUpService.setTopUpFacadeBuilder(topUpFacade.getDSL());
+		this.topUpService.setTopUpFacadeBuilder(topUpFacade.setupTopUp());
 		this.topUpService.setDirectDebitSourceService(direcDebitServiceMock);
 		this.topUpService.setAccessTokenRepository(accessTokenRepo);
 		this.topUpService.setOrderRepository(new TransactionMemoryRepository());

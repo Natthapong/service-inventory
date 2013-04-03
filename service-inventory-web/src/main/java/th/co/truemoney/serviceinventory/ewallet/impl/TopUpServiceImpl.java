@@ -20,7 +20,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionReposito
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.EwalletFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
@@ -36,7 +36,7 @@ public class TopUpServiceImpl implements TopUpService {
 	private AsyncTopUpEwalletProcessor asyncTopUpProcessor;
 
 	@Autowired
-	private TopUpFacade.DSLBuilder topUpFacade;
+	private EwalletFacade.TopUpBuilder topUpFacade;
 
 	@Autowired
 	private AccessTokenRepository accessTokenRepo;
@@ -178,7 +178,7 @@ public class TopUpServiceImpl implements TopUpService {
 		this.otpService = otpService;
 	}
 
-	public void setTopUpFacadeBuilder(TopUpFacade.DSLBuilder topUpFacadeBuilder) {
+	public void setTopUpFacadeBuilder(EwalletFacade.TopUpBuilder topUpFacadeBuilder) {
 		this.topUpFacade = topUpFacadeBuilder;
 	}
 
