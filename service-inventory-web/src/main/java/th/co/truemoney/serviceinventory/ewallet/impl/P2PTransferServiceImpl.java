@@ -79,16 +79,9 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		verifyRequest.setTarget(mobileNumber);
 		verifyRequest.setSecurityContext(securityContext);
 
-		String sourceMobileNumber = accessToken.getMobileNumber();
-
-		if (sourceMobileNumber != null && sourceMobileNumber.equals(verifyRequest.getTarget())) {
-			throw new ServiceInventoryWebException(Code.INVALID_TARGET_MOBILE_NUMBER, "Invalid target mobile number");
-		}
-
 		VerifyTransferResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
 
 		return verifyResponse;
-
 	}
 
 	@Override
