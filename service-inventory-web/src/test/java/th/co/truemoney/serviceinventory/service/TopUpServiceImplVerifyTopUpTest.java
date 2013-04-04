@@ -13,17 +13,17 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.impl.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
 import th.co.truemoney.serviceinventory.stub.AccessTokenRepositoryStubbed;
 import th.co.truemoney.serviceinventory.stub.TopUpStubbed;
 
@@ -43,12 +43,12 @@ public class TopUpServiceImplVerifyTopUpTest {
 		EnhancedDirectDebitSourceOfFundService direcDebitServiceMock = Mockito.mock(EnhancedDirectDebitSourceOfFundService.class);
 		EwalletSoapProxy ewalletProxyMock = Mockito.mock(EwalletSoapProxy.class);
 
-		TopUpFacade topUpFacade = new TopUpFacade();
+		BalanceFacade topUpFacade = new BalanceFacade();
 		topUpFacade.setEwalletProxy(ewalletProxyMock);
 
 		AccessTokenMemoryRepository accessTokenRepo = new AccessTokenMemoryRepository();
 
-		this.topUpService.setTopUpFacadeBuilder(topUpFacade.getDSL());
+		this.topUpService.setTopUpFacadeBuilder(topUpFacade.setupTopUp());
 		this.topUpService.setDirectDebitSourceService(direcDebitServiceMock);
 		this.topUpService.setAccessTokenRepository(accessTokenRepo);
 		this.topUpService.setOrderRepository(new TransactionMemoryRepository());

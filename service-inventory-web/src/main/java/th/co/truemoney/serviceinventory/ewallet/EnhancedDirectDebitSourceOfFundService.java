@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.ewallet.impl;
+package th.co.truemoney.serviceinventory.ewallet;
 
 import java.math.BigDecimal;
 

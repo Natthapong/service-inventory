@@ -15,16 +15,28 @@ import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeExceptio
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-public class TopUpFacade {
+public class BalanceFacade {
 
-	private SimpleDateFormat df= new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	private SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 	@Autowired
 	private EwalletSoapProxy ewalletProxy;
+
+	public BigDecimal getCurrentBalance(AccessToken accessToken) {
+
+		SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
+		StandardBizRequest standardBizRequest = new StandardBizRequest();
+
+		standardBizRequest.setChannelId(accessToken.getChannelID());
+		standardBizRequest.setSecurityContext(securityContext);
+
+		return this.ewalletProxy.getBalance(standardBizRequest).getCurrentBalance();
+	}
 
 	public void verifyToppingUpCapability(BigDecimal amount, SourceOfFund sof, AccessToken accessToken) {
 
@@ -85,33 +97,33 @@ public class TopUpFacade {
 		this.ewalletProxy = ewalletProxy;
 	}
 
-	public DSLBuilder getDSL() {
-		return new DSLBuilder(this);
+	public TopUpBuilder setupTopUp() {
+		return new TopUpBuilder(this);
 	}
 
-	public static class DSLBuilder {
+	public static class TopUpBuilder {
 
-		private TopUpFacade facade;
+		private BalanceFacade facade;
 		private AccessToken accessToken;
 		private BigDecimal amount;
 		private SourceOfFund sourceOfFund;
 
 		@Autowired(required = false)
-		public DSLBuilder(TopUpFacade facade) {
+		public TopUpBuilder(BalanceFacade facade) {
 			this.facade = facade;
 		}
 
-		public DSLBuilder withAmount(BigDecimal amount) {
+		public TopUpBuilder withAmount(BigDecimal amount) {
 			this.amount = amount;
 			return this;
 		}
 
-		public DSLBuilder usingSourceOfFund(SourceOfFund sourceOfFund) {
+		public TopUpBuilder usingSourceOfFund(SourceOfFund sourceOfFund) {
 			this.sourceOfFund = sourceOfFund;
 			return this;
 		}
 
-		public DSLBuilder fromUser(AccessToken accessToken) {
+		public TopUpBuilder fromUser(AccessToken accessToken) {
 			this.accessToken = accessToken;
 			return this;
 		}

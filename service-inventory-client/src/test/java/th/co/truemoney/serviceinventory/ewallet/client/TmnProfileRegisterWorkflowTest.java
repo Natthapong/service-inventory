@@ -49,6 +49,6 @@ public class TmnProfileRegisterWorkflowTest {
 		TmnProfile tmnProfile = profileService.confirmCreateProfile(41, otp);
 		assertNotNull(tmnProfile);
 	}
-	
-	
+
+
 }

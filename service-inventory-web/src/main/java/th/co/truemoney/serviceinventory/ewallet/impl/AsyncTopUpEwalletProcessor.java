@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
-import java.util.Date;
 import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
@@ -15,15 +14,10 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade.TopUpBankSystemFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpFacade.TopUpUMarketSystemFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.TopUpBankSystemFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.TopUpUMarketSystemFailException;
 
 @Service
 public class AsyncTopUpEwalletProcessor {
@@ -34,7 +28,7 @@ public class AsyncTopUpEwalletProcessor {
 	private TransactionRepository transactionRepo;
 
 	@Autowired
-	private TopUpFacade.DSLBuilder topUpFacade;
+	private BalanceFacade.TopUpBuilder topUpFacade;
 
 	@Async
 	public Future<TopUpOrder> topUpUtibaEwallet(TopUpOrder topUpOrder, AccessToken accessToken) {
@@ -72,7 +66,7 @@ public class AsyncTopUpEwalletProcessor {
 		this.transactionRepo = transactionRepo;
 	}
 
-	public void setTopUpFacade(TopUpFacade.DSLBuilder topUpFacade) {
+	public void setTopUpFacade(BalanceFacade.TopUpBuilder topUpFacade) {
 		this.topUpFacade = topUpFacade;
 	}
 

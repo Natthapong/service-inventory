@@ -1,7 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
@@ -103,10 +102,4 @@ public class AccessToken implements Serializable {
 			.append("channelID: ", this.channelID)
 			.toString();
 	}
-
-	public static AccessToken generateNewToken(String sessionID, String truemoneyID, String username, String mobileNumber, String email, Integer channelID) {
-		String accessTokenID = UUID.randomUUID().toString();
-		return new AccessToken(accessTokenID, sessionID, truemoneyID, username,  mobileNumber, email, channelID);
-	}
-
 }

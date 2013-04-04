@@ -10,7 +10,6 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 import th.co.truemoney.serviceinventory.exception.InternalServerErrorException;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

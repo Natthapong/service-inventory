@@ -58,13 +58,13 @@ public class LocalEnvironmentConfig {
 
 	Adam adam = new Adam();
 	Eve eve = new Eve();
-	
+
 	@Bean
 	@Primary
 	public TmnProfileProxy stubTmnProfileProxy() {
-	
+
 		return new TmnProfileProxy() {
-			
+
 			@Override
 			public GetBasicProfileResponse getBasicProfile(
 					StandardBizRequest standardBizRequest)
@@ -133,17 +133,17 @@ public class LocalEnvironmentConfig {
 				if ("adam@tmn.com".equals(initiator)
 						&& "password".equals(password)) {
 					return adam.getTmnSecurity().signon(signOnRequest);
-					
+
 				}else if("eve@tmn.com".equals(initiator)
 						&& "password".equals(password)){
 					return eve.getTmnSecurity().signon(signOnRequest);
-					
+
 				}else if("local@tmn.com".equals(initiator)
 						&& "password".equals(password)){
 					return new SignonResponse("1", "0", "namespace",
 							new String[] { "key" }, new String[] { "value" },
 							"sessionId", "trueMoneyId");
-					
+
 				}
 
 				throw new SignonServiceException("4", "");
@@ -306,7 +306,7 @@ public class LocalEnvironmentConfig {
 			public StandardBizResponse isCreatable(
 					IsCreatableRequest isCreatableRequest)
 					throws EwalletException {
-				if(isCreatableRequest.getLoginId().equals("user1@test.com")){
+				if(isCreatableRequest.getLoginId().equals("local@tmn.com")){
 					throw new ServiceInventoryWebException("40000","This user already register.");
 				}else{
 					return new StandardBizResponse("1", "0", "namespace",
@@ -324,12 +324,12 @@ public class LocalEnvironmentConfig {
 
 		};
 	}
-	
+
 	@Bean
 	public OTPGenerator otpGenerator() {
 		return new UnSecureOTPGenerator();
 	}
-	
+
 	@Bean
 	public EmailService emailService(){
 		return new StubEmailService();

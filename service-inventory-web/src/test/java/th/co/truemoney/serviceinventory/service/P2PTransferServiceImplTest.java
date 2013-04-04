@@ -1,11 +1,12 @@
 package th.co.truemoney.serviceinventory.service;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
@@ -60,19 +61,19 @@ public class P2PTransferServiceImplTest {
 		this.p2pService.setEwalletProxy(this.ewalletSoapProxyMock);
 		this.p2pService.setAccessTokenRepository(this.accessTokenRepoMock);
 		this.p2pService.setTransactionRepository(this.transactionRepo);
-		this.p2pService.setOtpService(otpService);	
+		this.p2pService.setOtpService(otpService);
 		this.p2pService.setAsyncP2PTransferProcessor(asyncP2PTransferProcessor);
-		
-		
+
+
 		accessToken = AccessTokenRepositoryStubbed.createSuccessAccessToken();
 		when(accessTokenRepoMock.getAccessToken(Mockito.anyString()))
 		.thenReturn(accessToken);
 		when(transactionRepo.getP2PDraftTransaction(Mockito.anyString(), Mockito.anyString()))
-		.thenReturn(new P2PDraftTransaction());		
+		.thenReturn(new P2PDraftTransaction());
 		when(transactionRepo.getP2PTransaction(Mockito.anyString(), Mockito.anyString()))
 		.thenReturn(p2pTransaction);
 	}
-	
+
 	@After
 	public void teardown() {
 		reset(ewalletSoapProxyMock);
@@ -87,11 +88,11 @@ public class P2PTransferServiceImplTest {
 		BigDecimal amount = new BigDecimal(200);
 		String mobileNumber = "0811111111";
 
-		//given		
+		//given
 		VerifyTransferResponse stubbedVerifyTransferResponse = P2PTransferStubbed.createSuccessStubbedVerifyTransferResponse();
 
 		//when
-		
+
 		when(ewalletSoapProxyMock.verifyTransfer(Mockito.any(VerifyTransferRequest.class)))
 			.thenReturn(stubbedVerifyTransferResponse);
 
@@ -101,46 +102,46 @@ public class P2PTransferServiceImplTest {
 		assertNotNull(draftTrans);
 		assertNotNull(draftTrans.getFullname());
 	}
-	
+
 	@Test
-	public void getDraftTransactionDetails() {		
+	public void getDraftTransactionDetails() {
 		P2PDraftTransaction p2pDraftTransaction = this.p2pService.getDraftTransactionDetails("draftTransaction", accessToken.getAccessTokenID());
-				
+
 		assertNotNull(p2pDraftTransaction);
 	}
-	
+
 	@Test
 	public void sendOTP() {
 		OTP mockOTP = new OTP(accessToken.getMobileNumber(), "referenceCode", "otpString");
 		when(otpService.send(eq(accessToken.getMobileNumber()))).thenReturn(mockOTP);
 		OTP otp = this.p2pService.sendOTP("draftTransactionID", accessToken.getAccessTokenID());
-		
+
 		verify(transactionRepo).saveP2PDraftTransaction(Mockito.any(P2PDraftTransaction.class), Mockito.anyString());
 		assertNotNull(otp);
 	}
-	
+
 	@Test
 	public void confirmDraftTransaction() {
 		OTP mockOTP = new OTP(accessToken.getMobileNumber(), "referenceCode", "otpString");
-		
+
 		DraftTransaction.Status status = this.p2pService.confirmDraftTransaction("draftTransactionID", mockOTP, accessToken.getAccessTokenID());
-		
+
 		verify(asyncP2PTransferProcessor).transferEwallet(any(P2PTransaction.class), eq(accessToken.getAccessTokenID()), any(TransferRequest.class));
 		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, status);
-	}	
-	
+	}
+
 	@Test
 	public void getTransactionStatus() {
 		p2pTransaction.setStatus(Transaction.Status.VERIFIED);
-		Transaction.Status status =  this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());		
+		Transaction.Status status =  this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());
 		assertEquals(Transaction.Status.VERIFIED, status);
-		
+
 		p2pTransaction.setStatus(Transaction.Status.PROCESSING);
-		status =  this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());		
+		status =  this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());
 		assertEquals(Transaction.Status.PROCESSING, status);
-		
+
 		p2pTransaction.setStatus(Transaction.Status.SUCCESS);
-		status =  this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());		
+		status =  this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());
 		assertEquals(Transaction.Status.SUCCESS, status);
 	}
 }
