@@ -11,15 +11,15 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class P2PDraftTransaction extends DraftTransaction {
 
 	private static final String DRAFT_TYPE = "p2pDraftTransaction";
-	
+
 	private static final long serialVersionUID = -5651007822743041981L;
-	
+
 	private String mobileNumber;
-	
+
 	private BigDecimal amount;
-	
+
 	private String fullname;
-	
+
 	private String otpReferenceCode;
 
 	public P2PDraftTransaction() {
@@ -99,5 +99,5 @@ public class P2PDraftTransaction extends DraftTransaction {
 				+ ", accessTokenID=" + accessTokenID + ", type=" + type
 				+ ", status=" + status + "]";
 	}
-		
+
 }

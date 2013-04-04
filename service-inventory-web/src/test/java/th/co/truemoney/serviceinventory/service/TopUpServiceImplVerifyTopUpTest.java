@@ -24,6 +24,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMem
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.stub.AccessTokenRepositoryStubbed;
 import th.co.truemoney.serviceinventory.stub.TopUpStubbed;
 
@@ -40,15 +41,18 @@ public class TopUpServiceImplVerifyTopUpTest {
 	public void setup() {
 		this.topUpService = new TopUpServiceImpl();
 
+		AccessTokenMemoryRepository accessTokenRepo = new AccessTokenMemoryRepository();
+
 		EnhancedDirectDebitSourceOfFundService direcDebitServiceMock = Mockito.mock(EnhancedDirectDebitSourceOfFundService.class);
 		EwalletSoapProxy ewalletProxyMock = Mockito.mock(EwalletSoapProxy.class);
 
-		BalanceFacade topUpFacade = new BalanceFacade();
-		topUpFacade.setEwalletProxy(ewalletProxyMock);
+		BalanceFacade balanceFacade = new BalanceFacade();
+		balanceFacade.setEwalletProxy(ewalletProxyMock);
 
-		AccessTokenMemoryRepository accessTokenRepo = new AccessTokenMemoryRepository();
+		LegacyFacade legacyFacade = new LegacyFacade();
+		legacyFacade.setBalanceFacade(balanceFacade);
 
-		this.topUpService.setTopUpFacadeBuilder(topUpFacade.setupTopUp());
+		this.topUpService.setLegacyFacade(legacyFacade);
 		this.topUpService.setDirectDebitSourceService(direcDebitServiceMock);
 		this.topUpService.setAccessTokenRepository(accessTokenRepo);
 		this.topUpService.setOrderRepository(new TransactionMemoryRepository());
@@ -60,6 +64,7 @@ public class TopUpServiceImplVerifyTopUpTest {
 		directDebitDetail.setMinAmount(new BigDecimal(300));
 		directDebitDetail.setMaxAmount(new BigDecimal(30000));
 		directDebitDetail.setSourceOfFundID(sourceOfFundID);
+		directDebitDetail.setSourceOfFundType("debit");
 
 		//given
 		AccessToken accessToken = AccessTokenRepositoryStubbed.createSuccessAccessToken();

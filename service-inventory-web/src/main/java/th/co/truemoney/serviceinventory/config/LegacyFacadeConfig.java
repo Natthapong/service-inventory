@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileRegisteringFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.SourceOfFundFacade;
@@ -14,11 +15,6 @@ public class LegacyFacadeConfig {
 	@Bean
 	public BalanceFacade balanceFacade() {
 		return new BalanceFacade();
-	}
-
-	@Bean
-	public BalanceFacade.TopUpBuilder topUpFacadeBuilder() {
-		return new BalanceFacade.TopUpBuilder(balanceFacade());
 	}
 
 	@Bean
@@ -34,6 +30,11 @@ public class LegacyFacadeConfig {
 	@Bean
 	public SourceOfFundFacade sourceOfFundFacade() {
 		return new SourceOfFundFacade();
+	}
+
+	@Bean
+	public LegacyFacade legacyFacade() {
+		return new LegacyFacade();
 	}
 
 }

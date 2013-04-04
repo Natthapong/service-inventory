@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
+import java.math.BigDecimal;
 import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
@@ -10,14 +11,15 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.TopUpBankSystemFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.TopUpUMarketSystemFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.BankSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.UMarketSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 
 @Service
 public class AsyncTopUpEwalletProcessor {
@@ -28,32 +30,37 @@ public class AsyncTopUpEwalletProcessor {
 	private TransactionRepository transactionRepo;
 
 	@Autowired
-	private BalanceFacade.TopUpBuilder topUpFacade;
+	private LegacyFacade legacyFacade;
 
 	@Async
 	public Future<TopUpOrder> topUpUtibaEwallet(TopUpOrder topUpOrder, AccessToken accessToken) {
 		try {
 
 			TopUpQuote quote = topUpOrder.getQuote();
+			BigDecimal amount = quote.getAmount();
+			SourceOfFund sourceOfFund = quote.getSourceOfFund();
 
 			topUpOrder.setStatus(Transaction.Status.PROCESSING);
 			transactionRepo.saveTopUpEwalletTransaction(topUpOrder, accessToken.getAccessTokenID());
 
-			TopUpConfirmationInfo confirmationInfo = topUpFacade.withAmount(quote.getAmount())
-				.usingSourceOfFund(quote.getSourceOfFund())
-				.fromUser(accessToken)
-				.performTopUp();
+			TopUpConfirmationInfo confirmationInfo =
+					legacyFacade.fromChannel(accessToken.getChannelID())
+					.topUp(amount)
+					.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+					.usingSourceOFFund(sourceOfFund.getSourceOfFundID(), sourceOfFund.getSourceOfFundType())
+					.performTopUp();
 
 			topUpOrder.setConfirmationInfo(confirmationInfo);
 
 			topUpOrder.setStatus(Transaction.Status.SUCCESS);
 			logger.info("AsyncService.topUpUtibaEwallet.resultTransactionID: " + confirmationInfo.getTransactionID());
 
-		} catch (TopUpBankSystemFailException e) {
+		} catch (BankSystemTransactionFailException e) {
 				topUpOrder.setFailStatus(TopUpOrder.FailStatus.BANK_FAILED);
-		} catch (TopUpUMarketSystemFailException e) {
+		} catch (UMarketSystemTransactionFailException e) {
 				topUpOrder.setFailStatus(TopUpOrder.FailStatus.UMARKET_FAILED);
 		} catch (Exception ex) {
+			logger.error("unexpect top up fail: ", ex);
 			topUpOrder.setFailStatus(TopUpOrder.FailStatus.UNKNOWN_FAILED);
 		}
 
@@ -66,8 +73,8 @@ public class AsyncTopUpEwalletProcessor {
 		this.transactionRepo = transactionRepo;
 	}
 
-	public void setTopUpFacade(BalanceFacade.TopUpBuilder topUpFacade) {
-		this.topUpFacade = topUpFacade;
+	public void setLegacyFacade(LegacyFacade legacyFacade) {
+		this.legacyFacade = legacyFacade;
 	}
 
 }

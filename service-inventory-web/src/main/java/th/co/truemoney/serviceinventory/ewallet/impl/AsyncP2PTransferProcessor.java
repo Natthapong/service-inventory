@@ -1,6 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
@@ -9,14 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
+import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.TransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.UMarketSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 
 @Service
 public class AsyncP2PTransferProcessor {
@@ -27,67 +30,59 @@ public class AsyncP2PTransferProcessor {
 	private TransactionRepository transactionRepo;
 
 	@Autowired
-	private EwalletSoapProxy ewalletProxy;
-	
-	public TransactionRepository getTransactionRepo() {
-		return transactionRepo;
+	private LegacyFacade legacyFacade;
+
+	public Future<P2PTransaction> transferEwallet(P2PTransaction p2pTransaction, AccessToken accessToken) {
+		try {
+
+			P2PDraftTransaction p2pDraftTransaction = p2pTransaction.getDraftTransaction();
+
+			Integer channelID = accessToken.getChannelID();
+			String sessionID = accessToken.getSessionID();
+			String truemoneyID = accessToken.getTruemoneyID();
+
+			String sourceMobileNumber = accessToken.getMobileNumber();
+			String targetMobileNumber = p2pDraftTransaction.getMobileNumber();
+
+			BigDecimal amount = p2pDraftTransaction.getAmount();
+
+			if (sourceMobileNumber != null && sourceMobileNumber.equals(targetMobileNumber)) {
+				throw new ServiceInventoryWebException(400, Code.INVALID_TARGET_MOBILE_NUMBER, "Invalid target mobile number");
+			}
+
+			p2pTransaction.setStatus(Transaction.Status.PROCESSING);
+			transactionRepo.saveP2PTransaction(p2pTransaction, accessToken.getAccessTokenID());
+
+			P2PTransactionConfirmationInfo confirmationInfo = legacyFacade
+					.fromChannel(channelID)
+					.transfer(amount)
+					.fromUser(sessionID, truemoneyID)
+					.toTargetUser(targetMobileNumber)
+					.performTransfer();
+
+			p2pTransaction.setConfirmationInfo(confirmationInfo);
+
+			p2pTransaction.setStatus(Transaction.Status.SUCCESS);
+			logger.info("AsyncService.transferEwallet.resultTransactionID: " + confirmationInfo.getTransactionID());
+
+		} catch (UMarketSystemTransactionFailException e) {
+			p2pTransaction.setFailStatus(FailStatus.UMARKET_FAILED);
+		} catch (Exception ex) {
+			logger.error("unexpect p2p transfer fail: ", ex);
+			p2pTransaction.setFailStatus(FailStatus.UNKNOWN_FAILED);
+		}
+
+		transactionRepo.saveP2PTransaction(p2pTransaction, accessToken.getAccessTokenID());
+
+		return new AsyncResult<P2PTransaction> (p2pTransaction);
 	}
 
 	public void setTransactionRepo(TransactionRepository transactionRepo) {
 		this.transactionRepo = transactionRepo;
 	}
 
-	public EwalletSoapProxy getEwalletProxy() {
-		return ewalletProxy;
-	}
-
-	public void setEwalletProxy(EwalletSoapProxy ewalletProxy) {
-		this.ewalletProxy = ewalletProxy;
-	}
-
-	public Future<P2PTransaction> transferEwallet(P2PTransaction p2pTransaction, String accessTokenID, TransferRequest transferRequest) {
-		try {
-			logger.debug("start time " + new Date());
-
-			p2pTransaction.setStatus(Transaction.Status.PROCESSING);
-			transactionRepo.saveP2PTransaction(p2pTransaction, accessTokenID);
-
-			StandardMoneyResponse standardMoneyResponse = ewalletProxy.transfer(transferRequest);
-			logger.debug("finished time " + new Date());
-
-			if (standardMoneyResponse != null) {
-				P2PTransactionConfirmationInfo info = new P2PTransactionConfirmationInfo();
-				info.setTransactionID(standardMoneyResponse.getTransactionId());
-		        Date date = new Date();
-		        java.text.SimpleDateFormat df= new java.text.SimpleDateFormat();
-		        df.applyPattern("dd/MM/yyyy HH:mm");
-				info.setTransactionDate(df.format(date));
-				p2pTransaction.setConfirmationInfo(info);
-			}
-
-			p2pTransaction.setStatus(Transaction.Status.SUCCESS);
-			logger.error("AsyncService.transferEwallet.resultTransactionID: "+standardMoneyResponse.getTransactionId());
-		} catch (EwalletException e) {
-			logger.error("AsyncService.transferEwallet.resultCode: "+e.getCode());
-			logger.error("AsyncService.transferEwallet.resultNamespace: "+e.getNamespace());
-			String errorCode = e.getCode();
-			if (errorCode.equals("5") || errorCode.equals("6") ||
-					errorCode.equals("7") || errorCode.equals("19") ||
-					errorCode.equals("27") || errorCode.equals("38")) {
-				p2pTransaction.setFailStatus(P2PTransaction.FailStatus.UMARKET_FAILED);
-			} else {
-				p2pTransaction.setFailStatus(P2PTransaction.FailStatus.UNKNOWN_FAILED);
-			}
-			logger.error("AsyncService.transferEwallet.resultCode: "+e.getCode());
-			logger.error("AsyncService.transferEwallet.resultNamespace: "+e.getNamespace());
-		} catch (Exception e) {
-			p2pTransaction.setFailStatus(P2PTransaction.FailStatus.UNKNOWN_FAILED);
-		}
-
-		transactionRepo.saveP2PTransaction(p2pTransaction, accessTokenID);
-
-		return new AsyncResult<P2PTransaction> (p2pTransaction);
-		
+	public void setLegacyFacade(LegacyFacade legacyFacade) {
+		this.legacyFacade = legacyFacade;
 	}
 
 }

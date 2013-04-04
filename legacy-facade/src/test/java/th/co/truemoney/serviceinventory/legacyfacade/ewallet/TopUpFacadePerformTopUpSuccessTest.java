@@ -10,8 +10,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
@@ -35,14 +33,13 @@ public class TopUpFacadePerformTopUpSuccessTest {
 
 		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenReturn(moneyResponse);
 
-
 		topUpFacade = new BalanceFacade();
 		topUpFacade.setEwalletProxy(ewalletProxy);
 	}
 
 	@Test
 	public void topUpSuccess() {
-		TopUpConfirmationInfo confirmation = topUpFacade.topUpMoney(new BigDecimal(500), new DirectDebit(), new AccessToken());
+		TopUpConfirmationInfo confirmation = topUpFacade.topUpMoney(new BigDecimal(50),"sourceID", "sourceType", 1, "sessionID", "truemoneyID");
 		Assert.assertNotNull(confirmation);
 		Assert.assertNotNull(confirmation.getTransactionID());
 		Assert.assertNotNull(confirmation.getTransactionDate());

@@ -24,6 +24,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityPro
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.impl.TmnSecurityProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
 import th.co.truemoney.serviceinventory.stub.TmnProfileStubbed;
 
@@ -45,7 +46,10 @@ public class TmnProfileServiceImplTest {
 		profileFacade.setTmnSecurityProxy(tmnSecurityProxyMock);
 		profileFacade.setTmnProfileProxy(tmnProfileProxyMock);
 
-		this.tmnProfileServiceImpl.setProfileFacade(profileFacade);
+		LegacyFacade legacyFacade = new LegacyFacade();
+		legacyFacade.setProfileFacade(profileFacade);
+
+		this.tmnProfileServiceImpl.setLegacyFacade(legacyFacade);
 		this.tmnProfileServiceImpl.setAccessTokenRepository(new AccessTokenMemoryRepository());
 	}
 

@@ -34,6 +34,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRespons
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileRegisteringFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
@@ -70,7 +71,10 @@ public class TmnRegisterImpServicelTest {
 		registeringFacade.setTmnProfileInitiator(tmnProfileInitiator);
 		registeringFacade.setTmnProfilePin(tmnProfilePin);
 
-		this.tmnProfileServiceImpl.setRegisteringFacade(registeringFacade);
+		LegacyFacade legacyFacade = new LegacyFacade();
+		legacyFacade.setProfileRegisteringFacade(registeringFacade);
+
+		this.tmnProfileServiceImpl.setLegacyFacade(legacyFacade);
 	}
 
 	@Test

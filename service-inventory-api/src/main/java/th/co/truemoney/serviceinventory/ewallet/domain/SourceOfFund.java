@@ -13,8 +13,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 public abstract class SourceOfFund implements Serializable {
 
 	private static final long serialVersionUID = 9157552125582604595L;
-	private String sourceOfFundID;
-	private String sourceOfFundType;
+	protected String sourceOfFundID;
+	protected String sourceOfFundType;
 
 	public SourceOfFund() {
 		super();

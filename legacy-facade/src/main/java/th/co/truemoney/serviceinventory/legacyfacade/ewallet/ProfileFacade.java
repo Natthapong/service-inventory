@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
@@ -28,12 +27,10 @@ public class ProfileFacade {
 	@Autowired
 	private TmnProfileProxy tmnProfileProxy;
 
-	public AccessToken login(Integer channelID, Login login) {
+	public AccessToken login(Integer channelID, String credentialUsername,String credentialSecret) {
 
-		String username = login.getUsername();
-		String password = login.getHashPassword();
 
-		SignonResponse signon = this.tmnSecurityProxy.signon(createGetSignOnRequest(channelID, username, password));
+		SignonResponse signon = this.tmnSecurityProxy.signon(createGetSignOnRequest(channelID, credentialUsername, credentialSecret));
 
 		String sessionID = signon.getSessionId();
 		String truemoneyID = signon.getTmnId();
@@ -55,7 +52,7 @@ public class ProfileFacade {
 				UUID.randomUUID().toString(),
 				signon.getSessionId(),
 				signon.getTmnId(),
-				login.getUsername(),
+				credentialUsername,
 				profile.getMobile(),
 				profile.getEmail(),
 				channelID);
@@ -66,6 +63,11 @@ public class ProfileFacade {
 		Integer channelID = accessToken.getChannelID();
 		String sessionID = accessToken.getSessionID();
 		String truemoneyID = accessToken.getTruemoneyID();
+
+		return getProfile(channelID, sessionID, truemoneyID);
+	}
+
+	public TmnProfile getProfile(Integer channelID, String sessionID, String truemoneyID) {
 
 		GetBasicProfileResponse profile = this.tmnProfileProxy.getBasicProfile(createAccessRequest(channelID, sessionID, truemoneyID));
 
@@ -79,13 +81,7 @@ public class ProfileFacade {
 		return tmnProfile;
 	}
 
-
-	public void logout(AccessToken accessToken) {
-
-		Integer channelID = accessToken.getChannelID();
-		String sessionID = accessToken.getSessionID();
-		String truemoneyID = accessToken.getTruemoneyID();
-
+	public void logout(Integer channelID, String sessionID, String truemoneyID) {
 		this.tmnSecurityProxy.terminateSession(createAccessRequest(channelID, sessionID, truemoneyID));
 	}
 
