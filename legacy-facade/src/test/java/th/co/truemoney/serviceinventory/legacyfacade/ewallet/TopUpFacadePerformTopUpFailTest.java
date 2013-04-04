@@ -21,8 +21,8 @@ import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeExceptio
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.TopUpBankSystemFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.TopUpUMarketSystemFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.BankSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.UMarketSystemTransactionFailException;
 
 @RunWith(Parameterized.class)
 public class TopUpFacadePerformTopUpFailTest {
@@ -38,16 +38,16 @@ public class TopUpFacadePerformTopUpFailTest {
 	@Parameters
 	public static Collection<Object[]> data() {
 		Object[][] data = new Object[][] {
-				{ "24003", TopUpBankSystemFailException.class },
-				{ "24008", TopUpBankSystemFailException.class },
-				{ "24010", TopUpBankSystemFailException.class },
-				{ "25007", TopUpBankSystemFailException.class },
-				{ "5", TopUpUMarketSystemFailException.class },
-				{ "6", TopUpUMarketSystemFailException.class },
-				{ "7", TopUpUMarketSystemFailException.class },
-				{ "19", TopUpUMarketSystemFailException.class },
-				{ "27", TopUpUMarketSystemFailException.class },
-				{ "38", TopUpUMarketSystemFailException.class },
+				{ "24003", BankSystemTransactionFailException.class },
+				{ "24008", BankSystemTransactionFailException.class },
+				{ "24010", BankSystemTransactionFailException.class },
+				{ "25007", BankSystemTransactionFailException.class },
+				{ "5", UMarketSystemTransactionFailException.class },
+				{ "6", UMarketSystemTransactionFailException.class },
+				{ "7", UMarketSystemTransactionFailException.class },
+				{ "19", UMarketSystemTransactionFailException.class },
+				{ "27", UMarketSystemTransactionFailException.class },
+				{ "38", UMarketSystemTransactionFailException.class },
 			};
 		return Arrays.asList(data);
 	}

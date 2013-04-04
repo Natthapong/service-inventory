@@ -27,6 +27,10 @@ import th.co.truemoney.serviceinventory.sms.OTPService;
 @Service
 public class TopUpServiceImpl implements TopUpService {
 
+
+	@Autowired
+	private LegacyFacade legacyFacade;
+
 	@Autowired
 	private EnhancedDirectDebitSourceOfFundService directDebitSourceService;
 
@@ -35,9 +39,6 @@ public class TopUpServiceImpl implements TopUpService {
 
 	@Autowired
 	private AsyncTopUpEwalletProcessor asyncTopUpProcessor;
-
-	@Autowired
-	private LegacyFacade legacyFacade;
 
 	@Autowired
 	private AccessTokenRepository accessTokenRepo;
@@ -57,7 +58,7 @@ public class TopUpServiceImpl implements TopUpService {
 
 		legacyFacade.fromChannel(accessToken.getChannelID())
 					.topUp(amount)
-					.toUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+					.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
 					.usingSourceOFFund(directDebitSource.getSourceOfFundID(), directDebitSource.getSourceOfFundType())
 					.verify();
 

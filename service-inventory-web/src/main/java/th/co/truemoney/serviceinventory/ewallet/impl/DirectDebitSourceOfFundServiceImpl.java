@@ -16,7 +16,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitPre
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.SourceOfFundPreference;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.SourceOfFundFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 
 @Service
 public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSourceOfFundService {
@@ -24,13 +24,13 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 	private static Logger logger = LoggerFactory.getLogger(DirectDebitSourceOfFundServiceImpl.class);
 
 	@Autowired
-	private AccessTokenRepository accessTokenRepo;
-
-	@Autowired
-	private SourceOfFundFacade sourceOfFundFacade;
+	private LegacyFacade legacyFacade;
 
 	@Autowired
 	private SourceOfFundPreference preference;
+
+	@Autowired
+	private AccessTokenRepository accessTokenRepo;
 
 	@Override
 	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenID)
@@ -43,7 +43,14 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 			throw new ServiceInventoryWebException("401", "unauthorized access");
 		}
 
-		List<DirectDebit> userDirectDebitSources = sourceOfFundFacade.getAllDirectDebitSourceOfFunds(accessToken);
+		String sessionID = accessToken.getSessionID();
+		String truemoneyID = accessToken.getTruemoneyID();
+		Integer channelID = accessToken.getChannelID();
+
+		List<DirectDebit> userDirectDebitSources = legacyFacade
+					.userProfile(sessionID, truemoneyID)
+					.fromChannel(channelID)
+					.getDirectDebitSourceOfFundList();
 
 		for (DirectDebit directDebit : userDirectDebitSources) {
 			updateDirectDebitDataWithBankPreference(directDebit);
@@ -57,7 +64,15 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
-		List<DirectDebit> directDebitSources = sourceOfFundFacade.getAllDirectDebitSourceOfFunds(accessToken);
+		String sessionID = accessToken.getSessionID();
+		String truemoneyID = accessToken.getTruemoneyID();
+		Integer channelID = accessToken.getChannelID();
+
+		List<DirectDebit> directDebitSources = legacyFacade
+					.userProfile(sessionID, truemoneyID)
+					.fromChannel(channelID)
+					.getDirectDebitSourceOfFundList();
+
 		for (DirectDebit directDebit : directDebitSources) {
 
 			if (directDebit.getSourceOfFundID().equals(sourceOfFundID)) {
@@ -83,5 +98,9 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 			directDebit.setMaxAmount(bankPreference.getMaxAmount());
 			directDebit.setMinAmount(bankPreference.getMinAmount());
 		}
+	}
+
+	public void setLegacyFacade(LegacyFacade legacyFacade) {
+		this.legacyFacade = legacyFacade;
 	}
 }

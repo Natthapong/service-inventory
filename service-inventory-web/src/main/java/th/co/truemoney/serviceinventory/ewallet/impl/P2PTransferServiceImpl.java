@@ -16,7 +16,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction.FailStatus
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.TransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -79,9 +78,9 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		verifyRequest.setAmount(amount);
 		verifyRequest.setTarget(mobileNumber);
 		verifyRequest.setSecurityContext(securityContext);
-		
+
 		String sourceMobileNumber = accessToken.getMobileNumber();
-		
+
 		if (sourceMobileNumber != null && sourceMobileNumber.equals(verifyRequest.getTarget())) {
 			throw new ServiceInventoryWebException(Code.INVALID_TARGET_MOBILE_NUMBER, "Invalid target mobile number");
 		}
@@ -169,15 +168,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	}
 
 	private void performTransferMoney(AccessToken accessToken, P2PTransaction p2pTransaction) {
-		P2PDraftTransaction p2pDraftTransaction = p2pTransaction.getDraftTransaction();
-
-		TransferRequest transferRequest = new TransferRequest();
-		transferRequest.setAmount(p2pDraftTransaction.getAmount());
-		transferRequest.setChannelId(accessToken.getChannelID());
-		transferRequest.setSecurityContext(new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID()));
-		transferRequest.setTarget(p2pDraftTransaction.getMobileNumber());
-
-		asyncP2PTransferProcessor.transferEwallet(p2pTransaction, accessToken.getAccessTokenID(), transferRequest);
+		asyncP2PTransferProcessor.transferEwallet(p2pTransaction, accessToken);
 	}
 
 	private String markFullName(String fullName)

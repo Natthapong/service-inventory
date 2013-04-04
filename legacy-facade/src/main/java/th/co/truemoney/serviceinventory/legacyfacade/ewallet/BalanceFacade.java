@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
@@ -14,7 +15,10 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.TransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResponse;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class BalanceFacade {
@@ -75,7 +79,7 @@ public class BalanceFacade {
 				errorCode.equals("24008") ||
 				errorCode.equals("24010") ||
 				errorCode.equals("25007")) {
-				throw new TopUpBankSystemFailException(ex);
+				throw new BankSystemTransactionFailException(ex);
 			} else if (
 				errorCode.equals("5")  ||
 				errorCode.equals("6")  ||
@@ -83,9 +87,56 @@ public class BalanceFacade {
 				errorCode.equals("19") ||
 				errorCode.equals("27") ||
 				errorCode.equals("38")) {
-				throw new TopUpUMarketSystemFailException(ex);
+				throw new UMarketSystemTransactionFailException(ex);
 			} else {
-				throw new TopUpUnknownSystemFailException(ex);
+				throw new UnknownSystemTransactionFailException(ex);
+			}
+		}
+	}
+
+	public String verifyP2PTransfer(BigDecimal amount, String targetMobileNumber, Integer channelID, String sessionID, String tmnID) {
+
+		VerifyTransferRequest verifyRequest = new VerifyTransferRequest();
+		verifyRequest.setChannelId(channelID);
+		verifyRequest.setAmount(amount);
+		verifyRequest.setTarget(targetMobileNumber);
+		verifyRequest.setSecurityContext(new SecurityContext(sessionID, tmnID));
+
+		VerifyTransferResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
+
+		return verifyResponse.getTargetFullname();
+	}
+
+	public P2PTransactionConfirmationInfo transferEwallet(BigDecimal amount, String targetMobileNumber, Integer channelID, String sessionID, String tmnID) {
+		try {
+
+			TransferRequest transferRequest = new TransferRequest();
+			transferRequest.setAmount(amount);
+			transferRequest.setChannelId(channelID);
+			transferRequest.setSecurityContext(new SecurityContext(sessionID, tmnID));
+			transferRequest.setTarget(targetMobileNumber);
+
+
+			StandardMoneyResponse standardMoneyResponse = ewalletProxy.transfer(transferRequest);
+
+			P2PTransactionConfirmationInfo info = new P2PTransactionConfirmationInfo();
+			info.setTransactionID(standardMoneyResponse.getTransactionId());
+			info.setTransactionDate(df.format(new Date()));
+
+			return info;
+
+		} catch (FailResultCodeException ex) {
+			String errorCode = ex.getCode();
+
+			if (errorCode.equals("5") ||
+				errorCode.equals("6") ||
+				errorCode.equals("7") ||
+				errorCode.equals("19") ||
+				errorCode.equals("27") ||
+				errorCode.equals("38")) {
+				throw new UMarketSystemTransactionFailException(ex);
+			} else {
+				throw new UnknownSystemTransactionFailException(ex);
 			}
 		}
 	}
@@ -94,26 +145,26 @@ public class BalanceFacade {
 		this.ewalletProxy = ewalletProxy;
 	}
 
-	public static class TopUpBankSystemFailException extends ServiceInventoryException {
+	public static class BankSystemTransactionFailException extends ServiceInventoryException {
 		private static final long serialVersionUID = -118404790410428078L;
 
-		public TopUpBankSystemFailException(EwalletException ex) {
+		public BankSystemTransactionFailException(EwalletException ex) {
 			super(500, ex.getCode(), "bank system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
 		}
 	}
 
-	public static class TopUpUMarketSystemFailException extends ServiceInventoryException {
+	public static class UMarketSystemTransactionFailException extends ServiceInventoryException {
 		private static final long serialVersionUID = -162603460464737250L;
 
-		public TopUpUMarketSystemFailException(EwalletException ex) {
+		public UMarketSystemTransactionFailException(EwalletException ex) {
 			super(500, ex.getCode(), "umarket system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
 		}
 	}
 
-	public static class TopUpUnknownSystemFailException extends ServiceInventoryException {
+	public static class UnknownSystemTransactionFailException extends ServiceInventoryException {
 		private static final long serialVersionUID = 8166679317640543498L;
 
-		public TopUpUnknownSystemFailException(EwalletException ex) {
+		public UnknownSystemTransactionFailException(EwalletException ex) {
 			super(500, ex.getCode(),  "unknown system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
 		}
 	}

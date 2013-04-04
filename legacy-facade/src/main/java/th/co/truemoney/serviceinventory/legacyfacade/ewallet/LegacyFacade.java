@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 
@@ -62,6 +63,12 @@ public class LegacyFacade {
 
 	public TopUpBuilder topUp(BigDecimal amount) {
 		return new TopUpBuilder(balanceFacade)
+					.fromChannelID(channelID)
+					.withAmount(amount);
+	}
+
+	public P2PTransferBuilder transfer(BigDecimal amount) {
+		return new P2PTransferBuilder(balanceFacade)
 					.fromChannelID(channelID)
 					.withAmount(amount);
 	}
@@ -145,7 +152,14 @@ public class LegacyFacade {
 		public TopUpBuilder topUp(BigDecimal amount) {
 			return new TopUpBuilder(balanceFacade)
 						.fromChannelID(channelID)
-						.toUser(sessionID, tmnID)
+						.fromUser(sessionID, tmnID)
+						.withAmount(amount);
+		}
+
+		public P2PTransferBuilder transfer(BigDecimal amount) {
+			return new P2PTransferBuilder(balanceFacade)
+						.fromChannelID(channelID)
+						.fromUser(sessionID, tmnID)
 						.withAmount(amount);
 		}
 	}
@@ -174,7 +188,7 @@ public class LegacyFacade {
 			return this;
 		}
 
-		public TopUpBuilder toUser(String sessionID, String tmnID) {
+		public TopUpBuilder fromUser(String sessionID, String tmnID) {
 			this.sessionID = sessionID;
 			this.tmnID = tmnID;
 			return this;
@@ -228,6 +242,69 @@ public class LegacyFacade {
 		}
 	}
 
+	public static class P2PTransferBuilder {
+
+		private Integer channelID;
+
+		private String sessionID;
+		private String tmnID;
+
+		private BigDecimal amount;
+
+		private String targetMobileNumber;
+
+		private BalanceFacade balanceFacade;
+
+		@Autowired(required = false)
+		public P2PTransferBuilder(BalanceFacade balanceFacade) {
+			this.balanceFacade = balanceFacade;
+		}
+
+		public P2PTransferBuilder fromChannelID(Integer channelID) {
+			this.channelID = channelID;
+			return this;
+		}
+
+		public P2PTransferBuilder fromUser(String sessionID, String tmnID) {
+			this.sessionID = sessionID;
+			this.tmnID = tmnID;
+			return this;
+		}
+
+		public P2PTransferBuilder toTargetUser(String targetMobileNumber) {
+			this.targetMobileNumber = targetMobileNumber;
+			return this;
+		}
+
+		public P2PTransferBuilder withAmount(BigDecimal amount) {
+			this.amount = amount;
+			return this;
+		}
+
+
+		public void verify() {
+
+			Validate.notNull(tmnID, "data missing. transfer money from whom?");
+			Validate.notNull(sessionID, "data missing. transfer money from whom?");
+			Validate.notNull(channelID, "data missing. transfer money from which channel?");
+			Validate.notNull(amount, "data missing. how much to transfer?");
+			Validate.notNull(targetMobileNumber, "data missing. whom to transfer money to?");
+
+			balanceFacade.verifyP2PTransfer(amount, targetMobileNumber, channelID, sessionID, tmnID);
+		}
+
+		public P2PTransactionConfirmationInfo performTransfer() {
+
+			Validate.notNull(tmnID, "data missing. transfer money from whom?");
+			Validate.notNull(sessionID, "data missing. transfer money from whom?");
+			Validate.notNull(channelID, "data missing. transfer money from which channel?");
+			Validate.notNull(amount, "data missing. how much to transfer?");
+			Validate.notNull(targetMobileNumber, "data missing. whom to transfer money to?");
+
+			return balanceFacade.transferEwallet(amount, targetMobileNumber, channelID, sessionID, tmnID);
+		}
+	}
+
 	public static class ProfileRegsisteringBuilder {
 
 		private ProfileRegisteringFacade profileRegisteringFacade;
@@ -266,4 +343,5 @@ public class LegacyFacade {
 		}
 
 	}
+
 }

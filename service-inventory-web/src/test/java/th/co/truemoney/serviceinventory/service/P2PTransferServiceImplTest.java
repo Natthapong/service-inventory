@@ -26,7 +26,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncP2PTransferProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.TransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -126,7 +125,7 @@ public class P2PTransferServiceImplTest {
 
 		DraftTransaction.Status status = this.p2pService.confirmDraftTransaction("draftTransactionID", mockOTP, accessToken.getAccessTokenID());
 
-		verify(asyncP2PTransferProcessor).transferEwallet(any(P2PTransaction.class), eq(accessToken.getAccessTokenID()), any(TransferRequest.class));
+		verify(asyncP2PTransferProcessor).transferEwallet(any(P2PTransaction.class), any(AccessToken.class));
 		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, status);
 	}
 

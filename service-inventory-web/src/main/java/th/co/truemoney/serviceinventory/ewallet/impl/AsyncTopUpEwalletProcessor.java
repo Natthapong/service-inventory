@@ -17,8 +17,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.TopUpBankSystemFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.TopUpUMarketSystemFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.BankSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.UMarketSystemTransactionFailException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 
 @Service
@@ -46,7 +46,7 @@ public class AsyncTopUpEwalletProcessor {
 			TopUpConfirmationInfo confirmationInfo =
 					legacyFacade.fromChannel(accessToken.getChannelID())
 					.topUp(amount)
-					.toUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+					.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
 					.usingSourceOFFund(sourceOfFund.getSourceOfFundID(), sourceOfFund.getSourceOfFundType())
 					.performTopUp();
 
@@ -55,9 +55,9 @@ public class AsyncTopUpEwalletProcessor {
 			topUpOrder.setStatus(Transaction.Status.SUCCESS);
 			logger.info("AsyncService.topUpUtibaEwallet.resultTransactionID: " + confirmationInfo.getTransactionID());
 
-		} catch (TopUpBankSystemFailException e) {
+		} catch (BankSystemTransactionFailException e) {
 				topUpOrder.setFailStatus(TopUpOrder.FailStatus.BANK_FAILED);
-		} catch (TopUpUMarketSystemFailException e) {
+		} catch (UMarketSystemTransactionFailException e) {
 				topUpOrder.setFailStatus(TopUpOrder.FailStatus.UMARKET_FAILED);
 		} catch (Exception ex) {
 			logger.error("unexpect top up fail: ", ex);

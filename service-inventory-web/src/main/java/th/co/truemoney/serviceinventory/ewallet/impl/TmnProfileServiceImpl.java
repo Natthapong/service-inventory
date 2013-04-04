@@ -26,20 +26,19 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	private static Logger logger = LoggerFactory.getLogger(TmnProfileServiceImpl.class);
 
 	@Autowired
-	private AccessTokenRepository accessTokenRepo;
-
-	@Autowired
-	private ProfileRepository profileRepository;
+	private LegacyFacade legacyFacade;
 
 	@Autowired
 	private OTPService otpService;
 
 	@Autowired
-	private LegacyFacade legacyFacade;
-
-	@Autowired
 	private EmailService emailService;
 
+	@Autowired
+	private AccessTokenRepository accessTokenRepo;
+
+	@Autowired
+	private ProfileRepository profileRepo;
 
 	@Override
 	public String login(Integer channelID, Login login)
@@ -101,7 +100,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		legacyFacade.fromChannel(channelID).registering().verifyMobileNumber(tmnProfile.getMobileNumber());
 
        	OTP otp = otpService.send(tmnProfile.getMobileNumber());
-       	profileRepository.saveProfile(tmnProfile);
+       	profileRepo.saveProfile(tmnProfile);
 
        	return otp;
     }
@@ -111,7 +110,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 		otpService.isValidOTP(otp);
 
-		TmnProfile tmnProfile = profileRepository.getTmnProfile(otp.getMobileNumber());
+		TmnProfile tmnProfile = profileRepo.getTmnProfile(otp.getMobileNumber());
 
 		performCreateProfile(channelID, tmnProfile);
 
@@ -143,7 +142,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	public void setProfileRepository(ProfileRepository profileRepository) {
-		this.profileRepository = profileRepository;
+		this.profileRepo = profileRepository;
 	}
 
 	public void setEmailService(EmailService emailService) {
