@@ -27,6 +27,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyRespo
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 
 public class AsyncTopUpEwalletProcessorTest {
 
@@ -41,11 +42,14 @@ public class AsyncTopUpEwalletProcessorTest {
 		transactionRepo = new TransactionMemoryRepository();
 		ewalletProxy = mock(EwalletSoapProxy.class);
 
-		BalanceFacade facade = new BalanceFacade();
-		facade.setEwalletProxy(ewalletProxy);
+		BalanceFacade balanceFacade = new BalanceFacade();
+		balanceFacade.setEwalletProxy(ewalletProxy);
+
+		LegacyFacade legacyFacade = new LegacyFacade();
+		legacyFacade.setBalanceFacade(balanceFacade);
 
 		asyncService.setTransactionRepo(transactionRepo);
-		asyncService.setTopUpFacade(new BalanceFacade.TopUpBuilder(facade));
+		asyncService.setLegacyFacade(legacyFacade);
 
 		topUpOrderParams = new TopUpOrder();
 		topUpOrderParams.setID("1");
@@ -53,6 +57,9 @@ public class AsyncTopUpEwalletProcessorTest {
 
 		TopUpQuote quote = new TopUpQuote("1", new DirectDebit(), "tokenID", "", new BigDecimal(400), new BigDecimal(30));
 		topUpOrderParams.setQuote(quote);
+
+		DirectDebit directDebit = new DirectDebit("sourceID", "debit");
+		quote.setSourceOfFund(directDebit);
 
 		transactionRepo.saveTopUpEwalletTransaction(topUpOrderParams, "tokenID");
 	}
@@ -68,7 +75,7 @@ public class AsyncTopUpEwalletProcessorTest {
 		moneyResponse.setResultCode("0");
 		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenReturn(moneyResponse);
 
-		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, new AccessToken());
+		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, new AccessToken("tokenID", "sessionID", "tmnID", 41));
 		assertEquals(true, topUpOrder.isDone());
 		assertEquals(Transaction.Status.SUCCESS, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
 	}
@@ -79,7 +86,7 @@ public class AsyncTopUpEwalletProcessorTest {
 		moneyResponse.setResultCode("24010");
 		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("24010","bank fail"));
 
-		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, new AccessToken("tokenID"));
+		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams, new AccessToken("tokenID", "sessionID", "tmnID", 41));
 		assertEquals(true, topUpOrder.isDone());
 		assertEquals(Transaction.Status.FAILED, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
 		assertEquals(FailStatus.BANK_FAILED, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getFailStatus());
@@ -91,7 +98,7 @@ public class AsyncTopUpEwalletProcessorTest {
 		moneyResponse.setResultCode("27");
 		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("27","umarket fail"));
 
-		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams,  new AccessToken());
+		Future<TopUpOrder> topUpOrder = asyncService.topUpUtibaEwallet(topUpOrderParams,  new AccessToken("tokenID", "sessionID", "tmnID", 41));
 		assertEquals(true, topUpOrder.isDone());
 		assertEquals(Transaction.Status.FAILED, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getStatus());
 		assertEquals(FailStatus.UMARKET_FAILED, transactionRepo.getTopUpEwalletTransaction(topUpOrderParams.getID(), "tokenID").getFailStatus());

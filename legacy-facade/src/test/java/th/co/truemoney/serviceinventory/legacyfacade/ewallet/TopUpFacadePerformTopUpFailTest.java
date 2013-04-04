@@ -72,7 +72,7 @@ public class TopUpFacadePerformTopUpFailTest {
 	public void topUpShouldThrowCorrectSystemFailExceptions() {
 
 		try {
-			topUpFacade.topUpMoney(new BigDecimal(50), new DirectDebit(), new AccessToken());
+			topUpFacade.topUpMoney(new BigDecimal(50),"sourceID", "sourceType", 1, "sessionID", "truemoneyID");
 			Assert.fail();
 		} catch(ServiceInventoryException ex) {
 			Assert.assertEquals(ex.getClass(), expectException);

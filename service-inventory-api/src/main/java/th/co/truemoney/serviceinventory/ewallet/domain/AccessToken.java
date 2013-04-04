@@ -24,6 +24,13 @@ public class AccessToken implements Serializable {
 		this.accessTokenID = token;
 	}
 
+	public AccessToken(String token, String sessionID, String tmnID, Integer channelID) {
+		this.accessTokenID = token;
+		this.sessionID = sessionID;
+		this.truemoneyID = tmnID;
+		this.channelID = channelID;
+	}
+
 	public AccessToken(String token, String sessionID, String truemoneyID, String username, String mobileNumber, String email, Integer channelID) {
 		this.accessTokenID = token;
 		this.sessionID = sessionID;

@@ -22,9 +22,19 @@ public class SourceOfFundFacade {
 
 	public List<DirectDebit> getAllDirectDebitSourceOfFunds(AccessToken accessToken) {
 
+		Integer channelID = accessToken.getChannelID();
+		String sessionID = accessToken.getSessionID();
+		String truemoneyID = accessToken.getTruemoneyID();
+
+		return getAllDirectDebitSourceOfFunds(channelID, sessionID, truemoneyID);
+
+	}
+
+	public List<DirectDebit> getAllDirectDebitSourceOfFunds(Integer channelID, String sessionID, String truemoneyID) {
+
 		List<DirectDebit> directDebitList = new ArrayList<DirectDebit>();
 
-		ListSourceRequest sourceRequest = createListSourceRequest(accessToken, DIRECT_DEBIT_SOURCE_TYPE);
+		ListSourceRequest sourceRequest = createListSourceRequest(channelID, sessionID, truemoneyID, DIRECT_DEBIT_SOURCE_TYPE);
 		ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(sourceRequest);
 		SourceContext[] sourceContexts = listSourceResponse.getSourceList();
 
@@ -65,11 +75,7 @@ public class SourceOfFundFacade {
 		return sourceDetail[0] != null ? sourceDetail[0].trim() : "";
 	}
 
-	private ListSourceRequest createListSourceRequest(AccessToken accessToken, String sourceOfFundType) {
-
-		String sessionID = accessToken.getSessionID();
-		String truemoneyID = accessToken.getTruemoneyID();
-		Integer channelID = accessToken.getChannelID();
+	private ListSourceRequest createListSourceRequest(Integer channelID, String sessionID, String truemoneyID, String sourceOfFundType) {
 
 		SecurityContext securityContext = new SecurityContext(sessionID, truemoneyID);
 
