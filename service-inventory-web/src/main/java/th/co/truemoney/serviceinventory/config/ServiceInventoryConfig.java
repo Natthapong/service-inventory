@@ -5,6 +5,7 @@ import java.util.concurrent.Executor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -26,7 +27,8 @@ import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Configuration
 @EnableAsync
-@ComponentScan("th.co.truemoney.serviceinventory.dao")
+@EnableAspectJAutoProxy
+@ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop"})
 @Import({SmsConfig.class, TmnProfileConfig.class, EmailConfig.class, LegacyFacadeConfig.class })
 public class ServiceInventoryConfig {
 
@@ -85,4 +87,5 @@ public class ServiceInventoryConfig {
     public AsyncP2PTransferProcessor getAsyncP2PTransferProcessor() {
     	return new AsyncP2PTransferProcessor();
     }
+
 }
