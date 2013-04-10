@@ -48,7 +48,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 
 		ResponseEntity<BillInvoice> responseEntity = restTemplate.exchange(
 				endPoints.getCreateBillInvoiceUrl(), HttpMethod.POST, requestEntity,
-				BillInvoice.class,accessTokenID);
+				BillInvoice.class, accessTokenID);
 
 		BillInvoice billInvoice = responseEntity.getBody();
 
