@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
@@ -128,6 +129,21 @@ public class TransactionRedisRepository implements TransactionRepository {
 			logger.error(e.getMessage(), e);
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
 		}
+	}
+
+	@Override
+	public void saveBillInvoice(
+			BillInvoice billPayDraftTransaction,
+			String accessTokenID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public BillInvoice getBillInvoice(
+			String billPayDraftTransactionID, String accessTokenID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

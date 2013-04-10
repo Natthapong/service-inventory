@@ -12,10 +12,17 @@ public class BillInvoice extends DraftTransaction {
 
 	private static final long serialVersionUID = 2049045334050859727L;
 	
-	private static final String DRAFT_TYPE = "billPaymentDraftTransaction";
+	private static final String DRAFT_TYPE = "billInvoice";
+
+	private BillPaymentInfo billPaymentInfo;
 	
 	public BillInvoice() {
 		type = DRAFT_TYPE;
 	}
-
+	
+	public BillInvoice(BillPaymentInfo billPaymentInfo) {
+		type = DRAFT_TYPE;
+		this.billPaymentInfo = billPaymentInfo;
+	}
+	
 }
