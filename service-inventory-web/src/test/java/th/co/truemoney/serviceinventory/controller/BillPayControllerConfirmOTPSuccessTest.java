@@ -6,6 +6,8 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.After;
@@ -22,55 +24,78 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.SmsConfig;
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
-import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = { WebConfig.class, MemRepositoriesConfig.class, TestServiceInventoryConfig.class, TestRedisConfig.class, SmsConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
-public class TopUpEwalletControllerFailTest {
+public class BillPayControllerConfirmOTPSuccessTest {
 
-	private MockMvc mockMvc;
+	private ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
 	private WebApplicationContext wac;
 
+	private MockMvc mockMvc;
+
 	@Autowired
-	private TopUpService topupServiceMock;
+	private BillPaymentService billPaymentServiceMock;
 
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-		this.topupServiceMock = wac.getBean(TopUpService.class);
+		this.billPaymentServiceMock = wac.getBean(BillPaymentService.class);
 	}
 
 	@After
 	public void tierDown() {
-		reset(this.topupServiceMock);
+		reset(this.billPaymentServiceMock);
 	}
 
 	@Test
-	public void confirmPlaceOrderSuccess() throws Exception {
-		OTP otp = new OTP("112233", "refCode", "1234");
-		//given
-		when(topupServiceMock.confirmOTP(anyString(), any(OTP.class), anyString())).thenReturn(DraftTransaction.Status.OTP_CONFIRMED);
+	public void confirmOTPSuccess() throws Exception {
 
-		ObjectMapper mapper = new ObjectMapper();
-		this.mockMvc.perform(put("/top-up/quote/myQuoteID/otp/myRefCode?accessTokenID=1234567", "1")
+		//given
+		OTP otp = new OTP("112233", "refCode", "123");
+
+		when(billPaymentServiceMock.confirmBillInvoice(anyString(), any(OTP.class), anyString()))
+			.thenReturn(DraftTransaction.Status.OTP_SENT);
+
+		this.mockMvc.perform(put("/bill-payment/invoice/myInvoiceID/otp/myRefCode?accessTokenID=12345", "1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(otp)))
 			.andExpect(status().isOk())
+			.andExpect(content().string("\"OTP_SENT\""))
 			.andDo(print());
-
 	}
 
+	@Test
+	public void confirmOTPFail() throws Exception {
+
+		//given
+		OTP otp = new OTP("112233", "refCode", "123");
+
+		when(billPaymentServiceMock.confirmBillInvoice(anyString(), any(OTP.class), anyString()))
+			.thenThrow(new ServiceInventoryWebException(Code.INVALID_OTP, "invalid OTP."));
+
+		this.mockMvc.perform(put("/bill-payment/invoice/myInvoiceID/otp/myRefCode?accessTokenID=12345", "1")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(otp)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.errorCode").value(Code.INVALID_OTP))
+			.andExpect(jsonPath("$.errorDescription").value("invalid OTP."))
+			.andDo(print());
+	}
 }

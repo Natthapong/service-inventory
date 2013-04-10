@@ -66,7 +66,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 		HttpEntity<TopUpOrder> requestEntity = new HttpEntity<TopUpOrder>(headers);
 
 		ResponseEntity<OTP> responseEntity = restTemplate.exchange(
-				endPoints.getsendOTPConfirmURL(), HttpMethod.POST,
+				endPoints.getTopUpSendOTPConfirmURL(), HttpMethod.POST,
 				requestEntity, OTP.class,
 				quoteID, accessTokenID);
 
@@ -79,7 +79,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp, headers);
 
 		ResponseEntity<DraftTransaction.Status> responseEntity = restTemplate.exchange(
-				endPoints.getConfirmOTPURL(), HttpMethod.PUT,
+				endPoints.getTopUpConfirmOTPURL(), HttpMethod.PUT,
 				requestEntity, DraftTransaction.Status.class,
 				quoteID, otp.getReferenceCode(), accessTokenID);
 

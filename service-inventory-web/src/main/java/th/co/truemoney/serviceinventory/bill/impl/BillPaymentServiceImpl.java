@@ -16,7 +16,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
-public class BillPaymentServiceImpl implements  BillPaymentService{
+public class BillPaymentServiceImpl implements  BillPaymentService {
 
 	@Autowired
 	private OTPService otpService;
@@ -26,7 +26,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService{
 
 	@Autowired
 	private TransactionRepository transactionRepository;
-	
+
 	public void setOtpService(OTPService otpService) {
 		this.otpService = otpService;
 	}
@@ -49,20 +49,20 @@ public class BillPaymentServiceImpl implements  BillPaymentService{
 	@Override
 	public BillInvoice createBillInvoice(BillPaymentInfo billpayInfo,
 			String accessTokenID) throws ServiceInventoryException {
-		
+
 		// --- Get Account Detail from accessToken ---//
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-		
+
 		//verify bill.
-		
-		
+
+
 		BillInvoice billInvoice = new BillInvoice(billpayInfo);
-		
+
 		//save bill.
 		transactionRepository.saveBillInvoice(billInvoice, accessTokenID);
-		
+
 		OTP otp = otpService.send(accessToken.getMobileNumber());
-		
+
 		return billInvoice;
 	}
 

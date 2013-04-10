@@ -36,11 +36,11 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/top-up/quote/{quoteID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getsendOTPConfirmURL() {
+	public String getTopUpSendOTPConfirmURL() {
 		return host + "/service-inventory-web/v1/top-up/quote/{quoteID}/otp?accessTokenID={accessTokenID}";
 	}
 
-	public String getConfirmOTPURL() {
+	public String getTopUpConfirmOTPURL() {
 		return host + "/service-inventory-web/v1/top-up/quote/{quoteID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
 
@@ -87,8 +87,12 @@ public class EndPoints {
 	public String getP2PTransactionInfoURL(){
 		return host + "/service-inventory-web/v1/transfer/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
-	
+
 	public String getCreateBillInvoiceUrl(){
 		return host + "/service-inventory-web/v1/bill-payment/invoice?accessTokenID={accessTokenID}";
+	}
+
+	public String getBillPayInvoiceOTPConfirmURL(){
+		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
 }
