@@ -31,74 +31,63 @@ import th.co.truemoney.serviceinventory.stub.TopUpStubbed;
 @RunWith(MockitoJUnitRunner.class)
 public class TopUpServiceImplVerifyTopUpTest {
 
+	//unit under test
+	private TopUpServiceImpl topUpService =  new TopUpServiceImpl();
 
-	private TopUpServiceImpl topUpService;
+	private EnhancedDirectDebitSourceOfFundService direcDebitServiceMock = Mockito.mock(EnhancedDirectDebitSourceOfFundService.class);
 
-	private String sourceOfFundID = "11111111";
-	private String accessTokenID;
+	private EwalletSoapProxy ewalletProxyMock = Mockito.mock(EwalletSoapProxy.class);
+
+	private AccessToken accessToken = AccessTokenRepositoryStubbed.createSuccessAccessToken();
+
+	private DirectDebit userDirectDebit = new DirectDebit("sofID", "debit");
 
 	@Before
 	public void setup() {
-		this.topUpService = new TopUpServiceImpl();
-
-		AccessTokenMemoryRepository accessTokenRepo = new AccessTokenMemoryRepository();
-
-		EnhancedDirectDebitSourceOfFundService direcDebitServiceMock = Mockito.mock(EnhancedDirectDebitSourceOfFundService.class);
-		EwalletSoapProxy ewalletProxyMock = Mockito.mock(EwalletSoapProxy.class);
-
-		BalanceFacade balanceFacade = new BalanceFacade(ewalletProxyMock);
 
 		LegacyFacade legacyFacade = new LegacyFacade();
-		legacyFacade.setBalanceFacade(balanceFacade);
+		legacyFacade.setBalanceFacade(new BalanceFacade(ewalletProxyMock));
 
 		this.topUpService.setLegacyFacade(legacyFacade);
 		this.topUpService.setDirectDebitSourceService(direcDebitServiceMock);
-		this.topUpService.setAccessTokenRepository(accessTokenRepo);
 		this.topUpService.setOrderRepository(new TransactionMemoryRepository());
 
-		DirectDebit directDebitDetail = new DirectDebit();
-		directDebitDetail.setBankAccountNumber("xxxx5555");
-		directDebitDetail.setBankCode("SCB");
-		directDebitDetail.setBankNameEn("Siam Comercial Bank");
-		directDebitDetail.setMinAmount(new BigDecimal(300));
-		directDebitDetail.setMaxAmount(new BigDecimal(30000));
-		directDebitDetail.setSourceOfFundID(sourceOfFundID);
-		directDebitDetail.setSourceOfFundType("debit");
+		AccessTokenMemoryRepository accessTokenRepo = new AccessTokenMemoryRepository();
+		this.topUpService.setAccessTokenRepository(accessTokenRepo);
 
 		//given
-		AccessToken accessToken = AccessTokenRepositoryStubbed.createSuccessAccessToken();
 		accessTokenRepo.save(accessToken);
-		accessTokenID = accessToken.getAccessTokenID();
 
 		when(ewalletProxyMock.verifyAddMoney(Mockito.any(VerifyAddMoneyRequest.class)))
 			.thenReturn(TopUpStubbed.createSuccessStubbedStandardMoneyResponse());
 
 		when(direcDebitServiceMock.getUserDirectDebitSource(Mockito.anyString(), Mockito.anyString()))
-			.thenReturn(directDebitDetail);
+			.thenReturn(userDirectDebit);
 	}
 
 	@Test
-	public void createTopUpQuoteFromDirectDebitSuccess() {
+	public void verifyAndCreateTopUpQuoteSuccess() {
 
 		//given
 		BigDecimal amount = new BigDecimal(400);
 
 		//when
-		TopUpQuote topupQuote = this.topUpService.createTopUpQuoteFromDirectDebit(sourceOfFundID, amount, accessTokenID);
+		TopUpQuote topupQuote = this.topUpService.verifyAndCreateTopUpQuote(userDirectDebit.getSourceOfFundID(), amount, accessToken.getAccessTokenID());
 
 		//then
 		assertNotNull(topupQuote);
 	}
 
 	@Test
-	public void createTopUpQuoteFromDirectDebitFailLessThanMinAmount() {
+	public void verifyAndCreateTopUpQuoteSuccessFailLessThanMinAmount() {
 
 		//given
-		BigDecimal amount = new BigDecimal(30);
+		BigDecimal topUpAmount = new BigDecimal(30);
+		userDirectDebit.setMinAmount(new BigDecimal(300));
 
 		//when
 		try {
-			this.topUpService.createTopUpQuoteFromDirectDebit(sourceOfFundID, amount, accessTokenID);
+			this.topUpService.verifyAndCreateTopUpQuote(userDirectDebit.getSourceOfFundID(), topUpAmount, accessToken.getAccessTokenID());
 			Assert.fail();
 		} catch (ServiceInventoryWebException e) {
 			//then
@@ -107,14 +96,15 @@ public class TopUpServiceImplVerifyTopUpTest {
 	}
 
 	@Test
-	public void createTopUpQuoteFromDirectDebitFailMostThanMaxAmount() {
+	public void verifyAndCreateTopUpQuoteSuccessFailMostThanMaxAmount() {
 
 		//given
-		BigDecimal amount = new BigDecimal(50000);
+		BigDecimal topUpAmount = new BigDecimal(50000);
+		userDirectDebit.setMaxAmount(new BigDecimal(30000));
 
 		//when
 		try {
-			this.topUpService.createTopUpQuoteFromDirectDebit(sourceOfFundID, amount, accessTokenID);
+			this.topUpService.verifyAndCreateTopUpQuote(userDirectDebit.getSourceOfFundID(), topUpAmount, accessToken.getAccessTokenID());
 			Assert.fail();
 		} catch (ServiceInventoryWebException e) {
 			//then

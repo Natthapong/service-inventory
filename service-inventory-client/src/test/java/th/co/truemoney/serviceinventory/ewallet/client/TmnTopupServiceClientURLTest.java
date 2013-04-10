@@ -33,10 +33,10 @@ public class TmnTopupServiceClientURLTest {
 
 	@Autowired
 	TmnTopUpServiceClient topupServiceClient;
-	
+
 	@Autowired
 	TmnProfileServiceClient client;
-	
+
 	RestTemplate restTemplate;
 
 	@Before
@@ -50,7 +50,7 @@ public class TmnTopupServiceClientURLTest {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Test 
+	@Test
 	public void checkCreateOrderFromDirectDebitUrl(){
 		HashMap hashMap = new HashMap();
 		hashMap.put("id", "1234");
@@ -69,21 +69,21 @@ public class TmnTopupServiceClientURLTest {
 
 		String accessToken = client.login(41, TestData.createSuccessLogin());
 		// create quote
-		TopUpQuote quote = topupServiceClient.createTopUpQuoteFromDirectDebit("1", new BigDecimal(310), accessToken);
+		TopUpQuote quote = topupServiceClient.verifyAndCreateTopUpQuote("1", new BigDecimal(310), accessToken);
 
 		assertNotNull(quote);
 		assertNotNull(quote.getID());;
 	}
 
-	@Test 
+	@Test
 	public void confirmOTPSuccess(){
-		
+
 		// login
 		String accessToken = client.login(41, TestData.createSuccessLogin());
 		assertNotNull(accessToken);
 
 		// create quote
-		TopUpQuote quote = topupServiceClient.createTopUpQuoteFromDirectDebit("1", new BigDecimal(310), accessToken);
+		TopUpQuote quote = topupServiceClient.verifyAndCreateTopUpQuote("1", new BigDecimal(310), accessToken);
 
 		assertNotNull(quote);
 		assertNotNull(quote.getID());
@@ -93,7 +93,7 @@ public class TmnTopupServiceClientURLTest {
 
 		assertNotNull(quote);
 		assertEquals(DraftTransaction.Status.CREATED, quote.getStatus());
-		
+
 		// request otp
 		OTP otp = topupServiceClient.sendOTPConfirm(quote.getID(), accessToken);
 
@@ -104,7 +104,7 @@ public class TmnTopupServiceClientURLTest {
 
 		// quote status changed
 		assertEquals(DraftTransaction.Status.OTP_SENT, quote.getStatus());
-		
+
 	}
 
 }

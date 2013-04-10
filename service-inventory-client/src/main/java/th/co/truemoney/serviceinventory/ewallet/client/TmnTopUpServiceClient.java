@@ -32,7 +32,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 	private HttpHeaders headers;
 
 	@Override
-	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID, BigDecimal amount, String accessTokenID) {
+	public TopUpQuote verifyAndCreateTopUpQuote(String sourceOfFundID, BigDecimal amount, String accessTokenID) {
 
 		TopUpQuote quote = new TopUpQuote(amount);
 

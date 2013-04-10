@@ -32,7 +32,7 @@ public class TopUpEwalletController {
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 		   @RequestBody TopUpQuote quote) {
 
-		TopUpQuote topUpQuote = topupService.createTopUpQuoteFromDirectDebit(sourceOfFundID, quote.getAmount(), accessTokenID);
+		TopUpQuote topUpQuote = topupService.verifyAndCreateTopUpQuote(sourceOfFundID, quote.getAmount(), accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 
 		return topUpQuote;

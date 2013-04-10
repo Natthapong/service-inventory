@@ -43,7 +43,7 @@ public class TopUpServiceClientWorkflowTest {
 		assertNotNull(accessToken);
 
 		// create quote
-		TopUpQuote quote = topUpService.createTopUpQuoteFromDirectDebit("1", new BigDecimal(310), accessToken);
+		TopUpQuote quote = topUpService.verifyAndCreateTopUpQuote("1", new BigDecimal(310), accessToken);
 
 		assertNotNull(quote);
 		assertNotNull(quote.getID());
@@ -108,7 +108,7 @@ public class TopUpServiceClientWorkflowTest {
 
 			// min == 300
 			try {
-				topUpService.createTopUpQuoteFromDirectDebit("1", new BigDecimal(10), accessToken);
+				topUpService.verifyAndCreateTopUpQuote("1", new BigDecimal(10), accessToken);
 				Assert.fail("should fail because user can not top up under 300 baht");
 			} catch (ServiceInventoryException ex) {
 				Assert.assertEquals("20001", ex.getErrorCode());
@@ -125,7 +125,7 @@ public class TopUpServiceClientWorkflowTest {
 
 			// max == 3,000
 			try {
-				topUpService.createTopUpQuoteFromDirectDebit("1", new BigDecimal(3010), accessToken);
+				topUpService.verifyAndCreateTopUpQuote("1", new BigDecimal(3010), accessToken);
 				Assert.fail("should fail because user can not top up over 3000 baht");
 			} catch (ServiceInventoryException ex) {
 				Assert.assertEquals("20002", ex.getErrorCode());

@@ -48,8 +48,7 @@ public class TopUpServiceImpl implements TopUpService {
 
 
 	@Override
-	public TopUpQuote createTopUpQuoteFromDirectDebit(String sourceOfFundID,
-			BigDecimal amount, String accessTokenID) {
+	public TopUpQuote verifyAndCreateTopUpQuote(String sourceOfFundID, BigDecimal amount, String accessTokenID) {
 
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 		DirectDebit directDebitSource = directDebitSourceService.getUserDirectDebitSource(sourceOfFundID, accessTokenID);
