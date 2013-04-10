@@ -38,7 +38,7 @@ public class TmnBillPaymentServiceClientTest {
 	@Test
 	public void createBillInvoice(){
 		
-		BillInvoice billPayDraftTransaction = billPaymentServiceClient.createBillInvoice(new BillPaymentInfo("12345"),accessToken);
+		BillInvoice billPayDraftTransaction = billPaymentServiceClient.createBillInvoice(new BillPaymentInfo(),accessToken);
 		assertNotNull(billPayDraftTransaction);
 	
 	}
