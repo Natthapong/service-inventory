@@ -46,8 +46,7 @@ public class TopUpServiceImplVerifyTopUpTest {
 		EnhancedDirectDebitSourceOfFundService direcDebitServiceMock = Mockito.mock(EnhancedDirectDebitSourceOfFundService.class);
 		EwalletSoapProxy ewalletProxyMock = Mockito.mock(EwalletSoapProxy.class);
 
-		BalanceFacade balanceFacade = new BalanceFacade();
-		balanceFacade.setEwalletProxy(ewalletProxyMock);
+		BalanceFacade balanceFacade = new BalanceFacade(ewalletProxyMock);
 
 		LegacyFacade legacyFacade = new LegacyFacade();
 		legacyFacade.setBalanceFacade(balanceFacade);

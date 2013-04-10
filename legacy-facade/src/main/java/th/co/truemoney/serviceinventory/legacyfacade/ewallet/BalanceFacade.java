@@ -25,8 +25,13 @@ public class BalanceFacade {
 
 	private SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
-	@Autowired
+
 	private EwalletSoapProxy ewalletProxy;
+
+	@Autowired
+	public BalanceFacade(EwalletSoapProxy ewalletProxy) {
+		this.ewalletProxy = ewalletProxy;
+	}
 
 	public BigDecimal getCurrentBalance(Integer channelID, String sessionID, String tmnID) {
 

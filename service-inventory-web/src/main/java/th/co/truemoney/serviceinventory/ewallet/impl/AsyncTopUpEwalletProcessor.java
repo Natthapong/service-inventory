@@ -51,8 +51,8 @@ public class AsyncTopUpEwalletProcessor {
 					.performTopUp();
 
 			topUpOrder.setConfirmationInfo(confirmationInfo);
-
 			topUpOrder.setStatus(Transaction.Status.SUCCESS);
+
 			logger.info("AsyncService.topUpUtibaEwallet.resultTransactionID: " + confirmationInfo.getTransactionID());
 
 		} catch (BankSystemTransactionFailException e) {
