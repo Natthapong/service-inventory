@@ -133,11 +133,13 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveBillInvoice(BillInvoice billInvoice, String accessTokenID) {
+
+	public void saveBillInvoice(
+			BillInvoice billInvoice,
+			String accessTokenID) {
 		try {
-			redisLoggingDao.addData("billInvoice:" + accessTokenID + ":" + billInvoice.getID(), mapper.writeValueAsString(billInvoice), 15L);
+			redisLoggingDao.addData("billInvoice:" + accessTokenID + ":" +billInvoice.getID(), mapper.writeValueAsString(billInvoice), 15L);
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
 	}
