@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.service;
+package th.co.truemoney.serviceinventory.bill.impl;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyString;
@@ -17,7 +17,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
-public class BillPayServiceTest {
+public class BillPaymentServiceImplTest {
 
 	private BillPaymentServiceImpl billPayService;
 	private OTPService otpService;
