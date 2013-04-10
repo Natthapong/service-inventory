@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
+import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
@@ -53,12 +54,17 @@ public class ServiceInventoryConfig {
     public OTPService getOtpService() {
     	return new OTPService();
     }
-	
-	@Bean 
+
+	@Bean
 	public BillPaymentService getBillPaymentService(){
 		return new BillPaymentServiceImpl();
 	}
-	
+
+	@Bean
+	public AsyncBillPayProcessor getAsyncBillPayProcessor() {
+		return new AsyncBillPayProcessor();
+	}
+
     @Bean
     public SourceOfFundPreference getDirectDebitConfig() {
     	return new SourceOfFundPreferenceImpl();
@@ -94,6 +100,6 @@ public class ServiceInventoryConfig {
     public AsyncP2PTransferProcessor getAsyncP2PTransferProcessor() {
     	return new AsyncP2PTransferProcessor();
     }
-    
-    
+
+
 }

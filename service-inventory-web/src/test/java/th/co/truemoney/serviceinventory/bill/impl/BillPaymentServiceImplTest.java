@@ -1,8 +1,7 @@
-package th.co.truemoney.serviceinventory.service;
+package th.co.truemoney.serviceinventory.bill.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -14,12 +13,13 @@ import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
-public class BillPayServiceTest {
+public class BillPaymentServiceImplTest {
 
 	private BillPaymentServiceImpl billPayService;
 	private OTPService otpService;
@@ -46,16 +46,30 @@ public class BillPayServiceTest {
 		when(accessTokenRepo.getAccessToken(anyString())).thenReturn(
 				new AccessToken("12345", "5555", "4444", "username",
 						"0868185055", "tanathip.se@gmail.com", 41));
-		
-		when(otpService.send(anyString())).thenReturn(new OTP("0868185055", "12345", "string"));
 
-		when(transactionRepository.getBillInvoice(anyString(), anyString())).thenReturn(new BillInvoice());
-		
-		BillInvoice billInvoice = billPayService
-				.createBillInvoice(new BillPaymentInfo(), "111111");
-		
+		BillInvoice billInvoice = billPayService.createBillInvoice(
+				new BillPaymentInfo(), "111111");
+
 		assertNotNull(billInvoice);
+		assertEquals(DraftTransaction.Status.CREATED, billInvoice.getStatus());
 	}
-	
-	
+
+	@Test
+	public void sendOTP() {
+
+		when(accessTokenRepo.getAccessToken(anyString())).thenReturn(
+				new AccessToken("12345", "5555", "4444", "username",
+						"0868185055", "tanathip.se@gmail.com", 41));
+
+		when(otpService.send(anyString())).thenReturn(
+				new OTP("0868185055", "12345", "string"));
+
+		when(transactionRepository.getBillInvoice(anyString(), anyString()))
+				.thenReturn(new BillInvoice());
+
+		OTP otp = billPayService.sendOTP("12345", "111111");
+		
+		assertNotNull(otp);
+	}
+
 }

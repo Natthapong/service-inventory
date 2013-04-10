@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
+import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
@@ -38,9 +39,9 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public TopUpQuote getTopUpEwalletDraftTransaction(String orderID, String accessTokenID) throws ServiceInventoryWebException {
+	public TopUpQuote getTopUpEwalletDraftTransaction(String draftID, String accessTokenID) throws ServiceInventoryWebException {
 		try {
-			String result = redisLoggingDao.getData("quote:" + accessTokenID + ":" + orderID);
+			String result = redisLoggingDao.getData("quote:" + accessTokenID + ":" + draftID);
 			if(result == null) {
 				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "qoute not found.");
 			}
@@ -132,18 +133,60 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
+
 	public void saveBillInvoice(
-			BillInvoice billPayDraftTransaction,
+			BillInvoice billInvoice,
 			String accessTokenID) {
-		// TODO Auto-generated method stub
-		
+		try {
+			redisLoggingDao.addData("billInvoice:" + accessTokenID + ":" +billInvoice.getID(), mapper.writeValueAsString(billInvoice), 15L);
+		} catch (Exception e) {
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
+		}
 	}
 
 	@Override
-	public BillInvoice getBillInvoice(
-			String billPayDraftTransactionID, String accessTokenID) {
-		// TODO Auto-generated method stub
-		return null;
+	public BillInvoice getBillInvoice(String billInvoiceID, String accessTokenID) {
+		try {
+			String result = redisLoggingDao.getData("billInvoice:" + accessTokenID + ":" + billInvoiceID);
+			if(result == null) {
+				throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "Bill invoice not found.");
+			}
+
+			return mapper.readValue(result, BillInvoice.class);
+		} catch (ServiceInventoryWebException e) {
+			throw e;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
+		}
+	}
+
+	@Override
+	public void saveBillPayment(BillPayment billPayment, String accessTokenID) {
+		try {
+			redisLoggingDao.addData("billPayment:" + accessTokenID + ":" + billPayment.getID(), mapper.writeValueAsString(billPayment), 15L);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
+		}
+	}
+
+	@Override
+	public BillPayment getBillPayment(String billPaymentID, String accessTokenID) {
+
+		try {
+			String result = redisLoggingDao.getData("billPayment:" + accessTokenID + ":" + billPaymentID);
+			if(result == null) {
+				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "Bill payment not found.");
+			}
+
+			return mapper.readValue(result, BillPayment.class);
+		} catch (ServiceInventoryWebException e) {
+			throw e;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
+		}
 	}
 
 }

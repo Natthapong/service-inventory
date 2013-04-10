@@ -15,7 +15,8 @@ public class BillInvoice extends DraftTransaction {
 	private static final String DRAFT_TYPE = "billInvoice";
 
 	private BillPaymentInfo billPaymentInfo;
-	
+	private String otpReferenceCode;
+
 	public BillInvoice() {
 		type = DRAFT_TYPE;
 	}
@@ -23,6 +24,22 @@ public class BillInvoice extends DraftTransaction {
 	public BillInvoice(BillPaymentInfo billPaymentInfo) {
 		type = DRAFT_TYPE;
 		this.billPaymentInfo = billPaymentInfo;
+	}
+
+	public BillPaymentInfo getBillPaymentInfo() {
+		return billPaymentInfo;
+	}
+
+	public void setBillPaymentInfo(BillPaymentInfo billPaymentInfo) {
+		this.billPaymentInfo = billPaymentInfo;
+	}
+
+	public String getOtpReferenceCode() {
+		return otpReferenceCode;
+	}
+
+	public void setOtpReferenceCode(String otpReferenceCode) {
+		this.otpReferenceCode = otpReferenceCode;
 	}
 	
 }

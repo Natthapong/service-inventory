@@ -43,6 +43,12 @@ public class BillPaymentController {
 			@RequestParam String accessTokenID,
 			@RequestBody OTP otp) {
 
+		if (otp != null) {
+			otp.setReferenceCode(refCode);
+		}
+
+		extendExpireAccessToken(accessTokenID);
+
 		return billPaymentService.confirmBillInvoice(invoiceID, otp, accessTokenID);
 	}
 	
