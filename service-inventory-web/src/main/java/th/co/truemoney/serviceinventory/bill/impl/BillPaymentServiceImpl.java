@@ -134,4 +134,8 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public void setAsyncBillPayProcessor(AsyncBillPayProcessor asyncBillPayProcessor) {
+		this.asyncBillPayProcessor = asyncBillPayProcessor;
+	}
 }

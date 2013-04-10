@@ -15,7 +15,6 @@ import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 
 @RunWith(SpringJUnit4ClassRunner.class)
