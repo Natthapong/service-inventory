@@ -8,7 +8,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 
 public class OTPMemoryRepository implements OTPRepository {
 
-	public static HashMap<String, OTP> otpsMap = new LinkedHashMap<String, OTP>();
+	public HashMap<String, OTP> otpsMap = new LinkedHashMap<String, OTP>();
 
 	@Override
 	public void saveOTP(OTP otp) {

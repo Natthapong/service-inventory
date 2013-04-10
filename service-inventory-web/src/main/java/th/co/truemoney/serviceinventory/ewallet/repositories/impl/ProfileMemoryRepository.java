@@ -10,7 +10,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.C
 
 public class ProfileMemoryRepository implements RegisteringProfileRepository {
 
-	public static HashMap<String, TmnProfile> profilesMap = new LinkedHashMap<String, TmnProfile>();
+	public HashMap<String, TmnProfile> profilesMap = new LinkedHashMap<String, TmnProfile>();
 
 	@Override
 	public void saveRegisteringProfile(TmnProfile tmnProfile) {
