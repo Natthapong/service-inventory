@@ -20,8 +20,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncP2PTransferProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
@@ -33,6 +31,8 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionReposito
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.stub.AccessTokenRepositoryStubbed;
 import th.co.truemoney.serviceinventory.stub.P2PTransferStubbed;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
 
 @RunWith(MockitoJUnitRunner.class)
 public class P2PTransferServiceImplTest {

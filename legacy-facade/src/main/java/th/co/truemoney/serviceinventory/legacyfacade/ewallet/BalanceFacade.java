@@ -6,7 +6,6 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
@@ -20,13 +19,19 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyAddMoneyRequ
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResponse;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
 
 public class BalanceFacade {
 
 	private SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
-	@Autowired
+
 	private EwalletSoapProxy ewalletProxy;
+
+	@Autowired
+	public BalanceFacade(EwalletSoapProxy ewalletProxy) {
+		this.ewalletProxy = ewalletProxy;
+	}
 
 	public BigDecimal getCurrentBalance(Integer channelID, String sessionID, String tmnID) {
 

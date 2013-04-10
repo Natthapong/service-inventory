@@ -3,14 +3,14 @@ package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
 
 public class TransactionMemoryRepository implements TransactionRepository {
 

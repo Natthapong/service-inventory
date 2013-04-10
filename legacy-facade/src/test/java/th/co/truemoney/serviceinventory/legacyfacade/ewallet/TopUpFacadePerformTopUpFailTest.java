@@ -64,8 +64,7 @@ public class TopUpFacadePerformTopUpFailTest {
 		FailResultCodeException failResultCodeException = new FailResultCodeException(resultCode, "HELLO");
 		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(failResultCodeException);
 
-		topUpFacade = new BalanceFacade();
-		topUpFacade.setEwalletProxy(ewalletProxy);
+		topUpFacade = new BalanceFacade(ewalletProxy);
 	}
 
 	@Test

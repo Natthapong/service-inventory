@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.ewallet.domain;
+package th.co.truemoney.serviceinventory.transfer.domain;
 
 public enum P2PTransactionStatus {
 	

@@ -1,4 +1,7 @@
-package th.co.truemoney.serviceinventory.ewallet.domain;
+package th.co.truemoney.serviceinventory.bill.domain;
+
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -6,28 +9,28 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class P2PTransaction extends Transaction {
+public class BillPayment extends Transaction {
 
 	private static final long serialVersionUID = -3546197537668299129L;
 	
 	private FailStatus failStatus;
 	
-	private P2PTransactionConfirmationInfo confirmationInfo;
+	private BillPaymentConfirmationInfo confirmationInfo;
 
 	public static enum FailStatus {
-		UMARKET_FAILED, UNKNOWN_FAILED;
+		PCS_FAILED, UMARKET_FAILED, TPP_FAILED, UNKNOWN_FAILED;
 	}
 	
-	public P2PTransaction() {
+	public BillPayment() {
 
 	}
 	
-	public P2PTransaction(P2PDraftTransaction p2pDraftTransaction) {
-		if (p2pDraftTransaction == null || p2pDraftTransaction.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
+	public BillPayment(BillInvoice billPaymentDraftTransaction) {
+		if (billPaymentDraftTransaction == null || billPaymentDraftTransaction.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
 			throw new IllegalArgumentException("passing in bad quote data");
 		}
-		this.ID = p2pDraftTransaction.getID();
-		this.draftTransaction = p2pDraftTransaction;
+		this.ID = billPaymentDraftTransaction.getID();
+		this.draftTransaction = billPaymentDraftTransaction;
 		this.status = Transaction.Status.VERIFIED;
 	}
 
@@ -39,12 +42,12 @@ public class P2PTransaction extends Transaction {
 		this.ID = ID;
 	}
 
-	public P2PDraftTransaction getDraftTransaction() {
-		return (P2PDraftTransaction) super.getDraftTransaction();
+	public BillInvoice getDraftTransaction() {
+		return (BillInvoice) super.getDraftTransaction();
 	}
 
-	public void setDraftTransaction(P2PDraftTransaction p2pDraftTransaction) {
-		super.setDraftTransaction(p2pDraftTransaction);
+	public void setDraftTransaction(BillInvoice billPaymentDraftTransaction) {
+		super.setDraftTransaction(billPaymentDraftTransaction);
 	}
 	
 	public FailStatus getFailStatus() {
@@ -56,17 +59,17 @@ public class P2PTransaction extends Transaction {
 		this.failStatus = failStatus;
 	}
 
-	public P2PTransactionConfirmationInfo getConfirmationInfo() {
+	public BillPaymentConfirmationInfo getConfirmationInfo() {
 		return confirmationInfo;
 	}
 
-	public void setConfirmationInfo(P2PTransactionConfirmationInfo confirmationInfo) {
+	public void setConfirmationInfo(BillPaymentConfirmationInfo confirmationInfo) {
 		this.confirmationInfo = confirmationInfo;
 	}
 
 	@Override
 	public String toString() {
-		return "P2PTransaction [failStatus=" + failStatus
+		return "BillPaymentTransaction [failStatus=" + failStatus
 				+ ", confirmationInfo=" + confirmationInfo + ", ID=" + ID
 				+ ", type=" + type + ", draftTransaction=" + draftTransaction
 				+ ", status=" + status + "]";

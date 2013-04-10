@@ -10,16 +10,16 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction.FailStatus;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.UMarketSystemTransactionFailException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction.FailStatus;
 
 @Service
 public class AsyncP2PTransferProcessor {

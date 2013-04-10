@@ -1,8 +1,10 @@
 package th.co.truemoney.serviceinventory.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
@@ -12,9 +14,12 @@ import th.co.truemoney.serviceinventory.legacyfacade.ewallet.SourceOfFundFacade;
 @Configuration
 public class LegacyFacadeConfig {
 
+	@Autowired
+	EwalletSoapProxy ewalletProxy;
+
 	@Bean
 	public BalanceFacade balanceFacade() {
-		return new BalanceFacade();
+		return new BalanceFacade(ewalletProxy);
 	}
 
 	@Bean

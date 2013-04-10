@@ -20,9 +20,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class })

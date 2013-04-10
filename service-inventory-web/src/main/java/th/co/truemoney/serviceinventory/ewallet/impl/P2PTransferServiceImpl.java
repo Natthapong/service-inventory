@@ -6,13 +6,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
@@ -24,6 +20,10 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.sms.OTPService;
+import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction.FailStatus;
 
 @Service
 public class P2PTransferServiceImpl implements P2PTransferService {
@@ -79,16 +79,9 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		verifyRequest.setTarget(mobileNumber);
 		verifyRequest.setSecurityContext(securityContext);
 
-		String sourceMobileNumber = accessToken.getMobileNumber();
-
-		if (sourceMobileNumber != null && sourceMobileNumber.equals(verifyRequest.getTarget())) {
-			throw new ServiceInventoryWebException(Code.INVALID_TARGET_MOBILE_NUMBER, "Invalid target mobile number");
-		}
-
 		VerifyTransferResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
 
 		return verifyResponse;
-
 	}
 
 	@Override

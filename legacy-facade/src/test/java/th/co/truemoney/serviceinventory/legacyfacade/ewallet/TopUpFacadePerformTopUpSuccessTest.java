@@ -33,8 +33,7 @@ public class TopUpFacadePerformTopUpSuccessTest {
 
 		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenReturn(moneyResponse);
 
-		topUpFacade = new BalanceFacade();
-		topUpFacade.setEwalletProxy(ewalletProxy);
+		topUpFacade = new BalanceFacade(ewalletProxy);
 	}
 
 	@Test

@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
-import th.co.truemoney.serviceinventory.ewallet.P2PTransferService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.sms.OTPGenerator;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
+import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 
 @Configuration
 public class TestServiceInventoryConfig {

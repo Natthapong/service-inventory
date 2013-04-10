@@ -1,13 +1,13 @@
-package th.co.truemoney.serviceinventory.ewallet;
+package th.co.truemoney.serviceinventory.transfer;
 
 import java.math.BigDecimal;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
 
 public interface P2PTransferService {
 

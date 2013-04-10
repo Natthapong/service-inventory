@@ -58,15 +58,6 @@ public class ProfileFacade {
 				channelID);
 	}
 
-	public TmnProfile getProfile(AccessToken accessToken) {
-
-		Integer channelID = accessToken.getChannelID();
-		String sessionID = accessToken.getSessionID();
-		String truemoneyID = accessToken.getTruemoneyID();
-
-		return getProfile(channelID, sessionID, truemoneyID);
-	}
-
 	public TmnProfile getProfile(Integer channelID, String sessionID, String truemoneyID) {
 
 		GetBasicProfileResponse profile = this.tmnProfileProxy.getBasicProfile(createAccessRequest(channelID, sessionID, truemoneyID));
