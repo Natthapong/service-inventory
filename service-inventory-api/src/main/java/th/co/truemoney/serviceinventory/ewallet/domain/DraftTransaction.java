@@ -2,6 +2,8 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.io.Serializable;
 
+import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;

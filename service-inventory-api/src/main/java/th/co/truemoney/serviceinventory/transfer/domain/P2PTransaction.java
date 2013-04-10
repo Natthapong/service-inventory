@@ -1,4 +1,7 @@
-package th.co.truemoney.serviceinventory.ewallet.domain;
+package th.co.truemoney.serviceinventory.transfer.domain;
+
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
-import th.co.truemoney.serviceinventory.ewallet.domain.P2PTransactionConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
 
 public class LegacyFacade {
 

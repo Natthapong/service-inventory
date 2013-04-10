@@ -1,4 +1,7 @@
-package th.co.truemoney.serviceinventory.ewallet.domain;
+package th.co.truemoney.serviceinventory.bill.domain;
+
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -6,23 +9,23 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class BillPaymentTransaction extends Transaction {
+public class BillPayment extends Transaction {
 
 	private static final long serialVersionUID = -3546197537668299129L;
 	
 	private FailStatus failStatus;
 	
-	private BillPaymentTransactionConfirmationInfo confirmationInfo;
+	private BillPaymentConfirmationInfo confirmationInfo;
 
 	public static enum FailStatus {
 		PCS_FAILED, UMARKET_FAILED, TPP_FAILED, UNKNOWN_FAILED;
 	}
 	
-	public BillPaymentTransaction() {
+	public BillPayment() {
 
 	}
 	
-	public BillPaymentTransaction(BillPaymentDraftTransaction billPaymentDraftTransaction) {
+	public BillPayment(BillInvoice billPaymentDraftTransaction) {
 		if (billPaymentDraftTransaction == null || billPaymentDraftTransaction.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
 			throw new IllegalArgumentException("passing in bad quote data");
 		}
@@ -39,11 +42,11 @@ public class BillPaymentTransaction extends Transaction {
 		this.ID = ID;
 	}
 
-	public BillPaymentDraftTransaction getDraftTransaction() {
-		return (BillPaymentDraftTransaction) super.getDraftTransaction();
+	public BillInvoice getDraftTransaction() {
+		return (BillInvoice) super.getDraftTransaction();
 	}
 
-	public void setDraftTransaction(BillPaymentDraftTransaction billPaymentDraftTransaction) {
+	public void setDraftTransaction(BillInvoice billPaymentDraftTransaction) {
 		super.setDraftTransaction(billPaymentDraftTransaction);
 	}
 	
@@ -56,11 +59,11 @@ public class BillPaymentTransaction extends Transaction {
 		this.failStatus = failStatus;
 	}
 
-	public BillPaymentTransactionConfirmationInfo getConfirmationInfo() {
+	public BillPaymentConfirmationInfo getConfirmationInfo() {
 		return confirmationInfo;
 	}
 
-	public void setConfirmationInfo(BillPaymentTransactionConfirmationInfo confirmationInfo) {
+	public void setConfirmationInfo(BillPaymentConfirmationInfo confirmationInfo) {
 		this.confirmationInfo = confirmationInfo;
 	}
 
