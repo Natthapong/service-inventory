@@ -184,23 +184,43 @@ public class TopUpServiceImpl implements TopUpService {
 		this.directDebitSourceService = directDebitSourceService;
 	}
 
+	public OTPService getOtpService() {
+		return otpService;
+	}
+
 	public void setOtpService(OTPService otpService) {
 		this.otpService = otpService;
+	}
+
+	public LegacyFacade getLegacyFacade() {
+		return legacyFacade;
 	}
 
 	public void setLegacyFacade(LegacyFacade legacyFacade) {
 		this.legacyFacade = legacyFacade;
 	}
 
+	public AsyncTopUpEwalletProcessor getAsyncTopUpProcessor() {
+		return asyncTopUpProcessor;
+	}
+
 	public void setAsyncTopUpProcessor(AsyncTopUpEwalletProcessor asyncTopUpProcessor) {
 		this.asyncTopUpProcessor = asyncTopUpProcessor;
+	}
+
+	public AccessTokenRepository getAccessTokenRepo() {
+		return accessTokenRepo;
 	}
 
 	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepo) {
 		this.accessTokenRepo = accessTokenRepo;
 	}
 
-	public void setOrderRepository(TransactionRepository orderRepo) {
+	public TransactionRepository getTransactionRepository() {
+		return transactionRepo;
+	}
+
+	public void setTransactionRepository(TransactionRepository orderRepo) {
 		this.transactionRepo = orderRepo;
 	}
 }

@@ -30,7 +30,6 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.stub.AccessTokenRepositoryStubbed;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class })
@@ -52,8 +51,10 @@ public class TopUpServiceImplConfirmOTPTest {
 	private AsyncTopUpEwalletProcessor asyncServiceMock;
 
 	private AccessToken accessToken;
-	private TopUpQuote quote;
 
+	private OTP goodOTP;
+
+	private TopUpQuote quote;
 
 	@Before
 	public void setup() {
@@ -62,20 +63,15 @@ public class TopUpServiceImplConfirmOTPTest {
 		this.topUpService.setAsyncTopUpProcessor(asyncServiceMock);
 
 		//given
-		accessToken = AccessTokenRepositoryStubbed.createSuccessAccessToken();
-
-		quote = new TopUpQuote();
-		quote.setID("quoteID");
-		quote.setStatus(Status.OTP_SENT);
-		quote.setAccessTokenID(accessToken.getAccessTokenID());
-
+		accessToken =  new AccessToken("tokenID", "sessionID", "tmnID", 41);
 		accessTokenRepo.save(accessToken);
-		transactionRepo.saveTopUpEwalletDraftTransaction(quote, accessToken.getAccessTokenID());
 
-		OTP goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
+		goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
 		otpRepo.saveOTP(goodOTP);
-	}
 
+		quote =  createQuote(accessToken, goodOTP);
+		transactionRepo.saveTopUpEwalletDraftTransaction(quote, accessToken.getAccessTokenID());
+	}
 
 	@Test
 	public void shouldConfirmOTPSuccess() {
@@ -124,4 +120,15 @@ public class TopUpServiceImplConfirmOTPTest {
 		//should never call the processor
 		verify(asyncServiceMock, Mockito.never()).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
 	}
+
+	private TopUpQuote createQuote(AccessToken accessToken, OTP otp) {
+		TopUpQuote quote = new TopUpQuote();
+		quote.setID("quoteID");
+		quote.setStatus(Status.OTP_SENT);
+		quote.setOtpReferenceCode(otp.getReferenceCode());
+		quote.setAccessTokenID(accessToken.getAccessTokenID());
+
+		return quote;
+	}
+
 }
