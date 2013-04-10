@@ -58,7 +58,7 @@ public class LocalEnvironmentConfig {
 
 	Adam adam = new Adam();
 	Eve eve = new Eve();
-
+	
 	@Bean
 	@Primary
 	public TmnProfileProxy stubTmnProfileProxy() {

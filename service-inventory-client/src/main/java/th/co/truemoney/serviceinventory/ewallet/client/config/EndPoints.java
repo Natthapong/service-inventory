@@ -87,4 +87,8 @@ public class EndPoints {
 	public String getP2PTransactionInfoURL(){
 		return host + "/service-inventory-web/v1/transfer/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
+	
+	public String getCreateBillInvoiceUrl(){
+		return host + "/service-inventory-web/v1/billpay/invoice/{draftTransactionID}/send-otp/{accessTokenID}";
+	}
 }
