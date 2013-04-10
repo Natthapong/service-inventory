@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.bill.impl;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,14 +61,14 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
 		//verify bill.
-
-
+		String invoiceID = UUID.randomUUID().toString();
+		
 		BillInvoice billInvoice = new BillInvoice(billpayInfo);
-
+		billInvoice.setID(invoiceID);
+		billInvoice.setStatus(Status.CREATED);
+		
 		//save bill.
 		transactionRepository.saveBillInvoice(billInvoice, accessTokenID);
-
-		OTP otp = otpService.send(accessToken.getMobileNumber());
 
 		return billInvoice;
 	}
@@ -79,8 +81,18 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	@Override
 	public OTP sendOTP(String invoiceID, String accessTokenID)
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+
+		// --- Get Account Detail from accessToken ---//
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		
+		OTP otp = otpService.send(accessToken.getMobileNumber());
+
+		BillInvoice billInvoice = transactionRepository.getBillInvoice(invoiceID, accessTokenID);
+		billInvoice.setOtpReferenceCode(otp.getReferenceCode());
+		
+		transactionRepository.saveBillInvoice(billInvoice, accessTokenID);
+		
+		return otp;
 	}
 
 	@Override
