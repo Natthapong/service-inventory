@@ -9,10 +9,10 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface BillPaymentService {
-	
+
 	public BillPaymentInfo getBillInformation(String barcode, String accessTokenID)
 			throws ServiceInventoryException;
-			
+
 	public BillInvoice createBillInvoice(BillPaymentInfo billpayInfo, String accessTokenID)
 			throws ServiceInventoryException;
 
@@ -30,5 +30,5 @@ public interface BillPaymentService {
 
 	public BillPayment getBillPaymentResult(String billPaymentID, String accessTokenID)
 			throws ServiceInventoryException;
-	
+
 }

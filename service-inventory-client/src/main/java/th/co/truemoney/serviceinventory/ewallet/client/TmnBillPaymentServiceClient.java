@@ -43,7 +43,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	@Override
 	public BillInvoice createBillInvoice(BillPaymentInfo billpayInfo,
 			String accessTokenID) throws ServiceInventoryException {
-		
+
 		HttpEntity<BillPaymentInfo> requestEntity = new HttpEntity<BillPaymentInfo>(billpayInfo,headers);
 
 		ResponseEntity<BillInvoice> responseEntity = restTemplate.exchange(
@@ -65,15 +65,21 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	@Override
 	public OTP sendOTP(String invoiceID, String accessTokenID)
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		return new OTP("0861234567", "abcd", "******");
 	}
 
 	@Override
 	public Status confirmBillInvoice(String invoiceID, OTP otp,
 			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+
+		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp, headers);
+
+		ResponseEntity<Status> responseEntity = restTemplate.exchange(
+				endPoints.getBillPayInvoiceOTPConfirmURL(), HttpMethod.PUT,
+				requestEntity, Status.class,
+				invoiceID, otp.getReferenceCode(), accessTokenID);
+
+		return responseEntity.getBody();
 	}
 
 	@Override
