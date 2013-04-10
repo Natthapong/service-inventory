@@ -89,6 +89,6 @@ public class EndPoints {
 	}
 	
 	public String getCreateBillInvoiceUrl(){
-		return host + "/service-inventory-web/v1/billpay/invoice/{draftTransactionID}/send-otp/{accessTokenID}";
+		return host + "/service-inventory-web/v1/bill-payment/invoice?accessTokenID={accessTokenID}";
 	}
 }
