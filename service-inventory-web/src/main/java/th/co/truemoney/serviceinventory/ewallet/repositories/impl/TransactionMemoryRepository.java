@@ -140,4 +140,13 @@ public class TransactionMemoryRepository implements TransactionRepository {
 		return billPayment;
 	}
 
+	public void clear() {
+		quotesMap.clear();
+		ordersMap.clear();
+		p2pDraftTransactionMap.clear();
+		p2pTransactionMap.clear();
+		billInvoiceMap.clear();
+		billPaymentMap.clear();
+	}
+
 }

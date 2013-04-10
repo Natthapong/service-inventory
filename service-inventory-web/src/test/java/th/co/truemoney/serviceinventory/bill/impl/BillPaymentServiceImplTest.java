@@ -2,54 +2,76 @@ package th.co.truemoney.serviceinventory.bill.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
+import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
-import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
+import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
+import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
+import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
+import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class })
+@ActiveProfiles(profiles={"local", "mem"})
 public class BillPaymentServiceImplTest {
 
+	@Autowired
 	private BillPaymentServiceImpl billPayService;
+
+	@Autowired
+	private AccessTokenMemoryRepository accessTokenRepo;
+
+	@Autowired
+	private TransactionMemoryRepository transactionRepo;
+
 	private OTPService otpService;
 	private AccessToken accessToken;
 	private AsyncBillPayProcessor asyncProcessor;
 
-	private AccessTokenRepository accessTokenRepo = new AccessTokenMemoryRepository();
-	private TransactionRepository transactionRepo = new TransactionMemoryRepository();
-
-
 	@Before
 	public void setup() {
-		billPayService = new BillPaymentServiceImpl();
-
-		otpService = mock(OTPService.class);
-
-		billPayService.setAccessTokenRepo(accessTokenRepo);
-		billPayService.setOtpService(otpService);
-		billPayService.setTransactionRepository(transactionRepo);
 
 		accessToken = new AccessToken("12345", "5555", "4444", "username", "0868185055", "tanathip.se@gmail.com", 41);
 		accessTokenRepo.save(accessToken);
 
+		otpService = mock(OTPService.class);
+		billPayService.setOtpService(otpService);
+
 		asyncProcessor = Mockito.mock(AsyncBillPayProcessor.class);
 		billPayService.setAsyncBillPayProcessor(asyncProcessor);
+	}
+
+	@After
+	public void tearDown() {
+		accessTokenRepo.clear();
+		transactionRepo.clear();
 	}
 
 	@Test
@@ -61,20 +83,41 @@ public class BillPaymentServiceImplTest {
 
 		assertNotNull(billInvoice);
 		assertEquals(DraftTransaction.Status.CREATED, billInvoice.getStatus());
+
+		BillInvoice repoInvoice = transactionRepo.getBillInvoice(billInvoice.getID(), accessToken.getAccessTokenID());
+		assertNotNull(repoInvoice);
+		assertEquals(DraftTransaction.Status.CREATED, repoInvoice.getStatus());
 	}
 
 	@Test
-	public void confirmOTPTest() {
+	public void sendOTP() {
 
-		OTP correctOTP = new OTP("0868185055", "refCode", "111111");
-
-		BillInvoice invoice = new BillInvoice();
-		invoice.setID("invoiceID");
-
+		//given
+		BillInvoice invoice = new BillInvoice("invoiceID");
 		transactionRepo.saveBillInvoice(invoice, accessToken.getAccessTokenID());
 
+		when(otpService.send(accessToken.getMobileNumber())).thenReturn(new OTP());
+
+		//when
+		billPayService.sendOTP("invoiceID", accessToken.getAccessTokenID());
+
+		//then
+		verify(otpService).send(accessToken.getMobileNumber());
+	}
+
+	@Test
+	public void confirmOTPSuccess() {
+
+		//given
+		OTP correctOTP = new OTP("0868185055", "refCode", "111111");
+
+		BillInvoice invoice = new BillInvoice("invoiceID", Status.OTP_SENT);
+		transactionRepo.saveBillInvoice(invoice, accessToken.getAccessTokenID());
+
+		//when
 		Status confirmation = billPayService.confirmBillInvoice(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
 
+		//then
 		Assert.assertEquals(Status.OTP_CONFIRMED, confirmation);
 		verify(asyncProcessor).payBill(any(BillPayment.class), any(AccessToken.class));
 
@@ -88,21 +131,35 @@ public class BillPaymentServiceImplTest {
 	}
 
 	@Test
-	public void sendOTP() {
+	public void confirmOTPFail() {
 
-		when(accessTokenRepo.getAccessToken(anyString())).thenReturn(
-				new AccessToken("12345", "5555", "4444", "username",
-						"0868185055", "tanathip.se@gmail.com", 41));
+		//given
+		OTP badOTP = new OTP("0868185055", "refCode", "111111");
 
-		when(otpService.send(anyString())).thenReturn(
-				new OTP("0868185055", "12345", "string"));
+		BillInvoice invoice = new BillInvoice("invoiceID", Status.OTP_SENT);
+		transactionRepo.saveBillInvoice(invoice, accessToken.getAccessTokenID());
 
-		when(transactionRepo.getBillInvoice(anyString(), anyString()))
-				.thenReturn(new BillInvoice());
+		Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpService).isValidOTP(badOTP);
 
-		OTP otp = billPayService.sendOTP("12345", "111111");
+		//when
+		try {
+			billPayService.confirmBillInvoice(invoice.getID(), badOTP, accessToken.getAccessTokenID());
+			Assert.fail();
+		} catch (ServiceInventoryWebException ex) {
+			Assert.assertEquals("otp error", ex.getErrorDescription());
+		}
 
-		assertNotNull(otp);
+		//then
+		BillInvoice repoInvoice = transactionRepo.getBillInvoice(invoice.getID(), accessToken.getAccessTokenID());
+		Assert.assertEquals(Status.OTP_SENT, repoInvoice.getStatus());
+
+		try {
+			transactionRepo.getBillPayment(invoice.getID(), accessToken.getAccessTokenID());
+			Assert.fail();
+		} catch (ResourceNotFoundException ex) {
+			Assert.assertEquals(Code.TRANSACTION_NOT_FOUND, ex.getErrorCode());
+		}
+
 	}
 
 }

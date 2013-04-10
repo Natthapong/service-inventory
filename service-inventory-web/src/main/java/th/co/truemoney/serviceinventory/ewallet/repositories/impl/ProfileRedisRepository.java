@@ -8,13 +8,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
-import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileRepository;
 import th.co.truemoney.serviceinventory.exception.InternalServerErrorException;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 
-public class ProfileRedisRepository implements ProfileRepository {
+public class ProfileRedisRepository implements RegisteringProfileRepository {
 
 	private static Logger logger = LoggerFactory.getLogger(ProfileRedisRepository.class);
 
@@ -24,7 +24,7 @@ public class ProfileRedisRepository implements ProfileRepository {
 	private RedisLoggingDao redisLoggingDao;
 
 	@Override
-	public void saveProfile(TmnProfile tmnProfile) {
+	public void saveRegisteringProfile(TmnProfile tmnProfile) {
 		try {
 			redisLoggingDao.addData("profile:" + tmnProfile.getMobileNumber(), mapper.writeValueAsString(tmnProfile), 5L);
 		} catch (Exception e) {
@@ -34,7 +34,7 @@ public class ProfileRedisRepository implements ProfileRepository {
 	}
 
 	@Override
-	public TmnProfile getTmnProfile(String mobileNumber) {
+	public TmnProfile getRegisteringProfile(String mobileNumber) {
 		try {
 			String result = redisLoggingDao.getData("profile:"+mobileNumber);
 			if(result == null) {

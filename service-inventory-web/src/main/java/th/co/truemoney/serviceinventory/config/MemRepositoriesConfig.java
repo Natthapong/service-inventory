@@ -10,7 +10,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
@@ -55,7 +55,7 @@ public class MemRepositoriesConfig {
 	}
 
 	@Bean
-	public ProfileRepository memoProfileRepository() {
+	public RegisteringProfileRepository memoProfileRepository() {
 		ProfileMemoryRepository profile = new ProfileMemoryRepository();
 		return profile;
 	}

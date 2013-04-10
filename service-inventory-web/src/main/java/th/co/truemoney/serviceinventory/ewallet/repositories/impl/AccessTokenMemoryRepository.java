@@ -58,4 +58,8 @@ public class AccessTokenMemoryRepository implements AccessTokenRepository {
 		}
 	}
 
+	public void clear() {
+		map.clear();
+	}
+
 }

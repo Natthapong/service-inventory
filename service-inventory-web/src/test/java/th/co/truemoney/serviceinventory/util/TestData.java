@@ -9,8 +9,10 @@ import org.mockito.Mockito;
 import org.mockito.stubbing.Stubber;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileRegisteringFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.SourceOfFundFacade;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
 
@@ -72,10 +74,35 @@ public class TestData {
 		public TopUpConfirmationInfo topUpMoney() {
 			return balanceFacadeMock.topUpMoney(any(BigDecimal.class), anyString(), anyString(), anyInt(), anyString(), anyString());
 		}
+	}
 
+	public static class ProfileRegisteringFacadeMocker {
 
+		private ProfileRegisteringFacade profileRegisteringFacadeMock;
 
+		public ProfileRegisteringFacadeMocker() {
+			this(Mockito.mock(ProfileRegisteringFacade.class));
+		}
 
+		public ProfileRegisteringFacadeMocker(ProfileRegisteringFacade facade) {
+			this.profileRegisteringFacadeMock = facade;
+		}
+
+		public ProfileRegisteringFacade getMockObject() {
+			return this.profileRegisteringFacadeMock;
+		}
+
+		public void verifyValidRegisteringEmail(Stubber stubber) {
+			stubber.when(profileRegisteringFacadeMock).verifyValidRegisteringEmail(anyInt(), anyString());
+		}
+
+		public void verifyValidRegisteringMobileNumber(Stubber stubber) {
+			stubber.when(profileRegisteringFacadeMock).verifyValidRegisteringMobileNumber(anyInt(), anyString());
+		}
+
+		public void register(Stubber stubber) {
+			stubber.when(profileRegisteringFacadeMock).register(anyInt(), any(TmnProfile.class));
+		}
 	}
 
 }

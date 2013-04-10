@@ -57,16 +57,11 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	public BillInvoice createBillInvoice(BillPaymentInfo billpayInfo,
 			String accessTokenID) throws ServiceInventoryException {
 
-		// --- Get Account Detail from accessToken ---//
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-
 		//verify bill.
 		String invoiceID = UUID.randomUUID().toString();
-		
-		BillInvoice billInvoice = new BillInvoice(billpayInfo);
-		billInvoice.setID(invoiceID);
-		billInvoice.setStatus(Status.CREATED);
-		
+
+		BillInvoice billInvoice = new BillInvoice(invoiceID, Status.CREATED, billpayInfo);
+
 		//save bill.
 		transactionRepository.saveBillInvoice(billInvoice, accessTokenID);
 
@@ -84,14 +79,14 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 		// --- Get Account Detail from accessToken ---//
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-		
+
 		OTP otp = otpService.send(accessToken.getMobileNumber());
 
 		BillInvoice billInvoice = transactionRepository.getBillInvoice(invoiceID, accessTokenID);
 		billInvoice.setOtpReferenceCode(otp.getReferenceCode());
-		
+
 		transactionRepository.saveBillInvoice(billInvoice, accessTokenID);
-		
+
 		return otp;
 	}
 
