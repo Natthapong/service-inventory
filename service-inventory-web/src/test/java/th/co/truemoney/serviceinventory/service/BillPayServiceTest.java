@@ -1,8 +1,6 @@
 package th.co.truemoney.serviceinventory.service;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -46,16 +44,16 @@ public class BillPayServiceTest {
 		when(accessTokenRepo.getAccessToken(anyString())).thenReturn(
 				new AccessToken("12345", "5555", "4444", "username",
 						"0868185055", "tanathip.se@gmail.com", 41));
-		
+
 		when(otpService.send(anyString())).thenReturn(new OTP("0868185055", "12345", "string"));
 
 		when(transactionRepository.getBillInvoice(anyString(), anyString())).thenReturn(new BillInvoice());
-		
+
 		BillInvoice billInvoice = billPayService
 				.createBillInvoice(new BillPaymentInfo(), "111111");
-		
+
 		assertNotNull(billInvoice);
 	}
-	
-	
+
+
 }

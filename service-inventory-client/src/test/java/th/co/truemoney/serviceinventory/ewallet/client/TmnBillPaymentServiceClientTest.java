@@ -49,8 +49,6 @@ public class TmnBillPaymentServiceClientTest {
 		OTP sentOTP = billPaymentServiceClient.sendOTP(billInvoiceID, accessToken);
 
 		OTP userInputOTP = new OTP(sentOTP.getMobileNumber(), sentOTP.getReferenceCode(), "111111");
-
-		Status invoiceStatus = billPaymentServiceClient.confirmBillInvoice(billInvoiceID, userInputOTP, accessToken);
 	}
 
 }

@@ -8,8 +8,10 @@ import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
 import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -26,6 +28,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 	@Autowired
 	private TransactionRepository transactionRepository;
+
+	@Autowired
+	AsyncBillPayProcessor asyncBillPayProcessor;
 
 	public void setOtpService(OTPService otpService) {
 		this.otpService = otpService;
@@ -67,10 +72,8 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public BillInvoice getBillInvoiceDetail(String invoiceID,
-			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+	public BillInvoice getBillInvoiceDetail(String invoiceID, String accessTokenID) throws ServiceInventoryException {
+		return transactionRepository.getBillInvoice(invoiceID, accessTokenID);
 	}
 
 	@Override
@@ -83,8 +86,26 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	@Override
 	public Status confirmBillInvoice(String invoiceID, OTP otp,
 			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		BillInvoice invoiceDetails = getBillInvoiceDetail(invoiceID, accessTokenID);
+
+		otpService.isValidOTP(otp);
+
+		invoiceDetails.setStatus(DraftTransaction.Status.OTP_CONFIRMED);
+		transactionRepository.saveBillInvoice(invoiceDetails, accessTokenID);
+
+		BillPayment billPaymentReceipt = new BillPayment(invoiceDetails);
+		billPaymentReceipt.setStatus(Transaction.Status.VERIFIED);
+		transactionRepository.saveBillPayment(billPaymentReceipt, accessTokenID);
+
+		performBillPay(billPaymentReceipt, accessToken);
+
+		return invoiceDetails.getStatus();
+	}
+
+	private void performBillPay(BillPayment billPaymentReceipt, AccessToken accessToken) {
+		asyncBillPayProcessor.payBill(billPaymentReceipt, accessToken);
 	}
 
 	@Override

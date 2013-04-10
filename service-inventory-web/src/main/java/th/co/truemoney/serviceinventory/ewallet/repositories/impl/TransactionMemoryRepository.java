@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
+import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
@@ -20,6 +21,7 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	public static HashMap<String, P2PDraftTransaction> p2pDraftTransactionMap = new LinkedHashMap<String, P2PDraftTransaction>();
 	public static HashMap<String, P2PTransaction> p2pTransactionMap = new LinkedHashMap<String, P2PTransaction>();
 	public static HashMap<String, BillInvoice> billInvoiceMap = new LinkedHashMap<String, BillInvoice>();
+	public static HashMap<String, BillPayment> billPaymentMap = new LinkedHashMap<String, BillPayment>();
 
 	@Override
 	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote,
@@ -101,24 +103,41 @@ public class TransactionMemoryRepository implements TransactionRepository {
 
 	@Override
 	public void saveBillInvoice(BillInvoice billInvoice, String accessTokenID) {
-		billInvoiceMap.put(accessTokenID + ":" + billInvoice.getID(),
-				billInvoice);
+		billInvoiceMap.put(accessTokenID + ":" + billInvoice.getID(), billInvoice);
 	}
 
 	@Override
 	public BillInvoice getBillInvoice(String billInvoiceID,
 			String accessTokenID) {
 
-		BillInvoice billInvoice = billInvoiceMap.get(accessTokenID + ":"
-				+ billInvoiceID);
+		BillInvoice billInvoice = billInvoiceMap.get(accessTokenID + ":" + billInvoiceID);
 
 		if (billInvoice == null) {
 			throw new ResourceNotFoundException(
 					Code.DRAFT_TRANSACTION_NOT_FOUND,
-					"Draft transfer transaction not found.");
+					"bill invoice not found.");
 		}
 
 		return billInvoice;
+	}
+
+	@Override
+	public void saveBillPayment(BillPayment billPayment, String accessTokenID) {
+		billPaymentMap.put(accessTokenID + ":" + billPayment.getID(), billPayment);
+	}
+
+	@Override
+	public BillPayment getBillPayment(String billPaymentID, String accessTokenID) {
+
+		BillPayment billPayment = billPaymentMap.get(accessTokenID + ":" + billPaymentID);
+
+		if (billPayment == null) {
+			throw new ResourceNotFoundException(
+					Code.TRANSACTION_NOT_FOUND,
+					"biill payment not found.");
+		}
+
+		return billPayment;
 	}
 
 }
