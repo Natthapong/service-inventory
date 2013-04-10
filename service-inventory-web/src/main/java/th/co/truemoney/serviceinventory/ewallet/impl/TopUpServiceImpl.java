@@ -12,6 +12,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
@@ -63,19 +64,26 @@ public class TopUpServiceImpl implements TopUpService {
 
 		BigDecimal topUpFee = directDebitSourceService.calculateTopUpFee(amount, directDebitSource);
 
-		TopUpQuote topUpQuote = new TopUpQuote();
-		String orderID = UUID.randomUUID().toString();
-		topUpQuote.setID(orderID);
-		topUpQuote.setAccessTokenID(accessTokenID);
-		topUpQuote.setUsername(accessToken.getUsername());
-		topUpQuote.setAmount(amount);
-		topUpQuote.setTopUpFee(topUpFee);
-		topUpQuote.setSourceOfFund(directDebitSource);
-		topUpQuote.setStatus(DraftTransaction.Status.CREATED);
+		TopUpQuote topUpQuote = createTopUpQuote(amount, directDebitSource, topUpFee, accessToken);
 
 		transactionRepo.saveTopUpEwalletDraftTransaction(topUpQuote, accessTokenID);
 
 		return topUpQuote;
+	}
+
+	private TopUpQuote createTopUpQuote(BigDecimal amount, SourceOfFund source, BigDecimal topUpFee, AccessToken accessToken) {
+		TopUpQuote topUpQuote = new TopUpQuote();
+		String orderID = UUID.randomUUID().toString();
+		topUpQuote.setID(orderID);
+		topUpQuote.setAccessTokenID(accessToken.getAccessTokenID());
+		topUpQuote.setUsername(accessToken.getUsername());
+		topUpQuote.setAmount(amount);
+		topUpQuote.setTopUpFee(topUpFee);
+		topUpQuote.setSourceOfFund(source);
+		topUpQuote.setStatus(DraftTransaction.Status.CREATED);
+
+		return topUpQuote;
+
 	}
 
 	private void validateToppingUpValue(BigDecimal amount, DirectDebit sofDetail) {
