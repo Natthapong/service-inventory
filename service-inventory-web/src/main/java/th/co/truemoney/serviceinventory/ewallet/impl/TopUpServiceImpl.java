@@ -28,7 +28,6 @@ import th.co.truemoney.serviceinventory.sms.OTPService;
 @Service
 public class TopUpServiceImpl implements TopUpService {
 
-
 	@Autowired
 	private LegacyFacade legacyFacade;
 
