@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.bill.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -27,9 +28,8 @@ public class BillPaymentInfo implements Serializable {
 	private String ref2;
 	
 	private BigDecimal amount;
-	private BigDecimal serviceFee;
-	private String  serviceFeeType;
-	private SourceOfFundFee sourceOfFundFee;
+	private ServiceFee serviceFee;
+	private SourceOfFundFee[] sourceOfFundFees;
 		
 	public BillPaymentInfo() {
 		super();
@@ -109,33 +109,28 @@ public class BillPaymentInfo implements Serializable {
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
-	public BigDecimal getServiceFee() {
+	public ServiceFee getServiceFee() {
 		return serviceFee;
 	}
-	public void setServiceFee(BigDecimal serviceFee) {
+	public void setServiceFee(ServiceFee serviceFee) {
 		this.serviceFee = serviceFee;
 	}
-	public String getServiceFeeType() {
-		return serviceFeeType;
+	public SourceOfFundFee[] getSourceOfFundFees() {
+		return sourceOfFundFees;
 	}
-	public void setServiceFeeType(String serviceFeeType) {
-		this.serviceFeeType = serviceFeeType;
-	}
-	public SourceOfFundFee getSourceOfFundFee() {
-		return sourceOfFundFee;
-	}
-	public void setSourceOfFundFee(SourceOfFundFee sourceOfFundFee) {
-		this.sourceOfFundFee = sourceOfFundFee;
+	public void setSourceOfFundFees(SourceOfFundFee[] sourceOfFundFees) {
+		this.sourceOfFundFees = sourceOfFundFees;
 	}
 	@Override
 	public String toString() {
-		return "BillPaymentInfo [logoURL=" + logoURL + ", titleTH=" + titleTH
-				+ ", titleEN=" + titleEN + ", ref1TitleTH=" + ref1TitleTH
-				+ ", ref1TitleEN=" + ref1TitleEN + ", ref1=" + ref1
-				+ ", ref2TitleTH=" + ref2TitleTH + ", ref2TitleEN="
-				+ ref2TitleEN + ", ref2=" + ref2 + ", amount=" + amount
-				+ ", serviceFee=" + serviceFee + ", serviceFeeType="
-				+ serviceFeeType + ", sourceOfFundFee=" + sourceOfFundFee + "]";
+		return "BillPaymentInfo [target=" + target + ", logoURL=" + logoURL
+				+ ", titleTH=" + titleTH + ", titleEN=" + titleEN
+				+ ", ref1TitleTH=" + ref1TitleTH + ", ref1TitleEN="
+				+ ref1TitleEN + ", ref1=" + ref1 + ", ref2TitleTH="
+				+ ref2TitleTH + ", ref2TitleEN=" + ref2TitleEN + ", ref2="
+				+ ref2 + ", amount=" + amount + ", serviceFee=" + serviceFee
+				+ ", sourceOfFundFees=" + Arrays.toString(sourceOfFundFees)
+				+ "]";
 	}
 
 }

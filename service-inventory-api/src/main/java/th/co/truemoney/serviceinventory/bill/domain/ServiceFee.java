@@ -9,74 +9,44 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class SourceOfFundFee implements Serializable {
-	
-	private static final long serialVersionUID = -7741609765959925215L;
-	private String sourceType;
+public class ServiceFee implements Serializable {
+
+	private static final long serialVersionUID = 1405463484466493619L;
 	private BigDecimal fee;
-	private BigDecimal totalFee;
 	private String feeType;
+	private BigDecimal totalFee;
 	private BigDecimal minFeeAmount;
 	private BigDecimal maxFeeAmount;
-		
-	public SourceOfFundFee() {
-		super();
-	}
-
-	public String getSourceType() {
-		return sourceType;
-	}
-
-	public void setSourceType(String sourceType) {
-		this.sourceType = sourceType;
-	}
-
+	
 	public BigDecimal getFee() {
 		return fee;
 	}
-
 	public void setFee(BigDecimal fee) {
 		this.fee = fee;
 	}
-
-	public BigDecimal getTotalFee() {
-		return totalFee;
-	}
-
-	public void setTotalFee(BigDecimal totalFee) {
-		this.totalFee = totalFee;
-	}
-
 	public String getFeeType() {
 		return feeType;
 	}
-
 	public void setFeeType(String feeType) {
 		this.feeType = feeType;
 	}
-
+	public BigDecimal getTotalFee() {
+		return totalFee;
+	}
+	public void setTotalFee(BigDecimal totalFee) {
+		this.totalFee = totalFee;
+	}
 	public BigDecimal getMinFeeAmount() {
 		return minFeeAmount;
 	}
-
 	public void setMinFeeAmount(BigDecimal minFeeAmount) {
 		this.minFeeAmount = minFeeAmount;
 	}
-
 	public BigDecimal getMaxFeeAmount() {
 		return maxFeeAmount;
 	}
-
 	public void setMaxFeeAmount(BigDecimal maxFeeAmount) {
 		this.maxFeeAmount = maxFeeAmount;
 	}
-
-	@Override
-	public String toString() {
-		return "SourceOfFundFee [sourceType=" + sourceType + ", fee=" + fee
-				+ ", totalFee=" + totalFee + ", feeType=" + feeType
-				+ ", minFeeAmount=" + minFeeAmount + ", maxFeeAmount="
-				+ maxFeeAmount + "]";
-	}	
 		
 }
