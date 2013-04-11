@@ -432,7 +432,7 @@ public class LegacyFacade {
 			Validate.notNull(sourceOfFundFee, "data missing. using which source of fund to pay bill?");
 			Validate.notNull(sourceOfFundFee.getSource(), "data missing. using which source of fund to pay bill?");
 			Validate.notNull(sourceOfFundFee.getSourceFeeType(), "data missing. using which source of fund to pay bill?");
-
+/*
 			return balanceFacade.topUpMoney(
 					amount,
 					sourceOfFundID,
@@ -440,7 +440,7 @@ public class LegacyFacade {
 					channelID,
 					sessionID,
 					tmnID);
-
+*/
 			return null;
 		}
 	}
