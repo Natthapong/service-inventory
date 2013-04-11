@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.email;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -12,13 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-
 
 public class EmailService {
 	private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
@@ -41,11 +46,12 @@ public class EmailService {
 	@Autowired
 	FreeMarkerConfigurationFactory freeMarkerConfigurationFactory;	
 	
+	@Async
 	public void sendWelcomeEmail(String receiverEmail, Map<String, String> map) {
 		sendEmail(receiverEmail, welcomeSubject, welcomeTemplate, map);
 	}
-	
-	public void sendEmail(String receiverEmail, String subject, String emailTemplate, Map<String, String> map) {
+		
+	public Future<MimeMessage> sendEmail(String receiverEmail, String subject, String emailTemplate, Map<String, String> map) {
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper;
 		try {
@@ -72,6 +78,7 @@ public class EmailService {
 			logger.error(e.getMessage());			
 			logger.error("EmailService.sendWelcomeEmail.receiver.email : "+receiverEmail);
 		}	
+		return new AsyncResult<MimeMessage> (mimeMessage);
 	}
 	
 	public void setJavaMailSender(JavaMailSender javaMailSender) {
