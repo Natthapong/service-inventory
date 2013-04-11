@@ -109,11 +109,6 @@ public class DevEnvironmentConfig {
 	@Bean
 	public OTPGenerator otpGenerator() {
 		return new RandomOTPGeneraor();
-	}
-	
-	@Bean
-	public EmailService emailService() {
-		return new EmailService();	
-	}
+	}	
 	
 }

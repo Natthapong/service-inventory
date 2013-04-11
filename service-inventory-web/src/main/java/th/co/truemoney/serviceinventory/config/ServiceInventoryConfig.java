@@ -13,6 +13,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
+import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -100,6 +101,10 @@ public class ServiceInventoryConfig {
     public AsyncP2PTransferProcessor getAsyncP2PTransferProcessor() {
     	return new AsyncP2PTransferProcessor();
     }
-
+    
+    @Bean
+	public EmailService emailService() {
+		return new EmailService();	
+	}
 
 }
