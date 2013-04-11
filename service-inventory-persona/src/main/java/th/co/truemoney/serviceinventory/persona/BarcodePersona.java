@@ -1,7 +1,7 @@
 package th.co.truemoney.serviceinventory.persona;
 
-import th.co.truemoney.serviceinventory.billpay.proxy.impl.BillPayProxy;
+import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
 
 public interface BarcodePersona {
-	public BillPayProxy getBillPayProxyImpl();
+	public BillProxy getBillPayProxyImpl();
 }
