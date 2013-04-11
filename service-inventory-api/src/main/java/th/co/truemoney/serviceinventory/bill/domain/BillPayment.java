@@ -25,7 +25,7 @@ public class BillPayment extends Transaction {
 
 	}
 	
-	public BillPayment(BillInvoice billPaymentDraftTransaction) {
+	public BillPayment(Bill billPaymentDraftTransaction) {
 		if (billPaymentDraftTransaction == null || billPaymentDraftTransaction.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
 			throw new IllegalArgumentException("passing in bad quote data");
 		}
@@ -42,11 +42,11 @@ public class BillPayment extends Transaction {
 		this.ID = ID;
 	}
 
-	public BillInvoice getDraftTransaction() {
-		return (BillInvoice) super.getDraftTransaction();
+	public Bill getDraftTransaction() {
+		return (Bill) super.getDraftTransaction();
 	}
 
-	public void setDraftTransaction(BillInvoice billPaymentDraftTransaction) {
+	public void setDraftTransaction(Bill billPaymentDraftTransaction) {
 		super.setDraftTransaction(billPaymentDraftTransaction);
 	}
 	

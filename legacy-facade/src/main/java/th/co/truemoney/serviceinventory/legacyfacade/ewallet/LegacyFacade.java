@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
+import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
@@ -380,14 +380,14 @@ public class LegacyFacade {
 			return this;
 		}
 		
-		public BillPaymentInfo getInformation() {
+		public BillInfo getInformation() {
 			Validate.notNull(channelID, "data missing. get barcode information from which channel?");
 			Validate.notNull(barcode, "data missing. barcode missing?");
 
-			return billPaymentFacade.getBarcodeInformation(barcode);
+			return billPaymentFacade.getBarcodeInformation(channelID, barcode);
 		}
 		
-		public BillPaymentInfo verify(BillPaymentInfo billpayInfo) {
+		public BillInfo verify(BillInfo billpayInfo) {
 			return billPaymentFacade.verify(billpayInfo);
 		}
 

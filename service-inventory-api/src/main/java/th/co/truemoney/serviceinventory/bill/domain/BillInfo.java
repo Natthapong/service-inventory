@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class BillPaymentInfo implements Serializable {
+public class BillInfo implements Serializable {
 
 	private static final long serialVersionUID = 6473783007140066887L;
 
@@ -28,15 +28,21 @@ public class BillPaymentInfo implements Serializable {
 	private String ref2TitleEN;
 	private String ref2;
 	
+	private String partialPayment;
+	private String callCenterNumber;
+	
 	private BigDecimal amount = BigDecimal.ZERO;
+	private BigDecimal minAmount = BigDecimal.ZERO;
+	private BigDecimal maxAmount = BigDecimal.ZERO;
+	
 	private ServiceFee serviceFee;
 	private SourceOfFundFee[] sourceOfFundFees;
 		
-	public BillPaymentInfo() {
+	public BillInfo() {
 		super();
 	}	
 	
-	public BillPaymentInfo(String target, String ref1, String ref2,	BigDecimal amount) {
+	public BillInfo(String target, String ref1, String ref2,	BigDecimal amount) {
 		super();
 		this.target = target;
 		this.ref1 = ref1;
@@ -121,17 +127,44 @@ public class BillPaymentInfo implements Serializable {
 	}
 	public void setSourceOfFundFees(SourceOfFundFee[] sourceOfFundFees) {
 		this.sourceOfFundFees = sourceOfFundFees;
+	}	
+	public String getPartialPayment() {
+		return partialPayment;
+	}
+	public void setPartialPayment(String partialPayment) {
+		this.partialPayment = partialPayment;
+	}
+	public String getCallCenterNumber() {
+		return callCenterNumber;
+	}
+	public void setCallCenterNumber(String callCenterNumber) {
+		this.callCenterNumber = callCenterNumber;
+	}
+	public BigDecimal getMinAmount() {
+		return minAmount;
+	}
+	public void setMinAmount(BigDecimal minAmount) {
+		this.minAmount = minAmount;
+	}
+	public BigDecimal getMaxAmount() {
+		return maxAmount;
+	}
+	public void setMaxAmount(BigDecimal maxAmount) {
+		this.maxAmount = maxAmount;
 	}
 	@Override
 	public String toString() {
-		return "BillPaymentInfo [target=" + target + ", logoURL=" + logoURL
+		return "BillInfo [target=" + target + ", logoURL=" + logoURL
 				+ ", titleTH=" + titleTH + ", titleEN=" + titleEN
 				+ ", ref1TitleTH=" + ref1TitleTH + ", ref1TitleEN="
 				+ ref1TitleEN + ", ref1=" + ref1 + ", ref2TitleTH="
 				+ ref2TitleTH + ", ref2TitleEN=" + ref2TitleEN + ", ref2="
-				+ ref2 + ", amount=" + amount + ", serviceFee=" + serviceFee
+				+ ref2 + ", partialPayment=" + partialPayment
+				+ ", callCenterNumber=" + callCenterNumber + ", amount="
+				+ amount + ", minAmount=" + minAmount + ", maxAmount="
+				+ maxAmount + ", serviceFee=" + serviceFee
 				+ ", sourceOfFundFees=" + Arrays.toString(sourceOfFundFees)
 				+ "]";
-	}
-
+	}	
+	
 }

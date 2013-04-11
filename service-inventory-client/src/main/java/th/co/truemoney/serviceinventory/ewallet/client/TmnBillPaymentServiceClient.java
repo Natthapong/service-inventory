@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
-import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
+import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -34,36 +34,36 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	private HttpHeaders headers;
 
 	@Override
-	public BillPaymentInfo getBillInformation(String barcode, String accessTokenID) 
+	public BillInfo getBillInformation(String barcode, String accessTokenID) 
 			throws ServiceInventoryException {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
-		ResponseEntity<BillPaymentInfo> responseEntity = restTemplate.exchange(
+		ResponseEntity<BillInfo> responseEntity = restTemplate.exchange(
 				endPoints.getBillPaymentInfoURL(), HttpMethod.GET, requestEntity,
-				BillPaymentInfo.class, barcode, accessTokenID);
+				BillInfo.class, barcode, accessTokenID);
 
-		BillPaymentInfo billPaymentInfo = responseEntity.getBody();
+		BillInfo billPaymentInfo = responseEntity.getBody();
 
 		return billPaymentInfo;
 	}
 
 	@Override
-	public BillInvoice createBillInvoice(BillPaymentInfo billpayInfo,
+	public Bill createBill(BillInfo billpayInfo,
 			String accessTokenID) throws ServiceInventoryException {
 
-		HttpEntity<BillPaymentInfo> requestEntity = new HttpEntity<BillPaymentInfo>(billpayInfo,headers);
+		HttpEntity<BillInfo> requestEntity = new HttpEntity<BillInfo>(billpayInfo,headers);
 
-		ResponseEntity<BillInvoice> responseEntity = restTemplate.exchange(
+		ResponseEntity<Bill> responseEntity = restTemplate.exchange(
 				endPoints.getCreateBillInvoiceURL(), HttpMethod.POST, requestEntity,
-				BillInvoice.class, accessTokenID);
+				Bill.class, accessTokenID);
 
-		BillInvoice billInvoice = responseEntity.getBody();
+		Bill billInvoice = responseEntity.getBody();
 
 		return billInvoice;
 	}
 
 	@Override
-	public BillInvoice getBillInvoiceDetail(String invoiceID,
+	public Bill getBillDetail(String invoiceID,
 			String accessTokenID) throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
@@ -76,7 +76,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	}
 
 	@Override
-	public Status confirmBillInvoice(String invoiceID, OTP otp,
+	public Status confirmBill(String invoiceID, OTP otp,
 			String accessTokenID) throws ServiceInventoryException {
 
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp, headers);
