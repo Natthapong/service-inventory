@@ -69,10 +69,15 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	@Override
 	public BillInvoice createBillInvoice(BillPaymentInfo billpayInfo,
 			String accessTokenID) throws ServiceInventoryException {
-
+		
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 		//verify bill.
+		legacyFacade.fromChannel(accessToken.getChannelID())
+		.billPayment()
+		.verify(billpayInfo);
+		
+		
 		String invoiceID = UUID.randomUUID().toString();
-
 		BillInvoice billInvoice = new BillInvoice(invoiceID, Status.CREATED, billpayInfo);
 
 		//save bill.

@@ -364,7 +364,6 @@ public class LegacyFacade {
 		private Integer channelID;
 		
 		private String barcode;
-
 		
 		@Autowired(required = false)
 		public BillPaymentBuilder(BillPaymentFacade billPaymentFacade) {
@@ -386,6 +385,10 @@ public class LegacyFacade {
 			Validate.notNull(barcode, "data missing. barcode missing?");
 
 			return billPaymentFacade.getBarcodeInformation(barcode);
+		}
+		
+		public BillPaymentInfo verify(BillPaymentInfo billpayInfo) {
+			return billPaymentFacade.verify(billpayInfo);
 		}
 
 	}
