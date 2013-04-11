@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
@@ -24,6 +25,9 @@ public class LegacyFacade {
 
 	@Autowired(required = false)
 	private SourceOfFundFacade sourceOfFundFacade;
+	
+	@Autowired(required = false)
+	private BillPaymentFacade billPaymentFacade;
 
 	@Autowired(required = false)
 	private ProfileRegisteringFacade profileRegisteringFacade;
@@ -55,10 +59,9 @@ public class LegacyFacade {
 	}
 
 	public UserProfileBuilder userProfile(String sessionID, String tmnID) {
-
-			return new UserProfileBuilder(balanceFacade, profileFacade, sourceOfFundFacade)
-						.aUser(sessionID, tmnID)
-						.fromChannel(channelID);
+		return new UserProfileBuilder(balanceFacade, profileFacade, sourceOfFundFacade)
+					.aUser(sessionID, tmnID)
+					.fromChannel(channelID);
 	}
 
 	public TopUpBuilder topUp(BigDecimal amount) {
@@ -72,9 +75,14 @@ public class LegacyFacade {
 					.fromChannelID(channelID)
 					.withAmount(amount);
 	}
-
-	public ProfileRegsisteringBuilder registering() {
-		return new ProfileRegsisteringBuilder(profileRegisteringFacade).fromChannel(channelID);
+	
+	public BillPaymentBuilder billPayment() {
+		return new BillPaymentBuilder(billPaymentFacade)
+					.fromChannel(channelID);
+	}
+	
+	public ProfileRegisteringBuilder registering() {
+		return new ProfileRegisteringBuilder(profileRegisteringFacade).fromChannel(channelID);
 	}
 
 	public LegacyFacade setBalanceFacade(BalanceFacade balanceFacade) {
@@ -97,6 +105,11 @@ public class LegacyFacade {
 		return this;
 	}
 
+	public LegacyFacade setBillPaymentFacade(BillPaymentFacade billPaymentFacade) {
+		this.billPaymentFacade = billPaymentFacade;
+		return this;		
+	}
+	
 	public static class UserProfileBuilder {
 
 		private Integer channelID;
@@ -305,18 +318,18 @@ public class LegacyFacade {
 		}
 	}
 
-	public static class ProfileRegsisteringBuilder {
+	public static class ProfileRegisteringBuilder {
 
 		private ProfileRegisteringFacade profileRegisteringFacade;
 
 		private Integer channelID;
 
 		@Autowired(required = false)
-		public ProfileRegsisteringBuilder(ProfileRegisteringFacade profileRegisteringFacade) {
+		public ProfileRegisteringBuilder(ProfileRegisteringFacade profileRegisteringFacade) {
 			this.profileRegisteringFacade = profileRegisteringFacade;
 		}
 
-		public ProfileRegsisteringBuilder fromChannel(Integer channelID) {
+		public ProfileRegisteringBuilder fromChannel(Integer channelID) {
 			this.channelID = channelID;
 			return this;
 		}
@@ -343,5 +356,40 @@ public class LegacyFacade {
 		}
 
 	}
+
+	public static class BillPaymentBuilder {
+		
+		private BillPaymentFacade billPaymentFacade;
+		
+		private Integer channelID;
+		
+		private String barcode;
+
+		
+		@Autowired(required = false)
+		public BillPaymentBuilder(BillPaymentFacade billPaymentFacade) {
+			this.billPaymentFacade = billPaymentFacade;
+		}
+		
+		public BillPaymentBuilder fromChannel(Integer channelID) {
+			this.channelID = channelID;
+			return this;
+		}
+		
+		public BillPaymentBuilder withBarcode(String barcode) {
+			this.barcode = barcode;
+			return this;
+		}
+		
+		public BillPaymentInfo getInformation() {
+			Validate.notNull(channelID, "data missing. get barcode information from which channel?");
+			Validate.notNull(barcode, "data missing. barcode missing?");
+
+			return billPaymentFacade.getBarcodeInformation(barcode);
+		}
+
+	}
+
+
 
 }
