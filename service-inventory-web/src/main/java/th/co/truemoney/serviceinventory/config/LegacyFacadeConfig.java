@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileRegisteringFacade;
@@ -42,4 +43,9 @@ public class LegacyFacadeConfig {
 		return new LegacyFacade();
 	}
 
+	@Bean
+	public BillPaymentFacade billPaymentFacade() {
+		return new BillPaymentFacade();
+	}
+	
 }
