@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 
 @Controller
@@ -26,6 +26,14 @@ public class BillPaymentController {
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
+	@RequestMapping(value = "/barcode/{barcode}", method = RequestMethod.GET)
+	public @ResponseBody BillPaymentInfo getBillInformation(
+			@PathVariable String barcode,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+		extendExpireAccessToken(accessTokenID);
+		return billPaymentService.getBillInformation(barcode, accessTokenID);
+	}
+	
 	@RequestMapping(value = "/invoice", method = RequestMethod.POST)
 	public @ResponseBody
 	BillInvoice createDraftTransaction(@RequestParam String accessTokenID,
