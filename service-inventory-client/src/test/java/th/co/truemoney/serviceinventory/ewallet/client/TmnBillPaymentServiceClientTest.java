@@ -29,25 +29,36 @@ public class TmnBillPaymentServiceClientTest {
 	@Autowired
 	TmnProfileServiceClient client;
 
-	String accessToken;
+	String accessTokenID;
 
 	@Before
 	public void setup(){
-		accessToken = client.login(41, TestData.createSuccessLogin());
+		accessTokenID = client.login(41, TestData.createSuccessLogin());
+	}
+	
+	@Test
+	public void getBillInformation() {
+		String barcode = "|010554614953100 010004552 010520120200015601 85950";
+		
+		BillPaymentInfo billPaymentInfo = billPaymentServiceClient.getBillInformation(barcode, accessTokenID);
+		
+		assertNotNull(billPaymentInfo);
 	}
 
 	@Test
 	public void createBillInvoice(){
 
-		String billInvoiceID = "12345";
 
-		BillInvoice billInvoice = billPaymentServiceClient.createBillInvoice(new BillPaymentInfo(),accessToken);
+        String billInvoiceID = "12345";
 
-		assertNotNull(billInvoice);
+        BillInvoice billInvoice = billPaymentServiceClient.createBillInvoice(new BillPaymentInfo(),accessTokenID);
 
-		OTP sentOTP = billPaymentServiceClient.sendOTP(billInvoiceID, accessToken);
+        assertNotNull(billInvoice);
 
-		OTP userInputOTP = new OTP(sentOTP.getMobileNumber(), sentOTP.getReferenceCode(), "111111");
+        OTP sentOTP = billPaymentServiceClient.sendOTP(billInvoiceID, accessTokenID);
+
+        OTP userInputOTP = new OTP(sentOTP.getMobileNumber(), sentOTP.getReferenceCode(), "111111");
+        
 	}
-
+	
 }

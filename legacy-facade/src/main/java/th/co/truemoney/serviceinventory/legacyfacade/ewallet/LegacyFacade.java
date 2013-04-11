@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
@@ -26,6 +27,9 @@ public class LegacyFacade {
 
 	@Autowired(required = false)
 	private SourceOfFundFacade sourceOfFundFacade;
+	
+	@Autowired(required = false)
+	private BillPaymentFacade billPaymentFacade;
 
 	@Autowired(required = false)
 	private ProfileRegisteringFacade profileRegisteringFacade;
@@ -57,10 +61,9 @@ public class LegacyFacade {
 	}
 
 	public UserProfileBuilder userProfile(String sessionID, String tmnID) {
-
-			return new UserProfileBuilder(balanceFacade, profileFacade, sourceOfFundFacade)
-						.aUser(sessionID, tmnID)
-						.fromChannel(channelID);
+		return new UserProfileBuilder(balanceFacade, profileFacade, sourceOfFundFacade)
+					.aUser(sessionID, tmnID)
+					.fromChannel(channelID);
 	}
 
 	public TopUpBuilder topUp(BigDecimal amount) {
@@ -74,15 +77,20 @@ public class LegacyFacade {
 					.fromChannelID(channelID)
 					.withAmount(amount);
 	}
-
-	public BillPaymentBuilder billPay(BigDecimal amount) {
-		return new BillPaymentBuilder(balanceFacade)
-					.fromChannelID(channelID)
-					.withAmount(amount);
+	
+	public BillPaymentBuilder payBill(BillPaymentInfo billPaymentInfo) {
+		return new BillPaymentBuilder(billPaymentFacade)
+					.fromChannel(channelID)
+					.usingBillInfo(billPaymentInfo);
 	}
-
-	public ProfileRegsisteringBuilder registering() {
-		return new ProfileRegsisteringBuilder(profileRegisteringFacade).fromChannel(channelID);
+	
+	public BillPaymentBuilder billPayment() {
+		return new BillPaymentBuilder(billPaymentFacade)
+					.fromChannel(channelID);
+	}
+	
+	public ProfileRegisteringBuilder registering() {
+		return new ProfileRegisteringBuilder(profileRegisteringFacade).fromChannel(channelID);
 	}
 
 	public LegacyFacade setBalanceFacade(BalanceFacade balanceFacade) {
@@ -105,6 +113,11 @@ public class LegacyFacade {
 		return this;
 	}
 
+	public LegacyFacade setBillPaymentFacade(BillPaymentFacade billPaymentFacade) {
+		this.billPaymentFacade = billPaymentFacade;
+		return this;		
+	}
+	
 	public static class UserProfileBuilder {
 
 		private Integer channelID;
@@ -314,18 +327,18 @@ public class LegacyFacade {
 		}
 	}
 
-	public static class ProfileRegsisteringBuilder {
+	public static class ProfileRegisteringBuilder {
 
 		private ProfileRegisteringFacade profileRegisteringFacade;
 
 		private Integer channelID;
 
 		@Autowired(required = false)
-		public ProfileRegsisteringBuilder(ProfileRegisteringFacade profileRegisteringFacade) {
+		public ProfileRegisteringBuilder(ProfileRegisteringFacade profileRegisteringFacade) {
 			this.profileRegisteringFacade = profileRegisteringFacade;
 		}
 
-		public ProfileRegsisteringBuilder fromChannel(Integer channelID) {
+		public ProfileRegisteringBuilder fromChannel(Integer channelID) {
 			this.channelID = channelID;
 			return this;
 		}
@@ -369,7 +382,11 @@ public class LegacyFacade {
 		private String ref1;
 		private String ref2;
 		
+		private String paypointCode;
+		private String paypointName;
 		private String transactionID;
+		
+		private BillPaymentInfo billPaymentInfo;
 
 		private BillPaymentFacade billPaymentFacade;
 
@@ -402,7 +419,7 @@ public class LegacyFacade {
 			this.msisdn = msisdn;
 			return this;
 		}
-
+/*
 		public BillPaymentBuilder withAmount(BigDecimal amount) {
 			this.amount = amount;
 			return this;
@@ -411,8 +428,8 @@ public class LegacyFacade {
 		public BillPaymentBuilder usingSourceOfFundFee(SourceOfFundFee sourceOfFundFee) {
 			this.sourceOfFundFee = sourceOfFundFee;
 			return this;
-		}
-		
+		}*/
+		/*
 		public BillPaymentBuilder forService(String ref1, String ref2) {
 			this.ref1 = ref1;
 			this.ref2 = ref2;
@@ -424,24 +441,47 @@ public class LegacyFacade {
 			return this;
 		}
 		
+		public BillPaymentBuilder usingPaypoint(String paypointCode, String paypointName) {
+			this.paypointCode = paypointCode;
+			this.paypointName = paypointName;
+			return this;
+		}
+		*/
+		public BillPaymentBuilder usingBillInfo(BillPaymentInfo billPaymentInfo) {
+			this.billPaymentInfo = billPaymentInfo;
+			return this;
+		}
+		
 		public BillPaymentConfirmationInfo performBillPayment() {
 			Validate.notNull(tmnID, "data missing. who pay?");
 			Validate.notNull(sessionID, "data missing. who pay?");
 			Validate.notNull(channelID, "data missing. bill pay from which channel?");
-			Validate.notNull(amount, "data missing. how much to pay bill?");
-			Validate.notNull(sourceOfFundFee, "data missing. using which source of fund to pay bill?");
-			Validate.notNull(sourceOfFundFee.getSource(), "data missing. using which source of fund to pay bill?");
-			Validate.notNull(sourceOfFundFee.getSourceFeeType(), "data missing. using which source of fund to pay bill?");
-/*
-			return balanceFacade.topUpMoney(
-					amount,
-					sourceOfFundID,
-					sourceOfFundType,
-					channelID,
-					sessionID,
+			Validate.notNull(billPaymentInfo, "data missing. which bill to pay?");
+			/*
+			String transRelation = "";
+			String target = "";
+			String totalServiceFee = "";
+			String transType = "";
+			*/
+			return billPaymentFacade.payBill(billPaymentInfo, sessionID, msisdn, channelID, tmnID);
+			/*
+					amount, 
+					ref1, 
+					ref2, 
+					transactionID, 
+					transRelation, 
+					target, 
+					totalServiceFee, 
+					sourceOfFundFee.getSourceType(),
+					sourceOfFundFee.getTotalFee(),
+					sourceOfFundFee.getFeeType(),
+					channelID, 
+					paypointCode, 
+					paypointName, 
+					transType, 
+					sessionID, 
 					tmnID);
-*/
-			return null;
+					*/
 		}
 	}
 

@@ -34,10 +34,17 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	private HttpHeaders headers;
 
 	@Override
-	public BillPaymentInfo getBillInformation(String barcode,
-			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+	public BillPaymentInfo getBillInformation(String barcode, String accessTokenID) 
+			throws ServiceInventoryException {
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+
+		ResponseEntity<BillPaymentInfo> responseEntity = restTemplate.exchange(
+				endPoints.getBillPaymentInfoURL(), HttpMethod.GET, requestEntity,
+				BillPaymentInfo.class, barcode, accessTokenID);
+
+		BillPaymentInfo billPaymentInfo = responseEntity.getBody();
+
+		return billPaymentInfo;
 	}
 
 	@Override
@@ -47,7 +54,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 		HttpEntity<BillPaymentInfo> requestEntity = new HttpEntity<BillPaymentInfo>(billpayInfo,headers);
 
 		ResponseEntity<BillInvoice> responseEntity = restTemplate.exchange(
-				endPoints.getCreateBillInvoiceUrl(), HttpMethod.POST, requestEntity,
+				endPoints.getCreateBillInvoiceURL(), HttpMethod.POST, requestEntity,
 				BillInvoice.class, accessTokenID);
 
 		BillInvoice billInvoice = responseEntity.getBody();

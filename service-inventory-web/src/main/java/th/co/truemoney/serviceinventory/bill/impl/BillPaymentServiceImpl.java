@@ -17,6 +17,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
@@ -30,6 +31,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 	@Autowired
 	private TransactionRepository transactionRepository;
+	
+	@Autowired
+	private LegacyFacade legacyFacade;
 
 	@Autowired
 	AsyncBillPayProcessor asyncBillPayProcessor;
@@ -46,11 +50,20 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		this.transactionRepository = transactionRepository;
 	}
 
+	public void setLegacyFacade(LegacyFacade legacyFacade) {
+		this.legacyFacade = legacyFacade;
+		
+	}
 	@Override
-	public BillPaymentInfo getBillInformation(String barcode,
-			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+	public BillPaymentInfo getBillInformation(String barcode, String accessTokenID) 
+			throws ServiceInventoryException {
+		
+		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		
+		return legacyFacade.fromChannel(accessToken.getChannelID())
+						   .billPayment()
+						   .withBarcode(barcode)
+						   .getInformation();		
 	}
 
 	@Override
@@ -133,4 +146,5 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	public void setAsyncBillPayProcessor(AsyncBillPayProcessor asyncBillPayProcessor) {
 		this.asyncBillPayProcessor = asyncBillPayProcessor;
 	}
+
 }

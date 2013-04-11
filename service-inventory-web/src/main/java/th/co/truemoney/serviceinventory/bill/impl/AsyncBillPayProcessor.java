@@ -40,19 +40,31 @@ public class AsyncBillPayProcessor {
 		try {
 			BillInvoice draftTransaction = billPaymentReceipt.getDraftTransaction();
 			BillPaymentInfo billPaymentInfo = draftTransaction.getBillPaymentInfo();
+			/*
 			BigDecimal amount = billPaymentInfo.getAmount();
-			SourceOfFundFee sourceOfFundFee = billPaymentInfo.getSourceOfFundFee();
-			
+			SourceOfFundFee sourceOfFundFees[] = billPaymentInfo.getSourceOfFundFees();
+			SourceOfFundFee sourceOfFundFee = null;
+			int i = 0;
+			*/
 			billPaymentReceipt.setStatus(Transaction.Status.PROCESSING);
 			transactionRepo.saveBillPayment(billPaymentReceipt, accessToken.getAccessTokenID());
-			
+
+/*
+			for (i = 0; i < sourceOfFundFees.length; i++) {
+				if (sourceOfFundFees[i].getSourceType().equals("EW")) {
+					sourceOfFundFee = sourceOfFundFees[i]; 
+				}
+			}
+	*/		
 			BillPaymentConfirmationInfo confirmationInfo = legacyFacade
 					.fromChannel(accessToken.getChannelID())
-					.billPay(amount)
+					.payBill(billPaymentInfo)
 					.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID(), accessToken.getMobileNumber())
+					/*
 					.usingSourceOfFundFee(sourceOfFundFee)
 					.usingTransaction(draftTransaction.getID())
 					.forService(billPaymentInfo.getRef1(), billPaymentInfo.getRef2())
+					*/
 					.performBillPayment();
 			
 			billPaymentReceipt.setConfirmationInfo(confirmationInfo);
