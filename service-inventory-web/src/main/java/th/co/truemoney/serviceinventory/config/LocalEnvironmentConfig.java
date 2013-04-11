@@ -2,6 +2,8 @@ package th.co.truemoney.serviceinventory.config;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Session;
@@ -18,11 +20,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
-import th.co.truemoney.serviceinventory.bill.BillPaymentService;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
-import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
-import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
-import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
+import th.co.truemoney.serviceinventory.bill.domain.BillParameter;
+import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
+import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
+import th.co.truemoney.serviceinventory.bill.exception.BillException;
+import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -56,7 +58,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResp
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
@@ -437,41 +438,125 @@ public class LocalEnvironmentConfig {
 	
 	@Bean
 	@Primary
-	public BillPaymentService stubBillPaymentService() {
-		
-		return new BillPaymentServiceImpl() {
+	public BillProxy stubBillProxy() {
+		return new BillProxy() {
 			
-			public BillPaymentInfo getBillInformation(String barcode, String accessTokenID)
-					throws ServiceInventoryException {
+			@Override
+			public BillResponse verifyBillPay(BillRequest billPayRequest)
+					throws BillException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public BillResponse getBarcodeInformation(Integer channelID, String barcode) 
+					throws BillException {
+						
+				BillResponse stubBillResponse = new BillResponse();
+				stubBillResponse.setResultCode("0");
+				stubBillResponse.setResultDesc("Success");
+				stubBillResponse.setResultNamespace("SIENGINE");
+				stubBillResponse.setReqTransactionID("4410A0318");
+				stubBillResponse.setResponseMessage("Success");
+				stubBillResponse.setTransactionID("130401012303");
 				
-				ServiceFee sFee = new ServiceFee();
-				sFee.setFeeType("THB");
-				sFee.setFee(new BigDecimal(10.00));
-				sFee.setTotalFee(new BigDecimal(10.00));
+				List<BillParameter> parameters = new ArrayList<BillParameter>();
+				BillParameter parameter = new BillParameter();
+				parameter.setKey("target");
+				parameter.setValue("tcg");				
+				parameters.add(parameter);
 				
-				SourceOfFundFee sofFee = new SourceOfFundFee();
-				sofFee.setFeeType("THB");
-				sofFee.setFee(new BigDecimal(20.00));
-				sofFee.setTotalFee(new BigDecimal(20.00));
+				parameter = new BillParameter();
+				parameter.setKey("logo");
+				parameter.setValue("https://secure.truemoney-dev.com/m/tmn_webview/images/logo_bill/tmvh@2x.png");				
+				parameters.add(parameter);
 				
-				SourceOfFundFee[] sofFees = new SourceOfFundFee[]{ sofFee };
+				parameter = new BillParameter();
+				parameter.setKey("title_th");
+				parameter.setValue("ค่าใช้บริการบริษัทในกลุ่มทรู");				
+				parameters.add(parameter);
 				
-				BillPaymentInfo stubInfo = new BillPaymentInfo();
-				stubInfo.setTarget("tmvh");
-				stubInfo.setLogoURL("https://secure.truemoney-dev.com/m/tmn_webview/images/logo_bill/tmvh@2x.png");
-				stubInfo.setTitleEN("Truemove-H");
-				stubInfo.setTitleTH("ทรูมูฟเฮ็ด");
-				stubInfo.setRef1("864895245");
-				stubInfo.setRef1TitleEN("Customer ID");
-				stubInfo.setRef1TitleTH("รหัสลูกค้า");
-				stubInfo.setRef2("9231782945372901");
-				stubInfo.setRef2TitleEN("Billing Number");
-				stubInfo.setRef2TitleTH("เลขที่ใบแจ้งค่าใช้บริการ");
-				stubInfo.setAmount(new BigDecimal(785.65));
-				stubInfo.setServiceFee(sFee);
-				stubInfo.setSourceOfFundFees(sofFees);
-				return stubInfo;
+				parameter = new BillParameter();
+				parameter.setKey("title_en");
+				parameter.setValue("Convergence Postpay");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("ref1_title_th");
+				parameter.setValue("โทรศัพท์พื้นฐาน");				
+				parameters.add(parameter);
+								
+				parameter = new BillParameter();
+				parameter.setKey("ref1_title_en");
+				parameter.setValue("Fix Line");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("ref1");
+				parameter.setValue("010004552");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("ref2_title_th");
+				parameter.setValue("รหัสลูกค้า");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("ref2_titie_en");
+				parameter.setValue("Customer ID");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("ref2");
+				parameter.setValue("010520120200015601");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("partial_payment");
+				parameter.setValue("Y");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("call_center");
+				parameter.setValue("1331");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("amount");
+				parameter.setValue("10000");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("service_min_amount");
+				parameter.setValue("10000");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("service_max_amount");
+				parameter.setValue("3000000");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("service_fee_type");
+				parameter.setValue("THB");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("service_fee");
+				parameter.setValue("1000");				
+				parameters.add(parameter);
+				
+				parameter = new BillParameter();
+				parameter.setKey("total_service_fee");
+				parameter.setValue("1000");				
+				parameters.add(parameter);
+				
+				stubBillResponse.setParameters(parameters);
+				
+				return stubBillResponse;
+				
 			}
 		};
 	}
+		
 }
