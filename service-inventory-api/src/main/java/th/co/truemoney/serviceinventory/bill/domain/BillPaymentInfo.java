@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.bill.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -27,7 +28,7 @@ public class BillPaymentInfo implements Serializable {
 	private String ref2TitleEN;
 	private String ref2;
 	
-	private BigDecimal amount;
+	private BigDecimal amount = BigDecimal.ZERO;
 	private ServiceFee serviceFee;
 	private SourceOfFundFee[] sourceOfFundFees;
 		
@@ -104,7 +105,7 @@ public class BillPaymentInfo implements Serializable {
 		this.ref2 = ref2;
 	}
 	public BigDecimal getAmount() {
-		return amount;
+		return amount.setScale(2, RoundingMode.HALF_UP);
 	}
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
