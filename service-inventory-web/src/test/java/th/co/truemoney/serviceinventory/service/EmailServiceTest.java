@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
@@ -33,9 +34,9 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { EmailConfig.class })
+@ActiveProfiles(profiles = {"dev"})
 public class EmailServiceTest {
 	
 	@Autowired @Qualifier("emailSender")
@@ -50,7 +51,7 @@ public class EmailServiceTest {
 	@Autowired @Qualifier("welcomeSubject")
 	private String welcomeSubject;
 	
-	FreeMarkerConfigurationFactory freeMarkerConfigurationFactory;
+	FreeMarkerConfigurationFactory freeMarkerMock;
 	
 	@Autowired
 	FreeMarkerConfigurationFactory freeMarker;
@@ -65,7 +66,7 @@ public class EmailServiceTest {
 	public void setup() throws IOException, TemplateException {
 		emailService = new EmailService();
 		
-		freeMarkerConfigurationFactory = mock(FreeMarkerConfigurationFactory.class);
+		freeMarkerMock = mock(FreeMarkerConfigurationFactory.class);
 		javaMailSender = mock(JavaMailSenderImpl.class);
 		mimeMessage = mock(MimeMessage.class);
 		configuration = mock(Configuration.class);
@@ -73,17 +74,17 @@ public class EmailServiceTest {
 		
 		when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 		when(configuration.getTemplate(anyString(), anyString())).thenReturn(template);
-		when(freeMarkerConfigurationFactory.createConfiguration()).thenReturn(configuration);
+		when(freeMarkerMock.createConfiguration()).thenReturn(configuration);
 		
 		emailService.setJavaMailSender(javaMailSender);
-		emailService.setFreeMarkerConfigurationFactory(freeMarkerConfigurationFactory);
+		emailService.setFreeMarkerConfigurationFactory(freeMarkerMock);
 		emailService.setWelcomeSubject(welcomeSubject);
 		emailService.setEmailSender("smart@tmn.com");		
 	}
 	
 	@After
 	public void teardown() {
-		reset(freeMarkerConfigurationFactory);
+		reset(freeMarkerMock);
 		reset(javaMailSender);
 		reset(mimeMessage);
 		reset(configuration);
@@ -136,9 +137,9 @@ public class EmailServiceTest {
 	@Test
 	public void sendWelcomeEmailFailTemplateException() throws TemplateException, Exception {	
 		try {
-			when(freeMarkerConfigurationFactory.createConfiguration()).thenThrow(new TemplateException("fail", Environment.getCurrentEnvironment()));
+			when(freeMarkerMock.createConfiguration()).thenThrow(new TemplateException("fail", Environment.getCurrentEnvironment()));
 			emailService.sendWelcomeEmail("mart@tmn.com", null);
-			verify(freeMarkerConfigurationFactory).createConfiguration();
+			verify(freeMarkerMock).createConfiguration();
 		} catch (TemplateException e) {
 			assertNotNull(e);			
 		}
