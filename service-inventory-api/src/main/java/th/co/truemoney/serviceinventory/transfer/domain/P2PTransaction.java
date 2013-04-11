@@ -12,19 +12,19 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class P2PTransaction extends Transaction {
 
 	private static final long serialVersionUID = -3546197537668299129L;
-	
+
 	private FailStatus failStatus;
-	
+
 	private P2PTransactionConfirmationInfo confirmationInfo;
 
 	public static enum FailStatus {
 		UMARKET_FAILED, UNKNOWN_FAILED;
 	}
-	
+
 	public P2PTransaction() {
 
 	}
-	
+
 	public P2PTransaction(P2PDraftTransaction p2pDraftTransaction) {
 		if (p2pDraftTransaction == null || p2pDraftTransaction.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
 			throw new IllegalArgumentException("passing in bad quote data");
@@ -49,7 +49,7 @@ public class P2PTransaction extends Transaction {
 	public void setDraftTransaction(P2PDraftTransaction p2pDraftTransaction) {
 		super.setDraftTransaction(p2pDraftTransaction);
 	}
-	
+
 	public FailStatus getFailStatus() {
 		return failStatus;
 	}
@@ -74,5 +74,5 @@ public class P2PTransaction extends Transaction {
 				+ ", type=" + type + ", draftTransaction=" + draftTransaction
 				+ ", status=" + status + "]";
 	}
-	
+
 }

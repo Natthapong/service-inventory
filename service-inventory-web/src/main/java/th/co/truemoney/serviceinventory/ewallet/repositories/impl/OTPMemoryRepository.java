@@ -23,4 +23,8 @@ public class OTPMemoryRepository implements OTPRepository {
 	private String createKey(String mobileNumber, String referenceCode) {
 		return mobileNumber + ":" + referenceCode;
 	}
+
+	public void clear() {
+		this.otpsMap.clear();
+	}
 }

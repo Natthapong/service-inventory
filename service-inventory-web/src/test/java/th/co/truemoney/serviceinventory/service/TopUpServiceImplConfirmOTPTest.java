@@ -30,6 +30,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class })
@@ -48,6 +49,7 @@ public class TopUpServiceImplConfirmOTPTest {
 	@Autowired
 	private OTPRepository otpRepo;
 
+	private OTPService otpServiceMock;
 	private AsyncTopUpEwalletProcessor asyncServiceMock;
 
 	private AccessToken accessToken;
@@ -59,8 +61,11 @@ public class TopUpServiceImplConfirmOTPTest {
 	@Before
 	public void setup() {
 
+		otpServiceMock = Mockito.mock(OTPService.class);
 		asyncServiceMock = mock(AsyncTopUpEwalletProcessor.class);
-		this.topUpService.setAsyncTopUpProcessor(asyncServiceMock);
+
+		topUpService.setOtpService(otpServiceMock);
+		topUpService.setAsyncTopUpProcessor(asyncServiceMock);
 
 		//given
 		accessToken =  new AccessToken("tokenID", "sessionID", "tmnID", 41);
@@ -100,17 +105,18 @@ public class TopUpServiceImplConfirmOTPTest {
 	}
 
 	@Test
-	public void shouldFailWhenOTPStringIsIncorrect() {
+	public void shouldFailWhenConfirmOTPStringIsIncorrect() {
 
 		//when
-		Assert.assertEquals(quote.getStatus(), DraftTransaction.Status.OTP_SENT);
+		Assert.assertEquals(DraftTransaction.Status.OTP_SENT, quote.getStatus());
+		Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpServiceMock).isValidOTP(any(OTP.class));
 		try {
 			topUpService.confirmOTP(quote.getID(), new OTP(), accessToken.getAccessTokenID());
 			Assert.fail();
 		} catch (ServiceInventoryWebException e) {}
 
 		//then
-		Assert.assertEquals(quote.getStatus(), DraftTransaction.Status.OTP_SENT);
+		Assert.assertEquals(DraftTransaction.Status.OTP_SENT, quote.getStatus());
 
 		try {
 			transactionRepo.getTopUpEwalletTransaction(quote.getID(), accessToken.getAccessTokenID());

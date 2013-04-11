@@ -25,7 +25,7 @@ public class LegacyFacade {
 
 	@Autowired(required = false)
 	private SourceOfFundFacade sourceOfFundFacade;
-	
+
 	@Autowired(required = false)
 	private BillPaymentFacade billPaymentFacade;
 
@@ -75,12 +75,12 @@ public class LegacyFacade {
 					.fromChannelID(channelID)
 					.withAmount(amount);
 	}
-	
+
 	public BillPaymentBuilder billPayment() {
 		return new BillPaymentBuilder(billPaymentFacade)
 					.fromChannel(channelID);
 	}
-	
+
 	public ProfileRegisteringBuilder registering() {
 		return new ProfileRegisteringBuilder(profileRegisteringFacade).fromChannel(channelID);
 	}
@@ -107,9 +107,9 @@ public class LegacyFacade {
 
 	public LegacyFacade setBillPaymentFacade(BillPaymentFacade billPaymentFacade) {
 		this.billPaymentFacade = billPaymentFacade;
-		return this;		
+		return this;
 	}
-	
+
 	public static class UserProfileBuilder {
 
 		private Integer channelID;
@@ -295,7 +295,7 @@ public class LegacyFacade {
 		}
 
 
-		public void verify() {
+		public String verify() {
 
 			Validate.notNull(tmnID, "data missing. transfer money from whom?");
 			Validate.notNull(sessionID, "data missing. transfer money from whom?");
@@ -303,7 +303,7 @@ public class LegacyFacade {
 			Validate.notNull(amount, "data missing. how much to transfer?");
 			Validate.notNull(targetMobileNumber, "data missing. whom to transfer money to?");
 
-			balanceFacade.verifyP2PTransfer(amount, targetMobileNumber, channelID, sessionID, tmnID);
+			return balanceFacade.verifyP2PTransfer(amount, targetMobileNumber, channelID, sessionID, tmnID);
 		}
 
 		public P2PTransactionConfirmationInfo performTransfer() {
@@ -358,35 +358,35 @@ public class LegacyFacade {
 	}
 
 	public static class BillPaymentBuilder {
-		
+
 		private BillPaymentFacade billPaymentFacade;
-		
+
 		private Integer channelID;
-		
+
 		private String barcode;
-		
+
 		@Autowired(required = false)
 		public BillPaymentBuilder(BillPaymentFacade billPaymentFacade) {
 			this.billPaymentFacade = billPaymentFacade;
 		}
-		
+
 		public BillPaymentBuilder fromChannel(Integer channelID) {
 			this.channelID = channelID;
 			return this;
 		}
-		
+
 		public BillPaymentBuilder withBarcode(String barcode) {
 			this.barcode = barcode;
 			return this;
 		}
-		
+
 		public BillInfo getInformation() {
 			Validate.notNull(channelID, "data missing. get barcode information from which channel?");
 			Validate.notNull(barcode, "data missing. barcode missing?");
 
 			return billPaymentFacade.getBarcodeInformation(channelID, barcode);
 		}
-		
+
 		public BillInfo verify(BillInfo billpayInfo) {
 			return billPaymentFacade.verify(billpayInfo);
 		}

@@ -32,7 +32,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 	private HttpHeaders headers;
 
 	@Override
-	public P2PDraftTransaction createDraftTransaction(String toMobileNo, BigDecimal amount, String accessTokenID) {
+	public P2PDraftTransaction verifyAndCreateTransferDraft(String toMobileNo, BigDecimal amount, String accessTokenID) {
 
 		P2PDraftTransaction draft = new P2PDraftTransaction(toMobileNo, amount);
 
@@ -47,7 +47,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 	}
 
 	@Override
-	public P2PDraftTransaction getDraftTransactionDetails(String draftTransactionID, String accessTokenID)  throws ServiceInventoryException {
+	public P2PDraftTransaction getTransferDraftDetails(String draftTransactionID, String accessTokenID)  throws ServiceInventoryException {
 
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
@@ -60,7 +60,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 	}
 
 	@Override
-	public OTP sendOTP(String draftTransactionID, String accessTokenID) {
+	public OTP submitTransferral(String draftTransactionID, String accessTokenID) {
 
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
@@ -72,8 +72,8 @@ public class TmnTransferServiceClient implements P2PTransferService {
 		return responseEntity.getBody();
 	}
 
-	@Override 
-	public DraftTransaction.Status confirmDraftTransaction(String draftTransactionID, OTP otp, String accessTokenID) {
+	@Override
+	public P2PDraftTransaction.Status verifyOTPAndPerformTransferring(String draftTransactionID, OTP otp, String accessTokenID) {
 
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
 
@@ -86,7 +86,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 	}
 
 	@Override
-	public Transaction.Status getTransactionStatus(String transactionID, String accessTokenID) {
+	public Transaction.Status getTransferingStatus(String transactionID, String accessTokenID) {
 
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 

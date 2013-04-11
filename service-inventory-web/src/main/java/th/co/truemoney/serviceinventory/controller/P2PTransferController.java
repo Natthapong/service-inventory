@@ -32,7 +32,7 @@ public class P2PTransferController {
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 			@RequestBody P2PDraftTransaction draft) {
 		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.createDraftTransaction(draft.getMobileNumber(), draft.getAmount(), accessTokenID);
+		return p2pTransferService.verifyAndCreateTransferDraft(draft.getMobileNumber(), draft.getAmount(), accessTokenID);
 	}
 
 	@RequestMapping(value = "/draft-transaction/{draftTransactionID}", method = RequestMethod.GET)
@@ -40,7 +40,7 @@ public class P2PTransferController {
 			@PathVariable String draftTransactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.getDraftTransactionDetails(draftTransactionID, accessTokenID);
+		return p2pTransferService.getTransferDraftDetails(draftTransactionID, accessTokenID);
 	}
 
 	@RequestMapping(value = "/draft-transaction/{draftTransactionID}/otp", method = RequestMethod.POST)
@@ -48,7 +48,7 @@ public class P2PTransferController {
 			@PathVariable String draftTransactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.sendOTP(draftTransactionID, accessTokenID);
+		return p2pTransferService.submitTransferral(draftTransactionID, accessTokenID);
 	}
 
 	@RequestMapping(value = "/draft-transaction/{draftTransactionID}/otp/{refCode}", method = RequestMethod.PUT)
@@ -61,7 +61,7 @@ public class P2PTransferController {
 			otp.setReferenceCode(refCode);
 		}
 		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.confirmDraftTransaction(draftTransactionID, otp, accessTokenID);
+		return p2pTransferService.verifyOTPAndPerformTransferring(draftTransactionID, otp, accessTokenID);
 	}
 
 	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
@@ -69,7 +69,7 @@ public class P2PTransferController {
 			@PathVariable String transactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.getTransactionStatus(transactionID, accessTokenID);
+		return p2pTransferService.getTransferingStatus(transactionID, accessTokenID);
 	}
 
 	@RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.GET)

@@ -10,15 +10,12 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
@@ -31,10 +28,10 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	private AccessTokenRepository accessTokenRepo;
 
 	@Autowired
-	private EwalletSoapProxy ewalletProxy;
+	private TransactionRepository transactionRepo;
 
 	@Autowired
-	private TransactionRepository transactionRepo;
+	private LegacyFacade legacyFacade;
 
 	@Autowired
 	private AsyncP2PTransferProcessor asyncP2PTransferProcessor;
@@ -43,49 +40,28 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	private OTPService otpService;
 
 	@Override
-	public P2PDraftTransaction createDraftTransaction(String toMobileNumber, BigDecimal amount, String accessTokenID) {
+	public P2PDraftTransaction verifyAndCreateTransferDraft(String targetMobileNumber, BigDecimal amount, String accessTokenID) {
 
 		// --- Get Account Detail from accessToken ---//
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
 		//--- Send to verify amount ---//
-		VerifyTransferResponse verifyResponse = verifyEwalletTransfer(toMobileNumber, amount, accessToken);
+		String targetName = legacyFacade.transfer(amount)
+						.fromChannelID(accessToken.getChannelID())
+						.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+						.toTargetUser(targetMobileNumber)
+						.verify();
 
-		//--- Generate Response ---//
-		String fullName = verifyResponse.getTargetFullname();
-		String markFullName = markFullName(fullName);
+		String targetMarkedFullName = markFullName(targetName);
 
-		String draftID = UUID.randomUUID().toString();
-		P2PDraftTransaction draft = new P2PDraftTransaction();
-		draft.setID(draftID);
-		draft.setAccessTokenID(accessTokenID);
-		draft.setAmount(amount);
-		draft.setMobileNumber(toMobileNumber);
-		draft.setFullname(markFullName);
-		draft.setStatus(DraftTransaction.Status.CREATED);
-
+		P2PDraftTransaction draft = createP2PDraft(amount, targetMobileNumber, targetMarkedFullName, accessTokenID);
 		transactionRepo.saveP2PDraftTransaction(draft, accessToken.getAccessTokenID());
 
 		return draft;
 	}
 
-	private VerifyTransferResponse verifyEwalletTransfer(String mobileNumber, BigDecimal amount, AccessToken accessToken) {
-
-		SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
-
-		VerifyTransferRequest verifyRequest = new VerifyTransferRequest();
-		verifyRequest.setChannelId(accessToken.getChannelID());
-		verifyRequest.setAmount(amount);
-		verifyRequest.setTarget(mobileNumber);
-		verifyRequest.setSecurityContext(securityContext);
-
-		VerifyTransferResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
-
-		return verifyResponse;
-	}
-
 	@Override
-	public P2PDraftTransaction getDraftTransactionDetails(String draftTransactionID, String accessTokenID)
+	public P2PDraftTransaction getTransferDraftDetails(String draftTransactionID, String accessTokenID)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
@@ -95,13 +71,13 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	}
 
 	@Override
-	public OTP sendOTP(String draftTransactionID, String accessTokenID)
+	public OTP submitTransferral(String draftTransactionID, String accessTokenID)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
 		OTP otp = otpService.send(accessToken.getMobileNumber());
 
-		P2PDraftTransaction p2pDraftTransaction = getDraftTransactionDetails(draftTransactionID, accessTokenID);
+		P2PDraftTransaction p2pDraftTransaction = getTransferDraftDetails(draftTransactionID, accessTokenID);
 		p2pDraftTransaction.setOtpReferenceCode(otp.getReferenceCode());
 		p2pDraftTransaction.setStatus(DraftTransaction.Status.OTP_SENT);
 
@@ -111,10 +87,10 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	}
 
 	@Override
-	public DraftTransaction.Status confirmDraftTransaction(String draftTransactionID, OTP otp, String accessTokenID)
+	public P2PDraftTransaction.Status verifyOTPAndPerformTransferring(String draftTransactionID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-		P2PDraftTransaction p2pDraftTransaction = getDraftTransactionDetails(draftTransactionID, accessTokenID);
+		P2PDraftTransaction p2pDraftTransaction = getTransferDraftDetails(draftTransactionID, accessTokenID);
 
 		otpService.isValidOTP(otp);
 
@@ -131,7 +107,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	}
 
 	@Override
-	public Transaction.Status getTransactionStatus(String transactionID, String accessTokenID)
+	public Transaction.Status getTransferingStatus(String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
 		P2PTransaction p2pTransaction = getTransactionResult(transactionID, accessTokenID);
 		Transaction.Status p2pTransactionStatus = p2pTransaction.getStatus();
@@ -153,11 +129,22 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	@Override
 	public P2PTransaction getTransactionResult(String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
+
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		return transactionRepo.getP2PTransaction(transactionID, accessToken.getAccessTokenID());
+	}
 
-		P2PTransaction p2pTransaction = transactionRepo.getP2PTransaction(transactionID, accessToken.getAccessTokenID());
+	private P2PDraftTransaction createP2PDraft(BigDecimal amount, String targetMobileNumber, String targetName, String byAccessToken) {
+		String draftID = UUID.randomUUID().toString();
+		P2PDraftTransaction draft = new P2PDraftTransaction();
+		draft.setID(draftID);
+		draft.setAccessTokenID(byAccessToken);
+		draft.setAmount(amount);
+		draft.setMobileNumber(targetMobileNumber);
+		draft.setFullname(targetName);
+		draft.setStatus(DraftTransaction.Status.CREATED);
 
-		return p2pTransaction;
+		return draft;
 	}
 
 	private void performTransferMoney(AccessToken accessToken, P2PTransaction p2pTransaction) {
@@ -195,24 +182,12 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		return markName;
 	}
 
-	public EwalletSoapProxy getEwalletProxy() {
-		return ewalletProxy;
-	}
-
-	public void setEwalletProxy(EwalletSoapProxy ewalletProxy) {
-		this.ewalletProxy = ewalletProxy;
-	}
-
-	public AccessTokenRepository getAccessTokenRepository() {
-		return accessTokenRepo;
+	public void setLegacyFacade(LegacyFacade legacyFacade) {
+		this.legacyFacade = legacyFacade;
 	}
 
 	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepo) {
 		this.accessTokenRepo = accessTokenRepo;
-	}
-
-	public TransactionRepository getTransactionRepository() {
-		return transactionRepo;
 	}
 
 	public void setTransactionRepository(TransactionRepository transactionRepo) {

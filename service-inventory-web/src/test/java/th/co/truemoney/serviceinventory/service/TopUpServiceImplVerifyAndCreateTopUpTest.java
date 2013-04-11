@@ -2,7 +2,7 @@ package th.co.truemoney.serviceinventory.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -26,13 +26,13 @@ import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.util.TestData.SourceOfFundFacadeMocker;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.SourceOfFundFacade;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
-public class TopUpServiceImplVerifyTopUpTest {
+public class TopUpServiceImplVerifyAndCreateTopUpTest {
 
 	//unit under test
 	@Autowired
@@ -44,7 +44,7 @@ public class TopUpServiceImplVerifyTopUpTest {
 	@Autowired
 	private AccessTokenRepository accessTokenRepo;
 
-	private SourceOfFundFacadeMocker sofFacadeMocker =  new SourceOfFundFacadeMocker();
+	private SourceOfFundFacade sofFacadeMock;
 
 	private AccessToken accessToken = new AccessToken("tokenID", "sessionID", "tmnID", 41);
 	private DirectDebit userDirectDebit = new DirectDebit("sofID", "debit");
@@ -53,11 +53,12 @@ public class TopUpServiceImplVerifyTopUpTest {
 	public void setup() {
 
 		//given
-		legacyFacade.setSourceOfFundFacade(sofFacadeMocker.getMockObject());
+		sofFacadeMock = mock(SourceOfFundFacade.class);
+		legacyFacade.setSourceOfFundFacade(sofFacadeMock);
 
 		accessTokenRepo.save(accessToken);
 
-		when(sofFacadeMocker.getAllDirectDebitSourceOfFunds())
+		when(sofFacadeMock.getAllDirectDebitSourceOfFunds(anyInt(), anyString(), anyString()))
 			.thenReturn(Arrays.asList(userDirectDebit));
 
 	}
@@ -67,7 +68,6 @@ public class TopUpServiceImplVerifyTopUpTest {
 
 		//given
 		BigDecimal amount = new BigDecimal(400);
-
 		//when
 		TopUpQuote topupQuote = this.topUpService.verifyAndCreateTopUpQuote(userDirectDebit.getSourceOfFundID(), amount, accessToken.getAccessTokenID());
 

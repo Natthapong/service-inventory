@@ -1,12 +1,7 @@
 package th.co.truemoney.serviceinventory.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 
@@ -15,132 +10,213 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
+import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
+import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncP2PTransferProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResponse;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
+import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.sms.OTPService;
-import th.co.truemoney.serviceinventory.stub.AccessTokenRepositoryStubbed;
 import th.co.truemoney.serviceinventory.stub.P2PTransferStubbed;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction.FailStatus;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class })
+@ActiveProfiles(profiles={"local", "mem"})
 public class P2PTransferServiceImplTest {
 
+	//unit under test
+	@Autowired
 	private P2PTransferServiceImpl p2pService;
-	private EwalletSoapProxy ewalletSoapProxyMock;
-	private AccessTokenRepository accessTokenRepoMock;
-	private TransactionRepository transactionRepo;
-	private OTPService otpService;
-	private AsyncP2PTransferProcessor asyncP2PTransferProcessor;
 
+	@Autowired
+	private AccessTokenMemoryRepository accessTokenRepo;
+
+	@Autowired
+	private TransactionMemoryRepository transactionRepo;
+
+	@Autowired
+	private OTPMemoryRepository otpRepo;
+
+	//mock
+	private OTPService otpServiceMock;
+	private AsyncP2PTransferProcessor asyncP2PProcessorMock;
+
+	//setup data
 	private AccessToken accessToken;
-	private P2PTransaction p2pTransaction;
+	private OTP goodOTP;
+	private P2PDraftTransaction draftTrans;
 
 	@Before
 	public void setup() {
-		this.p2pTransaction = new P2PTransaction();
-		this.p2pService = new P2PTransferServiceImpl();
-		this.ewalletSoapProxyMock = Mockito.mock(EwalletSoapProxy.class);
-		this.accessTokenRepoMock = Mockito.mock(AccessTokenRepository.class);
-		this.transactionRepo = Mockito.mock(TransactionRepository.class);
-		this.otpService = Mockito.mock(OTPService.class);
-		this.asyncP2PTransferProcessor = Mockito.mock(AsyncP2PTransferProcessor.class);
 
-		this.p2pService.setEwalletProxy(this.ewalletSoapProxyMock);
-		this.p2pService.setAccessTokenRepository(this.accessTokenRepoMock);
-		this.p2pService.setTransactionRepository(this.transactionRepo);
-		this.p2pService.setOtpService(otpService);
-		this.p2pService.setAsyncP2PTransferProcessor(asyncP2PTransferProcessor);
+		this.otpServiceMock = Mockito.mock(OTPService.class);
+		this.asyncP2PProcessorMock = Mockito.mock(AsyncP2PTransferProcessor.class);
 
+		this.p2pService.setOtpService(otpServiceMock);
+		this.p2pService.setAsyncP2PTransferProcessor(asyncP2PProcessorMock);
 
-		accessToken = AccessTokenRepositoryStubbed.createSuccessAccessToken();
-		when(accessTokenRepoMock.getAccessToken(Mockito.anyString()))
-		.thenReturn(accessToken);
-		when(transactionRepo.getP2PDraftTransaction(Mockito.anyString(), Mockito.anyString()))
-		.thenReturn(new P2PDraftTransaction());
-		when(transactionRepo.getP2PTransaction(Mockito.anyString(), Mockito.anyString()))
-		.thenReturn(p2pTransaction);
+		accessToken = new AccessToken("1234567890", "0987654321", "1111111111", "user1.test.v1@gmail.com", "0866012345", "local@tmn.com", 41);
+		accessTokenRepo.save(accessToken);
+
+		goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
+		otpRepo.saveOTP(goodOTP);
+
+		draftTrans =  P2PTransferStubbed.createP2PDraft(new BigDecimal(100), "0987654321", "target name", accessToken.getAccessTokenID());
+		transactionRepo.saveP2PDraftTransaction(draftTrans, accessToken.getAccessTokenID());
 	}
 
 	@After
 	public void teardown() {
-		reset(ewalletSoapProxyMock);
-		reset(accessTokenRepoMock);
-		reset(transactionRepo);
-		reset(otpService);
-		reset(asyncP2PTransferProcessor);
+		accessTokenRepo.clear();
+		transactionRepo.clear();
+		otpRepo.clear();
 	}
 
 	@Test
-	public void createDraftTransactionSuccess() {
-		BigDecimal amount = new BigDecimal(200);
-		String mobileNumber = "0811111111";
+	public void shouldVerifyAndCreateTransferDraftSuccess() {
 
 		//given
-		VerifyTransferResponse stubbedVerifyTransferResponse = P2PTransferStubbed.createSuccessStubbedVerifyTransferResponse();
+		BigDecimal amount = new BigDecimal(200);
+		String targetMobile = "0987654321";
 
 		//when
-
-		when(ewalletSoapProxyMock.verifyTransfer(Mockito.any(VerifyTransferRequest.class)))
-			.thenReturn(stubbedVerifyTransferResponse);
-
-		P2PDraftTransaction draftTrans = this.p2pService.createDraftTransaction(mobileNumber, amount, accessToken.getAccessTokenID());
+		P2PDraftTransaction draftTrans = this.p2pService.verifyAndCreateTransferDraft(targetMobile, amount, accessToken.getAccessTokenID());
 
 		//then
 		assertNotNull(draftTrans);
 		assertNotNull(draftTrans.getFullname());
+
+		P2PDraftTransaction newDraftTrans = this.p2pService.getTransferDraftDetails(draftTrans.getID(), accessToken.getAccessTokenID());
+		assertNotNull(newDraftTrans);
 	}
 
 	@Test
-	public void getDraftTransactionDetails() {
-		P2PDraftTransaction p2pDraftTransaction = this.p2pService.getDraftTransactionDetails("draftTransaction", accessToken.getAccessTokenID());
+	public void shouldSendConfirmingOTPWhenSubmitTransferral() {
 
-		assertNotNull(p2pDraftTransaction);
-	}
-
-	@Test
-	public void sendOTP() {
+		//given
 		OTP mockOTP = new OTP(accessToken.getMobileNumber(), "referenceCode", "otpString");
-		when(otpService.send(eq(accessToken.getMobileNumber()))).thenReturn(mockOTP);
-		OTP otp = this.p2pService.sendOTP("draftTransactionID", accessToken.getAccessTokenID());
+		when(otpServiceMock.send(accessToken.getMobileNumber())).thenReturn(mockOTP);
+		assertEquals(Status.CREATED, draftTrans.getStatus());
 
-		verify(transactionRepo).saveP2PDraftTransaction(Mockito.any(P2PDraftTransaction.class), Mockito.anyString());
+		//when
+		OTP otp = this.p2pService.submitTransferral(draftTrans.getID(), accessToken.getAccessTokenID());
+
+		//then
 		assertNotNull(otp);
+		P2PDraftTransaction repoValue = transactionRepo.getP2PDraftTransaction(draftTrans.getID(), accessToken.getAccessTokenID());
+		assertEquals(Status.OTP_SENT, repoValue.getStatus());
 	}
 
 	@Test
-	public void confirmDraftTransaction() {
-		OTP mockOTP = new OTP(accessToken.getMobileNumber(), "referenceCode", "otpString");
+	public void shouldReturnCorrectStatusWhenGetTransactionStatusGivesGoodStatuses() {
 
-		DraftTransaction.Status status = this.p2pService.confirmDraftTransaction("draftTransactionID", mockOTP, accessToken.getAccessTokenID());
+		//given
+		draftTrans.setStatus(Status.OTP_CONFIRMED);
+		P2PTransaction p2pTrans = new P2PTransaction(draftTrans);
+		transactionRepo.saveP2PTransaction(p2pTrans, accessToken.getAccessTokenID());
 
-		verify(asyncP2PTransferProcessor).transferEwallet(any(P2PTransaction.class), any(AccessToken.class));
-		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, status);
-	}
+		//given status is verified
+		p2pTrans.setStatus(Transaction.Status.VERIFIED);
+		transactionRepo.saveP2PTransaction(p2pTrans, accessToken.getAccessTokenID());
 
-	@Test
-	public void getTransactionStatus() {
-		p2pTransaction.setStatus(Transaction.Status.VERIFIED);
-		Transaction.Status status =  this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());
+		//when status is verified
+		Transaction.Status status =  this.p2pService.getTransferingStatus(draftTrans.getID(), accessToken.getAccessTokenID());
 		assertEquals(Transaction.Status.VERIFIED, status);
 
-		p2pTransaction.setStatus(Transaction.Status.PROCESSING);
-		status =  this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());
+		//given status is processing
+		p2pTrans.setStatus(Transaction.Status.PROCESSING);
+		transactionRepo.saveP2PTransaction(p2pTrans, accessToken.getAccessTokenID());
+
+		//when status is processing
+		status =  this.p2pService.getTransferingStatus(draftTrans.getID(), accessToken.getAccessTokenID());
 		assertEquals(Transaction.Status.PROCESSING, status);
 
-		p2pTransaction.setStatus(Transaction.Status.SUCCESS);
-		status =  this.p2pService.getTransactionStatus("transactionID", accessToken.getAccessTokenID());
+		//given status is success
+		p2pTrans.setStatus(Transaction.Status.SUCCESS);
+		transactionRepo.saveP2PTransaction(p2pTrans, accessToken.getAccessTokenID());
+
+		//when status is processing
+		status =  this.p2pService.getTransferingStatus(draftTrans.getID(), accessToken.getAccessTokenID());
 		assertEquals(Transaction.Status.SUCCESS, status);
+	}
+
+	@Test
+	public void shouldThrowExceptionWhenGetTransactionStatusGivesBadStatuses() {
+
+		//given
+		draftTrans.setStatus(Status.OTP_CONFIRMED);
+		P2PTransaction p2pTrans = new P2PTransaction(draftTrans);
+		transactionRepo.saveP2PTransaction(p2pTrans, accessToken.getAccessTokenID());
+
+		//given status has failed because umarket
+		p2pTrans.setStatus(Transaction.Status.FAILED);
+		p2pTrans.setFailStatus(FailStatus.UMARKET_FAILED);
+		transactionRepo.saveP2PTransaction(p2pTrans, accessToken.getAccessTokenID());
+
+		//when
+		try {
+			this.p2pService.getTransferingStatus(draftTrans.getID(), accessToken.getAccessTokenID());
+			fail();
+		} catch (ServiceInventoryWebException ex) {
+			assertEquals(Code.CONFIRM_UMARKET_FAILED, ex.getErrorCode());
+		}
+
+		//given status has failed because unknown failure
+		p2pTrans.setStatus(Transaction.Status.FAILED);
+		p2pTrans.setFailStatus(FailStatus.UNKNOWN_FAILED);
+		transactionRepo.saveP2PTransaction(p2pTrans, accessToken.getAccessTokenID());
+
+		//when
+		try {
+			this.p2pService.getTransferingStatus(draftTrans.getID(), accessToken.getAccessTokenID());
+			fail();
+		} catch (ServiceInventoryWebException ex) {
+			assertEquals(Code.CONFIRM_FAILED, ex.getErrorCode());
+		}
+	}
+
+	@Test
+	public void shouldThrowResourceNotFoundExceptionWhenGetTransactionStatusWithBadKeys() {
+		//given
+		draftTrans.setStatus(Status.OTP_CONFIRMED);
+		P2PTransaction p2pTrans = new P2PTransaction(draftTrans);
+		transactionRepo.saveP2PTransaction(p2pTrans, accessToken.getAccessTokenID());
+
+		//given status has failed because umarket
+		p2pTrans.setStatus(Transaction.Status.SUCCESS);
+		transactionRepo.saveP2PTransaction(p2pTrans, accessToken.getAccessTokenID());
+
+		//when using bad trans id
+		try {
+			this.p2pService.getTransferingStatus("bad trans id", accessToken.getAccessTokenID());
+			fail();
+		} catch (ResourceNotFoundException ex) {
+			assertEquals(Code.TRANSACTION_NOT_FOUND, ex.getErrorCode());
+		}
+
+		//when using bad access token
+		try {
+			this.p2pService.getTransferingStatus(p2pTrans.getID(), "bad access token");
+			fail();
+		} catch (ResourceNotFoundException ex) {
+			assertEquals(Code.ACCESS_TOKEN_NOT_FOUND, ex.getErrorCode());
+		}
 	}
 }
