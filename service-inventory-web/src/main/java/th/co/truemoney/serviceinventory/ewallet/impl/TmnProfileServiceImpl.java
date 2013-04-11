@@ -14,7 +14,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.ProfileRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
@@ -38,14 +38,16 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	private AccessTokenRepository accessTokenRepo;
 
 	@Autowired
-	private ProfileRepository profileRepo;
+	private RegisteringProfileRepository registeringProfileRepo;
 
 	@Override
 	public String login(Integer channelID, Login login)
 				throws SignonServiceException {
 
-		AccessToken accessToken = legacyFacade.fromChannel(channelID)
-				.login(login.getUsername(), login.getHashPassword());
+		String initiator = login.getUsername();
+		String secret = login.getHashPassword();
+
+		AccessToken accessToken = legacyFacade.login(channelID, initiator, secret);
 
 		logger.info("Access token created: " + accessToken);
 
@@ -58,20 +60,20 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	public TmnProfile getTruemoneyProfile(String accessTokenID) throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-		logger.debug("retrieve access Token: "+accessToken.toString());
 
-		return legacyFacade.fromChannel(accessToken.getChannelID())
-						   .userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+						   .fromChannel(accessToken.getChannelID())
 						   .getProfile();
 	}
 
 	@Override
 	public BigDecimal getEwalletBalance(String accessTokenID) throws ServiceInventoryException {
+
 		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
-		return legacyFacade.fromChannel(accessToken.getChannelID())
-				   .userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
-				   .getCurrentBalance();
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+								.fromChannel(accessToken.getChannelID())
+				   				.getCurrentBalance();
 	}
 
 	@Override
@@ -81,8 +83,9 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 		accessTokenRepo.remove(accessTokenID);
 
-		legacyFacade.fromChannel(accessToken.getChannelID())
-					.logout(accessToken.getSessionID(), accessToken.getTruemoneyID());
+		legacyFacade.logout(accessToken.getChannelID(),
+							accessToken.getSessionID(),
+							accessToken.getTruemoneyID());
 
 		return "";
 	}
@@ -90,17 +93,23 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	@Override
     public String validateEmail(Integer channelID, String registeringEmail) throws ServiceInventoryException {
 
-		legacyFacade.fromChannel(channelID).registering().verifyEmail(registeringEmail);
+		legacyFacade.registering()
+						.fromChannel(channelID)
+						.verifyEmail(registeringEmail);
 
 		return registeringEmail;
     }
 
 	@Override
     public OTP createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
-		legacyFacade.fromChannel(channelID).registering().verifyMobileNumber(tmnProfile.getMobileNumber());
+
+		legacyFacade.registering()
+						.fromChannel(channelID)
+						.verifyMobileNumber(tmnProfile.getMobileNumber());
 
        	OTP otp = otpService.send(tmnProfile.getMobileNumber());
-       	profileRepo.saveProfile(tmnProfile);
+
+       	registeringProfileRepo.saveRegisteringProfile(tmnProfile);
 
        	return otp;
     }
@@ -110,7 +119,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 		otpService.isValidOTP(otp);
 
-		TmnProfile tmnProfile = profileRepo.getTmnProfile(otp.getMobileNumber());
+		TmnProfile tmnProfile = registeringProfileRepo.getRegisteringProfile(otp.getMobileNumber());
 
 		performCreateProfile(channelID, tmnProfile);
 
@@ -141,8 +150,8 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		this.accessTokenRepo = accessTokenRepo;
 	}
 
-	public void setProfileRepository(ProfileRepository profileRepository) {
-		this.profileRepo = profileRepository;
+	public void setRegisteringProfileRepository(RegisteringProfileRepository registeringProfileRepo) {
+		this.registeringProfileRepo = registeringProfileRepo;
 	}
 
 	public void setEmailService(EmailService emailService) {

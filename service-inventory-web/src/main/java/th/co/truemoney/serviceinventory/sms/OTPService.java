@@ -51,7 +51,7 @@ public class OTPService {
 
 	}
 
-	public boolean isValidOTP(OTP inputOTP) throws ServiceInventoryWebException {
+	public void isValidOTP(OTP inputOTP) throws ServiceInventoryWebException {
 		if (inputOTP == null || inputOTP.getReferenceCode() == null) {
 			throw new ServiceInventoryWebException(Code.INVALID_OTP, "invalid OTP.");
 		}
@@ -61,7 +61,6 @@ public class OTPService {
 		if (otp != null && !otp.getOtpString().equals(inputOTP.getOtpString())) {
 			throw new ServiceInventoryWebException(Code.OTP_NOT_MATCH, "OTP not matched.");
 		}
-		return true;
 	}
 
 	public void setOTPRepository(OTPRepository otpRepository) {

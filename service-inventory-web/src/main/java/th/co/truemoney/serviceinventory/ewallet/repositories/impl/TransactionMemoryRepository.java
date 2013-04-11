@@ -16,12 +16,12 @@ import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
 
 public class TransactionMemoryRepository implements TransactionRepository {
 
-	public static HashMap<String, TopUpQuote> quotesMap = new LinkedHashMap<String, TopUpQuote>();
-	public static HashMap<String, TopUpOrder> ordersMap = new LinkedHashMap<String, TopUpOrder>();
-	public static HashMap<String, P2PDraftTransaction> p2pDraftTransactionMap = new LinkedHashMap<String, P2PDraftTransaction>();
-	public static HashMap<String, P2PTransaction> p2pTransactionMap = new LinkedHashMap<String, P2PTransaction>();
-	public static HashMap<String, BillInvoice> billInvoiceMap = new LinkedHashMap<String, BillInvoice>();
-	public static HashMap<String, BillPayment> billPaymentMap = new LinkedHashMap<String, BillPayment>();
+	public HashMap<String, TopUpQuote> quotesMap = new LinkedHashMap<String, TopUpQuote>();
+	public HashMap<String, TopUpOrder> ordersMap = new LinkedHashMap<String, TopUpOrder>();
+	public HashMap<String, P2PDraftTransaction> p2pDraftTransactionMap = new LinkedHashMap<String, P2PDraftTransaction>();
+	public HashMap<String, P2PTransaction> p2pTransactionMap = new LinkedHashMap<String, P2PTransaction>();
+	public HashMap<String, BillInvoice> billInvoiceMap = new LinkedHashMap<String, BillInvoice>();
+	public HashMap<String, BillPayment> billPaymentMap = new LinkedHashMap<String, BillPayment>();
 
 	@Override
 	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote,
@@ -138,6 +138,15 @@ public class TransactionMemoryRepository implements TransactionRepository {
 		}
 
 		return billPayment;
+	}
+
+	public void clear() {
+		quotesMap.clear();
+		ordersMap.clear();
+		p2pDraftTransactionMap.clear();
+		p2pTransactionMap.clear();
+		billInvoiceMap.clear();
+		billPaymentMap.clear();
 	}
 
 }

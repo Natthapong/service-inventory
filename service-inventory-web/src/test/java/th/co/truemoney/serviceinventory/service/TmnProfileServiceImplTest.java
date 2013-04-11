@@ -2,99 +2,101 @@ package th.co.truemoney.serviceinventory.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
+import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
+import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
+import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.impl.TmnProfileProxyImpl;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.impl.TmnSecurityProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
+import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
-import th.co.truemoney.serviceinventory.stub.TmnProfileStubbed;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class })
+@ActiveProfiles(profiles={"local", "mem"})
 public class TmnProfileServiceImplTest {
 
-	private TmnProfileServiceImpl tmnProfileServiceImpl;
-	private TmnSecurityProxy tmnSecurityProxyMock;
-	private TmnProfileProxy tmnProfileProxyMock;
+	@Autowired
+	private TmnProfileServiceImpl profileService;
+
+	@Autowired
+	private LegacyFacade legacyFacade;
+
+	private ProfileFacade mockProfileFacade;
+
+	private AccessToken accessToken = new AccessToken("tokenID", "sessionID", "tmnID", 41);
 
 	@Before
 	public void setup() {
-		this.tmnProfileServiceImpl = new TmnProfileServiceImpl();
-		this.tmnSecurityProxyMock = Mockito.mock(TmnSecurityProxyImpl.class);
-		this.tmnProfileProxyMock = Mockito.mock(TmnProfileProxyImpl.class);
 
-		ProfileFacade profileFacade = new ProfileFacade();
+		mockProfileFacade = Mockito.mock(ProfileFacade.class);
+		legacyFacade.setProfileFacade(mockProfileFacade);
 
-		profileFacade.setTmnSecurityProxy(tmnSecurityProxyMock);
-		profileFacade.setTmnProfileProxy(tmnProfileProxyMock);
-
-		LegacyFacade legacyFacade = new LegacyFacade();
-		legacyFacade.setProfileFacade(profileFacade);
-
-		this.tmnProfileServiceImpl.setLegacyFacade(legacyFacade);
-		this.tmnProfileServiceImpl.setAccessTokenRepository(new AccessTokenMemoryRepository());
+		profileService.setAccessTokenRepository(new AccessTokenMemoryRepository());
 	}
 
+
 	@Test
-	public void shouldLoginSuccess() {
+	public void shouldReturnAccessTokenWhenLoginSuccess() {
 
 		//given
-		SignonResponse stubbedSignonResponse = TmnProfileStubbed.createSuccessStubbedSignonResponse();
-
-		GetBasicProfileResponse stubbedProfileResponse = TmnProfileStubbed.createSuccessStubbedProfileResponse();
-
-		when(tmnSecurityProxyMock.signon(Mockito.any(SignonRequest.class))).thenReturn(stubbedSignonResponse);
-
-		when(tmnProfileProxyMock.getBasicProfile(Mockito.any(th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest.class))).thenReturn(stubbedProfileResponse);
+		when(mockProfileFacade.login(41, "user1.test.v1@gmail.com", "secret")).thenReturn(accessToken);
 
 		//when
-		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		String result = this.tmnProfileServiceImpl.login(41, login);
+		String result = this.profileService.login(41, new Login("user1.test.v1@gmail.com", "secret"));
 
 		//then
 		assertNotNull(result);
+		assertEquals("tokenID", result);
 
 	}
 
-	//@Test
-	public void shouldLoginFailWithSignon() {
+	@Test
+	public void shouldThrowExceptionWhenLoginFail() {
 
 		//given
-		when(tmnSecurityProxyMock.signon(any(SignonRequest.class)))
-			.thenThrow(TmnProfileStubbed.createFailedThrowEwalletException());
+		when(mockProfileFacade.login(41, "bad.user@gmail.com", "secret")).thenThrow(new SignonServiceException("401", "bad login"));
 
 		//when
 		try {
-
-			Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-			this.tmnProfileServiceImpl.login(41, login);
+			this.profileService.login(41, new Login("bad.user@gmail.com", "secret"));
 			Assert.fail();
 		} catch (SignonServiceException ex) {
-			assertEquals("error code", ex.getErrorCode());
-			assertEquals("error namespace", ex.getErrorNamespace());
+			assertEquals("401", ex.getErrorCode());
+			assertEquals("bad login", ex.getErrorDescription());
 		}
+	}
 
-		//then
-		verify(tmnSecurityProxyMock).signon(any(SignonRequest.class));
+	@Test
+	public void shouldLogoutSuccessWhenUserWasLogined() {
 
+		//given
+		when(mockProfileFacade.login(41, "user1.test.v1@gmail.com", "secret")).thenReturn(accessToken);
+		String accessTokenID = this.profileService.login(41, new Login("user1.test.v1@gmail.com", "secret"));
+
+		//when
+		profileService.logout(accessTokenID);
+	}
+
+	@Test(expected=ResourceNotFoundException.class)
+	public void shouldLogoutFailWhenUserWasNeverLogined() {
+		profileService.logout(accessToken.getAccessTokenID());
 	}
 
 }

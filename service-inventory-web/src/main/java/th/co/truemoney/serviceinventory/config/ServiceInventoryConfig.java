@@ -33,7 +33,7 @@ import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 @EnableAsync
 @EnableAspectJAutoProxy
 @ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop"})
-@Import({SmsConfig.class, TmnProfileConfig.class, EmailConfig.class, LegacyFacadeConfig.class })
+@Import({SmsConfig.class, TmnProfileConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, DevEnvironmentConfig.class })
 public class ServiceInventoryConfig {
 
 	@Bean

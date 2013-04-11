@@ -61,12 +61,17 @@ public class ProfileRegisteringFacade {
         isCreatableRequest.setChannelId(channelID);
         isCreatableRequest.setLoginId(loginID);
 
-		String encryptedPin = HashPasswordUtil.encryptSHA1(tmnProfileInitiator.toLowerCase() + tmnProfilePin).toLowerCase();
+		String encryptedPin = encryptSHA1(tmnProfileInitiator, tmnProfilePin);
 
         AdminSecurityContext adminSecurityContext = new AdminSecurityContext(tmnProfileInitiator, encryptedPin);
         isCreatableRequest.setAdminSecurityContext(adminSecurityContext);
         return isCreatableRequest;
     }
+
+	private String encryptSHA1(String tmnProfileInitiator, String tmnProfilePin) {
+		String initiator = tmnProfileInitiator != null ? tmnProfileInitiator.toLowerCase() : "";
+		return HashPasswordUtil.encryptSHA1(initiator + tmnProfilePin).toLowerCase();
+	}
 
     private CreateTmnProfileRequest createTmnProfileRequest(Integer channelID, TmnProfile tmnProfile) {
 		CreateTmnProfileRequest tmnProfileRequest = new CreateTmnProfileRequest();

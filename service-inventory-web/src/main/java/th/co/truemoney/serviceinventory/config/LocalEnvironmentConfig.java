@@ -20,6 +20,7 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
+import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRequest;
@@ -51,7 +52,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResp
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
@@ -68,7 +68,7 @@ public class LocalEnvironmentConfig {
 
 	Adam adam = new Adam();
 	Eve eve = new Eve();
-	
+
 	@Bean
 	@Primary
 	public TmnProfileProxy stubTmnProfileProxy() {
@@ -316,10 +316,10 @@ public class LocalEnvironmentConfig {
 			public StandardBizResponse isCreatable(
 					IsCreatableRequest isCreatableRequest)
 					throws EwalletException {
-				if(isCreatableRequest.getLoginId().equals("local@tmn.com")){
-					throw new ServiceInventoryWebException("40000","This user already register.");
+				if(isCreatableRequest != null && "local@tmn.com".equals(isCreatableRequest.getLoginId())){
+					throw new FailResultCodeException("401", "EWALLET-PROXY");
 				}else{
-					return new StandardBizResponse("1", "0", "namespace",
+					return new StandardBizResponse("1", "0", "EWALLET-PROXY",
 						new String[] { "email" }, new String[] { isCreatableRequest.getLoginId() });
 				}
 			}

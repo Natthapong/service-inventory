@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
@@ -19,16 +18,6 @@ public class SourceOfFundFacade {
 
 	@Autowired
 	private TmnProfileProxy tmnProfileProxy;
-
-	public List<DirectDebit> getAllDirectDebitSourceOfFunds(AccessToken accessToken) {
-
-		Integer channelID = accessToken.getChannelID();
-		String sessionID = accessToken.getSessionID();
-		String truemoneyID = accessToken.getTruemoneyID();
-
-		return getAllDirectDebitSourceOfFunds(channelID, sessionID, truemoneyID);
-
-	}
 
 	public List<DirectDebit> getAllDirectDebitSourceOfFunds(Integer channelID, String sessionID, String truemoneyID) {
 
