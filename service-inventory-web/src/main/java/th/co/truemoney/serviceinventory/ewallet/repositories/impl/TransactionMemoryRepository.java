@@ -3,7 +3,7 @@ package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
+import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
@@ -20,7 +20,7 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	public HashMap<String, TopUpOrder> ordersMap = new LinkedHashMap<String, TopUpOrder>();
 	public HashMap<String, P2PDraftTransaction> p2pDraftTransactionMap = new LinkedHashMap<String, P2PDraftTransaction>();
 	public HashMap<String, P2PTransaction> p2pTransactionMap = new LinkedHashMap<String, P2PTransaction>();
-	public HashMap<String, BillInvoice> billInvoiceMap = new LinkedHashMap<String, BillInvoice>();
+	public HashMap<String, Bill> billInvoiceMap = new LinkedHashMap<String, Bill>();
 	public HashMap<String, BillPayment> billPaymentMap = new LinkedHashMap<String, BillPayment>();
 
 	@Override
@@ -102,15 +102,15 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveBillInvoice(BillInvoice billInvoice, String accessTokenID) {
+	public void saveBillInvoice(Bill billInvoice, String accessTokenID) {
 		billInvoiceMap.put(accessTokenID + ":" + billInvoice.getID(), billInvoice);
 	}
 
 	@Override
-	public BillInvoice getBillInvoice(String billInvoiceID,
+	public Bill getBillInvoice(String billInvoiceID,
 			String accessTokenID) {
 
-		BillInvoice billInvoice = billInvoiceMap.get(accessTokenID + ":" + billInvoiceID);
+		Bill billInvoice = billInvoiceMap.get(accessTokenID + ":" + billInvoiceID);
 
 		if (billInvoice == null) {
 			throw new ResourceNotFoundException(

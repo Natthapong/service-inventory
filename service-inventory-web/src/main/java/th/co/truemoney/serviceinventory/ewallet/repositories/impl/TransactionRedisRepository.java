@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
+import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
@@ -135,7 +135,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 
 	public void saveBillInvoice(
-			BillInvoice billInvoice,
+			Bill billInvoice,
 			String accessTokenID) {
 		try {
 			redisLoggingDao.addData("billInvoice:" + accessTokenID + ":" +billInvoice.getID(), mapper.writeValueAsString(billInvoice), 15L);
@@ -145,14 +145,14 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public BillInvoice getBillInvoice(String billInvoiceID, String accessTokenID) {
+	public Bill getBillInvoice(String billInvoiceID, String accessTokenID) {
 		try {
 			String result = redisLoggingDao.getData("billInvoice:" + accessTokenID + ":" + billInvoiceID);
 			if(result == null) {
 				throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "Bill invoice not found.");
 			}
 
-			return mapper.readValue(result, BillInvoice.class);
+			return mapper.readValue(result, Bill.class);
 		} catch (ServiceInventoryWebException e) {
 			throw e;
 		} catch (Exception e) {

@@ -19,9 +19,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
+import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
@@ -79,12 +79,12 @@ public class BillPaymentServiceImplTest {
 
 		when(otpService.send(anyString())).thenReturn(new OTP("0868185055", "refCode", "******"));
 
-		BillInvoice billInvoice = billPayService.createBillInvoice(new BillPaymentInfo(), accessToken.getAccessTokenID());
+		Bill billInvoice = billPayService.createBill(new BillInfo(), accessToken.getAccessTokenID());
 
 		assertNotNull(billInvoice);
 		assertEquals(DraftTransaction.Status.CREATED, billInvoice.getStatus());
 
-		BillInvoice repoInvoice = transactionRepo.getBillInvoice(billInvoice.getID(), accessToken.getAccessTokenID());
+		Bill repoInvoice = transactionRepo.getBillInvoice(billInvoice.getID(), accessToken.getAccessTokenID());
 		assertNotNull(repoInvoice);
 		assertEquals(DraftTransaction.Status.CREATED, repoInvoice.getStatus());
 	}
@@ -93,7 +93,7 @@ public class BillPaymentServiceImplTest {
 	public void sendOTP() {
 
 		//given
-		BillInvoice invoice = new BillInvoice("invoiceID");
+		Bill invoice = new Bill("invoiceID");
 		transactionRepo.saveBillInvoice(invoice, accessToken.getAccessTokenID());
 
 		when(otpService.send(accessToken.getMobileNumber())).thenReturn(new OTP());
@@ -111,17 +111,17 @@ public class BillPaymentServiceImplTest {
 		//given
 		OTP correctOTP = new OTP("0868185055", "refCode", "111111");
 
-		BillInvoice invoice = new BillInvoice("invoiceID", Status.OTP_SENT);
+		Bill invoice = new Bill("invoiceID", Status.OTP_SENT);
 		transactionRepo.saveBillInvoice(invoice, accessToken.getAccessTokenID());
 
 		//when
-		Status confirmation = billPayService.confirmBillInvoice(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
+		Status confirmation = billPayService.confirmBill(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
 
 		//then
 		Assert.assertEquals(Status.OTP_CONFIRMED, confirmation);
 		verify(asyncProcessor).payBill(any(BillPayment.class), any(AccessToken.class));
 
-		BillInvoice repoInvoice = transactionRepo.getBillInvoice(invoice.getID(), accessToken.getAccessTokenID());
+		Bill repoInvoice = transactionRepo.getBillInvoice(invoice.getID(), accessToken.getAccessTokenID());
 		Assert.assertEquals(Status.OTP_CONFIRMED, repoInvoice.getStatus());
 
 		BillPayment billPayment = transactionRepo.getBillPayment(invoice.getID(), accessToken.getAccessTokenID());
@@ -136,21 +136,21 @@ public class BillPaymentServiceImplTest {
 		//given
 		OTP badOTP = new OTP("0868185055", "refCode", "111111");
 
-		BillInvoice invoice = new BillInvoice("invoiceID", Status.OTP_SENT);
+		Bill invoice = new Bill("invoiceID", Status.OTP_SENT);
 		transactionRepo.saveBillInvoice(invoice, accessToken.getAccessTokenID());
 
 		Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpService).isValidOTP(badOTP);
 
 		//when
 		try {
-			billPayService.confirmBillInvoice(invoice.getID(), badOTP, accessToken.getAccessTokenID());
+			billPayService.confirmBill(invoice.getID(), badOTP, accessToken.getAccessTokenID());
 			Assert.fail();
 		} catch (ServiceInventoryWebException ex) {
 			Assert.assertEquals("otp error", ex.getErrorDescription());
 		}
 
 		//then
-		BillInvoice repoInvoice = transactionRepo.getBillInvoice(invoice.getID(), accessToken.getAccessTokenID());
+		Bill repoInvoice = transactionRepo.getBillInvoice(invoice.getID(), accessToken.getAccessTokenID());
 		Assert.assertEquals(Status.OTP_SENT, repoInvoice.getStatus());
 
 		try {
