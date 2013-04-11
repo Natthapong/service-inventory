@@ -1,17 +1,74 @@
 package th.co.truemoney.serviceinventory.bill.impl;
 
+import java.math.BigDecimal;
 import java.util.concurrent.Future;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
+import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
 import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
+import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
+import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
+import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.BankSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.UMarketSystemTransactionFailException;
 
 @Service
 public class AsyncBillPayProcessor {
 
+	private static final Logger logger = LoggerFactory.getLogger(AsyncTopUpEwalletProcessor.class);
+	
+	@Autowired
+	private TransactionRepository transactionRepo;
+	
+	@Autowired
+	private LegacyFacade legacyFacade;
+	
 	public Future<BillPayment> payBill(BillPayment billPaymentReceipt, AccessToken accessToken) {
-		return null;
+		
+		try {
+			BillInvoice draftTransaction = billPaymentReceipt.getDraftTransaction();
+			BillPaymentInfo billPaymentInfo = draftTransaction.getBillPaymentInfo();
+			BigDecimal amount = billPaymentInfo.getAmount();
+			SourceOfFundFee sourceOfFundFee = billPaymentInfo.getSourceOfFundFee();
+			
+			billPaymentReceipt.setStatus(Transaction.Status.PROCESSING);
+			transactionRepo.saveBillPayment(billPaymentReceipt, accessToken.getAccessTokenID());
+			
+			BillPaymentConfirmationInfo confirmationInfo = legacyFacade
+					.fromChannel(accessToken.getChannelID())
+					.billPay(amount)
+					.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID(), accessToken.getMobileNumber())
+					.usingSourceOfFundFee(sourceOfFundFee)
+					.usingTransaction(draftTransaction.getID())
+					.forService(billPaymentInfo.getRef1(), billPaymentInfo.getRef2())
+					.performBillPayment();
+			
+			billPaymentReceipt.setConfirmationInfo(confirmationInfo);
+			billPaymentReceipt.setStatus(Transaction.Status.SUCCESS);
+			
+			logger.info("AsyncService.payBill.resultTransactionID: " + confirmationInfo.getTransactionID());
+		} catch (UMarketSystemTransactionFailException e) {
+			billPaymentReceipt.setFailStatus(BillPayment.FailStatus.UMARKET_FAILED);
+		} catch (Exception ex) {
+			logger.error("unexpect bill payment fail: ", ex);
+			billPaymentReceipt.setFailStatus(BillPayment.FailStatus.UNKNOWN_FAILED);
+		}
+
+		transactionRepo.saveBillPayment(billPaymentReceipt, accessToken.getAccessTokenID());
+		
+		return new AsyncResult<BillPayment> (billPaymentReceipt);
 	}
 
 }

@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
+import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
@@ -69,6 +71,12 @@ public class LegacyFacade {
 
 	public P2PTransferBuilder transfer(BigDecimal amount) {
 		return new P2PTransferBuilder(balanceFacade)
+					.fromChannelID(channelID)
+					.withAmount(amount);
+	}
+
+	public BillPaymentBuilder billPay(BigDecimal amount) {
+		return new BillPaymentBuilder(balanceFacade)
 					.fromChannelID(channelID)
 					.withAmount(amount);
 	}
@@ -162,6 +170,7 @@ public class LegacyFacade {
 						.fromUser(sessionID, tmnID)
 						.withAmount(amount);
 		}
+		
 	}
 
 	public static class TopUpBuilder {
@@ -342,6 +351,98 @@ public class LegacyFacade {
 			profileRegisteringFacade.register(channelID, profile);
 		}
 
+	}
+	
+	public static class BillPaymentBuilder {
+		private Integer channelID;
+
+		private String barcode;
+
+		private String sessionID;
+		private String tmnID;
+		private String msisdn;
+
+		private BigDecimal amount;
+
+		private SourceOfFundFee sourceOfFundFee;
+		
+		private String ref1;
+		private String ref2;
+		
+		private String transactionID;
+
+		private BillPaymentFacade billPaymentFacade;
+
+
+		@Autowired(required = false)
+		public BillPaymentBuilder(BillPaymentFacade billPaymentFacade) {
+			this.billPaymentFacade = billPaymentFacade;
+		}
+
+		public BillPaymentBuilder fromChannel(Integer channelID) {
+			this.channelID = channelID;
+			return this;
+		}
+		
+		public BillPaymentBuilder withBarcode(String barcode) {
+			this.barcode = barcode;
+			return this;
+		}
+		
+		public BillPaymentInfo getInformation() {
+			Validate.notNull(channelID, "data missing. get barcode information from which channel?");
+			Validate.notNull(barcode, "data missing. barcode missing?");
+
+			return billPaymentFacade.getBarcodeInformation(barcode);
+		}
+
+		public BillPaymentBuilder fromUser(String sessionID, String tmnID, String msisdn) {
+			this.sessionID = sessionID;
+			this.tmnID = tmnID;
+			this.msisdn = msisdn;
+			return this;
+		}
+
+		public BillPaymentBuilder withAmount(BigDecimal amount) {
+			this.amount = amount;
+			return this;
+		}
+
+		public BillPaymentBuilder usingSourceOfFundFee(SourceOfFundFee sourceOfFundFee) {
+			this.sourceOfFundFee = sourceOfFundFee;
+			return this;
+		}
+		
+		public BillPaymentBuilder forService(String ref1, String ref2) {
+			this.ref1 = ref1;
+			this.ref2 = ref2;
+			return this;
+		}
+		
+		public BillPaymentBuilder usingTransaction(String transactionID) {
+			this.transactionID = transactionID;
+			return this;
+		}
+		
+		public BillPaymentConfirmationInfo performBillPayment() {
+			Validate.notNull(tmnID, "data missing. who pay?");
+			Validate.notNull(sessionID, "data missing. who pay?");
+			Validate.notNull(channelID, "data missing. bill pay from which channel?");
+			Validate.notNull(amount, "data missing. how much to pay bill?");
+			Validate.notNull(sourceOfFundFee, "data missing. using which source of fund to pay bill?");
+			Validate.notNull(sourceOfFundFee.getSource(), "data missing. using which source of fund to pay bill?");
+			Validate.notNull(sourceOfFundFee.getSourceFeeType(), "data missing. using which source of fund to pay bill?");
+
+			return balanceFacade.topUpMoney(
+					amount,
+					sourceOfFundID,
+					sourceOfFundType,
+					channelID,
+					sessionID,
+					tmnID);
+
+			return null;
+		}
 	}
 
 }

@@ -96,9 +96,10 @@ public class BillPaymentServiceImplTest {
 		BillInvoice invoice = new BillInvoice("invoiceID");
 		transactionRepo.saveBillInvoice(invoice, accessToken.getAccessTokenID());
 
+		//when
 		when(otpService.send(accessToken.getMobileNumber())).thenReturn(new OTP());
 
-		//when
+		
 		billPayService.sendOTP("invoiceID", accessToken.getAccessTokenID());
 
 		//then
@@ -118,16 +119,16 @@ public class BillPaymentServiceImplTest {
 		Status confirmation = billPayService.confirmBillInvoice(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
 
 		//then
-		Assert.assertEquals(Status.OTP_CONFIRMED, confirmation);
+		assertEquals(Status.OTP_CONFIRMED, confirmation);
 		verify(asyncProcessor).payBill(any(BillPayment.class), any(AccessToken.class));
 
 		BillInvoice repoInvoice = transactionRepo.getBillInvoice(invoice.getID(), accessToken.getAccessTokenID());
-		Assert.assertEquals(Status.OTP_CONFIRMED, repoInvoice.getStatus());
+		assertEquals(Status.OTP_CONFIRMED, repoInvoice.getStatus());
 
 		BillPayment billPayment = transactionRepo.getBillPayment(invoice.getID(), accessToken.getAccessTokenID());
 
-		Assert.assertNotNull(billPayment);
-		Assert.assertEquals(Transaction.Status.VERIFIED, billPayment.getStatus());
+		assertNotNull(billPayment);
+		assertEquals(Transaction.Status.VERIFIED, billPayment.getStatus());
 	}
 
 	@Test
