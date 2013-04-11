@@ -15,6 +15,7 @@ import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -29,11 +30,20 @@ public class TmnBillPaymentServiceClientTest {
 	@Autowired
 	TmnProfileServiceClient client;
 
-	String accessToken;
+	String accessTokenID;
 
 	@Before
 	public void setup(){
-		accessToken = client.login(41, TestData.createSuccessLogin());
+		accessTokenID = client.login(41, TestData.createSuccessLogin());
+	}
+	
+	@Test
+	public void getBillInformation() {
+		String barcode = "|010554614953100 010004552 010520120200015601 85950";
+		
+		BillPaymentInfo billPaymentInfo = billPaymentServiceClient.getBillInformation(barcode, accessTokenID);
+		
+		assertNotNull(billPaymentInfo);
 	}
 
 	@Test
@@ -41,13 +51,15 @@ public class TmnBillPaymentServiceClientTest {
 
 		String billInvoiceID = "12345";
 
-		BillInvoice billInvoice = billPaymentServiceClient.createBillInvoice(new BillPaymentInfo(),accessToken);
+		BillInvoice billInvoice = billPaymentServiceClient.createBillInvoice(new BillPaymentInfo(),accessTokenID);
 
 		assertNotNull(billInvoice);
 
-		OTP sentOTP = billPaymentServiceClient.sendOTP(billInvoiceID, accessToken);
+		OTP sentOTP = billPaymentServiceClient.sendOTP(billInvoiceID, accessTokenID);
 
 		OTP userInputOTP = new OTP(sentOTP.getMobileNumber(), sentOTP.getReferenceCode(), "111111");
-	}
 
+		Status invoiceStatus = billPaymentServiceClient.confirmBillInvoice(billInvoiceID, userInputOTP, accessTokenID);
+	}
+	
 }
