@@ -23,6 +23,8 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 import th.co.truemoney.serviceinventory.bill.domain.BillParameter;
 import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
 import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
+import th.co.truemoney.serviceinventory.bill.domain.ExtraXML;
+import th.co.truemoney.serviceinventory.bill.domain.SourceFee;
 import th.co.truemoney.serviceinventory.bill.exception.BillException;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
@@ -552,6 +554,30 @@ public class LocalEnvironmentConfig {
 				parameters.add(parameter);
 				
 				stubBillResponse.setParameters(parameters);
+				
+				ExtraXML extraXML = new ExtraXML();
+				List<SourceFee> sourceFeeList = new ArrayList<SourceFee>();
+				SourceFee sourceFee = new SourceFee();
+				sourceFee.setSource("EW");
+				sourceFee.setSourceFee("300");
+				sourceFee.setSourceFeeType("THB");
+				sourceFee.setTotalSourceFee("300");
+				sourceFee.setMinAmount("100");
+				sourceFee.setMaxAmount("3000000");
+				sourceFeeList.add(sourceFee);
+				
+				sourceFee = new SourceFee();
+				sourceFee.setSource("MMCC");
+				sourceFee.setSourceFee("700");
+				sourceFee.setSourceFeeType("THB");
+				sourceFee.setTotalSourceFee("700");
+				sourceFee.setMinAmount("100");
+				sourceFee.setMaxAmount("3000000");
+				sourceFeeList.add(sourceFee);
+				
+				extraXML.setSourceFeeList(sourceFeeList);
+				
+				stubBillResponse.setExtraXML(extraXML);
 				
 				return stubBillResponse;
 				
