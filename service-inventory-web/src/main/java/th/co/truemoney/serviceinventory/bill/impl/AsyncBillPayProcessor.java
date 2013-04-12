@@ -73,6 +73,7 @@ public class AsyncBillPayProcessor {
 			logger.info("AsyncService.payBill.resultTransactionID: " + confirmationInfo.getTransactionID());
 		} catch (UMarketSystemTransactionFailException e) {
 			billPaymentReceipt.setFailStatus(BillPayment.FailStatus.UMARKET_FAILED);
+			// TODO : Add more exception
 		} catch (Exception ex) {
 			logger.error("unexpect bill payment fail: ", ex);
 			billPaymentReceipt.setFailStatus(BillPayment.FailStatus.UNKNOWN_FAILED);
