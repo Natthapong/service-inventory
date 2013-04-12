@@ -2,12 +2,16 @@ package th.co.truemoney.serviceinventory.legacyfacade.ewallet;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
+import th.co.truemoney.serviceinventory.bill.domain.SourceFee;
+import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
 import th.co.truemoney.serviceinventory.bill.exception.BillException;
 import th.co.truemoney.serviceinventory.bill.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
@@ -82,7 +86,43 @@ public class BillPaymentFacade {
 			serviceFee.setTotalFee(decimalTotalServiceFee.setScale(2, RoundingMode.HALF_UP));
 
 			billInfo.setServiceFee(serviceFee);
-			billInfo.setSourceOfFundFees(null);
+			
+			List<SourceFee> sourceOfFundList = billResponse.getExtraXML().getSourceFeeList();
+				
+			SourceOfFundFee[] sourceOfFundFees = new SourceOfFundFee[sourceOfFundList.size()];
+			int i=0;
+			for (Iterator<SourceFee> iterator = sourceOfFundList.iterator(); iterator.hasNext();) {
+				SourceFee sourceFee = (SourceFee) iterator.next();
+				SourceOfFundFee sourceOfFundFee = new SourceOfFundFee();
+				sourceOfFundFee.setSourceType(sourceFee.getSource());
+				sourceOfFundFee.setFeeType(sourceFee.getSourceFeeType());
+
+				BigDecimal decimalSourceFee = BigDecimal.ZERO;
+				if (sourceOfFundFee.getFeeType().equals("THB")) {
+					// fee type = fix
+					String fee = sourceFee.getSourceFee();
+					decimalSourceFee = new BigDecimal(fee).divide(new BigDecimal("100"));
+				} else {
+					// fee type = percent
+					String fee = sourceFee.getSourceFee();
+					decimalSourceFee = new BigDecimal(fee);
+				}
+				sourceOfFundFee.setFee(decimalSourceFee.setScale(2, RoundingMode.HALF_UP));
+				
+				BigDecimal decimalTotalSourceFee = new BigDecimal(sourceFee.getTotalSourceFee()).divide(new BigDecimal("100"));
+				sourceOfFundFee.setTotalFee(decimalTotalSourceFee);
+				
+				BigDecimal decimalMinSourceFee = new BigDecimal(sourceFee.getMinAmount()).divide(new BigDecimal("100"));
+				sourceOfFundFee.setMinFeeAmount(decimalMinSourceFee);
+				
+				BigDecimal decimalMaxSourceFee = new BigDecimal(sourceFee.getMaxAmount()).divide(new BigDecimal("100"));
+				sourceOfFundFee.setMaxFeeAmount(decimalMaxSourceFee);
+				
+				sourceOfFundFees[i] = sourceOfFundFee;
+				
+				i++;
+			} 
+			billInfo.setSourceOfFundFees(sourceOfFundFees);			
 
 			return billInfo;
 

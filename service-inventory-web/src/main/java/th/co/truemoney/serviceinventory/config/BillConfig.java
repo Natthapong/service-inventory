@@ -19,8 +19,11 @@ public class BillConfig {
 	@Value("${bill.app_password}")
 	private String appPassword;
 	
-	@Value("${barcode_info.command}")
-	private String barcodeInfoCommand;
+	@Value("${bill.app_key}")
+	private String appKey;
+	
+	@Value("${bill.command}")
+	private String command;
 	
 	@Value("${barcode_info.function_id}")
 	private String barcodeInfoFunctionID;
@@ -44,9 +47,14 @@ public class BillConfig {
 		return appPassword;
 	}
 	
-	@Bean @Qualifier("barcodeInfoCommand")
-	public String barcodeInfoCommand() {
-		return barcodeInfoCommand;
+	@Bean @Qualifier("appKey")
+	public String appKey() {
+		return appKey;
+	}
+	
+	@Bean @Qualifier("command")
+	public String command() {
+		return command;
 	}
 	
 	@Bean @Qualifier("barcodeInfoFunctionID")
@@ -68,7 +76,7 @@ public class BillConfig {
 	public String barcodeInfoURL() {
 		return barcodeInfoURL;
 	}
-			
+				
 	@Bean
 	public static PropertyPlaceholderConfigurer billProperties(){
 	  PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();

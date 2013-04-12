@@ -27,6 +27,8 @@ import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
 import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
+import th.co.truemoney.serviceinventory.bill.domain.ExtraXML;
+import th.co.truemoney.serviceinventory.bill.domain.SourceFee;
 import th.co.truemoney.serviceinventory.bill.exception.BillException;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
@@ -450,8 +452,34 @@ public class LocalEnvironmentConfig {
 			@Override
 			public BillResponse verifyBillPay(BillRequest billPayRequest)
 					throws BillException {
-				// TODO Auto-generated method stub
-				return null;
+				BillResponse stubBillResponse = new BillResponse();
+				stubBillResponse.setResultCode("0");
+				stubBillResponse.setResultDesc("Success");
+				stubBillResponse.setResultNamespace("PCS");
+				stubBillResponse.setReqTransactionID("4410A0322");
+				stubBillResponse.setResponseMessage("Success");
+				stubBillResponse.setTransactionID("130401012310");
+
+				List<BillParameter> parameters = new ArrayList<BillParameter>();
+				BillParameter parameter = new BillParameter();
+				parameter.setKey("ref1");
+				parameter.setValue("02110004198411");
+				
+				parameter = new BillParameter();
+				parameter.setKey("ref2");
+				parameter.setValue("22060100300001");
+				
+				parameter = new BillParameter();
+				parameter.setKey("amount");
+				parameter.setValue("100");
+				
+				parameter = new BillParameter();
+				parameter.setKey("source");
+				parameter.setValue("EW");
+				
+				parameters.add(parameter);
+				
+				return stubBillResponse;
 			}
 			
 			@Override
@@ -558,6 +586,30 @@ public class LocalEnvironmentConfig {
 				parameters.add(parameter);
 				
 				stubBillResponse.setParameters(parameters);
+				
+				ExtraXML extraXML = new ExtraXML();
+				List<SourceFee> sourceFeeList = new ArrayList<SourceFee>();
+				SourceFee sourceFee = new SourceFee();
+				sourceFee.setSource("EW");
+				sourceFee.setSourceFee("300");
+				sourceFee.setSourceFeeType("THB");
+				sourceFee.setTotalSourceFee("300");
+				sourceFee.setMinAmount("100");
+				sourceFee.setMaxAmount("3000000");
+				sourceFeeList.add(sourceFee);
+				
+				sourceFee = new SourceFee();
+				sourceFee.setSource("MMCC");
+				sourceFee.setSourceFee("700");
+				sourceFee.setSourceFeeType("THB");
+				sourceFee.setTotalSourceFee("700");
+				sourceFee.setMinAmount("100");
+				sourceFee.setMaxAmount("3000000");
+				sourceFeeList.add(sourceFee);
+				
+				extraXML.setSourceFeeList(sourceFeeList);
+				
+				stubBillResponse.setExtraXML(extraXML);
 				
 				return stubBillResponse;
 				
