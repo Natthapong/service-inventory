@@ -152,6 +152,9 @@ public class BillInfo implements Serializable {
 	public void setMaxAmount(BigDecimal maxAmount) {
 		this.maxAmount = maxAmount;
 	}
+	public BigDecimal getTotalFee() {
+		return this.serviceFee.getFee(); //TODO + source of fund fee
+	}
 	@Override
 	public String toString() {
 		return "BillInfo [target=" + target + ", logoURL=" + logoURL

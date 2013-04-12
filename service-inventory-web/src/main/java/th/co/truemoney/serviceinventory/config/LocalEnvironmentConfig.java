@@ -20,10 +20,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
+import th.co.truemoney.serviceinventory.bill.BillPaymentService;
+import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillParameter;
 import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
 import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
+import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
+import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
 import th.co.truemoney.serviceinventory.bill.exception.BillException;
+import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
@@ -58,6 +63,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResp
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
@@ -557,6 +563,46 @@ public class LocalEnvironmentConfig {
 				
 			}
 		};
+	}
+	
+	@Bean
+    @Primary
+    public BillPaymentService stubBillPaymentService() {
+            
+            return new BillPaymentServiceImpl() {
+                    
+                    public BillInfo getBillInformation(String barcode, String accessTokenID)
+                                    throws ServiceInventoryException {
+                            
+                            ServiceFee sFee = new ServiceFee();
+                            sFee.setFeeType("THB");
+                            sFee.setFee(new BigDecimal(10.00));
+                            sFee.setTotalFee(new BigDecimal(10.00));
+                            
+                            SourceOfFundFee sofFee = new SourceOfFundFee();
+                            sofFee.setFeeType("THB");
+                            sofFee.setFee(new BigDecimal(20.00));
+                            sofFee.setTotalFee(new BigDecimal(20.00));
+                            
+                            SourceOfFundFee[] sofFees = new SourceOfFundFee[]{ sofFee };
+                            
+                            BillInfo stubInfo = new BillInfo();
+                            stubInfo.setTarget("tmvh");
+                            stubInfo.setLogoURL("https://secure.truemoney-dev.com/m/tmn_webview/images/logo_bill/tmvh@2x.png");
+                            stubInfo.setTitleEN("Truemove-H");
+                            stubInfo.setTitleTH("ทรูมูฟเฮ็ด");
+                            stubInfo.setRef1("864895245");
+                            stubInfo.setRef1TitleEN("Customer ID");
+                            stubInfo.setRef1TitleTH("รหัสลูกค้า");
+                            stubInfo.setRef2("9231782945372901");
+                            stubInfo.setRef2TitleEN("Billing Number");
+                            stubInfo.setRef2TitleTH("เลขที่ใบแจ้งค่าใช้บริการ");
+                            stubInfo.setAmount(new BigDecimal(785.65));
+                            stubInfo.setServiceFee(sFee);
+                            stubInfo.setSourceOfFundFees(sofFees);
+                            return stubInfo;
+                    }
+            };
 	}
 		
 }
