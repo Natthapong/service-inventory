@@ -2,12 +2,15 @@ package th.co.truemoney.serviceinventory.legacyfacade.ewallet;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
+import th.co.truemoney.serviceinventory.bill.domain.SourceFee;
+import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
 import th.co.truemoney.serviceinventory.bill.exception.BillException;
 import th.co.truemoney.serviceinventory.bill.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
@@ -82,7 +85,10 @@ public class BillPaymentFacade {
 			serviceFee.setTotalFee(decimalTotalServiceFee.setScale(2, RoundingMode.HALF_UP));
 
 			billInfo.setServiceFee(serviceFee);
-			billInfo.setSourceOfFundFees(null);
+			
+			List<SourceFee> sourceOfFundList = billResponse.getExtraXML().getSourceFeeList();
+			SourceOfFundFee[] sourceOfFundFees = new SourceOfFundFee[sourceOfFundList.size()];
+			billInfo.setSourceOfFundFees(sourceOfFundList.toArray(sourceOfFundFees));
 
 			return billInfo;
 
