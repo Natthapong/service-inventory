@@ -69,10 +69,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		//verify bill.
-		legacyFacade.fromChannel(accessToken.getChannelID())
-		.billPayment()
-		.verify(billpayInfo);
-
+		legacyFacade.fromAcccessToken(accessToken)
+					.billPayment()
+					.verify(billpayInfo);
 
 		String invoiceID = UUID.randomUUID().toString();
 		Bill billInvoice = new Bill(invoiceID, Bill.Status.CREATED, billpayInfo);

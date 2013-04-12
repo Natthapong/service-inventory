@@ -1,17 +1,21 @@
 package th.co.truemoney.serviceinventory.service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
+import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -81,7 +85,9 @@ public class BillPayServiceTest {
 
 		when(transactionRepository.findBill(anyString(), anyString())).thenReturn(new Bill());
 		
-		Bill billInvoice = billPaymentService.createBill(new BillInfo(), "111111");
+		when(billPaymentFacade.verify(any(BillRequest.class))).thenReturn(new BillInfo());
+		
+		Bill billInvoice = billPaymentService.createBill(new BillInfo("iphone","1234","1234",new BigDecimal(100)), "111111");
 		
 		assertNotNull(billInvoice);
 	}

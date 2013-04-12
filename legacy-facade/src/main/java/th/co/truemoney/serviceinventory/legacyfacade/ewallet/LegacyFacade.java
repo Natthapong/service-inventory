@@ -7,6 +7,9 @@ import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
+import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
+import th.co.truemoney.serviceinventory.bill.util.EncryptionUtil;
+import th.co.truemoney.serviceinventory.bill.util.NumberUtil;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
@@ -32,8 +35,16 @@ public class LegacyFacade {
 	@Autowired(required = false)
 	private ProfileRegisteringFacade profileRegisteringFacade;
 
+	@Autowired(required = false)
+	private AccessToken accessToken;
+	
 	public LegacyFacade fromChannel(Integer channelID) {
 		this.channelID = channelID;
+		return this;
+	}
+	
+	public LegacyFacade fromAcccessToken(AccessToken accessToken) {
+		this.accessToken = accessToken;
 		return this;
 	}
 
@@ -78,7 +89,8 @@ public class LegacyFacade {
 
 	public BillPaymentBuilder billPayment() {
 		return new BillPaymentBuilder(billPaymentFacade)
-					.fromChannel(channelID);
+					.fromChannel(channelID)
+					.fromAccessToken(accessToken);
 	}
 
 	public ProfileRegisteringBuilder registering() {
@@ -364,6 +376,8 @@ public class LegacyFacade {
 		private Integer channelID;
 
 		private String barcode;
+		
+		private AccessToken accessToken;
 
 		@Autowired(required = false)
 		public BillPaymentBuilder(BillPaymentFacade billPaymentFacade) {
@@ -372,6 +386,11 @@ public class LegacyFacade {
 
 		public BillPaymentBuilder fromChannel(Integer channelID) {
 			this.channelID = channelID;
+			return this;
+		}
+		
+		public BillPaymentBuilder fromAccessToken(AccessToken accessToken) {
+			this.accessToken = accessToken;
 			return this;
 		}
 
@@ -388,11 +407,45 @@ public class LegacyFacade {
 		}
 
 		public BillInfo verify(BillInfo billpayInfo) {
-			return billPaymentFacade.verify(billpayInfo);
+			
+			Validate.notNull(billpayInfo, "Null Object. Did it send right object?");
+			
+			BillRequest billPayRequest = new BillRequest();
+			
+			String md5 = EncryptionUtil.appendForMD5("f7cb0d495ea6d989", "MOBILE_IPHONE", "810010002", "4410A0322", 
+					billpayInfo.getAmount().toString(), accessToken.getSessionID());
+
+			billPayRequest.setAppUser("MOBILE_IPHONE");
+			billPayRequest.setAppPassword("IPHONE+1");
+			billPayRequest.setChannel("iPhone");
+			billPayRequest.setCommand("doService");
+			billPayRequest.setFunctionID("810010002");
+			billPayRequest.setServiceNo("any");		
+			billPayRequest.setReqTransactionId(Long.toString(System.currentTimeMillis()));
+			billPayRequest.addParameterElement("md5", EncryptionUtil.MD5(md5));
+			billPayRequest.addParameterElement("session", accessToken.getSessionID());
+			billPayRequest.addParameterElement("amount", billpayInfo.getAmount().toString());
+			billPayRequest.addParameterElement("msisdn", accessToken.getMobileNumber());
+			billPayRequest.addParameterElement("service_fee", "10");
+			billPayRequest.addParameterElement("service_fee_type", "THB");
+			billPayRequest.addParameterElement("source", "EW");
+			billPayRequest.addParameterElement("source_fee", "10050");
+			//TODO Change Source Fee Type.
+			billPayRequest.addParameterElement("source_fee_type", "0");
+			billPayRequest.addParameterElement("ref1", billpayInfo.getRef1().toString());
+			billPayRequest.addParameterElement("ref2", billpayInfo.getRef2().toString());
+			billPayRequest.addParameterElement("paypointcode", "mobile");
+			billPayRequest.addParameterElement("paypointname", "EW-APP");
+			billPayRequest.addParameterElement("channel_detail", "IPHONE");
+			billPayRequest.addParameterElement("command_action", "EW");
+			billPayRequest.addParameterElement("fund_name", "verifybillpay");
+			billPayRequest.addParameterElement("tmn_id", accessToken.getTruemoneyID());
+			billPayRequest.addParameterElement("target", billpayInfo.getTarget().toString());
+			billPayRequest.addParameterElement("trans_type", "01");
+			
+			return billPaymentFacade.verify(billPayRequest);
 		}
 
 	}
-
-
 
 }
