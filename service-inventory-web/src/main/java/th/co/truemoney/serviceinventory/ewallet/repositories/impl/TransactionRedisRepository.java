@@ -14,8 +14,8 @@ import th.co.truemoney.serviceinventory.exception.InternalServerErrorException;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,7 +29,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	private RedisLoggingDao redisLoggingDao;
 
 	@Override
-	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote, String accessTokenID) throws ServiceInventoryWebException {
+	public void saveTopUpQuote(TopUpQuote topupQuote, String accessTokenID) throws ServiceInventoryWebException {
 		try {
 			redisLoggingDao.addData("quote:" + accessTokenID + ":" + topupQuote.getID(), mapper.writeValueAsString(topupQuote), 15L);
 		} catch (Exception e) {
@@ -39,7 +39,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public TopUpQuote getTopUpEwalletDraftTransaction(String draftID, String accessTokenID) throws ServiceInventoryWebException {
+	public TopUpQuote findTopUpQuote(String draftID, String accessTokenID) throws ServiceInventoryWebException {
 		try {
 			String result = redisLoggingDao.getData("quote:" + accessTokenID + ":" + draftID);
 			if(result == null) {
@@ -55,7 +55,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder, String accessTokenID) throws ServiceInventoryWebException {
+	public void saveTopUpOrder(TopUpOrder topupOrder, String accessTokenID) throws ServiceInventoryWebException {
 		try {
 			redisLoggingDao.addData("order:" + accessTokenID + ":" + topupOrder.getID(), mapper.writeValueAsString(topupOrder), 15L);
 		} catch (Exception e) {
@@ -64,7 +64,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public TopUpOrder getTopUpEwalletTransaction(String orderID, String accessTokenID) throws ServiceInventoryWebException {
+	public TopUpOrder findTopUpOrder(String orderID, String accessTokenID) throws ServiceInventoryWebException {
 		try {
 			String result = redisLoggingDao.getData("order:" + accessTokenID + ":" + orderID);
 			if(result == null) {
@@ -81,23 +81,23 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveP2PDraftTransaction(P2PDraftTransaction p2pDraftTransaction, String accessTokenID) {
+	public void saveP2PTransferDraft(P2PTransferDraft p2pTransferDraft, String accessTokenID) {
 		try {
-			redisLoggingDao.addData("p2pdraft:" + accessTokenID + ":" +p2pDraftTransaction.getID(), mapper.writeValueAsString(p2pDraftTransaction), 15L);
+			redisLoggingDao.addData("p2pdraft:" + accessTokenID + ":" +p2pTransferDraft.getID(), mapper.writeValueAsString(p2pTransferDraft), 15L);
 		} catch (Exception e) {
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not stored data in repository.", e);
 		}
 	}
 
 	@Override
-	public P2PDraftTransaction getP2PDraftTransaction(String p2pDraftTransactionID, String accessTokenID) {
+	public P2PTransferDraft findP2PTransferDraft(String p2pTransferDraftID, String accessTokenID) {
 		try {
-			String result = redisLoggingDao.getData("p2pdraft:" + accessTokenID + ":" +p2pDraftTransactionID);
+			String result = redisLoggingDao.getData("p2pdraft:" + accessTokenID + ":" +p2pTransferDraftID);
 			if(result == null) {
-				throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "P2P draft transaction not found.");
+				throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "P2P transfer draft not found.");
 			}
 
-			return mapper.readValue(result, P2PDraftTransaction.class);
+			return mapper.readValue(result, P2PTransferDraft.class);
 		} catch (ResourceNotFoundException e) {
 			throw e;
 		} catch (Exception e) {
@@ -107,7 +107,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveP2PTransaction(P2PTransaction p2pTransaction, String accessTokenID) {
+	public void saveP2PTransferTransaction(P2PTransferTransaction p2pTransaction, String accessTokenID) {
 		try {
 			redisLoggingDao.addData("p2pTrans:" + accessTokenID + ":" +p2pTransaction.getID(), mapper.writeValueAsString(p2pTransaction), 15L);
 		} catch (Exception e) {
@@ -116,14 +116,14 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public P2PTransaction getP2PTransaction(String p2pTransactionID, String accessTokenID) {
+	public P2PTransferTransaction findP2PTransferTransaction(String p2pTransactionID, String accessTokenID) {
 		try {
 			String result = redisLoggingDao.getData("p2pTrans:" + accessTokenID + ":" + p2pTransactionID);
 			if(result == null) {
-				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "TopUp Ewallet order not found.");
+				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "P2P transfer transaction not found.");
 			}
 
-			return mapper.readValue(result, P2PTransaction.class);
+			return mapper.readValue(result, P2PTransferTransaction.class);
 		} catch (ServiceInventoryWebException e) {
 			throw e;
 		} catch (Exception e) {
@@ -134,7 +134,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 
 	@Override
 
-	public void saveBillInvoice(
+	public void saveBill(
 			Bill billInvoice,
 			String accessTokenID) {
 		try {
@@ -145,7 +145,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public Bill getBillInvoice(String billInvoiceID, String accessTokenID) {
+	public Bill findBill(String billInvoiceID, String accessTokenID) {
 		try {
 			String result = redisLoggingDao.getData("billInvoice:" + accessTokenID + ":" + billInvoiceID);
 			if(result == null) {
@@ -172,7 +172,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public BillPayment getBillPayment(String billPaymentID, String accessTokenID) {
+	public BillPayment fillBillPayment(String billPaymentID, String accessTokenID) {
 
 		try {
 			String result = redisLoggingDao.getData("billPayment:" + accessTokenID + ":" + billPaymentID);

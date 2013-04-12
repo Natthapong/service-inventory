@@ -36,7 +36,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 	}
 
 	@Override
-	public AccessToken getAccessToken(String accessTokenID) throws ServiceInventoryException {
+	public AccessToken findAccessToken(String accessTokenID) throws ServiceInventoryException {
 		try {
 			String result = redisLoggingDao.getData(accessTokenID);
 			if(result == null) {

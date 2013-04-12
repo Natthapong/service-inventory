@@ -31,8 +31,8 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.stub.P2PTransferStubbed;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class })
@@ -59,7 +59,7 @@ public class P2PTransferServiceImplConfirmOTPTest {
 		//setup data
 		private AccessToken accessToken;
 		private OTP goodOTP;
-		private P2PDraftTransaction draftTrans;
+		private P2PTransferDraft transferDraft;
 
 		@Before
 		public void setup() {
@@ -75,11 +75,11 @@ public class P2PTransferServiceImplConfirmOTPTest {
 			accessTokenRepo.save(accessToken);
 
 			goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
-			otpRepo.saveOTP(goodOTP);
+			otpRepo.save(goodOTP);
 
-			draftTrans =  P2PTransferStubbed.createP2PDraft(new BigDecimal(100), "0987654321", "target name", accessToken.getAccessTokenID());
-			draftTrans.setStatus(P2PDraftTransaction.Status.OTP_SENT);
-			transactionRepo.saveP2PDraftTransaction(draftTrans, accessToken.getAccessTokenID());
+			transferDraft =  P2PTransferStubbed.createP2PDraft(new BigDecimal(100), "0987654321", "target name", accessToken.getAccessTokenID());
+			transferDraft.setStatus(P2PTransferDraft.Status.OTP_SENT);
+			transactionRepo.saveP2PTransferDraft(transferDraft, accessToken.getAccessTokenID());
 		}
 
 		@After
@@ -93,10 +93,10 @@ public class P2PTransferServiceImplConfirmOTPTest {
 		public void shouldConfirmOTPSuccess() {
 			OTP goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
 
-			P2PDraftTransaction.Status quoteStatus = p2pService.verifyOTPAndPerformTransferring(draftTrans.getID(), goodOTP, accessToken.getAccessTokenID());
+			P2PTransferDraft.Status quoteStatus = p2pService.verifyOTPAndPerformTransferring(transferDraft.getID(), goodOTP, accessToken.getAccessTokenID());
 
-			assertEquals(P2PDraftTransaction.Status.OTP_CONFIRMED, quoteStatus);
-			verify(asyncProcessorMock).transferEwallet(any(P2PTransaction.class), any(AccessToken.class));
+			assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, quoteStatus);
+			verify(asyncProcessorMock).transferEwallet(any(P2PTransferTransaction.class), any(AccessToken.class));
 		}
 
 		@Test
@@ -105,40 +105,40 @@ public class P2PTransferServiceImplConfirmOTPTest {
 			OTP invalidOTP = new OTP(accessToken.getMobileNumber(), "refCode", "HACKY");
 
 			try {
-				p2pService.verifyOTPAndPerformTransferring(draftTrans.getID(), invalidOTP, "unknown access token");
+				p2pService.verifyOTPAndPerformTransferring(transferDraft.getID(), invalidOTP, "unknown access token");
 				Assert.fail();
 			} catch (ServiceInventoryException e) {
 				assertEquals("10001", e.getErrorCode());
 			}
 
 			//should never call the processor
-			verify(asyncProcessorMock, Mockito.never()).transferEwallet(any(P2PTransaction.class), any(AccessToken.class));
+			verify(asyncProcessorMock, Mockito.never()).transferEwallet(any(P2PTransferTransaction.class), any(AccessToken.class));
 		}
 
 		@Test
 		public void shouldFailWhenConfirmOTPStringIsIncorrect() {
 
 			//when
-			Assert.assertEquals(P2PDraftTransaction.Status.OTP_SENT, draftTrans.getStatus());
+			Assert.assertEquals(P2PTransferDraft.Status.OTP_SENT, transferDraft.getStatus());
 			Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpServiceMock).isValidOTP(any(OTP.class));
 
 			try {
-				p2pService.verifyOTPAndPerformTransferring(draftTrans.getID(), new OTP(), accessToken.getAccessTokenID());
+				p2pService.verifyOTPAndPerformTransferring(transferDraft.getID(), new OTP(), accessToken.getAccessTokenID());
 				Assert.fail();
 			} catch (ServiceInventoryException e) {
 				Assert.assertEquals("otp error", e.getErrorDescription());
 			}
 
 			//then
-			Assert.assertEquals(draftTrans.getStatus(), P2PDraftTransaction.Status.OTP_SENT);
+			Assert.assertEquals(transferDraft.getStatus(), P2PTransferDraft.Status.OTP_SENT);
 
 			try {
-				transactionRepo.getTopUpEwalletTransaction(draftTrans.getID(), accessToken.getAccessTokenID());
+				transactionRepo.findTopUpOrder(transferDraft.getID(), accessToken.getAccessTokenID());
 				Assert.fail("should not create/persist any top up order");
 			} catch(ServiceInventoryWebException e) {}
 
 			//should never call the processor
-			verify(asyncProcessorMock, Mockito.never()).transferEwallet(any(P2PTransaction.class), any(AccessToken.class));
+			verify(asyncProcessorMock, Mockito.never()).transferEwallet(any(P2PTransferTransaction.class), any(AccessToken.class));
 		}
 
 }

@@ -55,7 +55,7 @@ public class BillPayServiceTest {
 		
 		BillInfo stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
 		// given 
-		when(accessTokenRepo.getAccessToken(anyString())).thenReturn(
+		when(accessTokenRepo.findAccessToken(anyString())).thenReturn(
 				new AccessToken("12345", "5555", "4444", "username",
 						"0868185055", "tanathip.se@gmail.com", 41));
 		
@@ -73,13 +73,13 @@ public class BillPayServiceTest {
 	@Test
 	public void createBillInvoice() {
 
-		when(accessTokenRepo.getAccessToken(anyString())).thenReturn(
+		when(accessTokenRepo.findAccessToken(anyString())).thenReturn(
 				new AccessToken("12345", "5555", "4444", "username",
 						"0868185055", "tanathip.se@gmail.com", 41));
 		
 		when(otpService.send(anyString())).thenReturn(new OTP("0868185055", "12345", "string"));
 
-		when(transactionRepository.getBillInvoice(anyString(), anyString())).thenReturn(new Bill());
+		when(transactionRepository.findBill(anyString(), anyString())).thenReturn(new Bill());
 		
 		Bill billInvoice = billPaymentService.createBill(new BillInfo(), "111111");
 		

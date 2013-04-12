@@ -34,7 +34,7 @@ public class ProfileRedisRepository implements RegisteringProfileRepository {
 	}
 
 	@Override
-	public TmnProfile getRegisteringProfile(String mobileNumber) {
+	public TmnProfile findRegisteringProfileByMobileNumber(String mobileNumber) {
 		try {
 			String result = redisLoggingDao.getData("profile:"+mobileNumber);
 			if(result == null) {

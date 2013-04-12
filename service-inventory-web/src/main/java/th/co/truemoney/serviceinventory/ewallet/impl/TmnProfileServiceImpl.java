@@ -59,7 +59,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	@Override
 	public TmnProfile getTruemoneyProfile(String accessTokenID) throws ServiceInventoryException {
 
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 						   .fromChannel(accessToken.getChannelID())
@@ -69,7 +69,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	@Override
 	public BigDecimal getEwalletBalance(String accessTokenID) throws ServiceInventoryException {
 
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 								.fromChannel(accessToken.getChannelID())
@@ -79,7 +79,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	@Override
 	public String logout(String accessTokenID) {
 
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
 		accessTokenRepo.remove(accessTokenID);
 
@@ -119,7 +119,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 		otpService.isValidOTP(otp);
 
-		TmnProfile tmnProfile = registeringProfileRepo.getRegisteringProfile(otp.getMobileNumber());
+		TmnProfile tmnProfile = registeringProfileRepo.findRegisteringProfileByMobileNumber(otp.getMobileNumber());
 
 		performCreateProfile(channelID, tmnProfile);
 

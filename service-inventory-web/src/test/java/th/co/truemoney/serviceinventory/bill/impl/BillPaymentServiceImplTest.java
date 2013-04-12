@@ -26,10 +26,7 @@ import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
@@ -82,11 +79,11 @@ public class BillPaymentServiceImplTest {
 		Bill billInvoice = billPayService.createBill(new BillInfo(), accessToken.getAccessTokenID());
 
 		assertNotNull(billInvoice);
-		assertEquals(DraftTransaction.Status.CREATED, billInvoice.getStatus());
+		assertEquals(Bill.Status.CREATED, billInvoice.getStatus());
 
-		Bill repoInvoice = transactionRepo.getBillInvoice(billInvoice.getID(), accessToken.getAccessTokenID());
+		Bill repoInvoice = transactionRepo.findBill(billInvoice.getID(), accessToken.getAccessTokenID());
 		assertNotNull(repoInvoice);
-		assertEquals(DraftTransaction.Status.CREATED, repoInvoice.getStatus());
+		assertEquals(Bill.Status.CREATED, repoInvoice.getStatus());
 	}
 
 	@Test
@@ -94,7 +91,7 @@ public class BillPaymentServiceImplTest {
 
 		//given
 		Bill invoice = new Bill("invoiceID");
-		transactionRepo.saveBillInvoice(invoice, accessToken.getAccessTokenID());
+		transactionRepo.saveBill(invoice, accessToken.getAccessTokenID());
 
 		when(otpService.send(accessToken.getMobileNumber())).thenReturn(new OTP());
 
@@ -111,23 +108,23 @@ public class BillPaymentServiceImplTest {
 		//given
 		OTP correctOTP = new OTP("0868185055", "refCode", "111111");
 
-		Bill invoice = new Bill("invoiceID", Status.OTP_SENT);
-		transactionRepo.saveBillInvoice(invoice, accessToken.getAccessTokenID());
+		Bill invoice = new Bill("invoiceID", Bill.Status.OTP_SENT);
+		transactionRepo.saveBill(invoice, accessToken.getAccessTokenID());
 
 		//when
-		Status confirmation = billPayService.confirmBill(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
+		Bill.Status confirmation = billPayService.confirmBill(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
 
 		//then
-		Assert.assertEquals(Status.OTP_CONFIRMED, confirmation);
+		Assert.assertEquals(Bill.Status.OTP_CONFIRMED, confirmation);
 		verify(asyncProcessor).payBill(any(BillPayment.class), any(AccessToken.class));
 
-		Bill repoInvoice = transactionRepo.getBillInvoice(invoice.getID(), accessToken.getAccessTokenID());
-		Assert.assertEquals(Status.OTP_CONFIRMED, repoInvoice.getStatus());
+		Bill repoInvoice = transactionRepo.findBill(invoice.getID(), accessToken.getAccessTokenID());
+		Assert.assertEquals(Bill.Status.OTP_CONFIRMED, repoInvoice.getStatus());
 
-		BillPayment billPayment = transactionRepo.getBillPayment(invoice.getID(), accessToken.getAccessTokenID());
+		BillPayment billPayment = transactionRepo.fillBillPayment(invoice.getID(), accessToken.getAccessTokenID());
 
 		Assert.assertNotNull(billPayment);
-		Assert.assertEquals(Transaction.Status.VERIFIED, billPayment.getStatus());
+		Assert.assertEquals(BillPayment.Status.VERIFIED, billPayment.getStatus());
 	}
 
 	@Test
@@ -136,8 +133,8 @@ public class BillPaymentServiceImplTest {
 		//given
 		OTP badOTP = new OTP("0868185055", "refCode", "111111");
 
-		Bill invoice = new Bill("invoiceID", Status.OTP_SENT);
-		transactionRepo.saveBillInvoice(invoice, accessToken.getAccessTokenID());
+		Bill invoice = new Bill("invoiceID", Bill.Status.OTP_SENT);
+		transactionRepo.saveBill(invoice, accessToken.getAccessTokenID());
 
 		Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpService).isValidOTP(badOTP);
 
@@ -150,11 +147,11 @@ public class BillPaymentServiceImplTest {
 		}
 
 		//then
-		Bill repoInvoice = transactionRepo.getBillInvoice(invoice.getID(), accessToken.getAccessTokenID());
-		Assert.assertEquals(Status.OTP_SENT, repoInvoice.getStatus());
+		Bill repoInvoice = transactionRepo.findBill(invoice.getID(), accessToken.getAccessTokenID());
+		Assert.assertEquals(Bill.Status.OTP_SENT, repoInvoice.getStatus());
 
 		try {
-			transactionRepo.getBillPayment(invoice.getID(), accessToken.getAccessTokenID());
+			transactionRepo.fillBillPayment(invoice.getID(), accessToken.getAccessTokenID());
 			Assert.fail();
 		} catch (ResourceNotFoundException ex) {
 			Assert.assertEquals(Code.TRANSACTION_NOT_FOUND, ex.getErrorCode());

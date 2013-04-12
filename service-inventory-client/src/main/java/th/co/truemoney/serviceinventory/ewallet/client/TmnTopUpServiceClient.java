@@ -12,11 +12,9 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
@@ -61,7 +59,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 	}
 
 	@Override
-	public OTP sendOTPConfirm(String quoteID, String accessTokenID) {
+	public OTP submitTopUpRequest(String quoteID, String accessTokenID) {
 
 		HttpEntity<TopUpOrder> requestEntity = new HttpEntity<TopUpOrder>(headers);
 
@@ -74,26 +72,26 @@ public class TmnTopUpServiceClient implements TopUpService {
 	}
 
 	@Override
-	public DraftTransaction.Status confirmOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException {
+	public TopUpQuote.Status verifyOTPAndPerformTopUp(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException {
 
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp, headers);
 
-		ResponseEntity<DraftTransaction.Status> responseEntity = restTemplate.exchange(
+		ResponseEntity<TopUpQuote.Status> responseEntity = restTemplate.exchange(
 				endPoints.getTopUpConfirmOTPURL(), HttpMethod.PUT,
-				requestEntity, DraftTransaction.Status.class,
+				requestEntity, TopUpQuote.Status.class,
 				quoteID, otp.getReferenceCode(), accessTokenID);
 
 		return responseEntity.getBody();
 	}
 
 	@Override
-	public Transaction.Status getTopUpProcessingStatus(String orderID, String accessTokenID) {
+	public TopUpOrder.Status getTopUpProcessingStatus(String orderID, String accessTokenID) {
 
-		HttpEntity<Transaction.Status> requestEntity = new HttpEntity<Transaction.Status>(headers);
+		HttpEntity<TopUpOrder.Status> requestEntity = new HttpEntity<TopUpOrder.Status>(headers);
 
-		ResponseEntity<Transaction.Status> responseEntity = restTemplate.exchange(
+		ResponseEntity<TopUpOrder.Status> responseEntity = restTemplate.exchange(
 				endPoints.getTopUpOrderStatusURL(), HttpMethod.GET,
-				requestEntity, Transaction.Status.class,
+				requestEntity, TopUpOrder.Status.class,
 				orderID , accessTokenID);
 
 		return responseEntity.getBody();

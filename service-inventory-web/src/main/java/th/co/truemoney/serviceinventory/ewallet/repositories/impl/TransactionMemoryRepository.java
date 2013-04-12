@@ -11,26 +11,26 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionReposito
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
 public class TransactionMemoryRepository implements TransactionRepository {
 
 	public HashMap<String, TopUpQuote> quotesMap = new LinkedHashMap<String, TopUpQuote>();
 	public HashMap<String, TopUpOrder> ordersMap = new LinkedHashMap<String, TopUpOrder>();
-	public HashMap<String, P2PDraftTransaction> p2pDraftTransactionMap = new LinkedHashMap<String, P2PDraftTransaction>();
-	public HashMap<String, P2PTransaction> p2pTransactionMap = new LinkedHashMap<String, P2PTransaction>();
+	public HashMap<String, P2PTransferDraft> p2pTransferDraftMap = new LinkedHashMap<String, P2PTransferDraft>();
+	public HashMap<String, P2PTransferTransaction> p2pTransactionMap = new LinkedHashMap<String, P2PTransferTransaction>();
 	public HashMap<String, Bill> billInvoiceMap = new LinkedHashMap<String, Bill>();
 	public HashMap<String, BillPayment> billPaymentMap = new LinkedHashMap<String, BillPayment>();
 
 	@Override
-	public void saveTopUpEwalletDraftTransaction(TopUpQuote topupQuote,
+	public void saveTopUpQuote(TopUpQuote topupQuote,
 			String accessTokenID) {
 		quotesMap.put(accessTokenID + ":" + topupQuote.getID(), topupQuote);
 	}
 
 	@Override
-	public TopUpQuote getTopUpEwalletDraftTransaction(String quoteID,
+	public TopUpQuote findTopUpQuote(String quoteID,
 			String accessTokenID) {
 		TopUpQuote topUpQuote = quotesMap.get(accessTokenID + ":" + quoteID);
 
@@ -43,13 +43,13 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveTopUpEwalletTransaction(TopUpOrder topupOrder,
+	public void saveTopUpOrder(TopUpOrder topupOrder,
 			String accessTokenID) {
 		ordersMap.put(accessTokenID + ":" + topupOrder.getID(), topupOrder);
 	}
 
 	@Override
-	public TopUpOrder getTopUpEwalletTransaction(String orderID,
+	public TopUpOrder findTopUpOrder(String orderID,
 			String accessTokenID) throws ServiceInventoryWebException {
 		TopUpOrder topUpOrder = ordersMap.get(accessTokenID + ":" + orderID);
 		if (topUpOrder == null) {
@@ -60,39 +60,39 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveP2PDraftTransaction(
-			P2PDraftTransaction p2pDraftTransaction, String accessTokenID) {
-		p2pDraftTransactionMap.put(
-				accessTokenID + ":" + p2pDraftTransaction.getID(),
-				p2pDraftTransaction);
+	public void saveP2PTransferDraft(
+			P2PTransferDraft p2pTransferDraft, String accessTokenID) {
+		p2pTransferDraftMap.put(
+				accessTokenID + ":" + p2pTransferDraft.getID(),
+				p2pTransferDraft);
 	}
 
 	@Override
-	public P2PDraftTransaction getP2PDraftTransaction(
-			String p2pDraftTransactionID, String accessTokenID) {
-		P2PDraftTransaction p2pDraftTransaction = p2pDraftTransactionMap
-				.get(accessTokenID + ":" + p2pDraftTransactionID);
+	public P2PTransferDraft findP2PTransferDraft(
+			String p2pTransferDraftID, String accessTokenID) {
+		P2PTransferDraft p2pTransferDraft = p2pTransferDraftMap
+				.get(accessTokenID + ":" + p2pTransferDraftID);
 
-		if (p2pDraftTransaction == null) {
+		if (p2pTransferDraft == null) {
 			throw new ResourceNotFoundException(
 					Code.DRAFT_TRANSACTION_NOT_FOUND,
 					"Draft transfer transaction not found.");
 		}
 
-		return p2pDraftTransaction;
+		return p2pTransferDraft;
 	}
 
 	@Override
-	public void saveP2PTransaction(P2PTransaction p2pTransaction,
+	public void saveP2PTransferTransaction(P2PTransferTransaction p2pTransaction,
 			String accessTokenID) {
 		p2pTransactionMap.put(accessTokenID + ":" + p2pTransaction.getID(),
 				p2pTransaction);
 	}
 
 	@Override
-	public P2PTransaction getP2PTransaction(String p2pTransactionID,
+	public P2PTransferTransaction findP2PTransferTransaction(String p2pTransactionID,
 			String accessTokenID) {
-		P2PTransaction p2pTransaction = p2pTransactionMap.get(accessTokenID
+		P2PTransferTransaction p2pTransaction = p2pTransactionMap.get(accessTokenID
 				+ ":" + p2pTransactionID);
 		if (p2pTransaction == null) {
 			throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND,
@@ -102,12 +102,12 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveBillInvoice(Bill billInvoice, String accessTokenID) {
+	public void saveBill(Bill billInvoice, String accessTokenID) {
 		billInvoiceMap.put(accessTokenID + ":" + billInvoice.getID(), billInvoice);
 	}
 
 	@Override
-	public Bill getBillInvoice(String billInvoiceID,
+	public Bill findBill(String billInvoiceID,
 			String accessTokenID) {
 
 		Bill billInvoice = billInvoiceMap.get(accessTokenID + ":" + billInvoiceID);
@@ -127,7 +127,7 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public BillPayment getBillPayment(String billPaymentID, String accessTokenID) {
+	public BillPayment fillBillPayment(String billPaymentID, String accessTokenID) {
 
 		BillPayment billPayment = billPaymentMap.get(accessTokenID + ":" + billPaymentID);
 
@@ -143,7 +143,7 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	public void clear() {
 		quotesMap.clear();
 		ordersMap.clear();
-		p2pDraftTransactionMap.clear();
+		p2pTransferDraftMap.clear();
 		p2pTransactionMap.clear();
 		billInvoiceMap.clear();
 		billPaymentMap.clear();

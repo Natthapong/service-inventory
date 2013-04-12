@@ -10,9 +10,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class P2PDraftTransaction extends DraftTransaction {
+public class P2PTransferDraft extends DraftTransaction {
 
-	private static final String DRAFT_TYPE = "p2pDraftTransaction";
+	private static final String DRAFT_TYPE = "p2pTransferDraft";
 
 	private static final long serialVersionUID = -5651007822743041981L;
 
@@ -24,17 +24,17 @@ public class P2PDraftTransaction extends DraftTransaction {
 
 	private String otpReferenceCode;
 
-	public P2PDraftTransaction() {
+	public P2PTransferDraft() {
 		type = DRAFT_TYPE;
 	}
 
-	public P2PDraftTransaction(String mobileNumber, BigDecimal amount) {
+	public P2PTransferDraft(String mobileNumber, BigDecimal amount) {
 		this.mobileNumber = mobileNumber;
 		this.amount = amount;
 		type = DRAFT_TYPE;
 	}
 
-	public P2PDraftTransaction(String mobileNumber, BigDecimal amount,
+	public P2PTransferDraft(String mobileNumber, BigDecimal amount,
 			String ID, String accessTokenID, String fullname,
 			String otpReferenceCode) {
 		this.mobileNumber = mobileNumber;
@@ -95,7 +95,7 @@ public class P2PDraftTransaction extends DraftTransaction {
 
 	@Override
 	public String toString() {
-		return "P2PDraftTransaction [mobileNumber=" + mobileNumber
+		return "P2PTransferDraft [mobileNumber=" + mobileNumber
 				+ ", amount=" + amount + ", fullname=" + fullname
 				+ ", otpReferenceCode=" + otpReferenceCode + ", ID=" + ID
 				+ ", accessTokenID=" + accessTokenID + ", type=" + type

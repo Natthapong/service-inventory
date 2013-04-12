@@ -3,29 +3,28 @@ package th.co.truemoney.serviceinventory.transfer;
 import java.math.BigDecimal;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
 public interface P2PTransferService {
 
-	public P2PDraftTransaction verifyAndCreateTransferDraft(String toMobileNumber, BigDecimal amount, String accessTokenID)
+	public P2PTransferDraft verifyAndCreateTransferDraft(String toMobileNumber, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public P2PDraftTransaction getTransferDraftDetails(String draftTransactionID, String accessTokenID)
+	public P2PTransferDraft getTransferDraftDetails(String transferDraftID, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public OTP submitTransferral(String draftTransactionID, String accessTokenID)
+	public OTP submitTransferRequest(String transferDraftID, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public P2PDraftTransaction.Status verifyOTPAndPerformTransferring(String draftTransactionID, OTP otp, String accessTokenID)
+	public P2PTransferDraft.Status verifyOTPAndPerformTransferring(String transferDraftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public Transaction.Status getTransferingStatus(String transactionID, String accessTokenID)
+	public P2PTransferTransaction.Status getTransferringStatus(String transactionID, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public P2PTransaction getTransactionResult(String transactionID, String accessTokenID)
+	public P2PTransferTransaction getTransactionResult(String transactionID, String accessTokenID)
 			throws ServiceInventoryException;
 
 }

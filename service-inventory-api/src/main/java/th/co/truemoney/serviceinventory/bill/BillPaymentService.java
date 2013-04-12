@@ -1,11 +1,9 @@
 package th.co.truemoney.serviceinventory.bill;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
+import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface BillPaymentService {
@@ -22,10 +20,10 @@ public interface BillPaymentService {
 	public OTP sendOTP(String invoiceID, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public DraftTransaction.Status confirmBill(String invoiceID, OTP otp, String accessTokenID)
+	public Bill.Status confirmBill(String invoiceID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public Transaction.Status getBillPaymentStatus(String billPaymentID, String accessTokenID)
+	public BillPayment.Status getBillPaymentStatus(String billPaymentID, String accessTokenID)
 			throws ServiceInventoryException;
 
 	public BillPayment getBillPaymentResult(String billPaymentID, String accessTokenID)

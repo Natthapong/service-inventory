@@ -64,20 +64,20 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/ewallet/profiles/verify-otp?channelID={channelID}";
 	}
 
-	public String getP2PCreateDraftTransactionURL(){
-		return host + "/service-inventory-web/v1/transfer/draft-transaction?accessTokenID={accessTokenID}";
+	public String getP2PCreateTransferDraftURL(){
+		return host + "/service-inventory-web/v1/transfer/draft?accessTokenID={accessTokenID}";
 	}
 
-	public String getP2PDraftTransactionDetailsURL(){
-		return host + "/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}?accessTokenID={accessTokenID}";
+	public String getP2PTransferDraftDetailsURL(){
+		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getP2PSendOTPURL(){
-		return host + "/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}/otp?accessTokenID={accessTokenID}";
+	public String getP2PSubmitTransferRequestURL(){
+		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}/otp?accessTokenID={accessTokenID}";
 	}
 
-	public String getP2PConfirmDraftTransactionURL(){
-		return host + "/service-inventory-web/v1/transfer/draft-transaction/{draftTransactionID}/otp/{refCode}?accessTokenID={accessTokenID}";
+	public String getP2PVerifyAndPerformTransferURL(){
+		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
 
 	public String getP2PTransactionStatusURL(){
@@ -95,9 +95,9 @@ public class EndPoints {
 	public String getBillPayInvoiceOTPConfirmURL(){
 		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
-	
+
 	public String getBillPaymentInfoURL(){
 		return host + "/service-inventory-web/v1/bill-payment/barcode/{barcode}?accessTokenID={accessTokenID}";
 	}
-	
+
 }

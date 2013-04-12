@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 
 @Controller
@@ -47,16 +45,16 @@ public class TopUpEwalletController {
 	}
 
 	@RequestMapping(value = "/top-up/quote/{quoteID}/otp", method = RequestMethod.POST)
-	public @ResponseBody OTP sendOTPConfirm(
+	public @ResponseBody OTP submitTopUpRequest(
 		   @PathVariable String quoteID,
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
 		extendExpireAccessToken(accessTokenID);
-		return topupService.sendOTPConfirm(quoteID, accessTokenID);
+		return topupService.submitTopUpRequest(quoteID, accessTokenID);
 	}
 
 	@RequestMapping(value = "/top-up/quote/{quoteID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody DraftTransaction.Status confirmOrder(
+	public @ResponseBody TopUpQuote.Status verifyOTPAndPerformTopUp(
 		   @PathVariable String quoteID,
 		   @PathVariable String refCode,
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
@@ -68,11 +66,11 @@ public class TopUpEwalletController {
 
 		extendExpireAccessToken(accessTokenID);
 
-		return topupService.confirmOTP(quoteID, otp, accessTokenID);
+		return topupService.verifyOTPAndPerformTopUp(quoteID, otp, accessTokenID);
 	}
 
 	@RequestMapping(value = "/top-up/order/{orderID}/status", method = RequestMethod.GET)
-	public @ResponseBody Transaction.Status getOrderStatus(
+	public @ResponseBody TopUpOrder.Status getOrderStatus(
 		   @PathVariable String orderID,
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 

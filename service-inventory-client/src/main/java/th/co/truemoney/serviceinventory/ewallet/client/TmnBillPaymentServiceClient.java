@@ -13,7 +13,6 @@ import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
@@ -34,7 +33,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	private HttpHeaders headers;
 
 	@Override
-	public BillInfo getBillInformation(String barcode, String accessTokenID) 
+	public BillInfo getBillInformation(String barcode, String accessTokenID)
 			throws ServiceInventoryException {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
@@ -76,14 +75,14 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	}
 
 	@Override
-	public Status confirmBill(String invoiceID, OTP otp,
+	public Bill.Status confirmBill(String invoiceID, OTP otp,
 			String accessTokenID) throws ServiceInventoryException {
 
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp, headers);
 
-		ResponseEntity<Status> responseEntity = restTemplate.exchange(
+		ResponseEntity<Bill.Status> responseEntity = restTemplate.exchange(
 				endPoints.getBillPayInvoiceOTPConfirmURL(), HttpMethod.PUT,
-				requestEntity, Status.class,
+				requestEntity, Bill.Status.class,
 				invoiceID, otp.getReferenceCode(), accessTokenID);
 
 		return responseEntity.getBody();

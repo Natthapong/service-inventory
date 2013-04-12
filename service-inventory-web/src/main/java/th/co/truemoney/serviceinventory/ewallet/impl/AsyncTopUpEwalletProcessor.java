@@ -41,7 +41,7 @@ public class AsyncTopUpEwalletProcessor {
 			SourceOfFund sourceOfFund = quote.getSourceOfFund();
 
 			topUpOrder.setStatus(Transaction.Status.PROCESSING);
-			transactionRepo.saveTopUpEwalletTransaction(topUpOrder, accessToken.getAccessTokenID());
+			transactionRepo.saveTopUpOrder(topUpOrder, accessToken.getAccessTokenID());
 
 			TopUpConfirmationInfo confirmationInfo =
 					legacyFacade.fromChannel(accessToken.getChannelID())
@@ -64,7 +64,7 @@ public class AsyncTopUpEwalletProcessor {
 			topUpOrder.setFailStatus(TopUpOrder.FailStatus.UNKNOWN_FAILED);
 		}
 
-		transactionRepo.saveTopUpEwalletTransaction(topUpOrder, accessToken.getAccessTokenID());
+		transactionRepo.saveTopUpOrder(topUpOrder, accessToken.getAccessTokenID());
 
 		return new AsyncResult<TopUpOrder> (topUpOrder);
 	}

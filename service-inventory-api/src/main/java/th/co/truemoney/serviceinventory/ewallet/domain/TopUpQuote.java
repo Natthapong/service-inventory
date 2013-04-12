@@ -43,7 +43,7 @@ public class TopUpQuote extends DraftTransaction {
 		this.username = username;
 		this.amount = amount;
 		this.topUpFee = topUpFee;
-		this.status = DraftTransaction.Status.CREATED;
+		this.status = TopUpQuote.Status.CREATED;
 		type = DRAFT_TYPE;
 	}
 
