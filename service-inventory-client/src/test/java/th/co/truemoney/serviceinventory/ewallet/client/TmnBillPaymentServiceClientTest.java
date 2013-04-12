@@ -2,6 +2,8 @@ package th.co.truemoney.serviceinventory.ewallet.client;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.math.BigDecimal;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -51,7 +53,7 @@ public class TmnBillPaymentServiceClientTest {
 
         String billInvoiceID = "12345";
 
-        Bill billInvoice = billPaymentServiceClient.createBill(new BillInfo(),accessTokenID);
+        Bill billInvoice = billPaymentServiceClient.createBill(new BillInfo("iphone","1234","1234",new BigDecimal(100)),accessTokenID);
 
         assertNotNull(billInvoice);
 

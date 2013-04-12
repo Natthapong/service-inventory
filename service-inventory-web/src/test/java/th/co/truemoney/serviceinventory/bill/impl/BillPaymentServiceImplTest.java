@@ -4,9 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.math.BigDecimal;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -22,6 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
+import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
@@ -32,6 +36,10 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMem
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.SourceOfFundFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade.BillPaymentBuilder;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -47,11 +55,17 @@ public class BillPaymentServiceImplTest {
 
 	@Autowired
 	private TransactionMemoryRepository transactionRepo;
-
+	
+	@Autowired
+	private LegacyFacade legacyFacade;
+	
 	private OTPService otpService;
 	private AccessToken accessToken;
+	
 	private AsyncBillPayProcessor asyncProcessor;
-
+	
+	private BillPaymentFacade billPaymentFacade;
+	
 	@Before
 	public void setup() {
 
@@ -61,6 +75,9 @@ public class BillPaymentServiceImplTest {
 		otpService = mock(OTPService.class);
 		billPayService.setOtpService(otpService);
 
+		billPaymentFacade = mock(BillPaymentFacade.class);
+		legacyFacade.setBillPaymentFacade(billPaymentFacade);
+		
 		asyncProcessor = Mockito.mock(AsyncBillPayProcessor.class);
 		billPayService.setAsyncBillPayProcessor(asyncProcessor);
 	}
@@ -75,20 +92,23 @@ public class BillPaymentServiceImplTest {
 	public void createBillInvoice() {
 
 		when(otpService.send(anyString())).thenReturn(new OTP("0868185055", "refCode", "******"));
+		
+		when(billPaymentFacade.verify(any(BillRequest.class))).thenReturn(new BillInfo());
+		
+		Bill bill = billPayService.createBill(new BillInfo("iphone","1234","1234",new BigDecimal(100)),
+				accessToken.getAccessTokenID());
+		
+		assertNotNull(bill);
+		assertEquals(Bill.Status.CREATED, bill.getStatus());
 
-		Bill billInvoice = billPayService.createBill(new BillInfo(), accessToken.getAccessTokenID());
-
-		assertNotNull(billInvoice);
-		assertEquals(Bill.Status.CREATED, billInvoice.getStatus());
-
-		Bill repoInvoice = transactionRepo.findBill(billInvoice.getID(), accessToken.getAccessTokenID());
+		Bill repoInvoice = transactionRepo.findBill(bill.getID(), accessToken.getAccessTokenID());
 		assertNotNull(repoInvoice);
 		assertEquals(Bill.Status.CREATED, repoInvoice.getStatus());
 	}
 
 	@Test
 	public void sendOTP() {
-
+		
 		//given
 		Bill invoice = new Bill("invoiceID");
 		transactionRepo.saveBill(invoice, accessToken.getAccessTokenID());

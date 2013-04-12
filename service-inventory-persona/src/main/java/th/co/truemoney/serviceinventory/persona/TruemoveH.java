@@ -25,6 +25,13 @@ public class TruemoveH implements BarcodePersona{
 				billResponse.setResultCode("0");
 				return billResponse;
 			}
+
+			@Override
+			public BillResponse confirmBillPay(BillRequest billPayRequest)
+					throws BillException {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 	}
 	

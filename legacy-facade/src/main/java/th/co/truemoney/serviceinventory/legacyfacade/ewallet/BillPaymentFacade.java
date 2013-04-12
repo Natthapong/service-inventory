@@ -20,20 +20,38 @@ import th.co.truemoney.serviceinventory.bill.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-
 public class BillPaymentFacade {
 
 	@Autowired
 	private BillProxy billPayProxy;
 
-	public BillInfo verify(BillInfo billpayInfo) {
+	public BillInfo verify(BillRequest billPayRequest){
 		// parse billpayInfo to billpayRequest + functionID
-
 		// parse obj to str xml and call billpay service
-
 		// check billpayResponse result_code="0"
-
-		return null;
+		try {
+			
+			BillResponse billResponse = billPayProxy.verifyBillPay(billPayRequest);
+			
+			if(!billResponse.getResultCode().equals("0")){
+				//throw errors
+				
+			}
+			
+			BillInfo billInfo = new BillInfo();
+			
+			return billInfo;
+			
+		}catch (FailResultCodeException ex) {
+			String errorNamespace = ex.getNamespace();
+			if (errorNamespace.equals("SIENGINE")) {
+				throw new SIEngineTransactionFailException(ex);
+			} else if (errorNamespace.equalsIgnoreCase("UMARKET")) {
+				throw new UMarketSystemTransactionFailException(ex);
+			} else {
+				throw new UnknownSystemTransactionFailException(ex);
+			}
+		}
 	}
 	
 	public BillPaymentConfirmationInfo payBill(BillRequest billRequest) {
@@ -173,6 +191,14 @@ public class BillPaymentFacade {
 	}
 	*/
 
+	public static class VerifyEwalletFailException extends ServiceInventoryException{
+		private static final long serialVersionUID = 3029606083785530229L;
+		
+		public VerifyEwalletFailException(BillException ex) {
+			super(500,ex.getCode(),"Verify Ewallet fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
+		}
+	}
+
 	public static class SIEngineTransactionFailException extends ServiceInventoryException {
 		private static final long serialVersionUID = 5955708376116171195L;
 
@@ -180,7 +206,7 @@ public class BillPaymentFacade {
 			super(500, ex.getCode(), "bill system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
 		}
 	}
-
+	
 	public static class UMarketSystemTransactionFailException extends ServiceInventoryException {
 		private static final long serialVersionUID = 3748885497125818864L;
 

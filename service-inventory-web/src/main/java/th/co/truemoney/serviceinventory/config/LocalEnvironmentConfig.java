@@ -608,6 +608,13 @@ public class LocalEnvironmentConfig {
 				return stubBillResponse;
 				
 			}
+
+			@Override
+			public BillResponse confirmBillPay(BillRequest billPayRequest)
+					throws BillException {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 	}
 		
