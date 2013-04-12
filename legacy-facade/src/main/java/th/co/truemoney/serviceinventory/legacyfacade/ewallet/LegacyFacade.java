@@ -7,12 +7,16 @@ import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
+import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
+import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
+import th.co.truemoney.serviceinventory.bill.util.EncryptionUtil;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade.UnknownServiceFeeType;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
 
 public class LegacyFacade {
@@ -380,16 +384,23 @@ public class LegacyFacade {
 
 		private BigDecimal amount;
 
-		private SourceOfFundFee sourceOfFundFee;
+		private SourceOfFundFee selectedSourceOfFundFee;
 		
 		private String ref1;
 		private String ref2;
+		private String targetBiller;
 		
 		private String paypointCode;
 		private String paypointName;
 		private String transactionID;
 		
 		private BillInfo billPaymentInfo;
+
+		private String transactionRelation;
+
+		private String serviceFeeType;
+
+		private BigDecimal serviceFee;
 
 
 
@@ -425,18 +436,61 @@ public class LegacyFacade {
 			this.msisdn = msisdn;
 			return this;
 		}
-/*
+		
+		/*
+		 * 
+		 * 		BigDecimal amount = billPaymentInfo.getAmount();
+		String ref1 = billPaymentInfo.getRef1();
+		String ref2 = billPaymentInfo.getRef2();
+		String commandAction = "";
+		String fundName = "";
+		String transRef = "";
+		String transRelation ="";
+		String target = billPaymentInfo.getTarget();
+		ServiceFee serviceFee = billPaymentInfo.getServiceFee();
+		BigDecimal totalServiceFee = serviceFee.getTotalFee();
+		String serviceFeeType = serviceFee.getFeeType();
+		SourceOfFundFee[] sourceOfFundFees = billPaymentInfo.getSourceOfFundFees();
+		SourceOfFundFee sourceOfFundFee = null;
+		String source = "EW";
+		int i = 0;
+		BigDecimal totalSourceFee = new BigDecimal(0);
+		String sourceFeeType = "";
+		String paypointCode = "Mobile";
+		String paypointName = "Mobile";
+		String transType = "01";
+		String md5Hash = "";
+		byte[] md5Bytes = null;
+		String rawText = "";
+		byte[] rawBytes = null;
+		
+		for (i = 0; i < sourceOfFundFees.length; i++) {
+			if (sourceOfFundFees[i].getSourceType().equals(source)) {
+				sourceOfFundFee = sourceOfFundFees[i];
+			}
+		}
+		totalSourceFee = sourceOfFundFee.getTotalFee();
+		sourceFeeType = sourceOfFundFee.getFeeType();
+		 * 
+		 */
+
 		public BillPaymentBuilder withAmount(BigDecimal amount) {
 			this.amount = amount;
 			return this;
 		}
 
 		public BillPaymentBuilder usingSourceOfFundFee(SourceOfFundFee sourceOfFundFee) {
-			this.sourceOfFundFee = sourceOfFundFee;
+			this.selectedSourceOfFundFee = sourceOfFundFee;
 			return this;
-		}*/
-		/*
-		public BillPaymentBuilder forService(String ref1, String ref2) {
+		}
+		
+		public BillPaymentBuilder usingService(String serviceFeeType, BigDecimal serviceFee) {
+			this.serviceFeeType = serviceFeeType;
+			this.serviceFee = serviceFee;
+			return this;
+		}
+		
+		public BillPaymentBuilder usingRefCode(String ref1, String ref2) {
 			this.ref1 = ref1;
 			this.ref2 = ref2;
 			return this;
@@ -452,7 +506,17 @@ public class LegacyFacade {
 			this.paypointName = paypointName;
 			return this;
 		}
-		*/
+		
+		public BillPaymentBuilder usingTargetBiller(String targetBiller) {
+			this.targetBiller = targetBiller;
+			return this;
+		}
+		
+		public BillPaymentBuilder usingTransactionRelation(String transactionRelation) {
+			this.transactionRelation = transactionRelation;
+			return this;
+		}
+		
 		public BillPaymentBuilder usingBillInfo(BillInfo billPaymentInfo) {
 			this.billPaymentInfo = billPaymentInfo;
 			return this;
@@ -462,32 +526,56 @@ public class LegacyFacade {
 			Validate.notNull(tmnID, "data missing. who pay?");
 			Validate.notNull(sessionID, "data missing. who pay?");
 			Validate.notNull(channelID, "data missing. bill pay from which channel?");
-			Validate.notNull(billPaymentInfo, "data missing. which bill to pay?");
-			/*
-			String transRelation = "";
-			String target = "";
-			String totalServiceFee = "";
-			String transType = "";
-			*/
-			return billPaymentFacade.payBill(billPaymentInfo, sessionID, msisdn, channelID, tmnID);
-			/*
-					amount, 
-					ref1, 
-					ref2, 
-					transactionID, 
-					transRelation, 
-					target, 
-					totalServiceFee, 
-					sourceOfFundFee.getSourceType(),
-					sourceOfFundFee.getTotalFee(),
-					sourceOfFundFee.getFeeType(),
-					channelID, 
-					paypointCode, 
-					paypointName, 
-					transType, 
-					sessionID, 
-					tmnID);
-					*/
+			Validate.notNull(amount, "data missing. how much to pay?");
+			Validate.notNull(ref1, "data missing. ref code 1 is missing.");
+			Validate.notNull(serviceFeeType, "data missing. service fee type is missing.");
+			Validate.notNull(serviceFee, "data missing. service fee is missing.");
+			Validate.notNull(targetBiller, "data missing. target biller is missing.");
+			Validate.notNull(selectedSourceOfFundFee, "data missing. no selected source of fund.");
+			Validate.notNull(msisdn, "data missing. msisdn is missing.");
+			
+			String key = "f7cb0d495ea6d989";
+			String appUser = "MOBILE_IPHONE";
+			String functionID = "910010003";
+			
+			String md5Hash = EncryptionUtil.appendForMD5(key, appUser, functionID, transactionID, amount.toString(), sessionID);
+			
+			BillRequest billRequest = new BillRequest();
+			
+			billRequest.addParameterElement("md5", md5Hash);
+			billRequest.addParameterElement("ref1", ref1);
+			billRequest.addParameterElement("ref2", ref2);
+			billRequest.addParameterElement("msisdn", msisdn);
+			billRequest.addParameterElement("amount", amount.toString());
+			billRequest.addParameterElement("fund_name", "billpay");
+			billRequest.addParameterElement("target", targetBiller);
+			billRequest.addParameterElement("total_service_fee", this.calculateTotalServiceFee(serviceFeeType, serviceFee, amount).toString());
+			billRequest.addParameterElement("service_fee_type", serviceFeeType);
+			billRequest.addParameterElement("source", selectedSourceOfFundFee.getSourceType());
+			billRequest.addParameterElement("total_source_fee", selectedSourceOfFundFee.getTotalFee().toString());
+			billRequest.addParameterElement("source_fee_type", selectedSourceOfFundFee.getFeeType());
+			billRequest.addParameterElement("channel_detail", "iPhone");
+			billRequest.addParameterElement("tmn_id", tmnID);
+			billRequest.addParameterElement("paypointcode", paypointCode);
+			billRequest.addParameterElement("paypointname", paypointName);
+			billRequest.addParameterElement("trans_type","01");
+			
+			return billPaymentFacade.payBill(billRequest);
+		}
+		
+		private BigDecimal calculateTotalServiceFee(String serviceFeeType, BigDecimal serviceFee, BigDecimal amount) {
+			
+			BigDecimal fee = serviceFee != null ? serviceFee : BigDecimal.ZERO;
+			
+			if ("THB".equals(serviceFeeType)) {
+				return fee;
+			} else if ("percent".equals(serviceFeeType)) {
+				return fee.multiply(amount).divide(new BigDecimal(100));
+			} else if (serviceFeeType != null) {
+				throw new UnknownServiceFeeType(serviceFeeType);
+			}
+			
+			return BigDecimal.ZERO;
 		}
 	}
 

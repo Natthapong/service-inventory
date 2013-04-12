@@ -34,6 +34,12 @@ public class BillConfig {
 	@Value("${barcode_info.url}")
 	private String barcodeInfoURL;
 	
+	@Value("${confirm_billpay.function_id}")
+	private String confirmBillPayFunctionID;
+	
+	@Value("${confirm_billpay.url}")
+	private String confirmBillPayURL;
+	
 	@Bean @Qualifier("appUser")
 	public String appUser() {
 		return appUser;
@@ -54,6 +60,12 @@ public class BillConfig {
 		return barcodeInfoFunctionID;
 	}
 
+	
+	@Bean @Qualifier("confirmBillPayFunctionID")
+	public String confirmBillPayFunctionID() {
+		return confirmBillPayFunctionID;
+	}	
+
 	@Bean @Qualifier("barcodeInfoServiceNumber")
 	public String barcodeInfoServiceNumber() {
 		return barcodeInfoServiceNumber;
@@ -67,6 +79,11 @@ public class BillConfig {
 	@Bean @Qualifier("barcodeInfoURL")
 	public String barcodeInfoURL() {
 		return barcodeInfoURL;
+	}
+	
+	@Bean @Qualifier("confirmBillPayURL")
+	public String confirmBillPayURL() {
+		return confirmBillPayURL;
 	}
 			
 	@Bean

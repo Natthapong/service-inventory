@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.bill.domain;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -15,6 +16,8 @@ public class Bill extends DraftTransaction {
 	private static final String DRAFT_TYPE = "bill";
 
 	private BillInfo billInfo;
+	
+	private String selectedSourceOfFundType;
 	
 	private String otpReferenceCode;
 
@@ -53,5 +56,26 @@ public class Bill extends DraftTransaction {
 	public void setOtpReferenceCode(String otpReferenceCode) {
 		this.otpReferenceCode = otpReferenceCode;
 	}
-
+	
+	public void setSelectedSourceOfFundType(String selectedSourceOfFundType) {
+		this.selectedSourceOfFundType = selectedSourceOfFundType;
+	}
+	
+	public String getSelectedSourceOfFundType() {
+		return selectedSourceOfFundType;
+	}
+	
+	@JsonIgnore
+	public SourceOfFundFee getSelectedSourceOfFund() {
+		
+		if (selectedSourceOfFundType != null && billInfo != null && billInfo.getSourceOfFundFees() != null) {
+			for (SourceOfFundFee sourceOfFundFee :  billInfo.getSourceOfFundFees()) {
+				if (sourceOfFundFee.getSourceType().equals(selectedSourceOfFundType)) {
+					return sourceOfFundFee;
+				}
+			}
+		}
+		
+		return null;
+	}
 }
