@@ -8,41 +8,42 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class BillInvoice extends DraftTransaction {
+public class Bill extends DraftTransaction {
 
 	private static final long serialVersionUID = 2049045334050859727L;
 
-	private static final String DRAFT_TYPE = "billInvoice";
+	private static final String DRAFT_TYPE = "bill";
 
-	private BillPaymentInfo billPaymentInfo;
+	private BillInfo billInfo;
+	
 	private String otpReferenceCode;
 
-	public BillInvoice() {
+	public Bill() {
 		this(null, null, null);
 	}
 
-	public BillInvoice(String ID) {
+	public Bill(String ID) {
 		this(ID, null, null);
 	}
 
-	public BillInvoice(String ID, Status status) {
+	public Bill(String ID, Status status) {
 		this(ID, status, null);
 	}
 
-	public BillInvoice(String ID, Status status, BillPaymentInfo billPaymentInfo) {
+	public Bill(String ID, Status status, BillInfo billInfo) {
 		this.ID = ID;
 		this.status = status;
 		this.type = DRAFT_TYPE;
-		this.billPaymentInfo = billPaymentInfo;
+		this.billInfo = billInfo;
 	}
 
 
-	public BillPaymentInfo getBillPaymentInfo() {
-		return billPaymentInfo;
+	public BillInfo getBillInfo() {
+		return billInfo;
 	}
 
-	public void setBillPaymentInfo(BillPaymentInfo billPaymentInfo) {
-		this.billPaymentInfo = billPaymentInfo;
+	public void setBillInfo(BillInfo billInfo) {
+		this.billInfo = billInfo;
 	}
 
 	public String getOtpReferenceCode() {

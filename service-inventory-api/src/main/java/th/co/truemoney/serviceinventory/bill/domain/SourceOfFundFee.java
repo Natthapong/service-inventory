@@ -16,8 +16,8 @@ public class SourceOfFundFee implements Serializable {
 	private BigDecimal fee;
 	private BigDecimal totalFee;
 	private String feeType;
-	private BigDecimal minFeeAmount;
-	private BigDecimal maxFeeAmount;
+	private BigDecimal minFeeAmount = BigDecimal.ZERO;
+	private BigDecimal maxFeeAmount = BigDecimal.ZERO;
 		
 	public SourceOfFundFee() {
 		super();

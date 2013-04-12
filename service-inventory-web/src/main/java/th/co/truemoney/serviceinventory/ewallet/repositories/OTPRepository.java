@@ -4,7 +4,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 
 public interface OTPRepository {
 
-	public void saveOTP(OTP otpBean);
-	public OTP getOTPByRefCode(String mobileNumber, String refCode);
+	public void save(OTP otpBean);
+	public OTP findOTPByRefCode(String mobileNumber, String refCode);
 
 }

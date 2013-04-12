@@ -45,7 +45,7 @@ public class OTPService {
 		if (!smsResponse.isSuccess()) {
 			throw new ServiceInventoryWebException(Code.SEND_OTP_FAIL, "send OTP failed.");
 		}
-		otpRepository.saveOTP(otp);
+		otpRepository.save(otp);
 
 		return new OTP(otp.getMobileNumber(), otp.getReferenceCode(), otp.getOtpString().replaceAll(".", "x"));
 
@@ -56,7 +56,7 @@ public class OTPService {
 			throw new ServiceInventoryWebException(Code.INVALID_OTP, "invalid OTP.");
 		}
 
-		OTP otp = otpRepository.getOTPByRefCode(inputOTP.getMobileNumber(), inputOTP.getReferenceCode());
+		OTP otp = otpRepository.findOTPByRefCode(inputOTP.getMobileNumber(), inputOTP.getReferenceCode());
 
 		if (otp != null && !otp.getOtpString().equals(inputOTP.getOtpString())) {
 			throw new ServiceInventoryWebException(Code.OTP_NOT_MATCH, "OTP not matched.");

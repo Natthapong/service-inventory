@@ -28,7 +28,7 @@ public class AccessTokenMemoryRepository implements AccessTokenRepository {
 	}
 
 	@Override
-	public AccessToken getAccessToken(String accessTokenID) throws ServiceInventoryException {
+	public AccessToken findAccessToken(String accessTokenID) throws ServiceInventoryException {
 		AccessToken accessToken = map.get(accessTokenID);
 		if(accessToken == null) {
 			throw new ResourceNotFoundException(Code.ACCESS_TOKEN_NOT_FOUND, "access token not found.");

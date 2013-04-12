@@ -78,10 +78,10 @@ public class SmsConfig {
 	}
 
 	@Bean
-	public static PropertyPlaceholderConfigurer smsProxyProperties(){
+	public static PropertyPlaceholderConfigurer smsProperties(){
 	  PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
 	  Resource[] resources = new ClassPathResource[ ]
-	    { new ClassPathResource( "smsproxy.properties" ) };
+	    { new ClassPathResource( "sms.properties" ) };
 	  ppc.setLocations( resources );
 	  ppc.setIgnoreUnresolvablePlaceholders( true );
 	  return ppc;

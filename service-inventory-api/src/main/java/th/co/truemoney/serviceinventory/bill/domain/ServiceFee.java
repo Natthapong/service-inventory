@@ -15,8 +15,8 @@ public class ServiceFee implements Serializable {
 	private BigDecimal fee;
 	private String feeType;
 	private BigDecimal totalFee;
-	private BigDecimal minFeeAmount;
-	private BigDecimal maxFeeAmount;
+	private BigDecimal minFeeAmount = BigDecimal.ZERO;
+	private BigDecimal maxFeeAmount = BigDecimal.ZERO;
 	
 	public BigDecimal getFee() {
 		return fee;

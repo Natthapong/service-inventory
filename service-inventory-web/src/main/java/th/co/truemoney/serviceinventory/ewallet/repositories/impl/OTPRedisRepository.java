@@ -23,7 +23,7 @@ public class OTPRedisRepository implements OTPRepository {
 	private RedisLoggingDao redisLoggingDao;
 
 	@Override
-	public void saveOTP(OTP otp) {
+	public void save(OTP otp) {
 		try {
 			redisLoggingDao.addData(createKey(otp.getMobileNumber(), otp.getReferenceCode()), mapper.writeValueAsString(otp), 3L);
 		} catch (Exception e) {
@@ -33,7 +33,7 @@ public class OTPRedisRepository implements OTPRepository {
 	}
 
 	@Override
-	public OTP getOTPByRefCode(String mobileNumber, String refCode) {
+	public OTP findOTPByRefCode(String mobileNumber, String refCode) {
 		try {
 
 			String result = redisLoggingDao.getData(createKey(mobileNumber, refCode));

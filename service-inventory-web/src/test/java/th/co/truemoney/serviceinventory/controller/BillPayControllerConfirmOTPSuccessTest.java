@@ -27,12 +27,12 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
+import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.SmsConfig;
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
@@ -70,8 +70,8 @@ public class BillPayControllerConfirmOTPSuccessTest {
 		//given
 		OTP otp = new OTP("112233", "refCode", "123");
 
-		when(billPaymentServiceMock.confirmBillInvoice(anyString(), any(OTP.class), anyString()))
-			.thenReturn(DraftTransaction.Status.OTP_SENT);
+		when(billPaymentServiceMock.confirmBill(anyString(), any(OTP.class), anyString()))
+			.thenReturn(Bill.Status.OTP_SENT);
 
 		this.mockMvc.perform(put("/bill-payment/invoice/myInvoiceID/otp/myRefCode?accessTokenID=12345", "1")
 			.contentType(MediaType.APPLICATION_JSON)
@@ -87,7 +87,7 @@ public class BillPayControllerConfirmOTPSuccessTest {
 		//given
 		OTP otp = new OTP("112233", "refCode", "123");
 
-		when(billPaymentServiceMock.confirmBillInvoice(anyString(), any(OTP.class), anyString()))
+		when(billPaymentServiceMock.confirmBill(anyString(), any(OTP.class), anyString()))
 			.thenThrow(new ServiceInventoryWebException(Code.INVALID_OTP, "invalid OTP."));
 
 		this.mockMvc.perform(put("/bill-payment/invoice/myInvoiceID/otp/myRefCode?accessTokenID=12345", "1")

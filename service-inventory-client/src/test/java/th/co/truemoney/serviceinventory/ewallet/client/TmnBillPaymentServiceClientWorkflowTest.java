@@ -2,10 +2,11 @@ package th.co.truemoney.serviceinventory.ewallet.client;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
+import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 
 public class TmnBillPaymentServiceClientWorkflowTest {
 
@@ -15,7 +16,7 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 	@Autowired
 	TmnProfileServiceClient profileService;
 	
-	@Test
+	@Test @Ignore
 	public void shouldSuccessBillPayWorkflow() {
 		// login
 		String accessToken = profileService.login(41, TestData.createSuccessLogin());
@@ -23,7 +24,7 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 		
 		String barcode = "|010554614953100 010004552 010520120200015601 85950";
 		
-		BillPaymentInfo billPaymentInfo = billPaymentServiceClient.getBillInformation(barcode, accessToken);
+		BillInfo billPaymentInfo = billPaymentServiceClient.getBillInformation(barcode, accessToken);
 
 		// TODO Complete bill pay success workflow
 		

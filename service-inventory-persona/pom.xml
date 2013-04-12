@@ -19,7 +19,13 @@
 			<groupId>th.co.truemoney.serviceinventory</groupId>
 			<artifactId>ewallet-client</artifactId>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>th.co.truemoney.serviceinventory</groupId>
+			<artifactId>billpay-client</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

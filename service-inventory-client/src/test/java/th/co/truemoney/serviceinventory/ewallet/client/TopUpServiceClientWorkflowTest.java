@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
@@ -52,10 +51,10 @@ public class TopUpServiceClientWorkflowTest {
 		quote = topUpService.getTopUpQuoteDetails(quote.getID(), accessToken);
 
 		assertNotNull(quote);
-		assertEquals(DraftTransaction.Status.CREATED, quote.getStatus());
+		assertEquals(TopUpQuote.Status.CREATED, quote.getStatus());
 
 		// request otp
-		OTP otp = topUpService.sendOTPConfirm(quote.getID(), accessToken);
+		OTP otp = topUpService.submitTopUpRequest(quote.getID(), accessToken);
 
 		assertNotNull(otp);
 		assertNotNull(otp.getReferenceCode());
@@ -63,19 +62,19 @@ public class TopUpServiceClientWorkflowTest {
 		quote = topUpService.getTopUpQuoteDetails(quote.getID(), accessToken);
 
 		// quote status changed
-		assertEquals(DraftTransaction.Status.OTP_SENT, quote.getStatus());
+		assertEquals(TopUpQuote.Status.OTP_SENT, quote.getStatus());
 
 		// confirm otp
 		otp.setOtpString("111111");
-		DraftTransaction.Status quoteStatus = topUpService.confirmOTP(quote.getID(), otp, accessToken);
+		TopUpQuote.Status quoteStatus = topUpService.verifyOTPAndPerformTopUp(quote.getID(), otp, accessToken);
 
 		assertNotNull(quoteStatus);
-		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, quoteStatus);
+		assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quoteStatus);
 
 		quote = topUpService.getTopUpQuoteDetails(quote.getID(), accessToken);
 
 		// quote status changed
-		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, quote.getStatus());
+		assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quote.getStatus());
 
 		// get order status
 		Thread.sleep(100);

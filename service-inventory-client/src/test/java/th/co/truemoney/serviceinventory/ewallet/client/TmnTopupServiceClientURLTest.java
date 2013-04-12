@@ -21,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 
@@ -92,10 +91,10 @@ public class TmnTopupServiceClientURLTest {
 		quote = topupServiceClient.getTopUpQuoteDetails(quote.getID(), accessToken);
 
 		assertNotNull(quote);
-		assertEquals(DraftTransaction.Status.CREATED, quote.getStatus());
+		assertEquals(TopUpQuote.Status.CREATED, quote.getStatus());
 
 		// request otp
-		OTP otp = topupServiceClient.sendOTPConfirm(quote.getID(), accessToken);
+		OTP otp = topupServiceClient.submitTopUpRequest(quote.getID(), accessToken);
 
 		assertNotNull(otp);
 		assertNotNull(otp.getReferenceCode());
@@ -103,7 +102,7 @@ public class TmnTopupServiceClientURLTest {
 		quote = topupServiceClient.getTopUpQuoteDetails(quote.getID(), accessToken);
 
 		// quote status changed
-		assertEquals(DraftTransaction.Status.OTP_SENT, quote.getStatus());
+		assertEquals(TopUpQuote.Status.OTP_SENT, quote.getStatus());
 
 	}
 

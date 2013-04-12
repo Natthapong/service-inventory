@@ -19,8 +19,6 @@ import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
@@ -30,6 +28,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class })
@@ -48,6 +47,7 @@ public class TopUpServiceImplConfirmOTPTest {
 	@Autowired
 	private OTPRepository otpRepo;
 
+	private OTPService otpServiceMock;
 	private AsyncTopUpEwalletProcessor asyncServiceMock;
 
 	private AccessToken accessToken;
@@ -59,18 +59,21 @@ public class TopUpServiceImplConfirmOTPTest {
 	@Before
 	public void setup() {
 
+		otpServiceMock = Mockito.mock(OTPService.class);
 		asyncServiceMock = mock(AsyncTopUpEwalletProcessor.class);
-		this.topUpService.setAsyncTopUpProcessor(asyncServiceMock);
+
+		topUpService.setOtpService(otpServiceMock);
+		topUpService.setAsyncTopUpProcessor(asyncServiceMock);
 
 		//given
 		accessToken =  new AccessToken("tokenID", "sessionID", "tmnID", 41);
 		accessTokenRepo.save(accessToken);
 
 		goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
-		otpRepo.saveOTP(goodOTP);
+		otpRepo.save(goodOTP);
 
 		quote =  createQuote(accessToken, goodOTP);
-		transactionRepo.saveTopUpEwalletDraftTransaction(quote, accessToken.getAccessTokenID());
+		transactionRepo.saveTopUpQuote(quote, accessToken.getAccessTokenID());
 	}
 
 	@Test
@@ -78,9 +81,9 @@ public class TopUpServiceImplConfirmOTPTest {
 
 		OTP goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
 
-		DraftTransaction.Status quoteStatus = topUpService.confirmOTP(quote.getID(), goodOTP, accessToken.getAccessTokenID());
+		TopUpQuote.Status quoteStatus = topUpService.verifyOTPAndPerformTopUp(quote.getID(), goodOTP, accessToken.getAccessTokenID());
 
-		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, quoteStatus);
+		assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quoteStatus);
 		verify(asyncServiceMock).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
 	}
 
@@ -90,7 +93,7 @@ public class TopUpServiceImplConfirmOTPTest {
 		OTP invalidOTP = new OTP(accessToken.getMobileNumber(), "refCode", "HACKY");
 
 		try {
-			topUpService.confirmOTP(quote.getID(), invalidOTP, "unknown access token");
+			topUpService.verifyOTPAndPerformTopUp(quote.getID(), invalidOTP, "unknown access token");
 		} catch (ServiceInventoryWebException e) {
 			assertEquals("10001", e.getErrorCode());
 		}
@@ -100,20 +103,21 @@ public class TopUpServiceImplConfirmOTPTest {
 	}
 
 	@Test
-	public void shouldFailWhenOTPStringIsIncorrect() {
+	public void shouldFailWhenConfirmOTPStringIsIncorrect() {
 
 		//when
-		Assert.assertEquals(quote.getStatus(), DraftTransaction.Status.OTP_SENT);
+		Assert.assertEquals(TopUpQuote.Status.OTP_SENT, quote.getStatus());
+		Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpServiceMock).isValidOTP(any(OTP.class));
 		try {
-			topUpService.confirmOTP(quote.getID(), new OTP(), accessToken.getAccessTokenID());
+			topUpService.verifyOTPAndPerformTopUp(quote.getID(), new OTP(), accessToken.getAccessTokenID());
 			Assert.fail();
 		} catch (ServiceInventoryWebException e) {}
 
 		//then
-		Assert.assertEquals(quote.getStatus(), DraftTransaction.Status.OTP_SENT);
+		Assert.assertEquals(TopUpQuote.Status.OTP_SENT, quote.getStatus());
 
 		try {
-			transactionRepo.getTopUpEwalletTransaction(quote.getID(), accessToken.getAccessTokenID());
+			transactionRepo.findTopUpOrder(quote.getID(), accessToken.getAccessTokenID());
 			Assert.fail("should not create/persist any top up order");
 		} catch(ServiceInventoryWebException e) {}
 
@@ -124,7 +128,7 @@ public class TopUpServiceImplConfirmOTPTest {
 	private TopUpQuote createQuote(AccessToken accessToken, OTP otp) {
 		TopUpQuote quote = new TopUpQuote();
 		quote.setID("quoteID");
-		quote.setStatus(Status.OTP_SENT);
+		quote.setStatus(TopUpQuote.Status.OTP_SENT);
 		quote.setOtpReferenceCode(otp.getReferenceCode());
 		quote.setAccessTokenID(accessToken.getAccessTokenID());
 

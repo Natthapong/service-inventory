@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
-import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
+import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 
@@ -27,26 +26,26 @@ public class BillPaymentController {
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
 	@RequestMapping(value = "/barcode/{barcode}", method = RequestMethod.GET)
-	public @ResponseBody BillPaymentInfo getBillInformation(
+	public @ResponseBody BillInfo getBillInformation(
 			@PathVariable String barcode,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
 		return billPaymentService.getBillInformation(barcode, accessTokenID);
 	}
-	
+
 	@RequestMapping(value = "/invoice", method = RequestMethod.POST)
 	public @ResponseBody
-	BillInvoice createDraftTransaction(@RequestParam String accessTokenID,
-			@RequestBody BillPaymentInfo billPaymentInfo) {
+	Bill createBill(@RequestParam String accessTokenID,
+			@RequestBody BillInfo billPaymentInfo) {
 		extendExpireAccessToken(accessTokenID);
-		
+
 		return billPaymentService
-				.createBillInvoice(billPaymentInfo, accessTokenID);
+				.createBill(billPaymentInfo, accessTokenID);
 	}
 
-	@RequestMapping(value = "/invoice/{invoiceID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody Status confirmOTP(
-			@PathVariable String invoiceID,
+	@RequestMapping(value = "/invoice/{billID}/otp/{refCode}", method = RequestMethod.PUT)
+	public @ResponseBody Bill.Status confirmBill(
+			@PathVariable String billID,
 			@PathVariable String refCode,
 			@RequestParam String accessTokenID,
 			@RequestBody OTP otp) {
@@ -57,11 +56,11 @@ public class BillPaymentController {
 
 		extendExpireAccessToken(accessTokenID);
 
-		return billPaymentService.confirmBillInvoice(invoiceID, otp, accessTokenID);
+		return billPaymentService.confirmBill(billID, otp, accessTokenID);
 	}
-	
+
 	private void extendExpireAccessToken(String accessTokenID) {
 		extendAccessTokenAsynService.setExpire(accessTokenID);
 	}
-	
+
 }

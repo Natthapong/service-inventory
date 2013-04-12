@@ -12,25 +12,25 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class BillPayment extends Transaction {
 
 	private static final long serialVersionUID = -3546197537668299129L;
-	
+
 	private FailStatus failStatus;
-	
+
 	private BillPaymentConfirmationInfo confirmationInfo;
 
 	public static enum FailStatus {
 		PCS_FAILED, UMARKET_FAILED, TPP_FAILED, UNKNOWN_FAILED;
 	}
-	
+
 	public BillPayment() {
 
 	}
-	
-	public BillPayment(BillInvoice billPaymentDraftTransaction) {
-		if (billPaymentDraftTransaction == null || billPaymentDraftTransaction.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
+
+	public BillPayment(Bill bill) {
+		if (bill == null || bill.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
 			throw new IllegalArgumentException("passing in bad quote data");
 		}
-		this.ID = billPaymentDraftTransaction.getID();
-		this.draftTransaction = billPaymentDraftTransaction;
+		this.ID = bill.getID();
+		this.draftTransaction = bill;
 		this.status = Transaction.Status.VERIFIED;
 	}
 
@@ -42,14 +42,14 @@ public class BillPayment extends Transaction {
 		this.ID = ID;
 	}
 
-	public BillInvoice getDraftTransaction() {
-		return (BillInvoice) super.getDraftTransaction();
+	public Bill getDraftTransaction() {
+		return (Bill) super.getDraftTransaction();
 	}
 
-	public void setDraftTransaction(BillInvoice billPaymentDraftTransaction) {
-		super.setDraftTransaction(billPaymentDraftTransaction);
+	public void setDraftTransaction(Bill bill) {
+		super.setDraftTransaction(bill);
 	}
-	
+
 	public FailStatus getFailStatus() {
 		return failStatus;
 	}
@@ -69,10 +69,10 @@ public class BillPayment extends Transaction {
 
 	@Override
 	public String toString() {
-		return "BillPaymentTransaction [failStatus=" + failStatus
+		return "BillPayment [failStatus=" + failStatus
 				+ ", confirmationInfo=" + confirmationInfo + ", ID=" + ID
 				+ ", type=" + type + ", draftTransaction=" + draftTransaction
 				+ ", status=" + status + "]";
 	}
-	
+
 }

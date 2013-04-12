@@ -18,7 +18,7 @@ public class ProfileMemoryRepository implements RegisteringProfileRepository {
 	}
 
 	@Override
-	public TmnProfile getRegisteringProfile(String mobileNumber) {
+	public TmnProfile findRegisteringProfileByMobileNumber(String mobileNumber) {
 		if (profilesMap.get(mobileNumber) == null) {
 			throw new ResourceNotFoundException(Code.PROFILE_NOT_FOUND, "profile not found.");
 		}

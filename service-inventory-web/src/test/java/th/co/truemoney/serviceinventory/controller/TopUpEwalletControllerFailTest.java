@@ -28,8 +28,8 @@ import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -62,7 +62,7 @@ public class TopUpEwalletControllerFailTest {
 	public void confirmPlaceOrderSuccess() throws Exception {
 		OTP otp = new OTP("112233", "refCode", "1234");
 		//given
-		when(topupServiceMock.confirmOTP(anyString(), any(OTP.class), anyString())).thenReturn(DraftTransaction.Status.OTP_CONFIRMED);
+		when(topupServiceMock.verifyOTPAndPerformTopUp(anyString(), any(OTP.class), anyString())).thenReturn(TopUpQuote.Status.OTP_CONFIRMED);
 
 		ObjectMapper mapper = new ObjectMapper();
 		this.mockMvc.perform(put("/top-up/quote/myQuoteID/otp/myRefCode?accessTokenID=1234567", "1")

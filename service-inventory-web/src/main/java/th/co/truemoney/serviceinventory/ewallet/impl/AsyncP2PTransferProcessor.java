@@ -16,10 +16,10 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.UMarketSystemTransactionFailException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction.FailStatus;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction.FailStatus;
 
 @Service
 public class AsyncP2PTransferProcessor {
@@ -32,26 +32,26 @@ public class AsyncP2PTransferProcessor {
 	@Autowired
 	private LegacyFacade legacyFacade;
 
-	public Future<P2PTransaction> transferEwallet(P2PTransaction p2pTransaction, AccessToken accessToken) {
+	public Future<P2PTransferTransaction> transferEwallet(P2PTransferTransaction p2pTransaction, AccessToken accessToken) {
 		try {
 
-			P2PDraftTransaction p2pDraftTransaction = p2pTransaction.getDraftTransaction();
+			P2PTransferDraft p2pTransferDraft = p2pTransaction.getDraftTransaction();
 
 			Integer channelID = accessToken.getChannelID();
 			String sessionID = accessToken.getSessionID();
 			String truemoneyID = accessToken.getTruemoneyID();
 
 			String sourceMobileNumber = accessToken.getMobileNumber();
-			String targetMobileNumber = p2pDraftTransaction.getMobileNumber();
+			String targetMobileNumber = p2pTransferDraft.getMobileNumber();
 
-			BigDecimal amount = p2pDraftTransaction.getAmount();
+			BigDecimal amount = p2pTransferDraft.getAmount();
 
 			if (sourceMobileNumber != null && sourceMobileNumber.equals(targetMobileNumber)) {
 				throw new ServiceInventoryWebException(400, Code.INVALID_TARGET_MOBILE_NUMBER, "Invalid target mobile number");
 			}
 
 			p2pTransaction.setStatus(Transaction.Status.PROCESSING);
-			transactionRepo.saveP2PTransaction(p2pTransaction, accessToken.getAccessTokenID());
+			transactionRepo.saveP2PTransferTransaction(p2pTransaction, accessToken.getAccessTokenID());
 
 			P2PTransactionConfirmationInfo confirmationInfo = legacyFacade
 					.fromChannel(channelID)
@@ -72,9 +72,9 @@ public class AsyncP2PTransferProcessor {
 			p2pTransaction.setFailStatus(FailStatus.UNKNOWN_FAILED);
 		}
 
-		transactionRepo.saveP2PTransaction(p2pTransaction, accessToken.getAccessTokenID());
+		transactionRepo.saveP2PTransferTransaction(p2pTransaction, accessToken.getAccessTokenID());
 
-		return new AsyncResult<P2PTransaction> (p2pTransaction);
+		return new AsyncResult<P2PTransferTransaction> (p2pTransaction);
 	}
 
 	public void setTransactionRepo(TransactionRepository transactionRepo) {

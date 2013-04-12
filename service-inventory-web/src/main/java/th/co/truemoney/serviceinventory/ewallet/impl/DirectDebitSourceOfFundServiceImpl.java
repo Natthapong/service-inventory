@@ -36,7 +36,7 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenID)
 			throws ServiceInventoryException {
 
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		logger.debug("retrieve access Token: " + accessToken.toString());
 
 		if (!accessToken.getUsername().equals(username)) {
@@ -62,7 +62,7 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 	@Override
 	public DirectDebit getUserDirectDebitSource(String sourceOfFundID, String accessTokenID) throws ServiceInventoryException {
 
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
 		String sessionID = accessToken.getSessionID();
 		String truemoneyID = accessToken.getTruemoneyID();

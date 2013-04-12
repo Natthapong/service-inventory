@@ -15,11 +15,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;

@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.bill.impl;
 
-import java.math.BigDecimal;
 import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
@@ -9,20 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillInvoice;
+import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentInfo;
-import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.BankSystemTransactionFailException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.UMarketSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 
 @Service
 public class AsyncBillPayProcessor {
@@ -38,8 +33,8 @@ public class AsyncBillPayProcessor {
 	public Future<BillPayment> payBill(BillPayment billPaymentReceipt, AccessToken accessToken) {
 		
 		try {
-			BillInvoice draftTransaction = billPaymentReceipt.getDraftTransaction();
-			BillPaymentInfo billPaymentInfo = draftTransaction.getBillPaymentInfo();
+			Bill draftTransaction = billPaymentReceipt.getDraftTransaction();
+			BillInfo billPaymentInfo = draftTransaction.getBillInfo();
 			/*
 			BigDecimal amount = billPaymentInfo.getAmount();
 			SourceOfFundFee sourceOfFundFees[] = billPaymentInfo.getSourceOfFundFees();

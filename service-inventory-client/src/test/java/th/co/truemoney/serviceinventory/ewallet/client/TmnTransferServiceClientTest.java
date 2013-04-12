@@ -18,11 +18,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class })
@@ -37,31 +36,31 @@ public class TmnTransferServiceClientTest {
 	TmnProfileServiceClient client;
 
 	String accessToken;
-	P2PDraftTransaction p2pDraftTransaction;
+	P2PTransferDraft p2pTransferDraft;
 
 	@Before
 	public void setup(){
 		// login
 		accessToken = client.login(41, TestData.createSuccessLogin());
-		// create draft transaction
-		p2pDraftTransaction = p2pTransferServiceClient.createDraftTransaction("0866011234", new BigDecimal("20.00"), accessToken);
+		// create transfer draft
+		p2pTransferDraft = p2pTransferServiceClient.verifyAndCreateTransferDraft("0866011234", new BigDecimal("20.00"), accessToken);
 
 	}
 
 	@Test
-	public void createDraftTransactionSuccess() {
+	public void createTransferDraftSuccess() {
 
-		P2PDraftTransaction p2pDraftTransaction = p2pTransferServiceClient
-				.createDraftTransaction("0868185055", new BigDecimal(2000),
+		P2PTransferDraft p2pTransferDraft = p2pTransferServiceClient
+				.verifyAndCreateTransferDraft("0868185055", new BigDecimal(2000),
 						accessToken);
-		assertNotNull(p2pDraftTransaction);
-		assertEquals("Target Ful***", p2pDraftTransaction.getFullname());
+		assertNotNull(p2pTransferDraft);
+		assertEquals("Target Ful***", p2pTransferDraft.getFullname());
 	}
 
 	@Test
-	public void createDraftTransactionFail() {
+	public void createTransferDraftFail() {
 		try {
-			p2pTransferServiceClient.createDraftTransaction("0868185055",
+			p2pTransferServiceClient.verifyAndCreateTransferDraft("0868185055",
 					new BigDecimal(2000), "12341235");
 		} catch (ServiceInventoryException e) {
 			assertNotSame("0", e.getErrorCode());
@@ -69,22 +68,22 @@ public class TmnTransferServiceClientTest {
 	}
 
 	@Test
-	public void getDraftTransactionDetailSuccess() {
-		// get draft transaction
-		p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails(p2pDraftTransaction.getID(), accessToken);
+	public void getTransferDraftDetailSuccess() {
+		// get transfer draft
+		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
 
-		assertEquals(DraftTransaction.Status.CREATED, p2pDraftTransaction.getStatus());
+		assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
 
-		// get draft transaction and check draft status
-		p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails(p2pDraftTransaction.getID(), accessToken);
-		assertEquals(DraftTransaction.Status.CREATED, p2pDraftTransaction.getStatus());
-		assertNotNull(p2pDraftTransaction);
+		// get transfer draft and check draft status
+		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
+		assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
+		assertNotNull(p2pTransferDraft);
 	}
 
 	@Test
-	public void getDraftTransactionDetailFail() {
+	public void getTransferDraftDetailFail() {
 		try {
-			p2pTransferServiceClient.getDraftTransactionDetails("3", "12355");
+			p2pTransferServiceClient.getTransferDraftDetails("3", "12355");
 		} catch (ServiceInventoryException serviceInventoryException) {
 			assertNotSame("0", serviceInventoryException.getErrorCode());
 		}
@@ -93,12 +92,12 @@ public class TmnTransferServiceClientTest {
 	@Test
 	public void sendOTPSuccess() {
 
-		// get draft transaction
-		p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails(p2pDraftTransaction.getID(), accessToken);
+		// get transfer draft
+		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
 
-		assertEquals(DraftTransaction.Status.CREATED, p2pDraftTransaction.getStatus());
+		assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
 
-		OTP otp = p2pTransferServiceClient.sendOTP(p2pDraftTransaction.getID(), accessToken);
+		OTP otp = p2pTransferServiceClient.submitTransferRequest(p2pTransferDraft.getID(), accessToken);
 
 		assertNotNull(otp);
 		assertEquals("0891231234", otp.getMobileNumber());
@@ -107,7 +106,7 @@ public class TmnTransferServiceClientTest {
 	@Test
 	public void sendOTPFail() {
 		try {
-			p2pTransferServiceClient.sendOTP("3", "12345");
+			p2pTransferServiceClient.submitTransferRequest("3", "12345");
 		} catch (ServiceInventoryException serviceInventoryException) {
 			assertEquals("access token not found.",
 					serviceInventoryException.getErrorDescription());
@@ -117,29 +116,29 @@ public class TmnTransferServiceClientTest {
 	@Test
 	public void createTransactionSuccess() {
 
-		// get draft transaction
-		p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails(p2pDraftTransaction.getID(), accessToken);
+		// get transfer draft
+		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
 
-		assertEquals(DraftTransaction.Status.CREATED, p2pDraftTransaction.getStatus());
+		assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
 
-		OTP otp = p2pTransferServiceClient.sendOTP(p2pDraftTransaction.getID(), accessToken);
+		OTP otp = p2pTransferServiceClient.submitTransferRequest(p2pTransferDraft.getID(), accessToken);
 
-		// get draft transaction and check draft status
-		p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails(p2pDraftTransaction.getID(), accessToken);
-		assertEquals(DraftTransaction.Status.OTP_SENT, p2pDraftTransaction.getStatus());
+		// get transfer draft and check draft status
+		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
+		assertEquals(P2PTransferDraft.Status.OTP_SENT, p2pTransferDraft.getStatus());
 
 		// confirm otp
 		otp.setOtpString("111111");
-		DraftTransaction.Status draftStatus = p2pTransferServiceClient.confirmDraftTransaction(p2pDraftTransaction.getID(), otp, accessToken);
+		P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.verifyOTPAndPerformTransferring(p2pTransferDraft.getID(), otp, accessToken);
 		assertNotNull(draftStatus);
-		assertEquals(DraftTransaction.Status.OTP_CONFIRMED,
+		assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED,
 				draftStatus);
 	}
 
 	@Test
 	public void createTransactionFail() {
 		try {
-			p2pTransferServiceClient.confirmDraftTransaction("3", new OTP(
+			p2pTransferServiceClient.verifyOTPAndPerformTransferring("3", new OTP(
 					"0868185055", "112211", "marty"), "12345");
 			Assert.fail();
 		} catch (ServiceInventoryException e) {
@@ -149,52 +148,52 @@ public class TmnTransferServiceClientTest {
 
 	@Test
 	public void getTransactionStatusSuccess() {
-		// get draft transaction
-		p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails(p2pDraftTransaction.getID(), accessToken);
+		// get transfer draft
+		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
 
-		assertEquals(DraftTransaction.Status.CREATED, p2pDraftTransaction.getStatus());
+		assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
 
-		OTP otp = p2pTransferServiceClient.sendOTP(p2pDraftTransaction.getID(), accessToken);
+		OTP otp = p2pTransferServiceClient.submitTransferRequest(p2pTransferDraft.getID(), accessToken);
 
-		// get draft transaction and check draft status
-		p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails(p2pDraftTransaction.getID(), accessToken);
-		assertEquals(DraftTransaction.Status.OTP_SENT, p2pDraftTransaction.getStatus());
+		// get transfer draft and check draft status
+		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
+		assertEquals(P2PTransferDraft.Status.OTP_SENT, p2pTransferDraft.getStatus());
 
 		// confirm otp
 		otp.setOtpString("111111");
-		DraftTransaction.Status draftStatus = p2pTransferServiceClient.confirmDraftTransaction(p2pDraftTransaction.getID(), otp, accessToken);
+		P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.verifyOTPAndPerformTransferring(p2pTransferDraft.getID(), otp, accessToken);
 		assertNotNull(draftStatus);
-		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, draftStatus);
+		assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, draftStatus);
 
-		Transaction.Status p2pTransactionStatus = p2pTransferServiceClient
-				.getTransactionStatus(p2pDraftTransaction.getID(), accessToken);
+		P2PTransferTransaction.Status p2pTransactionStatus = p2pTransferServiceClient
+				.getTransferringStatus(p2pTransferDraft.getID(), accessToken);
 
-		assertEquals(Transaction.Status.SUCCESS, p2pTransactionStatus);
+		assertEquals(P2PTransferTransaction.Status.SUCCESS, p2pTransactionStatus);
 	}
 
 	@Test
 	public void getTransactionStatusFail() {
 
 		try{
-			// get draft transaction
-			p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails(p2pDraftTransaction.getID(), accessToken);
+			// get transfer draft
+			p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
 
-			assertEquals(DraftTransaction.Status.CREATED, p2pDraftTransaction.getStatus());
+			assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
 
-			OTP otp = p2pTransferServiceClient.sendOTP(p2pDraftTransaction.getID(), accessToken);
+			OTP otp = p2pTransferServiceClient.submitTransferRequest(p2pTransferDraft.getID(), accessToken);
 
-			// get draft transaction and check draft status
-			p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails(p2pDraftTransaction.getID(), accessToken);
-			assertEquals(DraftTransaction.Status.OTP_SENT, p2pDraftTransaction.getStatus());
+			// get transfer draft and check draft status
+			p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
+			assertEquals(P2PTransferDraft.Status.OTP_SENT, p2pTransferDraft.getStatus());
 
 			// confirm otp
 			otp.setOtpString("111121");
-			DraftTransaction.Status draftStatus = p2pTransferServiceClient.confirmDraftTransaction(p2pDraftTransaction.getID(), otp, accessToken);
+			P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.verifyOTPAndPerformTransferring(p2pTransferDraft.getID(), otp, accessToken);
 			assertNotNull(draftStatus);
-			assertEquals(DraftTransaction.Status.OTP_CONFIRMED, draftStatus);
+			assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, draftStatus);
 
-			Transaction.Status p2pTransactionStatus = p2pTransferServiceClient
-					.getTransactionStatus(p2pDraftTransaction.getID(), accessToken);
+			P2PTransferTransaction.Status p2pTransactionStatus = p2pTransferServiceClient
+					.getTransferringStatus(p2pTransferDraft.getID(), accessToken);
 			assertNotNull(p2pTransactionStatus);
 			fail("Should Fail.");
 		}catch(ServiceInventoryException e){
@@ -204,9 +203,9 @@ public class TmnTransferServiceClientTest {
 
 	@Test
 	public void getTransactionResultSuccess() {
-		// get draft transaction
-		p2pDraftTransaction = p2pTransferServiceClient.getDraftTransactionDetails(p2pDraftTransaction.getID(), accessToken);
-		assertEquals("Target Ful***", p2pDraftTransaction.getFullname());
+		// get transfer draft
+		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
+		assertEquals("Target Ful***", p2pTransferDraft.getFullname());
 	}
 
 	@Test
@@ -214,15 +213,15 @@ public class TmnTransferServiceClientTest {
 		// login
 		String accessToken = client.login(41, TestData.createSuccessLogin());
 
-		// create draft transaction
-		P2PDraftTransaction p2pDraftTransaction = p2pTransferServiceClient
-				.createDraftTransaction("0866011234", new BigDecimal("20.00"),
+		// create transfer draft
+		P2PTransferDraft p2pTransferDraft = p2pTransferServiceClient
+				.verifyAndCreateTransferDraft("0866011234", new BigDecimal("20.00"),
 						accessToken);
-		assertNotNull(p2pDraftTransaction);
-		assertNotNull(p2pDraftTransaction.getID());
+		assertNotNull(p2pTransferDraft);
+		assertNotNull(p2pTransferDraft.getID());
 
-		P2PDraftTransaction transaction = p2pTransferServiceClient
-				.getDraftTransactionDetails(p2pDraftTransaction.getID(),
+		P2PTransferDraft transaction = p2pTransferServiceClient
+				.getTransferDraftDetails(p2pTransferDraft.getID(),
 						accessToken);
 
 		assertEquals("Target Ful***", transaction.getFullname());

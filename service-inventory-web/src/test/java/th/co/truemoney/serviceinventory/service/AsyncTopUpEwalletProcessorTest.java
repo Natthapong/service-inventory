@@ -15,12 +15,9 @@ import org.junit.Test;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder.FailStatus;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -58,7 +55,7 @@ public class AsyncTopUpEwalletProcessorTest {
 
 		incomingOrder = setUpIncomingOrder();
 
-		transactionRepo.saveTopUpEwalletTransaction(incomingOrder, "tokenID");
+		transactionRepo.saveTopUpOrder(incomingOrder, "tokenID");
 	}
 
 	private TopUpOrder setUpIncomingOrder() {
@@ -68,10 +65,10 @@ public class AsyncTopUpEwalletProcessorTest {
 		DirectDebit sourceOfFund = new DirectDebit("sourceID", "debit");
 
 		TopUpQuote quote = new TopUpQuote("1", sourceOfFund, accessToken.getAccessTokenID(), "", amount, fee);
-		quote.setStatus(DraftTransaction.Status.OTP_CONFIRMED);
+		quote.setStatus(TopUpQuote.Status.OTP_CONFIRMED);
 
 		TopUpOrder order = new TopUpOrder(quote);
-		order.setStatus(Status.PROCESSING);
+		order.setStatus(TopUpOrder.Status.PROCESSING);
 
 		return order;
 	}
@@ -96,7 +93,7 @@ public class AsyncTopUpEwalletProcessorTest {
 		TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
 
 		assertEquals(true, futureResult.isDone());
-		assertEquals(Transaction.Status.SUCCESS, valueFromRepo.getStatus());
+		assertEquals(TopUpOrder.Status.SUCCESS, valueFromRepo.getStatus());
 	}
 
 	@Test
@@ -112,7 +109,7 @@ public class AsyncTopUpEwalletProcessorTest {
 		TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
 
 		assertEquals(true, futureResult.isDone());
-		assertEquals(Transaction.Status.FAILED, valueFromRepo.getStatus());
+		assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
 		assertEquals(FailStatus.BANK_FAILED, valueFromRepo.getFailStatus());
 	}
 
@@ -129,7 +126,7 @@ public class AsyncTopUpEwalletProcessorTest {
 		TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), "tokenID");
 
 		assertEquals(true, futureResult.isDone());
-		assertEquals(Transaction.Status.FAILED, valueFromRepo.getStatus());
+		assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
 		assertEquals(FailStatus.UMARKET_FAILED, valueFromRepo.getFailStatus());
 	}
 
@@ -146,7 +143,7 @@ public class AsyncTopUpEwalletProcessorTest {
 		TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
 
 		assertEquals(true, futureResult.isDone());
-		assertEquals(Transaction.Status.FAILED, valueFromRepo.getStatus());
+		assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
 	}
 
 	@Test
@@ -162,10 +159,10 @@ public class AsyncTopUpEwalletProcessorTest {
 		TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
 
 		assertEquals(true, futureResult.isDone());
-		assertEquals(Transaction.Status.FAILED, valueFromRepo.getStatus());
+		assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
 	}
 
 	private TopUpOrder getTransactionFromRepoByID(String transactionID, String accessTokenID) {
-		return transactionRepo.getTopUpEwalletTransaction(transactionID, accessTokenID);
+		return transactionRepo.findTopUpOrder(transactionID, accessTokenID);
 	}
 }

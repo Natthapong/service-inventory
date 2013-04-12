@@ -21,7 +21,7 @@ public class TopUpOrder extends Transaction {
 	}
 
 	public TopUpOrder(TopUpQuote quote) {
-		if (quote == null || quote.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
+		if (quote == null || quote.getStatus() != TopUpQuote.Status.OTP_CONFIRMED) {
 			throw new IllegalArgumentException("passing in bad quote data");
 		}
 

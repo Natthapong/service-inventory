@@ -7,23 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PDraftTransaction;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransaction.FailStatus;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction.FailStatus;
 
 @Service
 public class P2PTransferServiceImpl implements P2PTransferService {
@@ -31,10 +26,10 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	private AccessTokenRepository accessTokenRepo;
 
 	@Autowired
-	private EwalletSoapProxy ewalletProxy;
+	private TransactionRepository transactionRepo;
 
 	@Autowired
-	private TransactionRepository transactionRepo;
+	private LegacyFacade legacyFacade;
 
 	@Autowired
 	private AsyncP2PTransferProcessor asyncP2PTransferProcessor;
@@ -43,101 +38,80 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	private OTPService otpService;
 
 	@Override
-	public P2PDraftTransaction createDraftTransaction(String toMobileNumber, BigDecimal amount, String accessTokenID) {
+	public P2PTransferDraft verifyAndCreateTransferDraft(String targetMobileNumber, BigDecimal amount, String accessTokenID) {
 
 		// --- Get Account Detail from accessToken ---//
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
 		//--- Send to verify amount ---//
-		VerifyTransferResponse verifyResponse = verifyEwalletTransfer(toMobileNumber, amount, accessToken);
+		String targetName = legacyFacade.transfer(amount)
+						.fromChannelID(accessToken.getChannelID())
+						.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+						.toTargetUser(targetMobileNumber)
+						.verify();
 
-		//--- Generate Response ---//
-		String fullName = verifyResponse.getTargetFullname();
-		String markFullName = markFullName(fullName);
+		String targetMarkedFullName = markFullName(targetName);
 
-		String draftID = UUID.randomUUID().toString();
-		P2PDraftTransaction draft = new P2PDraftTransaction();
-		draft.setID(draftID);
-		draft.setAccessTokenID(accessTokenID);
-		draft.setAmount(amount);
-		draft.setMobileNumber(toMobileNumber);
-		draft.setFullname(markFullName);
-		draft.setStatus(DraftTransaction.Status.CREATED);
-
-		transactionRepo.saveP2PDraftTransaction(draft, accessToken.getAccessTokenID());
+		P2PTransferDraft draft = createP2PDraft(amount, targetMobileNumber, targetMarkedFullName, accessTokenID);
+		transactionRepo.saveP2PTransferDraft(draft, accessToken.getAccessTokenID());
 
 		return draft;
 	}
 
-	private VerifyTransferResponse verifyEwalletTransfer(String mobileNumber, BigDecimal amount, AccessToken accessToken) {
+	@Override
+	public P2PTransferDraft getTransferDraftDetails(String transferDraftID, String accessTokenID)
+			throws ServiceInventoryException {
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
-		SecurityContext securityContext = new SecurityContext(accessToken.getSessionID(), accessToken.getTruemoneyID());
+		P2PTransferDraft p2pTransferDraft = transactionRepo.findP2PTransferDraft(transferDraftID, accessToken.getAccessTokenID());
 
-		VerifyTransferRequest verifyRequest = new VerifyTransferRequest();
-		verifyRequest.setChannelId(accessToken.getChannelID());
-		verifyRequest.setAmount(amount);
-		verifyRequest.setTarget(mobileNumber);
-		verifyRequest.setSecurityContext(securityContext);
-
-		VerifyTransferResponse verifyResponse = ewalletProxy.verifyTransfer(verifyRequest);
-
-		return verifyResponse;
+		return p2pTransferDraft;
 	}
 
 	@Override
-	public P2PDraftTransaction getDraftTransactionDetails(String draftTransactionID, String accessTokenID)
+	public OTP submitTransferRequest(String transferDraftID, String accessTokenID)
 			throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-
-		P2PDraftTransaction p2pDraftTransaction = transactionRepo.getP2PDraftTransaction(draftTransactionID, accessToken.getAccessTokenID());
-
-		return p2pDraftTransaction;
-	}
-
-	@Override
-	public OTP sendOTP(String draftTransactionID, String accessTokenID)
-			throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
 		OTP otp = otpService.send(accessToken.getMobileNumber());
 
-		P2PDraftTransaction p2pDraftTransaction = getDraftTransactionDetails(draftTransactionID, accessTokenID);
-		p2pDraftTransaction.setOtpReferenceCode(otp.getReferenceCode());
-		p2pDraftTransaction.setStatus(DraftTransaction.Status.OTP_SENT);
+		P2PTransferDraft p2pTransferDraft = getTransferDraftDetails(transferDraftID, accessTokenID);
+		p2pTransferDraft.setOtpReferenceCode(otp.getReferenceCode());
+		p2pTransferDraft.setStatus(P2PTransferDraft.Status.OTP_SENT);
 
-		transactionRepo.saveP2PDraftTransaction(p2pDraftTransaction, accessToken.getAccessTokenID());
+		transactionRepo.saveP2PTransferDraft(p2pTransferDraft, accessToken.getAccessTokenID());
 
 		return otp;
 	}
 
 	@Override
-	public DraftTransaction.Status confirmDraftTransaction(String draftTransactionID, OTP otp, String accessTokenID)
+	public P2PTransferDraft.Status verifyOTPAndPerformTransferring(String transferDraftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
-		P2PDraftTransaction p2pDraftTransaction = getDraftTransactionDetails(draftTransactionID, accessTokenID);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		P2PTransferDraft p2pTransferDraft = getTransferDraftDetails(transferDraftID, accessTokenID);
 
 		otpService.isValidOTP(otp);
 
-		p2pDraftTransaction.setStatus(DraftTransaction.Status.OTP_CONFIRMED);
-		transactionRepo.saveP2PDraftTransaction(p2pDraftTransaction, accessToken.getAccessTokenID());
+		p2pTransferDraft.setStatus(P2PTransferDraft.Status.OTP_CONFIRMED);
+		transactionRepo.saveP2PTransferDraft(p2pTransferDraft, accessToken.getAccessTokenID());
 
-		P2PTransaction p2pTransaction = new P2PTransaction(p2pDraftTransaction);
-		p2pTransaction.setStatus(Transaction.Status.VERIFIED);
-		transactionRepo.saveP2PTransaction(p2pTransaction, accessToken.getAccessTokenID());
+		P2PTransferTransaction p2pTransaction = new P2PTransferTransaction(p2pTransferDraft);
+		p2pTransaction.setStatus(P2PTransferTransaction.Status.VERIFIED);
+		transactionRepo.saveP2PTransferTransaction(p2pTransaction, accessToken.getAccessTokenID());
 
 		performTransferMoney(accessToken, p2pTransaction);
 
-		return p2pDraftTransaction.getStatus();
+		return p2pTransferDraft.getStatus();
 	}
 
 	@Override
-	public Transaction.Status getTransactionStatus(String transactionID, String accessTokenID)
+	public P2PTransferTransaction.Status getTransferringStatus(String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
-		P2PTransaction p2pTransaction = getTransactionResult(transactionID, accessTokenID);
-		Transaction.Status p2pTransactionStatus = p2pTransaction.getStatus();
+		P2PTransferTransaction p2pTransaction = getTransactionResult(transactionID, accessTokenID);
+		P2PTransferTransaction.Status p2pTransactionStatus = p2pTransaction.getStatus();
 		FailStatus failStatus = p2pTransaction.getFailStatus();
 
-		if(p2pTransactionStatus == Transaction.Status.FAILED) {
+		if(p2pTransactionStatus == P2PTransferTransaction.Status.FAILED) {
 			if (failStatus == FailStatus.UMARKET_FAILED) {
 				throw new ServiceInventoryWebException(Code.CONFIRM_UMARKET_FAILED,
 						"u-market confirmation processing fail.");
@@ -151,16 +125,27 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	}
 
 	@Override
-	public P2PTransaction getTransactionResult(String transactionID, String accessTokenID)
+	public P2PTransferTransaction getTransactionResult(String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepo.getAccessToken(accessTokenID);
 
-		P2PTransaction p2pTransaction = transactionRepo.getP2PTransaction(transactionID, accessToken.getAccessTokenID());
-
-		return p2pTransaction;
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		return transactionRepo.findP2PTransferTransaction(transactionID, accessToken.getAccessTokenID());
 	}
 
-	private void performTransferMoney(AccessToken accessToken, P2PTransaction p2pTransaction) {
+	private P2PTransferDraft createP2PDraft(BigDecimal amount, String targetMobileNumber, String targetName, String byAccessToken) {
+		String draftID = UUID.randomUUID().toString();
+		P2PTransferDraft draft = new P2PTransferDraft();
+		draft.setID(draftID);
+		draft.setAccessTokenID(byAccessToken);
+		draft.setAmount(amount);
+		draft.setMobileNumber(targetMobileNumber);
+		draft.setFullname(targetName);
+		draft.setStatus(P2PTransferDraft.Status.CREATED);
+
+		return draft;
+	}
+
+	private void performTransferMoney(AccessToken accessToken, P2PTransferTransaction p2pTransaction) {
 		asyncP2PTransferProcessor.transferEwallet(p2pTransaction, accessToken);
 	}
 
@@ -195,24 +180,12 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		return markName;
 	}
 
-	public EwalletSoapProxy getEwalletProxy() {
-		return ewalletProxy;
-	}
-
-	public void setEwalletProxy(EwalletSoapProxy ewalletProxy) {
-		this.ewalletProxy = ewalletProxy;
-	}
-
-	public AccessTokenRepository getAccessTokenRepository() {
-		return accessTokenRepo;
+	public void setLegacyFacade(LegacyFacade legacyFacade) {
+		this.legacyFacade = legacyFacade;
 	}
 
 	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepo) {
 		this.accessTokenRepo = accessTokenRepo;
-	}
-
-	public TransactionRepository getTransactionRepository() {
-		return transactionRepo;
 	}
 
 	public void setTransactionRepository(TransactionRepository transactionRepo) {
