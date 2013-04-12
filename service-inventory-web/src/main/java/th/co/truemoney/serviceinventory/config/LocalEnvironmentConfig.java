@@ -446,8 +446,34 @@ public class LocalEnvironmentConfig {
 			@Override
 			public BillResponse verifyBillPay(BillRequest billPayRequest)
 					throws BillException {
-				// TODO Auto-generated method stub
-				return null;
+				BillResponse stubBillResponse = new BillResponse();
+				stubBillResponse.setResultCode("0");
+				stubBillResponse.setResultDesc("Success");
+				stubBillResponse.setResultNamespace("PCS");
+				stubBillResponse.setReqTransactionID("4410A0322");
+				stubBillResponse.setResponseMessage("Success");
+				stubBillResponse.setTransactionID("130401012310");
+
+				List<BillParameter> parameters = new ArrayList<BillParameter>();
+				BillParameter parameter = new BillParameter();
+				parameter.setKey("ref1");
+				parameter.setValue("02110004198411");
+				
+				parameter = new BillParameter();
+				parameter.setKey("ref2");
+				parameter.setValue("22060100300001");
+				
+				parameter = new BillParameter();
+				parameter.setKey("amount");
+				parameter.setValue("100");
+				
+				parameter = new BillParameter();
+				parameter.setKey("source");
+				parameter.setValue("EW");
+				
+				parameters.add(parameter);
+				
+				return stubBillResponse;
 			}
 			
 			@Override
