@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<response result_namespace="SIENGINE" result_code="0"
+	result_desc="Success" req_transaction_id="4410A0318" transaction_id="130401012303"
+	response_message="Success">
+	<parameters>
+		<p k="service_min_amount" v="100" />
+		<p k="service_fee" v="100" />
+		<p k="title_en" v="Convergence Postpay" />
+		<p k="service_fee_type" v="THB" />
+		<p k="title_th" v="ค่าใช้บริการบริษัทในกลุ่มทรู" />
+		<p k="ref1" v="010004552" />
+		<p k="ref2" v="010520120200015601" />
+		<p k="ref1_title_th" v="โทรศัพท์พื้นฐาน" />
+		<p k="ref1_title_en" v="Fix Line" />
+		<p k="ref2_title_th" v="รหัสลูกค้า" />
+		<p k="ref2_title_en " v="Customer ID" />
+		<p k="call_center" v="1331" />
+		<p k="logo" v="../img/tcg.png" />
+		<p k="target" v="tcg" />
+		<p k="amount" v="85950" />
+		<p k="service_max_amount" v="1000000" />
+	</parameters>
+	<extra_xml>
+		<source_fees>
+			<source_fee source="EW" source_fee="300" source_fee_type="THB"
+				min_amount="1000" max_amount="1000000" />
+			<source_fee source="MMCC" source_fee="700"
+				source_fee_type="THB" min_amount="1000" max_amount="1000000" />
+		</source_fees>
+	</extra_xml>
+</response>
