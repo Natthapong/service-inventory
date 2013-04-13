@@ -25,6 +25,8 @@ import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
 import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
 import th.co.truemoney.serviceinventory.bill.domain.ExtraXML;
 import th.co.truemoney.serviceinventory.bill.domain.SourceFee;
+import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
+import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeResponse;
 import th.co.truemoney.serviceinventory.bill.exception.BillException;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
@@ -477,10 +479,10 @@ public class LocalEnvironmentConfig {
 			}
 			
 			@Override
-			public BillResponse getBarcodeInformation(Integer channelID, String barcode) 
+			public GetBarcodeResponse getBarcodeInformation(GetBarcodeRequest barcodeRequest) 
 					throws BillException {
 						
-				BillResponse stubBillResponse = new BillResponse();
+				GetBarcodeResponse stubBillResponse = new GetBarcodeResponse();
 				stubBillResponse.setResultCode("0");
 				stubBillResponse.setResultDesc("Success");
 				stubBillResponse.setResultNamespace("SIENGINE");

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,6 +25,7 @@ import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
+import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
@@ -38,9 +38,8 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.SourceOfFundFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade.BillPaymentBuilder;
 import th.co.truemoney.serviceinventory.sms.OTPService;
+import th.co.truemoney.serviceinventory.stub.BillPaymentStubbed;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class })
@@ -89,14 +88,30 @@ public class BillPaymentServiceImplTest {
 	}
 
 	@Test
+	public void getBillInformation() {
+		
+		BillInfo stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+		
+		when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
+		
+		//when
+		BillInfo billPaymentInfo = billPayService.getBillInformation("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
+		
+		//then
+		assertNotNull(billPaymentInfo);
+		verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
+		
+	}
+
+		
+	@Test
 	public void createBillInvoice() {
 
 		when(otpService.send(anyString())).thenReturn(new OTP("0868185055", "refCode", "******"));
 		
-		when(billPaymentFacade.verify(any(BillRequest.class))).thenReturn(new BillInfo());
+		when(billPaymentFacade.verify(any(BillRequest.class))).thenReturn(BillPaymentStubbed.createSuccessBillPaymentInfo());
 		
-		Bill bill = billPayService.createBill(new BillInfo("iphone","1234","1234",new BigDecimal(100)),
-				accessToken.getAccessTokenID());
+		Bill bill = billPayService.createBill(new BillInfo("iphone","1234","1234",new BigDecimal(100)), accessToken.getAccessTokenID());
 		
 		assertNotNull(bill);
 		assertEquals(Bill.Status.CREATED, bill.getStatus());

@@ -3,11 +3,12 @@ package th.co.truemoney.serviceinventory.legacyfacade.ewallet;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
@@ -15,6 +16,8 @@ import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
 import th.co.truemoney.serviceinventory.bill.domain.SourceFee;
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
+import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
+import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeResponse;
 import th.co.truemoney.serviceinventory.bill.exception.BillException;
 import th.co.truemoney.serviceinventory.bill.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
@@ -68,96 +71,35 @@ public class BillPaymentFacade {
 		}
 	}
 
-	public BillInfo getBarcodeInformation(Integer channelID, String barcode) {
+	public BillInfo getBarcodeInformation(GetBarcodeRequest request) {
 		try {
-			BillResponse billResponse = billPayProxy.getBarcodeInformation(channelID, barcode);
+			GetBarcodeResponse barcodeResponse = billPayProxy.getBarcodeInformation(request);
 
 			BillInfo billInfo = new BillInfo();
-			billInfo.setTarget(billResponse.getParameterValue().get("target"));
-			billInfo.setLogoURL(billResponse.getParameterValue().get("logo"));
-			billInfo.setTitleTH(billResponse.getParameterValue().get("title_th"));
-			billInfo.setTitleEN(billResponse.getParameterValue().get("title_en"));
+			billInfo.setTarget(barcodeResponse.getTarget());
+			billInfo.setLogoURL(barcodeResponse.getLogo());
+			billInfo.setTitleTH(barcodeResponse.getTitleTH());
+			billInfo.setTitleEN(barcodeResponse.getTitleEN());
 
-			billInfo.setRef1TitleTH(billResponse.getParameterValue().get("ref1_title_th"));
-			billInfo.setRef1TitleEN(billResponse.getParameterValue().get("ref1_title_en"));
-			billInfo.setRef1(billResponse.getParameterValue().get("ref1"));
+			billInfo.setRef1TitleTH(barcodeResponse.getRef1TitleTH());
+			billInfo.setRef1TitleEN(barcodeResponse.getRef1TitleEN());
+			billInfo.setRef1(barcodeResponse.getRef1());
 
-			billInfo.setRef2TitleTH(billResponse.getParameterValue().get("ref2_title_th"));
-			billInfo.setRef2TitleEN(billResponse.getParameterValue().get("ref2_titie_en"));
-			billInfo.setRef2(billResponse.getParameterValue().get("ref2"));
+			billInfo.setRef2TitleTH(barcodeResponse.getRef2TitleTH());
+			billInfo.setRef2TitleEN(barcodeResponse.getRef2TitleEN());
+			billInfo.setRef2(barcodeResponse.getRef2());
 
-			billInfo.setPartialPayment(billResponse.getParameterValue().get("partial_payment"));
-			billInfo.setCallCenterNumber(billResponse.getParameterValue().get("call_center"));
-
-			String amount = billResponse.getParameterValue().get("amount");
-			BigDecimal decimalAmount = new BigDecimal(amount).divide(new BigDecimal("100"));
-			billInfo.setAmount(decimalAmount.setScale(2, RoundingMode.HALF_UP));
-
-			String minAmount = billResponse.getParameterValue().get("service_min_amount");
-			BigDecimal decimalMinAmount = new BigDecimal(minAmount).divide(new BigDecimal("100"));
-			billInfo.setMinAmount(decimalMinAmount.setScale(2, RoundingMode.HALF_UP));
-
-			String maxAmount = billResponse.getParameterValue().get("service_max_amount");
-			BigDecimal decimalMaxAmount = new BigDecimal(maxAmount).divide(new BigDecimal("100"));
-			billInfo.setMaxAmount(decimalMaxAmount.setScale(2, RoundingMode.HALF_UP));
-
-			ServiceFee serviceFee = new ServiceFee();
-			serviceFee.setFeeType(billResponse.getParameterValue().get("service_fee_type"));
-
-			BigDecimal decimalServiceFee = BigDecimal.ZERO;
-			if (serviceFee.getFeeType().equals("THB")) {
-				// fee type = fix
-				String fee = billResponse.getParameterValue().get("service_fee");
-				decimalServiceFee = new BigDecimal(fee).divide(new BigDecimal("100"));
-			} else {
-				// fee type = percent
-				String fee = billResponse.getParameterValue().get("service_fee");
-				decimalServiceFee = new BigDecimal(fee);
-			}
-			serviceFee.setFee(decimalServiceFee.setScale(2, RoundingMode.HALF_UP));
-
-			String totalServiceFee = billResponse.getParameterValue().get("total_service_fee");
-			BigDecimal decimalTotalServiceFee = new BigDecimal(totalServiceFee).divide(new BigDecimal("100"));
-			serviceFee.setTotalFee(decimalTotalServiceFee.setScale(2, RoundingMode.HALF_UP));
-
+			billInfo.setPartialPayment(barcodeResponse.getPartialPayment());
+			billInfo.setCallCenterNumber(barcodeResponse.getCallCenterNumber());
+			billInfo.setAmount(barcodeResponse.getAmount());
+			billInfo.setMinAmount(barcodeResponse.getMinAmount());
+			billInfo.setMaxAmount(barcodeResponse.getMaxAmount());
+			
+			ServiceFee serviceFee = createServiceFee(barcodeResponse); 
 			billInfo.setServiceFee(serviceFee);
 			
-			List<SourceFee> sourceOfFundList = billResponse.getExtraXML().getSourceFeeList();
-				
-			SourceOfFundFee[] sourceOfFundFees = new SourceOfFundFee[sourceOfFundList.size()];
-			int i=0;
-			for (Iterator<SourceFee> iterator = sourceOfFundList.iterator(); iterator.hasNext();) {
-				SourceFee sourceFee = (SourceFee) iterator.next();
-				SourceOfFundFee sourceOfFundFee = new SourceOfFundFee();
-				sourceOfFundFee.setSourceType(sourceFee.getSource());
-				sourceOfFundFee.setFeeType(sourceFee.getSourceFeeType());
-
-				BigDecimal decimalSourceFee = BigDecimal.ZERO;
-				if (sourceOfFundFee.getFeeType().equals("THB")) {
-					// fee type = fix
-					String fee = sourceFee.getSourceFee();
-					decimalSourceFee = new BigDecimal(fee).divide(new BigDecimal("100"));
-				} else {
-					// fee type = percent
-					String fee = sourceFee.getSourceFee();
-					decimalSourceFee = new BigDecimal(fee);
-				}
-				sourceOfFundFee.setFee(decimalSourceFee.setScale(2, RoundingMode.HALF_UP));
-				
-				BigDecimal decimalTotalSourceFee = new BigDecimal(sourceFee.getTotalSourceFee()).divide(new BigDecimal("100"));
-				sourceOfFundFee.setTotalFee(decimalTotalSourceFee);
-				
-				BigDecimal decimalMinSourceFee = new BigDecimal(sourceFee.getMinAmount()).divide(new BigDecimal("100"));
-				sourceOfFundFee.setMinFeeAmount(decimalMinSourceFee);
-				
-				BigDecimal decimalMaxSourceFee = new BigDecimal(sourceFee.getMaxAmount()).divide(new BigDecimal("100"));
-				sourceOfFundFee.setMaxFeeAmount(decimalMaxSourceFee);
-				
-				sourceOfFundFees[i] = sourceOfFundFee;
-				
-				i++;
-			} 
-			billInfo.setSourceOfFundFees(sourceOfFundFees);			
+			List<SourceOfFundFee> sourceOfFundFees = createSourceOfFundFeeList(barcodeResponse);
+			billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new SourceOfFundFee[sourceOfFundFees.size()]));			
 
 			return billInfo;
 
@@ -191,12 +133,59 @@ public class BillPaymentFacade {
 	}
 	*/
 
-	public static class VerifyEwalletFailException extends ServiceInventoryException{
-		private static final long serialVersionUID = 3029606083785530229L;
-		
-		public VerifyEwalletFailException(BillException ex) {
-			super(500,ex.getCode(),"Verify Ewallet fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
+	private List<SourceOfFundFee> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {		
+		List<SourceFee> sourceOfFundList = barcodeResponse.getExtraXML().getSourceFeeList();		
+		List<SourceOfFundFee> sourceOfFundFees = new ArrayList<SourceOfFundFee>();
+		for (SourceFee sourceFee : sourceOfFundList) {
+			
+			SourceOfFundFee sourceOfFundFee = new SourceOfFundFee();
+			sourceOfFundFee.setSourceType(sourceFee.getSource());
+			sourceOfFundFee.setFeeType(sourceFee.getSourceFeeType());
+
+			BigDecimal calculatedSourceFee = calculateSourceFee(sourceFee, sourceOfFundFee);
+			sourceOfFundFee.setFee(calculatedSourceFee.setScale(2, RoundingMode.HALF_UP));
+			sourceOfFundFee.setTotalFee(convertStringToFraction(sourceFee.getTotalSourceFee()));
+			sourceOfFundFee.setMinFeeAmount(convertStringToFraction(sourceFee.getMinAmount()));
+			sourceOfFundFee.setMaxFeeAmount(convertStringToFraction(sourceFee.getMaxAmount()));
+			
+			sourceOfFundFees.add(sourceOfFundFee);
+		} 
+		return sourceOfFundFees;
+	}
+
+	private ServiceFee createServiceFee(GetBarcodeResponse barcodeResponse) {
+		ServiceFee serviceFee = new ServiceFee();
+		serviceFee.setFeeType(barcodeResponse.getServiceFeeType());
+		serviceFee.setTotalFee(barcodeResponse.getTotalServiceFee());
+		BigDecimal decimalServiceFee = BigDecimal.ZERO;
+		if (serviceFee.getFeeType().equals("THB")) {
+			// fee type = fix
+			BigDecimal fee = barcodeResponse.getServiceFee() != null ? new BigDecimal(barcodeResponse.getServiceFee()) : BigDecimal.ZERO;
+			decimalServiceFee = fee.divide(new BigDecimal("100"));
+		} else {
+			// fee type = percent
+			decimalServiceFee = barcodeResponse.getServiceFee() != null ? new BigDecimal(barcodeResponse.getServiceFee()) : BigDecimal.ZERO;
 		}
+		serviceFee.setFee(decimalServiceFee.setScale(2, RoundingMode.HALF_UP));
+		return serviceFee;
+	}
+	
+	private BigDecimal calculateSourceFee(SourceFee sourceFee,
+			SourceOfFundFee sourceOfFundFee) {
+		BigDecimal decimalSourceFee = BigDecimal.ZERO;
+		if (sourceOfFundFee.getFeeType().equals("THB")) {
+			// fee type = fix
+			BigDecimal fee = sourceFee.getSourceFee() != null ? new BigDecimal(sourceFee.getSourceFee()) : BigDecimal.ZERO;
+			decimalSourceFee = fee.divide(new BigDecimal("100"));
+		} else {
+			// fee type = percent
+			decimalSourceFee = sourceFee.getSourceFee() != null ? new BigDecimal(sourceFee.getSourceFee()) : BigDecimal.ZERO;;
+		}
+		return decimalSourceFee;
+	}
+
+	private BigDecimal convertStringToFraction(String value) {
+		return new BigDecimal(value).divide(new BigDecimal("100"));
 	}
 
 	public static class SIEngineTransactionFailException extends ServiceInventoryException {
@@ -223,6 +212,14 @@ public class BillPaymentFacade {
 		}
 	}
 	
+	public static class VerifyEwalletFailException extends ServiceInventoryException{
+		private static final long serialVersionUID = 3029606083785530229L;
+		
+		public VerifyEwalletFailException(BillException ex) {
+			super(500,ex.getCode(),"Verify Ewallet fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
+		}
+	}
+	
 	public static class UnknownServiceFeeType extends ServiceInventoryException {
 
 		private static final long serialVersionUID = 5313680069554085972L;
@@ -233,6 +230,4 @@ public class BillPaymentFacade {
 		}
 	}
 	
-	
-
 }

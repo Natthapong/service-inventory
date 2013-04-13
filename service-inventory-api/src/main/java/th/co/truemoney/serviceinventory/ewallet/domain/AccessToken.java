@@ -16,7 +16,6 @@ public class AccessToken implements Serializable {
 	private String email;
 	private Integer channelID;
 
-
 	public AccessToken() {
 	}
 
@@ -25,13 +24,14 @@ public class AccessToken implements Serializable {
 	}
 
 	public AccessToken(String token, String sessionID, String tmnID, Integer channelID) {
-		this.accessTokenID = token;
-		this.sessionID = sessionID;
-		this.truemoneyID = tmnID;
-		this.channelID = channelID;
+		this(token, sessionID, tmnID, null, null, null, channelID);
 	}
-
-	public AccessToken(String token, String sessionID, String truemoneyID, String username, String mobileNumber, String email, Integer channelID) {
+	
+	public AccessToken(String token,
+			String sessionID, String truemoneyID,
+			String username, String mobileNumber, String email,
+			Integer channelID) {
+		
 		this.accessTokenID = token;
 		this.sessionID = sessionID;
 		this.truemoneyID = truemoneyID;

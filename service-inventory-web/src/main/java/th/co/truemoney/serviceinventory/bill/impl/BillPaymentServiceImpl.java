@@ -57,9 +57,10 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
-		return legacyFacade.fromChannel(accessToken.getChannelID())
-						   .billPayment()
+		return legacyFacade.billPayment()
 						   .withBarcode(barcode)
+						   .fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
+						   .fromBillChannel("iPhone", "iPhone Application")
 						   .getInformation();
 	}
 
@@ -68,9 +69,12 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 			throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		
 		//verify bill.
-		legacyFacade.fromAcccessToken(accessToken)
-					.billPayment()
+		legacyFacade.billPayment()
+					.fromAccessToken(accessToken)
+					.fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
+				    .fromBillChannel("iPhone", "iPhone Application")
 					.verify(billpayInfo);
 
 		String invoiceID = UUID.randomUUID().toString();

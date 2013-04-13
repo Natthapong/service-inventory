@@ -6,13 +6,12 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
-import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
-import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
+import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.bill.util.EncryptionUtil;
-import th.co.truemoney.serviceinventory.bill.util.NumberUtil;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
@@ -23,6 +22,10 @@ import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmati
 public class LegacyFacade {
 
 	private Integer channelID;
+	
+	private String channel;
+	
+	private String channelDetail; 
 
 	@Autowired(required = false)
 	private BalanceFacade balanceFacade;
@@ -93,14 +96,12 @@ public class LegacyFacade {
 	
 	public BillPaymentBuilder payBill(BillInfo billPaymentInfo) {
 		return new BillPaymentBuilder(billPaymentFacade)
-					.fromChannel(channelID)
+					.fromBillChannel(channel, channelDetail)
 					.usingBillInfo(billPaymentInfo);
 	}
 	
 	public BillPaymentBuilder billPayment() {
-		return new BillPaymentBuilder(billPaymentFacade)
-					.fromChannel(channelID)
-					.fromAccessToken(accessToken);
+		return new BillPaymentBuilder(billPaymentFacade);
 	}
 
 	public ProfileRegisteringBuilder registering() {
@@ -384,8 +385,6 @@ public class LegacyFacade {
 
 		private BillPaymentFacade billPaymentFacade;
 
-		private Integer channelID;
-
 		private String barcode;
 		
 		private AccessToken accessToken;
@@ -416,13 +415,32 @@ public class LegacyFacade {
 
 
 
+		private String appUser;
+
+		private String appPassword;
+		
+		private String appKey;
+
+		private String channel;
+
+		private String channelDetail;
+
 		@Autowired(required = false)
 		public BillPaymentBuilder(BillPaymentFacade billPaymentFacade) {
 			this.billPaymentFacade = billPaymentFacade;
 		}
 
-		public BillPaymentBuilder fromChannel(Integer channelID) {
-			this.channelID = channelID;
+		public BillPaymentBuilder fromBillChannel(String channel, String channelDetail) {
+			this.channel = channel;
+			this.channelDetail = channelDetail;
+			return this;
+		}
+		
+		public BillPaymentBuilder fromApp(String appUser, String appPassword, String appKey) {
+			this.appUser = appUser;
+			this.appPassword = appPassword;
+			this.appKey = appKey;
+			
 			return this;
 		}
 		
@@ -437,10 +455,26 @@ public class LegacyFacade {
 		}
 
 		public BillInfo getInformation() {
-			Validate.notNull(channelID, "data missing. get barcode information from which channel?");
+			Validate.notNull(channel, "data missing. get barcode information from which channel?");
+			Validate.notNull(channelDetail, "missing channel detail.");
 			Validate.notNull(barcode, "data missing. barcode missing?");
-
-			return billPaymentFacade.getBarcodeInformation(channelID, barcode);
+			Validate.notNull(appUser, "data missing. from which app user?");
+			Validate.notNull(appPassword, "data missing. missing app password.");
+			Validate.notNull(appKey, "data missing. missing app key.");
+			
+			GetBarcodeRequest billRequest = new GetBarcodeRequest();
+			
+			billRequest.setChannel(channel);
+			billRequest.setChannelDetail(channelDetail);
+			
+			billRequest.setAppUser(appUser);
+			billRequest.setAppPassword(appPassword);
+			billRequest.setAppKey(appKey);
+			
+			billRequest.setBarcode(barcode);
+			billRequest.setMD5(billRequest.generateMD5());
+			
+			return billPaymentFacade.getBarcodeInformation(billRequest);
 		}
 
 		public BillInfo verify(BillInfo billpayInfo) {
@@ -541,7 +575,7 @@ public class LegacyFacade {
 		public BillPaymentConfirmationInfo performBillPayment() {
 			Validate.notNull(tmnID, "data missing. who pay?");
 			Validate.notNull(sessionID, "data missing. who pay?");
-			Validate.notNull(channelID, "data missing. bill pay from which channel?");
+			Validate.notNull(channel, "data missing. bill pay from which channel?");
 			Validate.notNull(amount, "data missing. how much to pay?");
 			Validate.notNull(ref1, "data missing. ref code 1 is missing.");
 			Validate.notNull(serviceFeeType, "data missing. service fee type is missing.");
@@ -593,6 +627,7 @@ public class LegacyFacade {
 			
 			return BigDecimal.ZERO;
 		}
+
 	}
 
 }

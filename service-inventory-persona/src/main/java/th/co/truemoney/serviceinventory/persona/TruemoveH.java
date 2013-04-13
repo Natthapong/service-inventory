@@ -2,6 +2,8 @@ package th.co.truemoney.serviceinventory.persona;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
 import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
+import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
+import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeResponse;
 import th.co.truemoney.serviceinventory.bill.exception.BillException;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
 
@@ -13,7 +15,7 @@ public class TruemoveH implements BarcodePersona{
 		return new BillProxy() {
 			
 			@Override
-			public BillResponse getBarcodeInformation(Integer channelID, String barcode) throws BillException {
+			public GetBarcodeResponse getBarcodeInformation(GetBarcodeRequest barcodeRequest) throws BillException {
 				// TODO Auto-generated method stub
 				return null;
 			}
