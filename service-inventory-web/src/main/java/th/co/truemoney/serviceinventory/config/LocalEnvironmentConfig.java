@@ -29,6 +29,7 @@ import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeResponse;
 import th.co.truemoney.serviceinventory.bill.exception.BillException;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
+import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -363,17 +364,17 @@ public class LocalEnvironmentConfig {
 					System.out.println("stubJavaMailSender.send stop");
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				}								
+				}
 			}
 
 			@Override
 			public void send(SimpleMailMessage[] simpleMessages)
 					throws MailException {
-				// TODO Auto-generated method stub				
+				// TODO Auto-generated method stub
 			}
 
 			@Override
-			public MimeMessage createMimeMessage() {				
+			public MimeMessage createMimeMessage() {
 				return new MimeMessage(Session.getInstance(new Properties()));
 			}
 
@@ -392,39 +393,39 @@ public class LocalEnvironmentConfig {
 					System.out.println("stubJavaMailSender.send stop");
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				}				
+				}
 			}
 
 			@Override
-			public void send(MimeMessage[] mimeMessages) throws MailException {							
+			public void send(MimeMessage[] mimeMessages) throws MailException {
 			}
 
 			@Override
 			public void send(MimeMessagePreparator mimeMessagePreparator)
 					throws MailException {
-				// TODO Auto-generated method stub				
+				// TODO Auto-generated method stub
 			}
 
 			@Override
 			public void send(MimeMessagePreparator[] mimeMessagePreparators)
 					throws MailException {
-				// TODO Auto-generated method stub				
-			}			
+				// TODO Auto-generated method stub
+			}
 		};
 	}
-	
+
 	@Bean
 	public FreeMarkerConfigurationFactory stubFreeMarkerConfigurationFactory() {
 		FreeMarkerConfigurationFactory freeMarkerConfigurationFactory = new FreeMarkerConfigurationFactory();
 		freeMarkerConfigurationFactory.setTemplateLoaderPath("email-template");
 		return freeMarkerConfigurationFactory;
 	}
-	
+
 	@Bean @Qualifier("emailEncoding")
 	public String getEmailEncoding() {
 		return "utf-8";
 	}
-	
+
 	@Bean @Qualifier("emailSender")
 	public String getEmailSender() {
 		return "emailSender";
@@ -439,185 +440,195 @@ public class LocalEnvironmentConfig {
 	public String getWelcomeTemplate() {
 		return "welcome-email.ftl";
 	}
-	
+
+//	@Bean
+//	@Primary
+//	public BillProxy stubBillProxy() {
+//		return new BillProxy() {
+//
+//			@Override
+//			public BillResponse verifyBillPay(BillRequest billPayRequest)
+//					throws BillException {
+//				BillResponse stubBillResponse = new BillResponse();
+//				stubBillResponse.setResultCode("0");
+//				stubBillResponse.setResultDesc("Success");
+//				stubBillResponse.setResultNamespace("PCS");
+//				stubBillResponse.setReqTransactionID("4410A0322");
+//				stubBillResponse.setResponseMessage("Success");
+//				stubBillResponse.setTransactionID("130401012310");
+//
+//				List<BillParameter> parameters = new ArrayList<BillParameter>();
+//				BillParameter parameter = new BillParameter();
+//				parameter.setKey("ref1");
+//				parameter.setValue("02110004198411");
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("ref2");
+//				parameter.setValue("22060100300001");
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("amount");
+//				parameter.setValue("100");
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("source");
+//				parameter.setValue("EW");
+//
+//				parameters.add(parameter);
+//
+//				return stubBillResponse;
+//			}
+//
+//			@Override
+//			public GetBarcodeResponse getBarcodeInformation(GetBarcodeRequest barcodeRequest)
+//					throws BillException {
+//
+//				GetBarcodeResponse stubBillResponse = new GetBarcodeResponse();
+//				stubBillResponse.setResultCode("0");
+//				stubBillResponse.setResultDesc("Success");
+//				stubBillResponse.setResultNamespace("SIENGINE");
+//				stubBillResponse.setReqTransactionID("4410A0318");
+//				stubBillResponse.setResponseMessage("Success");
+//				stubBillResponse.setTransactionID("130401012303");
+//
+//				List<BillParameter> parameters = new ArrayList<BillParameter>();
+//				BillParameter parameter = new BillParameter();
+//				parameter.setKey("target");
+//				parameter.setValue("tcg");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("logo");
+//				parameter.setValue("https://secure.truemoney-dev.com/m/tmn_webview/images/logo_bill/tmvh@2x.png");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("title_th");
+//				parameter.setValue("ค่าใช้บริการบริษัทในกลุ่มทรู");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("title_en");
+//				parameter.setValue("Convergence Postpay");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("ref1_title_th");
+//				parameter.setValue("โทรศัพท์พื้นฐาน");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("ref1_title_en");
+//				parameter.setValue("Fix Line");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("ref1");
+//				parameter.setValue("010004552");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("ref2_title_th");
+//				parameter.setValue("รหัสลูกค้า");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("ref2_titie_en");
+//				parameter.setValue("Customer ID");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("ref2");
+//				parameter.setValue("010520120200015601");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("partial_payment");
+//				parameter.setValue("Y");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("call_center");
+//				parameter.setValue("1331");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("amount");
+//				parameter.setValue("10000");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("service_min_amount");
+//				parameter.setValue("10000");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("service_max_amount");
+//				parameter.setValue("3000000");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("service_fee_type");
+//				parameter.setValue("THB");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("service_fee");
+//				parameter.setValue("1000");
+//				parameters.add(parameter);
+//
+//				parameter = new BillParameter();
+//				parameter.setKey("total_service_fee");
+//				parameter.setValue("1000");
+//				parameters.add(parameter);
+//
+//				stubBillResponse.setParameters(parameters);
+//
+//				ExtraXML extraXML = new ExtraXML();
+//				List<SourceFee> sourceFeeList = new ArrayList<SourceFee>();
+//				SourceFee sourceFee = new SourceFee();
+//				sourceFee.setSource("EW");
+//				sourceFee.setSourceFee("300");
+//				sourceFee.setSourceFeeType("THB");
+//				sourceFee.setTotalSourceFee("300");
+//				sourceFee.setMinAmount("100");
+//				sourceFee.setMaxAmount("3000000");
+//				sourceFeeList.add(sourceFee);
+//
+//				sourceFee = new SourceFee();
+//				sourceFee.setSource("MMCC");
+//				sourceFee.setSourceFee("700");
+//				sourceFee.setSourceFeeType("THB");
+//				sourceFee.setTotalSourceFee("700");
+//				sourceFee.setMinAmount("100");
+//				sourceFee.setMaxAmount("3000000");
+//				sourceFeeList.add(sourceFee);
+//
+//				extraXML.setSourceFeeList(sourceFeeList);
+//
+//				stubBillResponse.setExtraXML(extraXML);
+//
+//				return stubBillResponse;
+//
+//			}
+//
+//			@Override
+//			public BillResponse confirmBillPay(BillRequest billPayRequest)
+//					throws BillException {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//		};
+//	}
+
 	@Bean
-	@Primary
-	public BillProxy stubBillProxy() {
-		return new BillProxy() {
-			
-			@Override
-			public BillResponse verifyBillPay(BillRequest billPayRequest)
-					throws BillException {
-				BillResponse stubBillResponse = new BillResponse();
-				stubBillResponse.setResultCode("0");
-				stubBillResponse.setResultDesc("Success");
-				stubBillResponse.setResultNamespace("PCS");
-				stubBillResponse.setReqTransactionID("4410A0322");
-				stubBillResponse.setResponseMessage("Success");
-				stubBillResponse.setTransactionID("130401012310");
-
-				List<BillParameter> parameters = new ArrayList<BillParameter>();
-				BillParameter parameter = new BillParameter();
-				parameter.setKey("ref1");
-				parameter.setValue("02110004198411");
-				
-				parameter = new BillParameter();
-				parameter.setKey("ref2");
-				parameter.setValue("22060100300001");
-				
-				parameter = new BillParameter();
-				parameter.setKey("amount");
-				parameter.setValue("100");
-				
-				parameter = new BillParameter();
-				parameter.setKey("source");
-				parameter.setValue("EW");
-				
-				parameters.add(parameter);
-				
-				return stubBillResponse;
-			}
-			
-			@Override
-			public GetBarcodeResponse getBarcodeInformation(GetBarcodeRequest barcodeRequest) 
-					throws BillException {
-						
-				GetBarcodeResponse stubBillResponse = new GetBarcodeResponse();
-				stubBillResponse.setResultCode("0");
-				stubBillResponse.setResultDesc("Success");
-				stubBillResponse.setResultNamespace("SIENGINE");
-				stubBillResponse.setReqTransactionID("4410A0318");
-				stubBillResponse.setResponseMessage("Success");
-				stubBillResponse.setTransactionID("130401012303");
-				
-				List<BillParameter> parameters = new ArrayList<BillParameter>();
-				BillParameter parameter = new BillParameter();
-				parameter.setKey("target");
-				parameter.setValue("tcg");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("logo");
-				parameter.setValue("https://secure.truemoney-dev.com/m/tmn_webview/images/logo_bill/tmvh@2x.png");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("title_th");
-				parameter.setValue("ค่าใช้บริการบริษัทในกลุ่มทรู");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("title_en");
-				parameter.setValue("Convergence Postpay");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("ref1_title_th");
-				parameter.setValue("โทรศัพท์พื้นฐาน");				
-				parameters.add(parameter);
-								
-				parameter = new BillParameter();
-				parameter.setKey("ref1_title_en");
-				parameter.setValue("Fix Line");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("ref1");
-				parameter.setValue("010004552");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("ref2_title_th");
-				parameter.setValue("รหัสลูกค้า");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("ref2_titie_en");
-				parameter.setValue("Customer ID");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("ref2");
-				parameter.setValue("010520120200015601");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("partial_payment");
-				parameter.setValue("Y");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("call_center");
-				parameter.setValue("1331");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("amount");
-				parameter.setValue("10000");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("service_min_amount");
-				parameter.setValue("10000");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("service_max_amount");
-				parameter.setValue("3000000");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("service_fee_type");
-				parameter.setValue("THB");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("service_fee");
-				parameter.setValue("1000");				
-				parameters.add(parameter);
-				
-				parameter = new BillParameter();
-				parameter.setKey("total_service_fee");
-				parameter.setValue("1000");				
-				parameters.add(parameter);
-				
-				stubBillResponse.setParameters(parameters);
-				
-				ExtraXML extraXML = new ExtraXML();
-				List<SourceFee> sourceFeeList = new ArrayList<SourceFee>();
-				SourceFee sourceFee = new SourceFee();
-				sourceFee.setSource("EW");
-				sourceFee.setSourceFee("300");
-				sourceFee.setSourceFeeType("THB");
-				sourceFee.setTotalSourceFee("300");
-				sourceFee.setMinAmount("100");
-				sourceFee.setMaxAmount("3000000");
-				sourceFeeList.add(sourceFee);
-				
-				sourceFee = new SourceFee();
-				sourceFee.setSource("MMCC");
-				sourceFee.setSourceFee("700");
-				sourceFee.setSourceFeeType("THB");
-				sourceFee.setTotalSourceFee("700");
-				sourceFee.setMinAmount("100");
-				sourceFee.setMaxAmount("3000000");
-				sourceFeeList.add(sourceFee);
-				
-				extraXML.setSourceFeeList(sourceFeeList);
-				
-				stubBillResponse.setExtraXML(extraXML);
-				
-				return stubBillResponse;
-				
-			}
-
-			@Override
-			public BillResponse confirmBillPay(BillRequest billPayRequest)
-					throws BillException {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		};
+	public BillProxy billPayProxy() {
+		return new BillProxyImpl();
 	}
-		
+
+	@Bean @Qualifier("barcodeInfoURL") @Primary
+	public String barcodeInfoURL() {
+		return "http://localhost:8585/service-inventory-web/v1/test/postGetBill";
+	}
+
 }

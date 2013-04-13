@@ -11,9 +11,9 @@ public class TruemoveH implements BarcodePersona{
 
 	@Override
 	public BillProxy getBillPayProxyImpl() {
-		
+
 		return new BillProxy() {
-			
+
 			@Override
 			public GetBarcodeResponse getBarcodeInformation(GetBarcodeRequest barcodeRequest) throws BillException {
 				// TODO Auto-generated method stub
@@ -36,5 +36,5 @@ public class TruemoveH implements BarcodePersona{
 			}
 		};
 	}
-	
+
 }

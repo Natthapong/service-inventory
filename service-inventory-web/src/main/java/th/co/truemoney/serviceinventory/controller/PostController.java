@@ -17,9 +17,27 @@ public class PostController {
 	public @ResponseBody ModelAndView getBill(
 		   @RequestBody String post) {
 
-		System.out.println("post is : " + post);
+		System.out.println("get bill : request is : " + post);
 
 		return new ModelAndView("forward:/WEB-INF/test-xml/bill_response.xml");
+	}
+
+	@RequestMapping(value = "/postVerifyBill", method = RequestMethod.POST)
+	public @ResponseBody ModelAndView verifyBill(
+		   @RequestBody String post) {
+
+		System.out.println("verify: request is : " + post);
+
+		return new ModelAndView("forward:/WEB-INF/test-xml/verify_bill_response.xml");
+	}
+
+	@RequestMapping(value = "/postConfirmBill", method = RequestMethod.POST)
+	public @ResponseBody ModelAndView confirmBill(
+		   @RequestBody String post) {
+
+		System.out.println("confirm: request is : " + post);
+
+		return new ModelAndView("forward:/WEB-INF/test-xml/confirm_bill_response.xml");
 	}
 
 }

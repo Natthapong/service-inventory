@@ -33,18 +33,18 @@ public class BillPaymentFacade {
 		// parse obj to str xml and call billpay service
 		// check billpayResponse result_code="0"
 		try {
-			
+
 			BillResponse billResponse = billPayProxy.verifyBillPay(billPayRequest);
-			
+
 			if(!billResponse.getResultCode().equals("0")){
 				//throw errors
-				
+
 			}
-			
+
 			BillInfo billInfo = new BillInfo();
-			
+
 			return billInfo;
-			
+
 		}catch (FailResultCodeException ex) {
 			String errorNamespace = ex.getNamespace();
 			if (errorNamespace.equals("SIENGINE")) {
@@ -56,7 +56,7 @@ public class BillPaymentFacade {
 			}
 		}
 	}
-	
+
 	public BillPaymentConfirmationInfo payBill(BillRequest billRequest) {
 		try {
 			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -94,12 +94,12 @@ public class BillPaymentFacade {
 			billInfo.setAmount(barcodeResponse.getAmount());
 			billInfo.setMinAmount(barcodeResponse.getMinAmount());
 			billInfo.setMaxAmount(barcodeResponse.getMaxAmount());
-			
-			ServiceFee serviceFee = createServiceFee(barcodeResponse); 
+
+			ServiceFee serviceFee = createServiceFee(barcodeResponse);
 			billInfo.setServiceFee(serviceFee);
-			
+
 			List<SourceOfFundFee> sourceOfFundFees = createSourceOfFundFeeList(barcodeResponse);
-			billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new SourceOfFundFee[sourceOfFundFees.size()]));			
+			billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new SourceOfFundFee[sourceOfFundFees.size()]));
 
 			return billInfo;
 
@@ -114,13 +114,13 @@ public class BillPaymentFacade {
 			}
 		}
 	}
-	
+
 	/*
 	private BigDecimal calculateTotalServiceFee(ServiceFee serviceFee, BigDecimal amount) {
-		
+
 		String feeType = serviceFee.getFeeType();
 		BigDecimal fee = serviceFee.getFee() != null ? serviceFee.getFee() : BigDecimal.ZERO;
-		
+
 		if ("THB".equals(feeType)) {
 			return fee;
 		} else if ("percent".equals(feeType)) {
@@ -128,16 +128,16 @@ public class BillPaymentFacade {
 		} else if (feeType != null) {
 			throw new UnknownServiceFeeType(feeType);
 		}
-		
+
 		return BigDecimal.ZERO;
 	}
 	*/
 
-	private List<SourceOfFundFee> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {		
-		List<SourceFee> sourceOfFundList = barcodeResponse.getExtraXML().getSourceFeeList();		
+	private List<SourceOfFundFee> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {
+		List<SourceFee> sourceOfFundList = barcodeResponse.getExtraXML().getSourceFeeList();
 		List<SourceOfFundFee> sourceOfFundFees = new ArrayList<SourceOfFundFee>();
 		for (SourceFee sourceFee : sourceOfFundList) {
-			
+
 			SourceOfFundFee sourceOfFundFee = new SourceOfFundFee();
 			sourceOfFundFee.setSourceType(sourceFee.getSource());
 			sourceOfFundFee.setFeeType(sourceFee.getSourceFeeType());
@@ -147,9 +147,9 @@ public class BillPaymentFacade {
 			sourceOfFundFee.setTotalFee(convertStringToFraction(sourceFee.getTotalSourceFee()));
 			sourceOfFundFee.setMinFeeAmount(convertStringToFraction(sourceFee.getMinAmount()));
 			sourceOfFundFee.setMaxFeeAmount(convertStringToFraction(sourceFee.getMaxAmount()));
-			
+
 			sourceOfFundFees.add(sourceOfFundFee);
-		} 
+		}
 		return sourceOfFundFees;
 	}
 
@@ -169,7 +169,7 @@ public class BillPaymentFacade {
 		serviceFee.setFee(decimalServiceFee.setScale(2, RoundingMode.HALF_UP));
 		return serviceFee;
 	}
-	
+
 	private BigDecimal calculateSourceFee(SourceFee sourceFee,
 			SourceOfFundFee sourceOfFundFee) {
 		BigDecimal decimalSourceFee = BigDecimal.ZERO;
@@ -185,7 +185,8 @@ public class BillPaymentFacade {
 	}
 
 	private BigDecimal convertStringToFraction(String value) {
-		return new BigDecimal(value).divide(new BigDecimal("100"));
+		BigDecimal decimal = (value != null) ? new BigDecimal(value) : BigDecimal.ZERO;
+		return decimal.divide(new BigDecimal("100"));
 	}
 
 	public static class SIEngineTransactionFailException extends ServiceInventoryException {
@@ -195,7 +196,7 @@ public class BillPaymentFacade {
 			super(500, ex.getCode(), "bill system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
 		}
 	}
-	
+
 	public static class UMarketSystemTransactionFailException extends ServiceInventoryException {
 		private static final long serialVersionUID = 3748885497125818864L;
 
@@ -211,15 +212,15 @@ public class BillPaymentFacade {
 			super(500, ex.getCode(),  "unknown system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
 		}
 	}
-	
+
 	public static class VerifyEwalletFailException extends ServiceInventoryException{
 		private static final long serialVersionUID = 3029606083785530229L;
-		
+
 		public VerifyEwalletFailException(BillException ex) {
 			super(500,ex.getCode(),"Verify Ewallet fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
 		}
 	}
-	
+
 	public static class UnknownServiceFeeType extends ServiceInventoryException {
 
 		private static final long serialVersionUID = 5313680069554085972L;
@@ -229,5 +230,5 @@ public class BillPaymentFacade {
 			super(500, UNKNOWN_SERVICE_FEE_TYPE,  "unknown fee type code: " + feeType, "BILL-PROXY", null);
 		}
 	}
-	
+
 }

@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
+import th.co.truemoney.serviceinventory.bill.config.BillConfig;
 import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.email.EmailService;
@@ -33,7 +34,7 @@ import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 @EnableAsync
 @EnableAspectJAutoProxy
 @ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop"})
-@Import({SmsConfig.class, TmnProfileConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, DevEnvironmentConfig.class })
+@Import({SmsConfig.class, TmnProfileConfig.class, BillConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, DevEnvironmentConfig.class })
 public class ServiceInventoryConfig {
 
 	@Bean
@@ -101,10 +102,10 @@ public class ServiceInventoryConfig {
     public AsyncP2PTransferProcessor getAsyncP2PTransferProcessor() {
     	return new AsyncP2PTransferProcessor();
     }
-    
+
     @Bean
 	public EmailService emailService() {
-		return new EmailService();	
+		return new EmailService();
 	}
 
 }
