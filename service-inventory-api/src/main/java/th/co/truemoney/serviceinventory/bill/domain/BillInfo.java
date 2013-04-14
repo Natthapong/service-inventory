@@ -36,7 +36,7 @@ public class BillInfo implements Serializable {
 	private BigDecimal maxAmount = BigDecimal.ZERO;
 	
 	private ServiceFee serviceFee;
-	private SourceOfFundFee[] sourceOfFundFees;
+	private BillPaySourceOfFund[] sourceOfFundFees;
 		
 	public BillInfo() {
 		super();
@@ -122,10 +122,10 @@ public class BillInfo implements Serializable {
 	public void setServiceFee(ServiceFee serviceFee) {
 		this.serviceFee = serviceFee;
 	}
-	public SourceOfFundFee[] getSourceOfFundFees() {
+	public BillPaySourceOfFund[] getSourceOfFundFees() {
 		return sourceOfFundFees;
 	}
-	public void setSourceOfFundFees(SourceOfFundFee[] sourceOfFundFees) {
+	public void setSourceOfFundFees(BillPaySourceOfFund[] sourceOfFundFees) {
 		this.sourceOfFundFees = sourceOfFundFees;
 	}	
 	public String getPartialPayment() {

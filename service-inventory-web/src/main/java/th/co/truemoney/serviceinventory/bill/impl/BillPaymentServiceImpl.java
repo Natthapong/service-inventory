@@ -57,11 +57,12 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
-		return legacyFacade.billPayment()
-						   .withBarcode(barcode)
-						   .fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
-						   .fromBillChannel("iPhone", "iPhone Application")
-						   .getInformation();
+		return legacyFacade.billing()
+								.readBillInfo(barcode)
+								   .fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
+								   .fromBillChannel("iPhone", "iPhone Application")
+								   .getInformation();
+
 	}
 
 	@Override
@@ -69,17 +70,20 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 			throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		
+
 		//verify bill.
-		legacyFacade.billPayment()
-					.fromAccessToken(accessToken)
-					.fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
-				    .fromBillChannel("iPhone", "iPhone Application")
-					.verify(billpayInfo);
+		legacyFacade.billing()
+						.fromBill(billpayInfo.getRef1(), billpayInfo.getRef2(), billpayInfo.getTarget())
+							.aUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+							.withMsisdn(accessToken.getMobileNumber())
+							.fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
+							.fromBillChannel("iPhone", "iPhone Application")
+							.paying(billpayInfo.getAmount(), billpayInfo.getServiceFee(), billpayInfo.getSourceOfFundFees()[0])
+							.verifyPayment();
+
 
 		String invoiceID = UUID.randomUUID().toString();
 		Bill billInvoice = new Bill(invoiceID, Bill.Status.CREATED, billpayInfo);
-
 		//save bill.
 		transactionRepository.saveBill(billInvoice, accessTokenID);
 
@@ -102,6 +106,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 		Bill billInvoice = transactionRepository.findBill(invoiceID, accessTokenID);
 		billInvoice.setOtpReferenceCode(otp.getReferenceCode());
+		billInvoice.setStatus(Bill.Status.OTP_SENT);
 
 		transactionRepository.saveBill(billInvoice, accessTokenID);
 
@@ -134,18 +139,34 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status getBillPaymentStatus(
+	public BillPayment.Status getBillPaymentStatus(
 			String billPaymentID, String accessTokenID)
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+
+		BillPayment billPayment = getBillPaymentResult(billPaymentID, accessTokenID);
+		BillPayment.Status paymentStatus = billPayment.getStatus();
+//		FailStatus failStatus = topUpOrder.getFailStatus();
+
+//		if(topUpStatus == BillPayment.Status.FAILED) {
+//			if (failStatus == FailStatus.BANK_FAILED) {
+//				throw new ServiceInventoryWebException(Code.CONFIRM_BANK_FAILED,
+//						"bank confirmation processing fail.");
+//			} else if (failStatus == FailStatus.UMARKET_FAILED) {
+//				throw new ServiceInventoryWebException(Code.CONFIRM_UMARKET_FAILED,
+//						"u-market confirmation processing fail.");
+//			} else {
+//				throw new ServiceInventoryWebException(Code.CONFIRM_FAILED,
+//						"confirmation processing fail.");
+//			}
+//		}
+
+		return paymentStatus;
+
 	}
 
 	@Override
-	public BillPayment getBillPaymentResult(String billPaymentID,
-			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+	public BillPayment getBillPaymentResult(String billPaymentID, String accessTokenID) throws ServiceInventoryException {
+		return transactionRepository.findBillPayment(billPaymentID, accessTokenID);
 	}
 
 	public void setAsyncBillPayProcessor(AsyncBillPayProcessor asyncBillPayProcessor) {

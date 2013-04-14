@@ -172,7 +172,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public BillPayment fillBillPayment(String billPaymentID, String accessTokenID) {
+	public BillPayment findBillPayment(String billPaymentID, String accessTokenID) {
 
 		try {
 			String result = redisLoggingDao.getData("billPayment:" + accessTokenID + ":" + billPaymentID);

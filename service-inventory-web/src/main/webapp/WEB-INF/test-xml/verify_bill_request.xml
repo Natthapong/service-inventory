@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<request service_no="any" req_transaction_id="1365897151299"
+	function_id="810010002" command="doService" channel="iPhone" app_user="MOBILE_IPHONE"
+	app_password="IPHONE+1">
+	<parameters>
+		<p v="verifybillpay" k="fund_name" />
+		<p v="iPhone Application" k="channel_detail" />
+		<p v="EW" k="command_action" />
+		<p v="sessionId" k="session" />
+		<p v="trueMoneyId" k="tmn_id" />
+		<p v="010004552" k="ref1" />
+		<p v="010520120200015601" k="ref2" />
+		<p v="tcg" k="target" />
+		<p v="01" k="trans_type" />
+		<p v="0891231234" k="msisdn" />
+		<p v="0891231234" k="paypointname" />
+		<p v="mobile" k="paypointcode" />
+		<p v="85950" k="amount" />
+		<p v="EW" k="source" />
+		<p v="300" k="source_fee" />
+		<p v="THB" k="source_fee_type" />
+		<p v="100" k="service_fee" />
+		<p v="THB" k="service_fee_type" />
+		<p v="f32a7166866eae055e518096c66f98e2" k="md5" />
+	</parameters>
+</request>

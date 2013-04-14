@@ -66,10 +66,10 @@ public class Bill extends DraftTransaction {
 	}
 	
 	@JsonIgnore
-	public SourceOfFundFee getSelectedSourceOfFund() {
+	public BillPaySourceOfFund getSelectedSourceOfFund() {
 		
 		if (selectedSourceOfFundType != null && billInfo != null && billInfo.getSourceOfFundFees() != null) {
-			for (SourceOfFundFee sourceOfFundFee :  billInfo.getSourceOfFundFees()) {
+			for (BillPaySourceOfFund sourceOfFundFee :  billInfo.getSourceOfFundFees()) {
 				if (sourceOfFundFee.getSourceType().equals(selectedSourceOfFundType)) {
 					return sourceOfFundFee;
 				}

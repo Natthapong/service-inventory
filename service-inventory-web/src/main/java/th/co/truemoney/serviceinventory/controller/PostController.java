@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value="/test")
 public class PostController {
 
-	@RequestMapping(value = "/postGetBill", method = RequestMethod.POST)
+	@RequestMapping(value = "/postGetBill", method = RequestMethod.POST, consumes="application/xml")
 	public @ResponseBody ModelAndView getBill(
 		   @RequestBody String post) {
 
@@ -22,7 +22,7 @@ public class PostController {
 		return new ModelAndView("forward:/WEB-INF/test-xml/bill_response.xml");
 	}
 
-	@RequestMapping(value = "/postVerifyBill", method = RequestMethod.POST)
+	@RequestMapping(value = "/postVerifyBill", method = RequestMethod.POST, consumes="application/xml")
 	public @ResponseBody ModelAndView verifyBill(
 		   @RequestBody String post) {
 

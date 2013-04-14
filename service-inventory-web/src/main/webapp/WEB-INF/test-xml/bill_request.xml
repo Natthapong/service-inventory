@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<request service_no="any" req_transaction_id="1365880272678"
+	function_id="810010001" command="doService" channel="iPhone" app_user="MOBILE_IPHONE"
+	app_password="IPHONE+1">
+	<parameters>
+		<p v="barcode" k="fund_name" />
+		<p v="000" k="amount" />
+		<p v="THB" k="currency" />
+		<p v="ALL" k="command_action" />
+		<p v="iPhone Application" k="channel_detail" />
+		<p v="|010554614953100 010004552 010520120200015601 85950" k="barcode" />
+		<p v="c84fdb2def104a2309e090100a108331" k="md5" />
+	</parameters>
+</request>

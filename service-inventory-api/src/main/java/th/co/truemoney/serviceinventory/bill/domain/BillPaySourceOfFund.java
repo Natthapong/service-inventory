@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class SourceOfFundFee implements Serializable {
+public class BillPaySourceOfFund implements Serializable {
 	
 	private static final long serialVersionUID = -7741609765959925215L;
 	private String sourceType;
@@ -19,7 +19,7 @@ public class SourceOfFundFee implements Serializable {
 	private BigDecimal minFeeAmount = BigDecimal.ZERO;
 	private BigDecimal maxFeeAmount = BigDecimal.ZERO;
 		
-	public SourceOfFundFee() {
+	public BillPaySourceOfFund() {
 		super();
 	}
 

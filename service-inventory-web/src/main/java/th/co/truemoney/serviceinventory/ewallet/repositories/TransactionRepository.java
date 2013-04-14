@@ -21,6 +21,6 @@ public interface TransactionRepository {
 	public void saveBill(Bill bill, String accessTokenID);
 	public Bill findBill(String billID, String accessTokenID);
 	public void saveBillPayment(BillPayment billPayment, String accessTokenID);
-	public BillPayment fillBillPayment(String billPaymentID, String accessTokenID);
+	public BillPayment findBillPayment(String billPaymentID, String accessTokenID);
 
 }

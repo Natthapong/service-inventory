@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
+import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 
@@ -43,6 +44,24 @@ public class BillPaymentController {
 				.createBill(billPaymentInfo, accessTokenID);
 	}
 
+	@RequestMapping(value = "/invoice/{billID}", method = RequestMethod.GET)
+	public @ResponseBody Bill getBillDetails(@PathVariable String billID,
+		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+		extendExpireAccessToken(accessTokenID);
+		return billPaymentService.getBillDetail(billID, accessTokenID);
+	}
+
+	@RequestMapping(value = "/invoice/{invoiceID}/otp", method = RequestMethod.POST)
+	public @ResponseBody OTP submitTopUpRequest(
+		   @PathVariable String invoiceID,
+		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+		extendExpireAccessToken(accessTokenID);
+		return billPaymentService.sendOTP(invoiceID, accessTokenID);
+	}
+
+
 	@RequestMapping(value = "/invoice/{billID}/otp/{refCode}", method = RequestMethod.PUT)
 	public @ResponseBody Bill.Status confirmBill(
 			@PathVariable String billID,
@@ -57,6 +76,25 @@ public class BillPaymentController {
 		extendExpireAccessToken(accessTokenID);
 
 		return billPaymentService.confirmBill(billID, otp, accessTokenID);
+	}
+
+	@RequestMapping(value = "/transaction/{billPaymentID}/status", method = RequestMethod.GET)
+	public @ResponseBody BillPayment.Status getPaymentStatus(
+		   @PathVariable String billPaymentID,
+		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+		extendExpireAccessToken(accessTokenID);
+
+		return billPaymentService.getBillPaymentStatus(billPaymentID, accessTokenID);
+	}
+
+	@RequestMapping(value = "/transaction/{billPaymentID}", method = RequestMethod.GET)
+	public @ResponseBody BillPayment getPaymentResult(
+		   @PathVariable String billPaymentID,
+		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+		extendExpireAccessToken(accessTokenID);
+		return billPaymentService.getBillPaymentResult(billPaymentID, accessTokenID);
 	}
 
 	private void extendExpireAccessToken(String accessTokenID) {

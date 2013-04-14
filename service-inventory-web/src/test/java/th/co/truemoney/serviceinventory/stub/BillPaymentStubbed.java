@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
-import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaySourceOfFund;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 
 public class BillPaymentStubbed {
@@ -35,8 +35,8 @@ public class BillPaymentStubbed {
 		serviceFee.setMaxFeeAmount(new BigDecimal("2500"));		
 		billPaymentInfo.setServiceFee(serviceFee);
 		
-		SourceOfFundFee[] sourceOfFundFees = new SourceOfFundFee[1];
-		SourceOfFundFee sourceOfFundFee = new SourceOfFundFee();
+		BillPaySourceOfFund[] sourceOfFundFees = new BillPaySourceOfFund[1];
+		BillPaySourceOfFund sourceOfFundFee = new BillPaySourceOfFund();
 		sourceOfFundFee.setSourceType("EW");
 		sourceOfFundFee.setFee(new BigDecimal("1000"));
 		sourceOfFundFee.setFeeType("THB");

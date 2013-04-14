@@ -2,8 +2,6 @@ package th.co.truemoney.serviceinventory.config;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Session;
@@ -20,14 +18,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillParameter;
-import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
-import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
-import th.co.truemoney.serviceinventory.bill.domain.ExtraXML;
-import th.co.truemoney.serviceinventory.bill.domain.SourceFee;
-import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
-import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeResponse;
-import th.co.truemoney.serviceinventory.bill.exception.BillException;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
@@ -630,5 +620,16 @@ public class LocalEnvironmentConfig {
 	public String barcodeInfoURL() {
 		return "http://localhost:8585/service-inventory-web/v1/test/postGetBill";
 	}
+
+	@Bean @Qualifier("verifyBillPayURL") @Primary
+	public String verifyBillPayURL() {
+		return "http://localhost:8585/service-inventory-web/v1/test/postVerifyBill";
+	}
+
+	@Bean @Qualifier("confirmBillPayURL") @Primary
+	public String confirmBillPayURL() {
+		return "http://localhost:8585/service-inventory-web/v1/test/postConfirmBill";
+	}
+
 
 }

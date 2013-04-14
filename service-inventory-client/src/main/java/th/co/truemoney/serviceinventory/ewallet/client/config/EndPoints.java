@@ -88,16 +88,32 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/transfer/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
 
+	public String getScanBarcodeServiceURL(){
+		return host + "/service-inventory-web/v1/bill-payment/barcode/{barcode}?accessTokenID={accessTokenID}";
+	}
+
 	public String getCreateBillInvoiceURL(){
 		return host + "/service-inventory-web/v1/bill-payment/invoice?accessTokenID={accessTokenID}";
+	}
+
+	public String getBillInvoiceDetailURL(){
+		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}?accessTokenID={accessTokenID}";
+	}
+
+	public String getBillPaymentSendOTPConfirmURL() {
+		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}/otp?accessTokenID={accessTokenID}";
 	}
 
 	public String getBillPayInvoiceOTPConfirmURL(){
 		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
 
+	public String getBillPaymentStatusURL(){
+		return host + "/service-inventory-web/v1/bill-payment/transaction/{transactionID}/status?accessTokenID={accessTokenID}";
+	}
+
 	public String getBillPaymentInfoURL(){
-		return host + "/service-inventory-web/v1/bill-payment/barcode/{barcode}?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/bill-payment/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
 
 }

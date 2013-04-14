@@ -37,31 +37,15 @@ public class TmnBillPaymentServiceClientTest {
 	public void setup(){
 		accessTokenID = client.login(41, TestData.createSuccessLogin());
 	}
-	
+
 	@Test
 	public void getBillInformation() {
 		String barcode = "|010554614953100 010004552 010520120200015601 85950";
-		
+
 		BillInfo billPaymentInfo = billPaymentServiceClient.getBillInformation(barcode, accessTokenID);
-		
+
 		assertNotNull(billPaymentInfo);
 	}
 
-	@Test
-	public void createBillInvoice(){
 
-
-        String billInvoiceID = "12345";
-
-        Bill billInvoice = billPaymentServiceClient.createBill(new BillInfo("iphone","1234","1234",new BigDecimal(100)),accessTokenID);
-
-        assertNotNull(billInvoice);
-
-        OTP sentOTP = billPaymentServiceClient.sendOTP(billInvoiceID, accessTokenID);
-
-        OTP userInputOTP = new OTP(sentOTP.getMobileNumber(), sentOTP.getReferenceCode(), "111111");
-        
-	}
-	
-	
 }

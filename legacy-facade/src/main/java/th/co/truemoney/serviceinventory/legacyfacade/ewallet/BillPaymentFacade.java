@@ -10,14 +10,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaySourceOfFund;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
-import th.co.truemoney.serviceinventory.bill.domain.BillRequest;
 import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
 import th.co.truemoney.serviceinventory.bill.domain.SourceFee;
-import th.co.truemoney.serviceinventory.bill.domain.SourceOfFundFee;
+import th.co.truemoney.serviceinventory.bill.domain.services.ConfirmBillPayRequest;
 import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeResponse;
+import th.co.truemoney.serviceinventory.bill.domain.services.VerifyBillPayRequest;
 import th.co.truemoney.serviceinventory.bill.exception.BillException;
 import th.co.truemoney.serviceinventory.bill.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
@@ -28,36 +29,11 @@ public class BillPaymentFacade {
 	@Autowired
 	private BillProxy billPayProxy;
 
-	public BillInfo verify(BillRequest billPayRequest){
-		// parse billpayInfo to billpayRequest + functionID
-		// parse obj to str xml and call billpay service
-		// check billpayResponse result_code="0"
-		try {
-
-			BillResponse billResponse = billPayProxy.verifyBillPay(billPayRequest);
-
-			if(!billResponse.getResultCode().equals("0")){
-				//throw errors
-
-			}
-
-			BillInfo billInfo = new BillInfo();
-
-			return billInfo;
-
-		}catch (FailResultCodeException ex) {
-			String errorNamespace = ex.getNamespace();
-			if (errorNamespace.equals("SIENGINE")) {
-				throw new SIEngineTransactionFailException(ex);
-			} else if (errorNamespace.equalsIgnoreCase("UMARKET")) {
-				throw new UMarketSystemTransactionFailException(ex);
-			} else {
-				throw new UnknownSystemTransactionFailException(ex);
-			}
-		}
+	public void verify(VerifyBillPayRequest billPayRequest){
+		 billPayProxy.verifyBillPay(billPayRequest);
 	}
 
-	public BillPaymentConfirmationInfo payBill(BillRequest billRequest) {
+	public BillPaymentConfirmationInfo payBill(ConfirmBillPayRequest billRequest) {
 		try {
 			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			BillResponse billPayResponse = billPayProxy.confirmBillPay(billRequest);
@@ -98,8 +74,8 @@ public class BillPaymentFacade {
 			ServiceFee serviceFee = createServiceFee(barcodeResponse);
 			billInfo.setServiceFee(serviceFee);
 
-			List<SourceOfFundFee> sourceOfFundFees = createSourceOfFundFeeList(barcodeResponse);
-			billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new SourceOfFundFee[sourceOfFundFees.size()]));
+			List<BillPaySourceOfFund> sourceOfFundFees = createSourceOfFundFeeList(barcodeResponse);
+			billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new BillPaySourceOfFund[sourceOfFundFees.size()]));
 
 			return billInfo;
 
@@ -133,12 +109,12 @@ public class BillPaymentFacade {
 	}
 	*/
 
-	private List<SourceOfFundFee> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {
+	private List<BillPaySourceOfFund> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {
 		List<SourceFee> sourceOfFundList = barcodeResponse.getExtraXML().getSourceFeeList();
-		List<SourceOfFundFee> sourceOfFundFees = new ArrayList<SourceOfFundFee>();
+		List<BillPaySourceOfFund> sourceOfFundFees = new ArrayList<BillPaySourceOfFund>();
 		for (SourceFee sourceFee : sourceOfFundList) {
 
-			SourceOfFundFee sourceOfFundFee = new SourceOfFundFee();
+			BillPaySourceOfFund sourceOfFundFee = new BillPaySourceOfFund();
 			sourceOfFundFee.setSourceType(sourceFee.getSource());
 			sourceOfFundFee.setFeeType(sourceFee.getSourceFeeType());
 
@@ -171,7 +147,7 @@ public class BillPaymentFacade {
 	}
 
 	private BigDecimal calculateSourceFee(SourceFee sourceFee,
-			SourceOfFundFee sourceOfFundFee) {
+			BillPaySourceOfFund sourceOfFundFee) {
 		BigDecimal decimalSourceFee = BigDecimal.ZERO;
 		if (sourceOfFundFee.getFeeType().equals("THB")) {
 			// fee type = fix

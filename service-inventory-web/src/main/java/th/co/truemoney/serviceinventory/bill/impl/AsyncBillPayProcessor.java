@@ -23,18 +23,18 @@ import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 public class AsyncBillPayProcessor {
 
 	private static final Logger logger = LoggerFactory.getLogger(AsyncTopUpEwalletProcessor.class);
-	
+
 	@Autowired
 	private TransactionRepository transactionRepo;
-	
+
 	@Autowired
 	private LegacyFacade legacyFacade;
-	
+
 	public Future<BillPayment> payBill(BillPayment billPaymentReceipt, AccessToken accessToken) {
-		
+
 		try {
 			Bill draftTransaction = billPaymentReceipt.getDraftTransaction();
-			BillInfo billPaymentInfo = draftTransaction.getBillInfo();
+			BillInfo billInfo = draftTransaction.getBillInfo();
 			/*
 			BigDecimal amount = billPaymentInfo.getAmount();
 			SourceOfFundFee sourceOfFundFees[] = billPaymentInfo.getSourceOfFundFees();
@@ -47,24 +47,23 @@ public class AsyncBillPayProcessor {
 /*
 			for (i = 0; i < sourceOfFundFees.length; i++) {
 				if (sourceOfFundFees[i].getSourceType().equals("EW")) {
-					sourceOfFundFee = sourceOfFundFees[i]; 
+					sourceOfFundFee = sourceOfFundFees[i];
 				}
 			}
-	*/		
-			BillPaymentConfirmationInfo confirmationInfo = legacyFacade
-					.fromChannel(accessToken.getChannelID())
-					.payBill(billPaymentInfo)
-					.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID(), accessToken.getMobileNumber())
-					/*
-					.usingSourceOfFundFee(sourceOfFundFee)
-					.usingTransaction(draftTransaction.getID())
-					.forService(billPaymentInfo.getRef1(), billPaymentInfo.getRef2())
-					*/
-					.performBillPayment();
-			
+	*/
+
+			BillPaymentConfirmationInfo confirmationInfo = legacyFacade.billing()
+					.fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())
+					.aUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+					.withMsisdn(accessToken.getMobileNumber())
+					.fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
+					.fromBillChannel("iPhone", "iPhone Application")
+					.paying(billInfo.getAmount(), billInfo.getServiceFee(), billInfo.getSourceOfFundFees()[0])
+					.performPayment();
+
 			billPaymentReceipt.setConfirmationInfo(confirmationInfo);
 			billPaymentReceipt.setStatus(Transaction.Status.SUCCESS);
-			
+
 			logger.info("AsyncService.payBill.resultTransactionID: " + confirmationInfo.getTransactionID());
 		} catch (UMarketSystemTransactionFailException e) {
 			billPaymentReceipt.setFailStatus(BillPayment.FailStatus.UMARKET_FAILED);
@@ -75,7 +74,7 @@ public class AsyncBillPayProcessor {
 		}
 
 		transactionRepo.saveBillPayment(billPaymentReceipt, accessToken.getAccessTokenID());
-		
+
 		return new AsyncResult<BillPayment> (billPaymentReceipt);
 	}
 
