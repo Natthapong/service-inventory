@@ -1,20 +1,22 @@
 package th.co.truemoney.serviceinventory.bill;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+import java.math.BigDecimal;
+
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface BillPaymentService {
 
-	public Bill getBillInformation(String barcode, String accessTokenID)
+	public Bill retrieveBillInformation(String barcode, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public BillPaymentDraft createBill(Bill billpayInfo, String accessTokenID)
+	public BillPaymentDraft verifyPaymentAbility(String billID, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public BillPaymentDraft getBillDetail(String invoiceID, String accessTokenID)
+	public BillPaymentDraft getBillPaymentDraftDetail(String invoiceID, String accessTokenID)
 			throws ServiceInventoryException;
 
 	public OTP sendOTP(String invoiceID, String accessTokenID)

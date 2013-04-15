@@ -44,7 +44,7 @@ public class BillPaymentControllerFailTest {
 
 	@Autowired
 	private BillPaymentService billPaymentServiceMock;
-	
+
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
@@ -55,19 +55,19 @@ public class BillPaymentControllerFailTest {
 	public void tierDown() {
 		reset(this.billPaymentServiceMock);
 	}
-	
+
 	@Test
 	public void getBillInformationFail() throws Exception {
-		
+
 		//given
 		ServiceInventoryWebException exception = BillPaymentStubbed.createFailBillPaymentInfo();
-		when(billPaymentServiceMock.getBillInformation(anyString(), anyString())).thenThrow(exception);
-		
+		when(billPaymentServiceMock.retrieveBillInformation(anyString(), anyString())).thenThrow(exception);
+
 		//perform
 		this.mockMvc.perform(get("/bill-payment/barcode/{barcode}?accessTokenID=12345", "|010554614953100 010004552 010520120200015601 85950")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andDo(print());
-		
+
 	}
 }

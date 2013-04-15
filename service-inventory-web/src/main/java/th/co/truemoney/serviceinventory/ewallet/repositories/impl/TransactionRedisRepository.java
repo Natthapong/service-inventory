@@ -134,7 +134,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 
 	@Override
 
-	public void saveBill(
+	public void saveBillPaymentDraft(
 			BillPaymentDraft billInvoice,
 			String accessTokenID) {
 		try {
@@ -145,7 +145,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public BillPaymentDraft findBill(String billInvoiceID, String accessTokenID) {
+	public BillPaymentDraft findBillPaymentDraft(String billInvoiceID, String accessTokenID) {
 		try {
 			String result = redisLoggingDao.getData("billInvoice:" + accessTokenID + ":" + billInvoiceID);
 			if(result == null) {
@@ -162,7 +162,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveBillPayment(BillPaymentTransaction billPayment, String accessTokenID) {
+	public void saveBillPaymentTransaction(BillPaymentTransaction billPayment, String accessTokenID) {
 		try {
 			redisLoggingDao.addData("billPayment:" + accessTokenID + ":" + billPayment.getID(), mapper.writeValueAsString(billPayment), 15L);
 		} catch (Exception e) {
@@ -172,7 +172,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public BillPaymentTransaction findBillPayment(String billPaymentID, String accessTokenID) {
+	public BillPaymentTransaction findBillPaymentTransaction(String billPaymentID, String accessTokenID) {
 
 		try {
 			String result = redisLoggingDao.getData("billPayment:" + accessTokenID + ":" + billPaymentID);

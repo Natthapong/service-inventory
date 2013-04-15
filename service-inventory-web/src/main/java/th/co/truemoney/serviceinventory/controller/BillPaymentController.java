@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
@@ -27,29 +27,31 @@ public class BillPaymentController {
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
 	@RequestMapping(value = "/barcode/{barcode}", method = RequestMethod.GET)
-	public @ResponseBody Bill getBillInformation(
+	public @ResponseBody Bill scanAndCreateBillPayment(
 			@PathVariable String barcode,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return billPaymentService.getBillInformation(barcode, accessTokenID);
+		return billPaymentService.retrieveBillInformation(barcode, accessTokenID);
 	}
 
-	@RequestMapping(value = "/invoice", method = RequestMethod.POST)
+	@RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.POST)
 	public @ResponseBody
-	BillPaymentDraft createBill(@RequestParam String accessTokenID,
-			@RequestBody Bill billPaymentInfo) {
+	BillPaymentDraft verifyPaymentAbility(
+			@PathVariable String invoiceID,
+			@RequestParam String accessTokenID,
+			@RequestBody BillPaymentDraft billPaymentInfo) {
 		extendExpireAccessToken(accessTokenID);
 
-		return billPaymentService
-				.createBill(billPaymentInfo, accessTokenID);
+		return billPaymentService.verifyPaymentAbility(invoiceID, billPaymentInfo.getAmount(), accessTokenID);
 	}
 
-	@RequestMapping(value = "/invoice/{billID}", method = RequestMethod.GET)
-	public @ResponseBody BillPaymentDraft getBillDetails(@PathVariable String billID,
+	@RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.GET)
+	public @ResponseBody BillPaymentDraft getBillDetails(
+		   @PathVariable String invoiceID,
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
 		extendExpireAccessToken(accessTokenID);
-		return billPaymentService.getBillDetail(billID, accessTokenID);
+		return billPaymentService.getBillPaymentDraftDetail(invoiceID, accessTokenID);
 	}
 
 	@RequestMapping(value = "/invoice/{invoiceID}/otp", method = RequestMethod.POST)
@@ -62,9 +64,9 @@ public class BillPaymentController {
 	}
 
 
-	@RequestMapping(value = "/invoice/{billID}/otp/{refCode}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/invoice/{invoiceID}/otp/{refCode}", method = RequestMethod.PUT)
 	public @ResponseBody BillPaymentDraft.Status confirmBill(
-			@PathVariable String billID,
+			@PathVariable String invoiceID,
 			@PathVariable String refCode,
 			@RequestParam String accessTokenID,
 			@RequestBody OTP otp) {
@@ -75,17 +77,17 @@ public class BillPaymentController {
 
 		extendExpireAccessToken(accessTokenID);
 
-		return billPaymentService.confirmBill(billID, otp, accessTokenID);
+		return billPaymentService.confirmBill(invoiceID, otp, accessTokenID);
 	}
 
-	@RequestMapping(value = "/transaction/{billPaymentID}/status", method = RequestMethod.GET)
+	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
 	public @ResponseBody BillPaymentTransaction.Status getPaymentStatus(
-		   @PathVariable String billPaymentID,
+		   @PathVariable String transactionID,
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
 		extendExpireAccessToken(accessTokenID);
 
-		return billPaymentService.getBillPaymentStatus(billPaymentID, accessTokenID);
+		return billPaymentService.getBillPaymentStatus(transactionID, accessTokenID);
 	}
 
 	@RequestMapping(value = "/transaction/{billPaymentID}", method = RequestMethod.GET)

@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,7 +35,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	private HttpHeaders headers;
 
 	@Override
-	public Bill getBillInformation(String barcode, String accessTokenID)
+	public Bill retrieveBillInformation(String barcode, String accessTokenID)
 			throws ServiceInventoryException {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
@@ -41,20 +43,18 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 				endPoints.getScanBarcodeServiceURL(), HttpMethod.GET, requestEntity,
 				Bill.class, barcode, accessTokenID);
 
-		Bill billPaymentInfo = responseEntity.getBody();
-
-		return billPaymentInfo;
+		return responseEntity.getBody();
 	}
 
 	@Override
-	public BillPaymentDraft createBill(Bill billpayInfo,
-			String accessTokenID) throws ServiceInventoryException {
+	public BillPaymentDraft verifyPaymentAbility(String billID, BigDecimal amount, String accessTokenID) throws ServiceInventoryException {
 
-		HttpEntity<Bill> requestEntity = new HttpEntity<Bill>(billpayInfo,headers);
+		BillPaymentDraft draft = new BillPaymentDraft(billID, null, amount);
+		HttpEntity<BillPaymentDraft> requestEntity = new HttpEntity<BillPaymentDraft>(draft, headers);
 
 		ResponseEntity<BillPaymentDraft> responseEntity = restTemplate.exchange(
 				endPoints.getCreateBillInvoiceURL(), HttpMethod.POST, requestEntity,
-				BillPaymentDraft.class, accessTokenID);
+				BillPaymentDraft.class, billID, accessTokenID);
 
 		BillPaymentDraft billInvoice = responseEntity.getBody();
 
@@ -62,7 +62,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	}
 
 	@Override
-	public BillPaymentDraft getBillDetail(String invoiceID,
+	public BillPaymentDraft getBillPaymentDraftDetail(String invoiceID,
 			String accessTokenID) throws ServiceInventoryException {
 
 		HttpEntity<Bill> requestEntity = new HttpEntity<Bill>(headers);

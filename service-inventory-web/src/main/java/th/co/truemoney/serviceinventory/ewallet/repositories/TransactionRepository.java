@@ -18,9 +18,9 @@ public interface TransactionRepository {
 	public void saveP2PTransferTransaction(P2PTransferTransaction p2pTransaction, String accessTokenID);
 	public P2PTransferTransaction findP2PTransferTransaction(String p2pTransactionID, String accessTokenID);
 
-	public void saveBill(BillPaymentDraft bill, String accessTokenID);
-	public BillPaymentDraft findBill(String billID, String accessTokenID);
-	public void saveBillPayment(BillPaymentTransaction billPayment, String accessTokenID);
-	public BillPaymentTransaction findBillPayment(String billPaymentID, String accessTokenID);
+	public void saveBillPaymentDraft(BillPaymentDraft bill, String accessTokenID);
+	public BillPaymentDraft findBillPaymentDraft(String billID, String accessTokenID);
+	public void saveBillPaymentTransaction(BillPaymentTransaction billPayment, String accessTokenID);
+	public BillPaymentTransaction findBillPaymentTransaction(String billPaymentID, String accessTokenID);
 
 }

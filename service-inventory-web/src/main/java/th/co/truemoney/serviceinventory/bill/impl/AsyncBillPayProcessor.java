@@ -42,7 +42,7 @@ public class AsyncBillPayProcessor {
 			int i = 0;
 			*/
 			billPaymentReceipt.setStatus(Transaction.Status.PROCESSING);
-			transactionRepo.saveBillPayment(billPaymentReceipt, accessToken.getAccessTokenID());
+			transactionRepo.saveBillPaymentTransaction(billPaymentReceipt, accessToken.getAccessTokenID());
 
 /*
 			for (i = 0; i < sourceOfFundFees.length; i++) {
@@ -73,7 +73,7 @@ public class AsyncBillPayProcessor {
 			billPaymentReceipt.setFailStatus(BillPaymentTransaction.FailStatus.UNKNOWN_FAILED);
 		}
 
-		transactionRepo.saveBillPayment(billPaymentReceipt, accessToken.getAccessTokenID());
+		transactionRepo.saveBillPaymentTransaction(billPaymentReceipt, accessToken.getAccessTokenID());
 
 		return new AsyncResult<BillPaymentTransaction> (billPaymentReceipt);
 	}

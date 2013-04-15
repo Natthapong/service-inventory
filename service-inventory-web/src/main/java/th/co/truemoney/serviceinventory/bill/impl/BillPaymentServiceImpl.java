@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.bill.impl;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,9 @@ import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
@@ -25,6 +28,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 	@Autowired
 	private AccessTokenRepository accessTokenRepo;
+
+	@Autowired
+	private BillInformationRepository billInfoRepo;
 
 	@Autowired
 	private TransactionRepository transactionRepository;
@@ -52,47 +58,49 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 	}
 	@Override
-	public Bill getBillInformation(String barcode, String accessTokenID)
+	public Bill retrieveBillInformation(String barcode, String accessTokenID)
 			throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
-		return legacyFacade.billing()
+		Bill bill = legacyFacade.billing()
 								.readBillInfo(barcode)
 								   .fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
 								   .fromBillChannel("iPhone", "iPhone Application")
 								   .getInformation();
 
+		bill.setID(UUID.randomUUID().toString());
+		billInfoRepo.saveBill(bill, accessTokenID);
+
+		return bill;
+
 	}
 
 	@Override
-	public BillPaymentDraft createBill(Bill billpayInfo, String accessTokenID)
+	public BillPaymentDraft verifyPaymentAbility(String billID, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException {
 
+		Bill billInfo = billInfoRepo.findBill(billID, accessTokenID);
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
 		//verify bill.
 		legacyFacade.billing()
-						.fromBill(billpayInfo.getRef1(), billpayInfo.getRef2(), billpayInfo.getTarget())
+						.fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())
 							.aUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
 							.withMsisdn(accessToken.getMobileNumber())
 							.fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
 							.fromBillChannel("iPhone", "iPhone Application")
-							.paying(billpayInfo.getAmount(), billpayInfo.getServiceFee(), billpayInfo.getSourceOfFundFees()[0])
+							.paying(amount, billInfo.getServiceFee(), billInfo.getSourceOfFundFees()[0])
 							.verifyPayment();
 
-
-		String invoiceID = UUID.randomUUID().toString();
-		BillPaymentDraft billInvoice = new BillPaymentDraft(invoiceID, BillPaymentDraft.Status.CREATED, billpayInfo);
-		//save bill.
-		transactionRepository.saveBill(billInvoice, accessTokenID);
-
-		return billInvoice;
+		BillPaymentDraft billDraft = new BillPaymentDraft(UUID.randomUUID().toString(), billInfo, amount, Status.CREATED);
+		transactionRepository.saveBillPaymentDraft(billDraft, accessTokenID);
+		return billDraft;
 	}
 
 	@Override
-	public BillPaymentDraft getBillDetail(String invoiceID, String accessTokenID) throws ServiceInventoryException {
-		return transactionRepository.findBill(invoiceID, accessTokenID);
+	public BillPaymentDraft getBillPaymentDraftDetail(String invoiceID, String accessTokenID) throws ServiceInventoryException {
+		return transactionRepository.findBillPaymentDraft(invoiceID, accessTokenID);
 	}
 
 	@Override
@@ -104,11 +112,11 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 		OTP otp = otpService.send(accessToken.getMobileNumber());
 
-		BillPaymentDraft billInvoice = transactionRepository.findBill(invoiceID, accessTokenID);
+		BillPaymentDraft billInvoice = transactionRepository.findBillPaymentDraft(invoiceID, accessTokenID);
 		billInvoice.setOtpReferenceCode(otp.getReferenceCode());
 		billInvoice.setStatus(BillPaymentDraft.Status.OTP_SENT);
 
-		transactionRepository.saveBill(billInvoice, accessTokenID);
+		transactionRepository.saveBillPaymentDraft(billInvoice, accessTokenID);
 
 		return otp;
 	}
@@ -118,16 +126,16 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 			String accessTokenID) throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		BillPaymentDraft invoiceDetails = getBillDetail(invoiceID, accessTokenID);
+		BillPaymentDraft invoiceDetails = getBillPaymentDraftDetail(invoiceID, accessTokenID);
 
 		otpService.isValidOTP(otp);
 
 		invoiceDetails.setStatus(BillPaymentDraft.Status.OTP_CONFIRMED);
-		transactionRepository.saveBill(invoiceDetails, accessTokenID);
+		transactionRepository.saveBillPaymentDraft(invoiceDetails, accessTokenID);
 
 		BillPaymentTransaction billPaymentReceipt = new BillPaymentTransaction(invoiceDetails);
 		billPaymentReceipt.setStatus(BillPaymentTransaction.Status.VERIFIED);
-		transactionRepository.saveBillPayment(billPaymentReceipt, accessTokenID);
+		transactionRepository.saveBillPaymentTransaction(billPaymentReceipt, accessTokenID);
 
 		performBillPay(billPaymentReceipt, accessToken);
 
@@ -166,7 +174,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 	@Override
 	public BillPaymentTransaction getBillPaymentResult(String billPaymentID, String accessTokenID) throws ServiceInventoryException {
-		return transactionRepository.findBillPayment(billPaymentID, accessTokenID);
+		return transactionRepository.findBillPaymentTransaction(billPaymentID, accessTokenID);
 	}
 
 	public void setAsyncBillPayProcessor(AsyncBillPayProcessor asyncBillPayProcessor) {

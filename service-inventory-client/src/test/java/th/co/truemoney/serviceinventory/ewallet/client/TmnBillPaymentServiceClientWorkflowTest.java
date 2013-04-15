@@ -3,6 +3,8 @@ package th.co.truemoney.serviceinventory.ewallet.client;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -11,8 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
@@ -41,44 +43,45 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 
 		String barcode = "|010554614953100 010004552 010520120200015601 85950";
 
-		Bill billInfo = billPaymentServiceClient.getBillInformation(barcode, accessToken);
-
-		BillPaymentDraft bill = billPaymentServiceClient.createBill(billInfo, accessToken);
-
-		// get transfer draft
-		bill = billPaymentServiceClient.getBillDetail(bill.getID(), accessToken);
+		Bill bill = billPaymentServiceClient.retrieveBillInformation(barcode, accessToken);
 		assertNotNull(bill);
 		assertNotNull(bill.getID());
-		assertNotNull(bill.getBillInfo());
-		assertEquals(BillPaymentDraft.Status.CREATED, bill.getStatus());
+
+		BigDecimal amount = new BigDecimal(50);
+		BillPaymentDraft billDraft = billPaymentServiceClient.verifyPaymentAbility(bill.getID(), amount, accessToken);
+		assertEquals(BillPaymentDraft.Status.CREATED, billDraft.getStatus());
+
+		// get transfer draft
+		billDraft = billPaymentServiceClient.getBillPaymentDraftDetail(billDraft.getID(), accessToken);
+		assertEquals(BillPaymentDraft.Status.CREATED, billDraft.getStatus());
 
 		// send otp and waiting confirm
-		OTP otp = billPaymentServiceClient.sendOTP(bill.getID(), accessToken);
+		OTP otp = billPaymentServiceClient.sendOTP(billDraft.getID(), accessToken);
 		assertNotNull(otp);
 		assertNotNull(otp.getReferenceCode());
 
 		// get transfer draft and check draft status
-		bill = billPaymentServiceClient.getBillDetail(bill.getID(), accessToken);
-		assertEquals(BillPaymentDraft.Status.OTP_SENT, bill.getStatus());
+		billDraft = billPaymentServiceClient.getBillPaymentDraftDetail(billDraft.getID(), accessToken);
+		assertEquals(BillPaymentDraft.Status.OTP_SENT, billDraft.getStatus());
 
 		// confirm otp
 		otp.setOtpString("111111");
-		BillPaymentDraft.Status draftStatus = billPaymentServiceClient.confirmBill(bill.getID(), otp, accessToken);
+		BillPaymentDraft.Status draftStatus = billPaymentServiceClient.confirmBill(billDraft.getID(), otp, accessToken);
 		assertNotNull(draftStatus);
 		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, draftStatus);
 
 		// get transfer draft and check draft status
-		bill = billPaymentServiceClient.getBillDetail(bill.getID(), accessToken);
-		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, bill.getStatus());
+		billDraft = billPaymentServiceClient.getBillPaymentDraftDetail(billDraft.getID(), accessToken);
+		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, billDraft.getStatus());
 
 		// get order status
 		Thread.sleep(100);
-		BillPaymentTransaction.Status transactionStatus = billPaymentServiceClient.getBillPaymentStatus(bill.getID(), accessToken);
+		BillPaymentTransaction.Status transactionStatus = billPaymentServiceClient.getBillPaymentStatus(billDraft.getID(), accessToken);
 		assertNotNull(transactionStatus);
 
 		// retry while processing
 		while (transactionStatus == BillPaymentTransaction.Status.PROCESSING) {
-			transactionStatus = billPaymentServiceClient.getBillPaymentStatus(bill.getID(), accessToken);
+			transactionStatus = billPaymentServiceClient.getBillPaymentStatus(billDraft.getID(), accessToken);
 			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
@@ -86,7 +89,7 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 		// retry until success
 		assertEquals(BillPaymentTransaction.Status.SUCCESS, transactionStatus);
 
-		BillPaymentTransaction p2pTransaction = billPaymentServiceClient.getBillPaymentResult(bill.getID(), accessToken);
+		BillPaymentTransaction p2pTransaction = billPaymentServiceClient.getBillPaymentResult(billDraft.getID(), accessToken);
 
 		assertNotNull(p2pTransaction);
 		assertNotNull(p2pTransaction.getDraftTransaction());

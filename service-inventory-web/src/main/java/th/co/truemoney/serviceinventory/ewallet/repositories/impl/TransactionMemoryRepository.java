@@ -102,12 +102,12 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveBill(BillPaymentDraft billInvoice, String accessTokenID) {
+	public void saveBillPaymentDraft(BillPaymentDraft billInvoice, String accessTokenID) {
 		billInvoiceMap.put(accessTokenID + ":" + billInvoice.getID(), billInvoice);
 	}
 
 	@Override
-	public BillPaymentDraft findBill(String billInvoiceID,
+	public BillPaymentDraft findBillPaymentDraft(String billInvoiceID,
 			String accessTokenID) {
 
 		BillPaymentDraft billInvoice = billInvoiceMap.get(accessTokenID + ":" + billInvoiceID);
@@ -122,12 +122,12 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveBillPayment(BillPaymentTransaction billPayment, String accessTokenID) {
+	public void saveBillPaymentTransaction(BillPaymentTransaction billPayment, String accessTokenID) {
 		billPaymentMap.put(accessTokenID + ":" + billPayment.getID(), billPayment);
 	}
 
 	@Override
-	public BillPaymentTransaction findBillPayment(String billPaymentID, String accessTokenID) {
+	public BillPaymentTransaction findBillPaymentTransaction(String billPaymentID, String accessTokenID) {
 
 		BillPaymentTransaction billPayment = billPaymentMap.get(accessTokenID + ":" + billPaymentID);
 

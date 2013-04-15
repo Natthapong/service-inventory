@@ -8,10 +8,12 @@ import org.springframework.context.annotation.Profile;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.BillInformationMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.ProfileMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
@@ -54,9 +56,13 @@ public class MemRepositoriesConfig {
 	}
 
 	@Bean
-	public RegisteringProfileRepository memoProfileRepository() {
-		ProfileMemoryRepository profile = new ProfileMemoryRepository();
-		return profile;
+	public RegisteringProfileRepository memProfileRepository() {
+		return new ProfileMemoryRepository();
+	}
+
+	@Bean
+	public BillInformationRepository memBillInfoRepository() {
+		return new BillInformationMemoryRepository();
 	}
 
 }

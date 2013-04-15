@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.bill.domain;
 
+import java.math.BigDecimal;
+
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -16,26 +18,31 @@ public class BillPaymentDraft extends DraftTransaction {
 	private static final String DRAFT_TYPE = "bill";
 
 	private Bill billInfo;
-	
+
+	private BigDecimal amount;
 	private String selectedSourceOfFundType;
-	
 	private String otpReferenceCode;
 
 	public BillPaymentDraft() {
-		this(null, null, null);
+		this(null, null, null, null);
 	}
 
 	public BillPaymentDraft(String ID) {
-		this(ID, null, null);
+		this(ID, null, null, null);
 	}
 
-	public BillPaymentDraft(String ID, Status status) {
-		this(ID, status, null);
+	public BillPaymentDraft(String ID, Bill billInfo) {
+		this(ID, billInfo, null, null);
 	}
 
-	public BillPaymentDraft(String ID, Status status, Bill billInfo) {
+	public BillPaymentDraft(String ID, Bill billInfo, BigDecimal amount) {
+		this(ID, billInfo, amount, null);
+	}
+
+	public BillPaymentDraft(String ID, Bill billInfo, BigDecimal amount, Status status) {
 		this.ID = ID;
 		this.status = status;
+		this.amount = amount;
 		this.type = DRAFT_TYPE;
 		this.billInfo = billInfo;
 	}
@@ -49,6 +56,14 @@ public class BillPaymentDraft extends DraftTransaction {
 		this.billInfo = billInfo;
 	}
 
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
 	public String getOtpReferenceCode() {
 		return otpReferenceCode;
 	}
@@ -56,18 +71,18 @@ public class BillPaymentDraft extends DraftTransaction {
 	public void setOtpReferenceCode(String otpReferenceCode) {
 		this.otpReferenceCode = otpReferenceCode;
 	}
-	
+
 	public void setSelectedSourceOfFundType(String selectedSourceOfFundType) {
 		this.selectedSourceOfFundType = selectedSourceOfFundType;
 	}
-	
+
 	public String getSelectedSourceOfFundType() {
 		return selectedSourceOfFundType;
 	}
-	
+
 	@JsonIgnore
 	public BillPaySourceOfFund getSelectedSourceOfFund() {
-		
+
 		if (selectedSourceOfFundType != null && billInfo != null && billInfo.getSourceOfFundFees() != null) {
 			for (BillPaySourceOfFund sourceOfFundFee :  billInfo.getSourceOfFundFees()) {
 				if (sourceOfFundFee.getSourceType().equals(selectedSourceOfFundType)) {
@@ -75,7 +90,7 @@ public class BillPaymentDraft extends DraftTransaction {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 }
