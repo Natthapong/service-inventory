@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
+import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaySourceOfFund;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
@@ -47,11 +47,11 @@ public class BillPaymentFacade {
 		}
 	}
 
-	public BillInfo getBarcodeInformation(GetBarcodeRequest request) {
+	public Bill getBarcodeInformation(GetBarcodeRequest request) {
 		try {
 			GetBarcodeResponse barcodeResponse = billPayProxy.getBarcodeInformation(request);
 
-			BillInfo billInfo = new BillInfo();
+			Bill billInfo = new Bill();
 			billInfo.setTarget(barcodeResponse.getTarget());
 			billInfo.setLogoURL(barcodeResponse.getLogo());
 			billInfo.setTitleTH(barcodeResponse.getTitleTH());

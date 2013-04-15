@@ -1,7 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories;
 
-import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
@@ -18,9 +18,9 @@ public interface TransactionRepository {
 	public void saveP2PTransferTransaction(P2PTransferTransaction p2pTransaction, String accessTokenID);
 	public P2PTransferTransaction findP2PTransferTransaction(String p2pTransactionID, String accessTokenID);
 
-	public void saveBill(Bill bill, String accessTokenID);
-	public Bill findBill(String billID, String accessTokenID);
-	public void saveBillPayment(BillPayment billPayment, String accessTokenID);
-	public BillPayment findBillPayment(String billPaymentID, String accessTokenID);
+	public void saveBill(BillPaymentDraft bill, String accessTokenID);
+	public BillPaymentDraft findBill(String billID, String accessTokenID);
+	public void saveBillPayment(BillPaymentTransaction billPayment, String accessTokenID);
+	public BillPaymentTransaction findBillPayment(String billPaymentID, String accessTokenID);
 
 }

@@ -18,9 +18,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
-import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
@@ -86,12 +86,12 @@ public class BillPaymentServiceImplTest {
 	@Test
 	public void getBillInformation() {
 
-		BillInfo stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+		Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
 
 		when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
 		//when
-		BillInfo billPaymentInfo = billPayService.getBillInformation("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
+		Bill billPaymentInfo = billPayService.getBillInformation("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
 
 		//then
 		assertNotNull(billPaymentInfo);
@@ -110,18 +110,18 @@ public class BillPaymentServiceImplTest {
 //		Bill bill = billPayService.createBill(new BillInfo("iphone","1234","1234",new BigDecimal(100)), accessToken.getAccessTokenID());
 //
 //		assertNotNull(bill);
-//		assertEquals(Bill.Status.CREATED, bill.getStatus());
+//		assertEquals(BillPaymentDraft.Status.CREATED, bill.getStatus());
 //
 //		Bill repoInvoice = transactionRepo.findBill(bill.getID(), accessToken.getAccessTokenID());
 //		assertNotNull(repoInvoice);
-//		assertEquals(Bill.Status.CREATED, repoInvoice.getStatus());
+//		assertEquals(BillPaymentDraft.Status.CREATED, repoInvoice.getStatus());
 	}
 
 	@Test
 	public void sendOTP() {
 
 		//given
-		Bill invoice = new Bill("invoiceID");
+		BillPaymentDraft invoice = new BillPaymentDraft("invoiceID");
 		transactionRepo.saveBill(invoice, accessToken.getAccessTokenID());
 
 		//when
@@ -140,24 +140,24 @@ public class BillPaymentServiceImplTest {
 		//given
 		OTP correctOTP = new OTP("0868185055", "refCode", "111111");
 
-		Bill invoice = new Bill("invoiceID", Bill.Status.OTP_SENT);
+		BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", BillPaymentDraft.Status.OTP_SENT);
 		transactionRepo.saveBill(invoice, accessToken.getAccessTokenID());
 
 		//when
-		Bill.Status confirmation = billPayService.confirmBill(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
+		BillPaymentDraft.Status confirmation = billPayService.confirmBill(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
 
 		//then
-		assertEquals(Bill.Status.OTP_CONFIRMED, confirmation);
-		verify(asyncProcessor).payBill(any(BillPayment.class), any(AccessToken.class));
+		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, confirmation);
+		verify(asyncProcessor).payBill(any(BillPaymentTransaction.class), any(AccessToken.class));
 
-		Bill repoInvoice = transactionRepo.findBill(invoice.getID(), accessToken.getAccessTokenID());
-		assertEquals(Bill.Status.OTP_CONFIRMED, repoInvoice.getStatus());
-		verify(asyncProcessor).payBill(any(BillPayment.class), any(AccessToken.class));
+		BillPaymentDraft repoInvoice = transactionRepo.findBill(invoice.getID(), accessToken.getAccessTokenID());
+		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, repoInvoice.getStatus());
+		verify(asyncProcessor).payBill(any(BillPaymentTransaction.class), any(AccessToken.class));
 
-		BillPayment billPayment = transactionRepo.findBillPayment(invoice.getID(), accessToken.getAccessTokenID());
+		BillPaymentTransaction billPayment = transactionRepo.findBillPayment(invoice.getID(), accessToken.getAccessTokenID());
 
 		assertNotNull(billPayment);
-		assertEquals(BillPayment.Status.VERIFIED, billPayment.getStatus());
+		assertEquals(BillPaymentTransaction.Status.VERIFIED, billPayment.getStatus());
 	}
 
 	@Test
@@ -166,7 +166,7 @@ public class BillPaymentServiceImplTest {
 		//given
 		OTP badOTP = new OTP("0868185055", "refCode", "111111");
 
-		Bill invoice = new Bill("invoiceID", Bill.Status.OTP_SENT);
+		BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", BillPaymentDraft.Status.OTP_SENT);
 		transactionRepo.saveBill(invoice, accessToken.getAccessTokenID());
 
 		Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpService).isValidOTP(badOTP);
@@ -180,8 +180,8 @@ public class BillPaymentServiceImplTest {
 		}
 
 		//then
-		Bill repoInvoice = transactionRepo.findBill(invoice.getID(), accessToken.getAccessTokenID());
-		Assert.assertEquals(Bill.Status.OTP_SENT, repoInvoice.getStatus());
+		BillPaymentDraft repoInvoice = transactionRepo.findBill(invoice.getID(), accessToken.getAccessTokenID());
+		Assert.assertEquals(BillPaymentDraft.Status.OTP_SENT, repoInvoice.getStatus());
 
 		try {
 			transactionRepo.findBillPayment(invoice.getID(), accessToken.getAccessTokenID());

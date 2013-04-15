@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
-import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 
@@ -27,7 +27,7 @@ public class BillPaymentController {
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
 	@RequestMapping(value = "/barcode/{barcode}", method = RequestMethod.GET)
-	public @ResponseBody BillInfo getBillInformation(
+	public @ResponseBody Bill getBillInformation(
 			@PathVariable String barcode,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
@@ -36,8 +36,8 @@ public class BillPaymentController {
 
 	@RequestMapping(value = "/invoice", method = RequestMethod.POST)
 	public @ResponseBody
-	Bill createBill(@RequestParam String accessTokenID,
-			@RequestBody BillInfo billPaymentInfo) {
+	BillPaymentDraft createBill(@RequestParam String accessTokenID,
+			@RequestBody Bill billPaymentInfo) {
 		extendExpireAccessToken(accessTokenID);
 
 		return billPaymentService
@@ -45,7 +45,7 @@ public class BillPaymentController {
 	}
 
 	@RequestMapping(value = "/invoice/{billID}", method = RequestMethod.GET)
-	public @ResponseBody Bill getBillDetails(@PathVariable String billID,
+	public @ResponseBody BillPaymentDraft getBillDetails(@PathVariable String billID,
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
 		extendExpireAccessToken(accessTokenID);
@@ -63,7 +63,7 @@ public class BillPaymentController {
 
 
 	@RequestMapping(value = "/invoice/{billID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody Bill.Status confirmBill(
+	public @ResponseBody BillPaymentDraft.Status confirmBill(
 			@PathVariable String billID,
 			@PathVariable String refCode,
 			@RequestParam String accessTokenID,
@@ -79,7 +79,7 @@ public class BillPaymentController {
 	}
 
 	@RequestMapping(value = "/transaction/{billPaymentID}/status", method = RequestMethod.GET)
-	public @ResponseBody BillPayment.Status getPaymentStatus(
+	public @ResponseBody BillPaymentTransaction.Status getPaymentStatus(
 		   @PathVariable String billPaymentID,
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
@@ -89,7 +89,7 @@ public class BillPaymentController {
 	}
 
 	@RequestMapping(value = "/transaction/{billPaymentID}", method = RequestMethod.GET)
-	public @ResponseBody BillPayment getPaymentResult(
+	public @ResponseBody BillPaymentTransaction getPaymentResult(
 		   @PathVariable String billPaymentID,
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 

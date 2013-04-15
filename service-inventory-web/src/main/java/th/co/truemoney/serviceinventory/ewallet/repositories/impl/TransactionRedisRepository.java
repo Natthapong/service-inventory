@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
@@ -135,7 +135,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 
 	public void saveBill(
-			Bill billInvoice,
+			BillPaymentDraft billInvoice,
 			String accessTokenID) {
 		try {
 			redisLoggingDao.addData("billInvoice:" + accessTokenID + ":" +billInvoice.getID(), mapper.writeValueAsString(billInvoice), 15L);
@@ -145,14 +145,14 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public Bill findBill(String billInvoiceID, String accessTokenID) {
+	public BillPaymentDraft findBill(String billInvoiceID, String accessTokenID) {
 		try {
 			String result = redisLoggingDao.getData("billInvoice:" + accessTokenID + ":" + billInvoiceID);
 			if(result == null) {
 				throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "Bill invoice not found.");
 			}
 
-			return mapper.readValue(result, Bill.class);
+			return mapper.readValue(result, BillPaymentDraft.class);
 		} catch (ServiceInventoryWebException e) {
 			throw e;
 		} catch (Exception e) {
@@ -162,7 +162,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveBillPayment(BillPayment billPayment, String accessTokenID) {
+	public void saveBillPayment(BillPaymentTransaction billPayment, String accessTokenID) {
 		try {
 			redisLoggingDao.addData("billPayment:" + accessTokenID + ":" + billPayment.getID(), mapper.writeValueAsString(billPayment), 15L);
 		} catch (Exception e) {
@@ -172,7 +172,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	}
 
 	@Override
-	public BillPayment findBillPayment(String billPaymentID, String accessTokenID) {
+	public BillPaymentTransaction findBillPayment(String billPaymentID, String accessTokenID) {
 
 		try {
 			String result = redisLoggingDao.getData("billPayment:" + accessTokenID + ":" + billPaymentID);
@@ -180,7 +180,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "Bill payment not found.");
 			}
 
-			return mapper.readValue(result, BillPayment.class);
+			return mapper.readValue(result, BillPaymentTransaction.class);
 		} catch (ServiceInventoryWebException e) {
 			throw e;
 		} catch (Exception e) {

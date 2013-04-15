@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
-import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
@@ -30,11 +30,11 @@ public class AsyncBillPayProcessor {
 	@Autowired
 	private LegacyFacade legacyFacade;
 
-	public Future<BillPayment> payBill(BillPayment billPaymentReceipt, AccessToken accessToken) {
+	public Future<BillPaymentTransaction> payBill(BillPaymentTransaction billPaymentReceipt, AccessToken accessToken) {
 
 		try {
-			Bill draftTransaction = billPaymentReceipt.getDraftTransaction();
-			BillInfo billInfo = draftTransaction.getBillInfo();
+			BillPaymentDraft draftTransaction = billPaymentReceipt.getDraftTransaction();
+			Bill billInfo = draftTransaction.getBillInfo();
 			/*
 			BigDecimal amount = billPaymentInfo.getAmount();
 			SourceOfFundFee sourceOfFundFees[] = billPaymentInfo.getSourceOfFundFees();
@@ -66,16 +66,16 @@ public class AsyncBillPayProcessor {
 
 			logger.info("AsyncService.payBill.resultTransactionID: " + confirmationInfo.getTransactionID());
 		} catch (UMarketSystemTransactionFailException e) {
-			billPaymentReceipt.setFailStatus(BillPayment.FailStatus.UMARKET_FAILED);
+			billPaymentReceipt.setFailStatus(BillPaymentTransaction.FailStatus.UMARKET_FAILED);
 			// TODO : Add more exception
 		} catch (Exception ex) {
 			logger.error("unexpect bill payment fail: ", ex);
-			billPaymentReceipt.setFailStatus(BillPayment.FailStatus.UNKNOWN_FAILED);
+			billPaymentReceipt.setFailStatus(BillPaymentTransaction.FailStatus.UNKNOWN_FAILED);
 		}
 
 		transactionRepo.saveBillPayment(billPaymentReceipt, accessToken.getAccessTokenID());
 
-		return new AsyncResult<BillPayment> (billPaymentReceipt);
+		return new AsyncResult<BillPaymentTransaction> (billPaymentReceipt);
 	}
 
 }

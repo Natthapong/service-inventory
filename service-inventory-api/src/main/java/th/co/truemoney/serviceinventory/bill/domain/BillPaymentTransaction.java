@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class BillPayment extends Transaction {
+public class BillPaymentTransaction extends Transaction {
 
 	private static final long serialVersionUID = -3546197537668299129L;
 
@@ -21,11 +21,11 @@ public class BillPayment extends Transaction {
 		PCS_FAILED, UMARKET_FAILED, TPP_FAILED, UNKNOWN_FAILED;
 	}
 
-	public BillPayment() {
+	public BillPaymentTransaction() {
 
 	}
 
-	public BillPayment(Bill bill) {
+	public BillPaymentTransaction(BillPaymentDraft bill) {
 		if (bill == null || bill.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
 			throw new IllegalArgumentException("passing in bad quote data");
 		}
@@ -42,11 +42,11 @@ public class BillPayment extends Transaction {
 		this.ID = ID;
 	}
 
-	public Bill getDraftTransaction() {
-		return (Bill) super.getDraftTransaction();
+	public BillPaymentDraft getDraftTransaction() {
+		return (BillPaymentDraft) super.getDraftTransaction();
 	}
 
-	public void setDraftTransaction(Bill bill) {
+	public void setDraftTransaction(BillPaymentDraft bill) {
 		super.setDraftTransaction(bill);
 	}
 

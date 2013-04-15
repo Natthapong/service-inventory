@@ -3,7 +3,7 @@ package th.co.truemoney.serviceinventory.legacyfacade.builders;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
+import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
 
@@ -42,7 +42,7 @@ public class GetBillInfoBuilder {
 		return this;
 	}
 
-	public BillInfo getInformation() {
+	public Bill getInformation() {
 		Validate.notNull(channel, "data missing. get barcode information from which channel?");
 		Validate.notNull(channelDetail, "missing channel detail.");
 		Validate.notNull(appUser, "data missing. from which app user?");

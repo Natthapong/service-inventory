@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
-import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -52,7 +52,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 	}
 	@Override
-	public BillInfo getBillInformation(String barcode, String accessTokenID)
+	public Bill getBillInformation(String barcode, String accessTokenID)
 			throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
@@ -66,7 +66,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public Bill createBill(BillInfo billpayInfo, String accessTokenID)
+	public BillPaymentDraft createBill(Bill billpayInfo, String accessTokenID)
 			throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
@@ -83,7 +83,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 
 		String invoiceID = UUID.randomUUID().toString();
-		Bill billInvoice = new Bill(invoiceID, Bill.Status.CREATED, billpayInfo);
+		BillPaymentDraft billInvoice = new BillPaymentDraft(invoiceID, BillPaymentDraft.Status.CREATED, billpayInfo);
 		//save bill.
 		transactionRepository.saveBill(billInvoice, accessTokenID);
 
@@ -91,7 +91,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public Bill getBillDetail(String invoiceID, String accessTokenID) throws ServiceInventoryException {
+	public BillPaymentDraft getBillDetail(String invoiceID, String accessTokenID) throws ServiceInventoryException {
 		return transactionRepository.findBill(invoiceID, accessTokenID);
 	}
 
@@ -104,9 +104,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 		OTP otp = otpService.send(accessToken.getMobileNumber());
 
-		Bill billInvoice = transactionRepository.findBill(invoiceID, accessTokenID);
+		BillPaymentDraft billInvoice = transactionRepository.findBill(invoiceID, accessTokenID);
 		billInvoice.setOtpReferenceCode(otp.getReferenceCode());
-		billInvoice.setStatus(Bill.Status.OTP_SENT);
+		billInvoice.setStatus(BillPaymentDraft.Status.OTP_SENT);
 
 		transactionRepository.saveBill(billInvoice, accessTokenID);
 
@@ -114,19 +114,19 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public Bill.Status confirmBill(String invoiceID, OTP otp,
+	public BillPaymentDraft.Status confirmBill(String invoiceID, OTP otp,
 			String accessTokenID) throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		Bill invoiceDetails = getBillDetail(invoiceID, accessTokenID);
+		BillPaymentDraft invoiceDetails = getBillDetail(invoiceID, accessTokenID);
 
 		otpService.isValidOTP(otp);
 
-		invoiceDetails.setStatus(Bill.Status.OTP_CONFIRMED);
+		invoiceDetails.setStatus(BillPaymentDraft.Status.OTP_CONFIRMED);
 		transactionRepository.saveBill(invoiceDetails, accessTokenID);
 
-		BillPayment billPaymentReceipt = new BillPayment(invoiceDetails);
-		billPaymentReceipt.setStatus(BillPayment.Status.VERIFIED);
+		BillPaymentTransaction billPaymentReceipt = new BillPaymentTransaction(invoiceDetails);
+		billPaymentReceipt.setStatus(BillPaymentTransaction.Status.VERIFIED);
 		transactionRepository.saveBillPayment(billPaymentReceipt, accessTokenID);
 
 		performBillPay(billPaymentReceipt, accessToken);
@@ -134,20 +134,20 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		return invoiceDetails.getStatus();
 	}
 
-	private void performBillPay(BillPayment billPaymentReceipt, AccessToken accessToken) {
+	private void performBillPay(BillPaymentTransaction billPaymentReceipt, AccessToken accessToken) {
 		asyncBillPayProcessor.payBill(billPaymentReceipt, accessToken);
 	}
 
 	@Override
-	public BillPayment.Status getBillPaymentStatus(
+	public BillPaymentTransaction.Status getBillPaymentStatus(
 			String billPaymentID, String accessTokenID)
 			throws ServiceInventoryException {
 
-		BillPayment billPayment = getBillPaymentResult(billPaymentID, accessTokenID);
-		BillPayment.Status paymentStatus = billPayment.getStatus();
+		BillPaymentTransaction billPayment = getBillPaymentResult(billPaymentID, accessTokenID);
+		BillPaymentTransaction.Status paymentStatus = billPayment.getStatus();
 //		FailStatus failStatus = topUpOrder.getFailStatus();
 
-//		if(topUpStatus == BillPayment.Status.FAILED) {
+//		if(topUpStatus == BillPaymentTransaction.Status.FAILED) {
 //			if (failStatus == FailStatus.BANK_FAILED) {
 //				throw new ServiceInventoryWebException(Code.CONFIRM_BANK_FAILED,
 //						"bank confirmation processing fail.");
@@ -165,7 +165,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public BillPayment getBillPaymentResult(String billPaymentID, String accessTokenID) throws ServiceInventoryException {
+	public BillPaymentTransaction getBillPaymentResult(String billPaymentID, String accessTokenID) throws ServiceInventoryException {
 		return transactionRepository.findBillPayment(billPaymentID, accessTokenID);
 	}
 

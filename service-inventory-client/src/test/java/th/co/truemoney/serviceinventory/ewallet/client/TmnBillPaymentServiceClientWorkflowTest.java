@@ -11,9 +11,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
-import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -41,16 +41,16 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 
 		String barcode = "|010554614953100 010004552 010520120200015601 85950";
 
-		BillInfo billInfo = billPaymentServiceClient.getBillInformation(barcode, accessToken);
+		Bill billInfo = billPaymentServiceClient.getBillInformation(barcode, accessToken);
 
-		Bill bill = billPaymentServiceClient.createBill(billInfo, accessToken);
+		BillPaymentDraft bill = billPaymentServiceClient.createBill(billInfo, accessToken);
 
 		// get transfer draft
 		bill = billPaymentServiceClient.getBillDetail(bill.getID(), accessToken);
 		assertNotNull(bill);
 		assertNotNull(bill.getID());
 		assertNotNull(bill.getBillInfo());
-		assertEquals(Bill.Status.CREATED, bill.getStatus());
+		assertEquals(BillPaymentDraft.Status.CREATED, bill.getStatus());
 
 		// send otp and waiting confirm
 		OTP otp = billPaymentServiceClient.sendOTP(bill.getID(), accessToken);
@@ -59,38 +59,38 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 
 		// get transfer draft and check draft status
 		bill = billPaymentServiceClient.getBillDetail(bill.getID(), accessToken);
-		assertEquals(Bill.Status.OTP_SENT, bill.getStatus());
+		assertEquals(BillPaymentDraft.Status.OTP_SENT, bill.getStatus());
 
 		// confirm otp
 		otp.setOtpString("111111");
-		Bill.Status draftStatus = billPaymentServiceClient.confirmBill(bill.getID(), otp, accessToken);
+		BillPaymentDraft.Status draftStatus = billPaymentServiceClient.confirmBill(bill.getID(), otp, accessToken);
 		assertNotNull(draftStatus);
-		assertEquals(Bill.Status.OTP_CONFIRMED, draftStatus);
+		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, draftStatus);
 
 		// get transfer draft and check draft status
 		bill = billPaymentServiceClient.getBillDetail(bill.getID(), accessToken);
-		assertEquals(Bill.Status.OTP_CONFIRMED, bill.getStatus());
+		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, bill.getStatus());
 
 		// get order status
 		Thread.sleep(100);
-		BillPayment.Status transactionStatus = billPaymentServiceClient.getBillPaymentStatus(bill.getID(), accessToken);
+		BillPaymentTransaction.Status transactionStatus = billPaymentServiceClient.getBillPaymentStatus(bill.getID(), accessToken);
 		assertNotNull(transactionStatus);
 
 		// retry while processing
-		while (transactionStatus == BillPayment.Status.PROCESSING) {
+		while (transactionStatus == BillPaymentTransaction.Status.PROCESSING) {
 			transactionStatus = billPaymentServiceClient.getBillPaymentStatus(bill.getID(), accessToken);
 			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
 
 		// retry until success
-		assertEquals(BillPayment.Status.SUCCESS, transactionStatus);
+		assertEquals(BillPaymentTransaction.Status.SUCCESS, transactionStatus);
 
-		BillPayment p2pTransaction = billPaymentServiceClient.getBillPaymentResult(bill.getID(), accessToken);
+		BillPaymentTransaction p2pTransaction = billPaymentServiceClient.getBillPaymentResult(bill.getID(), accessToken);
 
 		assertNotNull(p2pTransaction);
 		assertNotNull(p2pTransaction.getDraftTransaction());
 		assertNotNull(p2pTransaction.getConfirmationInfo());
-		assertEquals(BillPayment.Status.SUCCESS, p2pTransaction.getStatus());
+		assertEquals(BillPaymentTransaction.Status.SUCCESS, p2pTransaction.getStatus());
 	}
 }

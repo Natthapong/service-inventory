@@ -2,7 +2,7 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.io.Serializable;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes(value = {
 		@Type(value = TopUpOrder.class, name = "topUpOrder"),
 		@Type(value = P2PTransferTransaction.class, name = "p2pTransferTransaction"),
-		@Type(value = BillPayment.class, name = "billPayment")
+		@Type(value = BillPaymentTransaction.class, name = "billPayment")
 		})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)

@@ -2,16 +2,16 @@ package th.co.truemoney.serviceinventory.stub;
 
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillInfo;
+import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaySourceOfFund;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 
 public class BillPaymentStubbed {
 
-	public static BillInfo createSuccessBillPaymentInfo() {
+	public static Bill createSuccessBillPaymentInfo() {
 		
-		BillInfo billPaymentInfo = new BillInfo();
+		Bill billPaymentInfo = new Bill();
 		billPaymentInfo.setTarget("tcg");
 		billPaymentInfo.setLogoURL("https://secure.truemoney-dev.com/m/tmn_webview/images/logo_bill/tmvh@2x.png");
 		billPaymentInfo.setTitleTH("ค่าใช้บริการบริษัทในกลุ่มทรู");

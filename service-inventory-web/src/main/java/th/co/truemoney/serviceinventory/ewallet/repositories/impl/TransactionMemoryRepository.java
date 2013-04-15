@@ -3,8 +3,8 @@ package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillPayment;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
@@ -20,8 +20,8 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	public HashMap<String, TopUpOrder> ordersMap = new LinkedHashMap<String, TopUpOrder>();
 	public HashMap<String, P2PTransferDraft> p2pTransferDraftMap = new LinkedHashMap<String, P2PTransferDraft>();
 	public HashMap<String, P2PTransferTransaction> p2pTransactionMap = new LinkedHashMap<String, P2PTransferTransaction>();
-	public HashMap<String, Bill> billInvoiceMap = new LinkedHashMap<String, Bill>();
-	public HashMap<String, BillPayment> billPaymentMap = new LinkedHashMap<String, BillPayment>();
+	public HashMap<String, BillPaymentDraft> billInvoiceMap = new LinkedHashMap<String, BillPaymentDraft>();
+	public HashMap<String, BillPaymentTransaction> billPaymentMap = new LinkedHashMap<String, BillPaymentTransaction>();
 
 	@Override
 	public void saveTopUpQuote(TopUpQuote topupQuote,
@@ -102,15 +102,15 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveBill(Bill billInvoice, String accessTokenID) {
+	public void saveBill(BillPaymentDraft billInvoice, String accessTokenID) {
 		billInvoiceMap.put(accessTokenID + ":" + billInvoice.getID(), billInvoice);
 	}
 
 	@Override
-	public Bill findBill(String billInvoiceID,
+	public BillPaymentDraft findBill(String billInvoiceID,
 			String accessTokenID) {
 
-		Bill billInvoice = billInvoiceMap.get(accessTokenID + ":" + billInvoiceID);
+		BillPaymentDraft billInvoice = billInvoiceMap.get(accessTokenID + ":" + billInvoiceID);
 
 		if (billInvoice == null) {
 			throw new ResourceNotFoundException(
@@ -122,14 +122,14 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	}
 
 	@Override
-	public void saveBillPayment(BillPayment billPayment, String accessTokenID) {
+	public void saveBillPayment(BillPaymentTransaction billPayment, String accessTokenID) {
 		billPaymentMap.put(accessTokenID + ":" + billPayment.getID(), billPayment);
 	}
 
 	@Override
-	public BillPayment findBillPayment(String billPaymentID, String accessTokenID) {
+	public BillPaymentTransaction findBillPayment(String billPaymentID, String accessTokenID) {
 
-		BillPayment billPayment = billPaymentMap.get(accessTokenID + ":" + billPaymentID);
+		BillPaymentTransaction billPayment = billPaymentMap.get(accessTokenID + ":" + billPaymentID);
 
 		if (billPayment == null) {
 			throw new ResourceNotFoundException(
