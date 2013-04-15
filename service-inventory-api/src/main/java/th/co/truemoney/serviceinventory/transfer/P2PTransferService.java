@@ -9,7 +9,7 @@ import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
 public interface P2PTransferService {
 
-	public P2PTransferDraft verifyAndCreateTransferDraft(String toMobileNumber, BigDecimal amount, String accessTokenID)
+	public P2PTransferDraft createAndVerifyTransferDraft(String toMobileNumber, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException;
 
 	public P2PTransferDraft getTransferDraftDetails(String transferDraftID, String accessTokenID)
@@ -18,7 +18,7 @@ public interface P2PTransferService {
 	public OTP submitTransferRequest(String transferDraftID, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public P2PTransferDraft.Status verifyOTPAndPerformTransferring(String transferDraftID, OTP otp, String accessTokenID)
+	public P2PTransferDraft.Status authorizeAndPerformTransfer(String transferDraftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException;
 
 	public P2PTransferTransaction.Status getTransferringStatus(String transactionID, String accessTokenID)

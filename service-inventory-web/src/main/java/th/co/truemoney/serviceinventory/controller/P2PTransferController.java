@@ -30,7 +30,7 @@ public class P2PTransferController {
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 			@RequestBody P2PTransferDraft draft) {
 		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.verifyAndCreateTransferDraft(draft.getMobileNumber(), draft.getAmount(), accessTokenID);
+		return p2pTransferService.createAndVerifyTransferDraft(draft.getMobileNumber(), draft.getAmount(), accessTokenID);
 	}
 
 	@RequestMapping(value = "/draft/{transferDraftID}", method = RequestMethod.GET)
@@ -59,7 +59,7 @@ public class P2PTransferController {
 			otp.setReferenceCode(refCode);
 		}
 		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.verifyOTPAndPerformTransferring(transferDraftID, otp, accessTokenID);
+		return p2pTransferService.authorizeAndPerformTransfer(transferDraftID, otp, accessTokenID);
 	}
 
 	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)

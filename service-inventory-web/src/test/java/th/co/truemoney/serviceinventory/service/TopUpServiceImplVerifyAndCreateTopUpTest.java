@@ -69,7 +69,7 @@ public class TopUpServiceImplVerifyAndCreateTopUpTest {
 		//given
 		BigDecimal amount = new BigDecimal(400);
 		//when
-		TopUpQuote topupQuote = this.topUpService.verifyAndCreateTopUpQuote(userDirectDebit.getSourceOfFundID(), amount, accessToken.getAccessTokenID());
+		TopUpQuote topupQuote = this.topUpService.createAndVerifyTopUpQuote(userDirectDebit.getSourceOfFundID(), amount, accessToken.getAccessTokenID());
 
 		//then
 		assertNotNull(topupQuote);
@@ -84,7 +84,7 @@ public class TopUpServiceImplVerifyAndCreateTopUpTest {
 
 		//when
 		try {
-			this.topUpService.verifyAndCreateTopUpQuote(userDirectDebit.getSourceOfFundID(), topUpAmount, accessToken.getAccessTokenID());
+			this.topUpService.createAndVerifyTopUpQuote(userDirectDebit.getSourceOfFundID(), topUpAmount, accessToken.getAccessTokenID());
 			Assert.fail();
 		} catch (ServiceInventoryWebException e) {
 			//then
@@ -101,7 +101,7 @@ public class TopUpServiceImplVerifyAndCreateTopUpTest {
 
 		//when
 		try {
-			this.topUpService.verifyAndCreateTopUpQuote(userDirectDebit.getSourceOfFundID(), topUpAmount, accessToken.getAccessTokenID());
+			this.topUpService.createAndVerifyTopUpQuote(userDirectDebit.getSourceOfFundID(), topUpAmount, accessToken.getAccessTokenID());
 			Assert.fail();
 		} catch (ServiceInventoryWebException e) {
 			//then

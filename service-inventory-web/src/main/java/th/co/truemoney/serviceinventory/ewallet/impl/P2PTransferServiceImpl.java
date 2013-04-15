@@ -38,7 +38,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	private OTPService otpService;
 
 	@Override
-	public P2PTransferDraft verifyAndCreateTransferDraft(String targetMobileNumber, BigDecimal amount, String accessTokenID) {
+	public P2PTransferDraft createAndVerifyTransferDraft(String targetMobileNumber, BigDecimal amount, String accessTokenID) {
 
 		// --- Get Account Detail from accessToken ---//
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
@@ -85,7 +85,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	}
 
 	@Override
-	public P2PTransferDraft.Status verifyOTPAndPerformTransferring(String transferDraftID, OTP otp, String accessTokenID)
+	public P2PTransferDraft.Status authorizeAndPerformTransfer(String transferDraftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		P2PTransferDraft p2pTransferDraft = getTransferDraftDetails(transferDraftID, accessTokenID);

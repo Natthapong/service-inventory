@@ -93,7 +93,7 @@ public class P2PTransferServiceImplConfirmOTPTest {
 		public void shouldConfirmOTPSuccess() {
 			OTP goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
 
-			P2PTransferDraft.Status quoteStatus = p2pService.verifyOTPAndPerformTransferring(transferDraft.getID(), goodOTP, accessToken.getAccessTokenID());
+			P2PTransferDraft.Status quoteStatus = p2pService.authorizeAndPerformTransfer(transferDraft.getID(), goodOTP, accessToken.getAccessTokenID());
 
 			assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, quoteStatus);
 			verify(asyncProcessorMock).transferEwallet(any(P2PTransferTransaction.class), any(AccessToken.class));
@@ -105,7 +105,7 @@ public class P2PTransferServiceImplConfirmOTPTest {
 			OTP invalidOTP = new OTP(accessToken.getMobileNumber(), "refCode", "HACKY");
 
 			try {
-				p2pService.verifyOTPAndPerformTransferring(transferDraft.getID(), invalidOTP, "unknown access token");
+				p2pService.authorizeAndPerformTransfer(transferDraft.getID(), invalidOTP, "unknown access token");
 				Assert.fail();
 			} catch (ServiceInventoryException e) {
 				assertEquals("10001", e.getErrorCode());
@@ -123,7 +123,7 @@ public class P2PTransferServiceImplConfirmOTPTest {
 			Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpServiceMock).isValidOTP(any(OTP.class));
 
 			try {
-				p2pService.verifyOTPAndPerformTransferring(transferDraft.getID(), new OTP(), accessToken.getAccessTokenID());
+				p2pService.authorizeAndPerformTransfer(transferDraft.getID(), new OTP(), accessToken.getAccessTokenID());
 				Assert.fail();
 			} catch (ServiceInventoryException e) {
 				Assert.assertEquals("otp error", e.getErrorDescription());

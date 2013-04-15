@@ -43,7 +43,7 @@ public class TmnTransferServiceClientTest {
 		// login
 		accessToken = client.login(41, TestData.createSuccessLogin());
 		// create transfer draft
-		p2pTransferDraft = p2pTransferServiceClient.verifyAndCreateTransferDraft("0866011234", new BigDecimal("20.00"), accessToken);
+		p2pTransferDraft = p2pTransferServiceClient.createAndVerifyTransferDraft("0866011234", new BigDecimal("20.00"), accessToken);
 
 	}
 
@@ -51,7 +51,7 @@ public class TmnTransferServiceClientTest {
 	public void createTransferDraftSuccess() {
 
 		P2PTransferDraft p2pTransferDraft = p2pTransferServiceClient
-				.verifyAndCreateTransferDraft("0868185055", new BigDecimal(2000),
+				.createAndVerifyTransferDraft("0868185055", new BigDecimal(2000),
 						accessToken);
 		assertNotNull(p2pTransferDraft);
 		assertEquals("Target Ful***", p2pTransferDraft.getFullname());
@@ -60,7 +60,7 @@ public class TmnTransferServiceClientTest {
 	@Test
 	public void createTransferDraftFail() {
 		try {
-			p2pTransferServiceClient.verifyAndCreateTransferDraft("0868185055",
+			p2pTransferServiceClient.createAndVerifyTransferDraft("0868185055",
 					new BigDecimal(2000), "12341235");
 		} catch (ServiceInventoryException e) {
 			assertNotSame("0", e.getErrorCode());
@@ -129,7 +129,7 @@ public class TmnTransferServiceClientTest {
 
 		// confirm otp
 		otp.setOtpString("111111");
-		P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.verifyOTPAndPerformTransferring(p2pTransferDraft.getID(), otp, accessToken);
+		P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.authorizeAndPerformTransfer(p2pTransferDraft.getID(), otp, accessToken);
 		assertNotNull(draftStatus);
 		assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED,
 				draftStatus);
@@ -138,7 +138,7 @@ public class TmnTransferServiceClientTest {
 	@Test
 	public void createTransactionFail() {
 		try {
-			p2pTransferServiceClient.verifyOTPAndPerformTransferring("3", new OTP(
+			p2pTransferServiceClient.authorizeAndPerformTransfer("3", new OTP(
 					"0868185055", "112211", "marty"), "12345");
 			Assert.fail();
 		} catch (ServiceInventoryException e) {
@@ -161,7 +161,7 @@ public class TmnTransferServiceClientTest {
 
 		// confirm otp
 		otp.setOtpString("111111");
-		P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.verifyOTPAndPerformTransferring(p2pTransferDraft.getID(), otp, accessToken);
+		P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.authorizeAndPerformTransfer(p2pTransferDraft.getID(), otp, accessToken);
 		assertNotNull(draftStatus);
 		assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, draftStatus);
 
@@ -188,7 +188,7 @@ public class TmnTransferServiceClientTest {
 
 			// confirm otp
 			otp.setOtpString("111121");
-			P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.verifyOTPAndPerformTransferring(p2pTransferDraft.getID(), otp, accessToken);
+			P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.authorizeAndPerformTransfer(p2pTransferDraft.getID(), otp, accessToken);
 			assertNotNull(draftStatus);
 			assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, draftStatus);
 
@@ -215,7 +215,7 @@ public class TmnTransferServiceClientTest {
 
 		// create transfer draft
 		P2PTransferDraft p2pTransferDraft = p2pTransferServiceClient
-				.verifyAndCreateTransferDraft("0866011234", new BigDecimal("20.00"),
+				.createAndVerifyTransferDraft("0866011234", new BigDecimal("20.00"),
 						accessToken);
 		assertNotNull(p2pTransferDraft);
 		assertNotNull(p2pTransferDraft.getID());

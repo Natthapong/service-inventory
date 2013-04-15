@@ -81,7 +81,7 @@ public class TopUpServiceImplConfirmOTPTest {
 
 		OTP goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
 
-		TopUpQuote.Status quoteStatus = topUpService.verifyOTPAndPerformTopUp(quote.getID(), goodOTP, accessToken.getAccessTokenID());
+		TopUpQuote.Status quoteStatus = topUpService.authorizeAndPerformTopUp(quote.getID(), goodOTP, accessToken.getAccessTokenID());
 
 		assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quoteStatus);
 		verify(asyncServiceMock).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
@@ -93,7 +93,7 @@ public class TopUpServiceImplConfirmOTPTest {
 		OTP invalidOTP = new OTP(accessToken.getMobileNumber(), "refCode", "HACKY");
 
 		try {
-			topUpService.verifyOTPAndPerformTopUp(quote.getID(), invalidOTP, "unknown access token");
+			topUpService.authorizeAndPerformTopUp(quote.getID(), invalidOTP, "unknown access token");
 		} catch (ServiceInventoryWebException e) {
 			assertEquals("10001", e.getErrorCode());
 		}
@@ -109,7 +109,7 @@ public class TopUpServiceImplConfirmOTPTest {
 		Assert.assertEquals(TopUpQuote.Status.OTP_SENT, quote.getStatus());
 		Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpServiceMock).isValidOTP(any(OTP.class));
 		try {
-			topUpService.verifyOTPAndPerformTopUp(quote.getID(), new OTP(), accessToken.getAccessTokenID());
+			topUpService.authorizeAndPerformTopUp(quote.getID(), new OTP(), accessToken.getAccessTokenID());
 			Assert.fail();
 		} catch (ServiceInventoryWebException e) {}
 

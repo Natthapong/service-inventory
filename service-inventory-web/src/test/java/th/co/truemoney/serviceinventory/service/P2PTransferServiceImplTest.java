@@ -95,7 +95,7 @@ public class P2PTransferServiceImplTest {
 		String targetMobile = "0987654321";
 
 		//when
-		P2PTransferDraft transferDraft = this.p2pService.verifyAndCreateTransferDraft(targetMobile, amount, accessToken.getAccessTokenID());
+		P2PTransferDraft transferDraft = this.p2pService.createAndVerifyTransferDraft(targetMobile, amount, accessToken.getAccessTokenID());
 
 		//then
 		assertNotNull(transferDraft);

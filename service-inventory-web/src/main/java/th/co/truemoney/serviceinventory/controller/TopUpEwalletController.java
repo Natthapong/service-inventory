@@ -30,7 +30,7 @@ public class TopUpEwalletController {
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 		   @RequestBody TopUpQuote quote) {
 
-		TopUpQuote topUpQuote = topupService.verifyAndCreateTopUpQuote(sourceOfFundID, quote.getAmount(), accessTokenID);
+		TopUpQuote topUpQuote = topupService.createAndVerifyTopUpQuote(sourceOfFundID, quote.getAmount(), accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 
 		return topUpQuote;
@@ -66,7 +66,7 @@ public class TopUpEwalletController {
 
 		extendExpireAccessToken(accessTokenID);
 
-		return topupService.verifyOTPAndPerformTopUp(quoteID, otp, accessTokenID);
+		return topupService.authorizeAndPerformTopUp(quoteID, otp, accessTokenID);
 	}
 
 	@RequestMapping(value = "/top-up/order/{orderID}/status", method = RequestMethod.GET)

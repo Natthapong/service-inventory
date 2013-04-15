@@ -30,7 +30,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 	private HttpHeaders headers;
 
 	@Override
-	public P2PTransferDraft verifyAndCreateTransferDraft(String toMobileNo, BigDecimal amount, String accessTokenID) {
+	public P2PTransferDraft createAndVerifyTransferDraft(String toMobileNo, BigDecimal amount, String accessTokenID) {
 
 		P2PTransferDraft draft = new P2PTransferDraft(toMobileNo, amount);
 
@@ -71,7 +71,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 	}
 
 	@Override
-	public P2PTransferDraft.Status verifyOTPAndPerformTransferring(String transferDraftID, OTP otp, String accessTokenID) {
+	public P2PTransferDraft.Status authorizeAndPerformTransfer(String transferDraftID, OTP otp, String accessTokenID) {
 
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
 

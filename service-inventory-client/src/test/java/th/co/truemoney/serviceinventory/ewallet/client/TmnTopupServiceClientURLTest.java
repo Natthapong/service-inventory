@@ -68,7 +68,7 @@ public class TmnTopupServiceClientURLTest {
 
 		String accessToken = client.login(41, TestData.createSuccessLogin());
 		// create quote
-		TopUpQuote quote = topupServiceClient.verifyAndCreateTopUpQuote("1", new BigDecimal(310), accessToken);
+		TopUpQuote quote = topupServiceClient.createAndVerifyTopUpQuote("1", new BigDecimal(310), accessToken);
 
 		assertNotNull(quote);
 		assertNotNull(quote.getID());;
@@ -82,7 +82,7 @@ public class TmnTopupServiceClientURLTest {
 		assertNotNull(accessToken);
 
 		// create quote
-		TopUpQuote quote = topupServiceClient.verifyAndCreateTopUpQuote("1", new BigDecimal(310), accessToken);
+		TopUpQuote quote = topupServiceClient.createAndVerifyTopUpQuote("1", new BigDecimal(310), accessToken);
 
 		assertNotNull(quote);
 		assertNotNull(quote.getID());

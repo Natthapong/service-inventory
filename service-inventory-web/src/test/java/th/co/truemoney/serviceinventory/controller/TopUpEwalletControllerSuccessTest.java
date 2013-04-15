@@ -76,7 +76,7 @@ public class TopUpEwalletControllerSuccessTest {
 	public void confirmPlaceOrderSuccess() throws Exception {
 		OTP otp = new OTP("112233", "refCode", "123");
 		//given
-		when(topupServiceMock.verifyOTPAndPerformTopUp(anyString(), any(OTP.class), anyString())).thenReturn(TopUpQuote.Status.OTP_SENT);
+		when(topupServiceMock.authorizeAndPerformTopUp(anyString(), any(OTP.class), anyString())).thenReturn(TopUpQuote.Status.OTP_SENT);
 
 		ObjectMapper mapper = new ObjectMapper();
 		this.mockMvc.perform(put("/top-up/quote/{quoteID}/otp/refCode?accessTokenID=12345", "1")

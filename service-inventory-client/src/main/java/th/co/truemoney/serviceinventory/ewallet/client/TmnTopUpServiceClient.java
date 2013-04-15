@@ -30,7 +30,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 	private HttpHeaders headers;
 
 	@Override
-	public TopUpQuote verifyAndCreateTopUpQuote(String sourceOfFundID, BigDecimal amount, String accessTokenID) {
+	public TopUpQuote createAndVerifyTopUpQuote(String sourceOfFundID, BigDecimal amount, String accessTokenID) {
 
 		TopUpQuote quote = new TopUpQuote(amount);
 
@@ -72,7 +72,7 @@ public class TmnTopUpServiceClient implements TopUpService {
 	}
 
 	@Override
-	public TopUpQuote.Status verifyOTPAndPerformTopUp(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException {
+	public TopUpQuote.Status authorizeAndPerformTopUp(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException {
 
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp, headers);
 

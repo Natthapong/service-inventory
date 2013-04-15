@@ -41,7 +41,7 @@ public class P2PTransferServiceClientWorkflowTest {
 		assertNotNull(accessTokenID);
 
 		// create transfer draft
-		P2PTransferDraft p2pTransferDraft = transferServiceClient.verifyAndCreateTransferDraft("0866011234", new BigDecimal("20.00"), accessTokenID);
+		P2PTransferDraft p2pTransferDraft = transferServiceClient.createAndVerifyTransferDraft("0866011234", new BigDecimal("20.00"), accessTokenID);
 		assertNotNull(p2pTransferDraft);
 		assertNotNull(p2pTransferDraft.getID());
 
@@ -64,7 +64,7 @@ public class P2PTransferServiceClientWorkflowTest {
 
 		// confirm otp
 		otp.setOtpString("111111");
-		P2PTransferDraft.Status draftStatus = transferServiceClient.verifyOTPAndPerformTransferring(p2pTransferDraft.getID(), otp, accessTokenID);
+		P2PTransferDraft.Status draftStatus = transferServiceClient.authorizeAndPerformTransfer(p2pTransferDraft.getID(), otp, accessTokenID);
 		assertNotNull(draftStatus);
 		assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, draftStatus);
 
@@ -102,7 +102,7 @@ public class P2PTransferServiceClientWorkflowTest {
 				assertNotNull(accessTokenID);
 
 				// create transfer draft
-				P2PTransferDraft p2pTransferDraft = transferServiceClient.verifyAndCreateTransferDraft("0866011234", new BigDecimal("20.00"), accessTokenID);
+				P2PTransferDraft p2pTransferDraft = transferServiceClient.createAndVerifyTransferDraft("0866011234", new BigDecimal("20.00"), accessTokenID);
 				assertNotNull(p2pTransferDraft);
 				assertNotNull(p2pTransferDraft.getID());
 
@@ -133,7 +133,7 @@ public class P2PTransferServiceClientWorkflowTest {
 
 				// confirm otp
 				secondOtp.setOtpString("111111");
-				P2PTransferDraft.Status draftStatus = transferServiceClient.verifyOTPAndPerformTransferring(p2pTransferDraft.getID(), secondOtp, accessTokenID);
+				P2PTransferDraft.Status draftStatus = transferServiceClient.authorizeAndPerformTransfer(p2pTransferDraft.getID(), secondOtp, accessTokenID);
 				assertNotNull(draftStatus);
 				assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, draftStatus);
 
