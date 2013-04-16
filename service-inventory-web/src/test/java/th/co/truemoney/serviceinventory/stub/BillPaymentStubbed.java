@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
-import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
+import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaySourceOfFund;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 
@@ -28,20 +28,16 @@ public class BillPaymentStubbed {
 
 		billPaymentInfo.setAmount(new BigDecimal("10000"));
 
-		ServiceFee serviceFee = new ServiceFee();
-		serviceFee.setFee(new BigDecimal("1000"));
-		serviceFee.setFeeType("THB");
-		serviceFee.setTotalFee(new BigDecimal("1000"));
-		serviceFee.setMinFeeAmount(new BigDecimal("100"));
-		serviceFee.setMaxFeeAmount(new BigDecimal("2500"));
+		ServiceFeeInfo serviceFee = new ServiceFeeInfo();
+		serviceFee.setFeeRate(new BigDecimal("1000"));
+		serviceFee.setFeeRateType("THB");
 		billPaymentInfo.setServiceFee(serviceFee);
 
 		BillPaySourceOfFund[] sourceOfFundFees = new BillPaySourceOfFund[1];
 		BillPaySourceOfFund sourceOfFundFee = new BillPaySourceOfFund();
 		sourceOfFundFee.setSourceType("EW");
-		sourceOfFundFee.setFee(new BigDecimal("1000"));
-		sourceOfFundFee.setFeeType("THB");
-		sourceOfFundFee.setTotalFee(new BigDecimal("1000"));
+		sourceOfFundFee.setFeeRate(new BigDecimal("1000"));
+		sourceOfFundFee.setFeeRateType("THB");
 		sourceOfFundFee.setMinFeeAmount(new BigDecimal("100"));
 		sourceOfFundFee.setMaxFeeAmount(new BigDecimal("2500"));
 		sourceOfFundFees[0] = sourceOfFundFee;

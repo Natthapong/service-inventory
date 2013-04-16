@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
@@ -87,10 +87,10 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		legacyFacade.billing()
 						.fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())
 							.aUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
-							.withMsisdn(accessToken.getMobileNumber())
+							.usingMobilePayPoint(accessToken.getMobileNumber())
 							.fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
 							.fromBillChannel("iPhone", "iPhone Application")
-							.paying(amount, billInfo.getServiceFee(), billInfo.getSourceOfFundFees()[0])
+							.paying(amount, billInfo.getServiceFee().calculateFee(amount), billInfo.getEwalletSourceOfFund().calculateFee(amount))
 							.verifyPayment();
 
 		BillPaymentDraft billDraft = new BillPaymentDraft(UUID.randomUUID().toString(), billInfo, amount, Status.CREATED);

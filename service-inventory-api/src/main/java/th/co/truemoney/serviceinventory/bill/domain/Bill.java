@@ -37,7 +37,7 @@ public class Bill implements Serializable {
 	private BigDecimal minAmount = BigDecimal.ZERO;
 	private BigDecimal maxAmount = BigDecimal.ZERO;
 
-	private ServiceFee serviceFee;
+	private ServiceFeeInfo serviceFee;
 	private BillPaySourceOfFund[] sourceOfFundFees;
 
 	public Bill() {
@@ -149,11 +149,11 @@ public class Bill implements Serializable {
 		this.amount = amount;
 	}
 
-	public ServiceFee getServiceFee() {
+	public ServiceFeeInfo getServiceFee() {
 		return serviceFee;
 	}
 
-	public void setServiceFee(ServiceFee serviceFee) {
+	public void setServiceFee(ServiceFeeInfo serviceFee) {
 		this.serviceFee = serviceFee;
 	}
 
@@ -163,6 +163,18 @@ public class Bill implements Serializable {
 
 	public void setSourceOfFundFees(BillPaySourceOfFund[] sourceOfFundFees) {
 		this.sourceOfFundFees = sourceOfFundFees;
+	}
+
+	public BillPaySourceOfFund getEwalletSourceOfFund() {
+		if (sourceOfFundFees != null) {
+			for (BillPaySourceOfFund sof : sourceOfFundFees) {
+				if ("EW".equals(sof.getSourceType())) {
+					return sof;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	public String getPartialPayment() {
@@ -211,5 +223,4 @@ public class Bill implements Serializable {
 				+ ", sourceOfFundFees=" + Arrays.toString(sourceOfFundFees)
 				+ "]";
 	}
-
 }

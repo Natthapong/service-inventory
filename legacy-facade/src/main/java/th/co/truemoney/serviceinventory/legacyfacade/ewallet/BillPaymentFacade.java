@@ -13,7 +13,7 @@ import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaySourceOfFund;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
-import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
+import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
 import th.co.truemoney.serviceinventory.bill.domain.SourceFee;
 import th.co.truemoney.serviceinventory.bill.domain.services.ConfirmBillPayRequest;
 import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
@@ -71,7 +71,7 @@ public class BillPaymentFacade {
 			billInfo.setMinAmount(barcodeResponse.getMinAmount());
 			billInfo.setMaxAmount(barcodeResponse.getMaxAmount());
 
-			ServiceFee serviceFee = createServiceFee(barcodeResponse);
+			ServiceFeeInfo serviceFee = createServiceFee(barcodeResponse);
 			billInfo.setServiceFee(serviceFee);
 
 			List<BillPaySourceOfFund> sourceOfFundFees = createSourceOfFundFeeList(barcodeResponse);
@@ -116,11 +116,10 @@ public class BillPaymentFacade {
 
 			BillPaySourceOfFund sourceOfFundFee = new BillPaySourceOfFund();
 			sourceOfFundFee.setSourceType(sourceFee.getSource());
-			sourceOfFundFee.setFeeType(sourceFee.getSourceFeeType());
+			sourceOfFundFee.setFeeRateType(sourceFee.getSourceFeeType());
 
 			BigDecimal calculatedSourceFee = calculateSourceFee(sourceFee, sourceOfFundFee);
-			sourceOfFundFee.setFee(calculatedSourceFee.setScale(2, RoundingMode.HALF_UP));
-			sourceOfFundFee.setTotalFee(convertStringToFraction(sourceFee.getTotalSourceFee()));
+			sourceOfFundFee.setFeeRate(calculatedSourceFee.setScale(2, RoundingMode.HALF_UP));
 			sourceOfFundFee.setMinFeeAmount(convertStringToFraction(sourceFee.getMinAmount()));
 			sourceOfFundFee.setMaxFeeAmount(convertStringToFraction(sourceFee.getMaxAmount()));
 
@@ -129,12 +128,11 @@ public class BillPaymentFacade {
 		return sourceOfFundFees;
 	}
 
-	private ServiceFee createServiceFee(GetBarcodeResponse barcodeResponse) {
-		ServiceFee serviceFee = new ServiceFee();
-		serviceFee.setFeeType(barcodeResponse.getServiceFeeType());
-		serviceFee.setTotalFee(barcodeResponse.getTotalServiceFee());
+	private ServiceFeeInfo createServiceFee(GetBarcodeResponse barcodeResponse) {
+		ServiceFeeInfo serviceFee = new ServiceFeeInfo();
+		serviceFee.setFeeRateType(barcodeResponse.getServiceFeeType());
 		BigDecimal decimalServiceFee = BigDecimal.ZERO;
-		if (serviceFee.getFeeType().equals("THB")) {
+		if (serviceFee.getFeeRateType().equals("THB")) {
 			// fee type = fix
 			BigDecimal fee = barcodeResponse.getServiceFee() != null ? new BigDecimal(barcodeResponse.getServiceFee()) : BigDecimal.ZERO;
 			decimalServiceFee = fee.divide(new BigDecimal("100"));
@@ -142,14 +140,14 @@ public class BillPaymentFacade {
 			// fee type = percent
 			decimalServiceFee = barcodeResponse.getServiceFee() != null ? new BigDecimal(barcodeResponse.getServiceFee()) : BigDecimal.ZERO;
 		}
-		serviceFee.setFee(decimalServiceFee.setScale(2, RoundingMode.HALF_UP));
+		serviceFee.setFeeRate(decimalServiceFee.setScale(2, RoundingMode.HALF_UP));
 		return serviceFee;
 	}
 
 	private BigDecimal calculateSourceFee(SourceFee sourceFee,
 			BillPaySourceOfFund sourceOfFundFee) {
 		BigDecimal decimalSourceFee = BigDecimal.ZERO;
-		if (sourceOfFundFee.getFeeType().equals("THB")) {
+		if (sourceOfFundFee.getFeeRateType().equals("THB")) {
 			// fee type = fix
 			BigDecimal fee = sourceFee.getSourceFee() != null ? new BigDecimal(sourceFee.getSourceFee()) : BigDecimal.ZERO;
 			decimalSourceFee = fee.divide(new BigDecimal("100"));

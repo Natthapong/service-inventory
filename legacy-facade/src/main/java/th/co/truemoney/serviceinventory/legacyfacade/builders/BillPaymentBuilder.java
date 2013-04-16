@@ -7,9 +7,7 @@ import java.text.DecimalFormat;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPaySourceOfFund;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
-import th.co.truemoney.serviceinventory.bill.domain.ServiceFee;
 import th.co.truemoney.serviceinventory.bill.domain.services.ConfirmBillPayRequest;
 import th.co.truemoney.serviceinventory.bill.domain.services.VerifyBillPayRequest;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
@@ -32,12 +30,16 @@ public class BillPaymentBuilder {
 	private String target;
 	private String payPointCode;
 	private String payPointName;
-	private BillPaySourceOfFund sourceOfFund;
 	private BigDecimal amount;
-	private ServiceFee serviceFee;
 	private String commandAction;
 
 	private BillPaymentFacade billPaymentFacade;
+
+	private BigDecimal serviceFee;
+
+	private BigDecimal sourceOfFundFee;
+
+	private String sourceOfFundSourceType;
 
 
 	@Autowired(required = false)
@@ -63,10 +65,11 @@ public class BillPaymentBuilder {
 		this.sessionID = sessionID;
 		this.tmnID = tmnID;
 		this.commandAction = "EW";
+		this.sourceOfFundSourceType = "EW";
 		return this;
 	}
 
-	public BillPaymentBuilder withMsisdn(String msisdn) {
+	public BillPaymentBuilder usingMobilePayPoint(String msisdn) {
 		this.msisdn = msisdn;
 		this.payPointCode = MOBILE_PAYPOINT_CODE;
 		this.payPointName = msisdn;
@@ -81,10 +84,10 @@ public class BillPaymentBuilder {
 		return this;
 	}
 
-	public BillPaymentBuilder paying(BigDecimal amount, ServiceFee serviceFee, BillPaySourceOfFund sourceOfFund) {
+	public BillPaymentBuilder paying(BigDecimal amount, BigDecimal serviceFee, BigDecimal sourceOfFundFee) {
 		this.amount = amount;
 		this.serviceFee = serviceFee;
-		this.sourceOfFund = sourceOfFund;
+		this.sourceOfFundFee = sourceOfFundFee;
 		return this;
 	}
 
@@ -97,15 +100,8 @@ public class BillPaymentBuilder {
 		Validate.notNull(amount, "data missing. how much to pay for this bill?");
 
 		Validate.notNull(serviceFee, "data missing. missing service fee value");
-		Validate.notNull(serviceFee.getFee(), "data missing. missing service fee value");
-		Validate.notNull(serviceFee.getFeeType(), "data missing. missing service fee type");
 
-		Validate.notNull(sourceOfFund, "data missing. verify paying from which source of fund");
-		Validate.notNull(sourceOfFund.getSourceType(), "data missing. missing source of fund source type");
-		Validate.isTrue(sourceOfFund.getSourceType().equals("EW"), "source of fund not supported");
-		Validate.notNull(sourceOfFund.getFee(), "data missing. missing source of fund fee");
-		Validate.notNull(sourceOfFund.getFeeType(), "data missing. missing source of fund fee type");
-
+		Validate.notNull(sourceOfFundFee, "data missing. missing source of fund fee value");
 		Validate.notNull(tmnID, "data missing. missing ewallet source of fund user detail?");
 		Validate.notNull(sessionID, "data missing. missing ewallet source of fund user detail?");
 
@@ -141,11 +137,11 @@ public class BillPaymentBuilder {
 		verifyRequest.setPaypointCode(payPointCode);
 
 		verifyRequest.setAmount(convertMoney(amount));
-		verifyRequest.setSource(sourceOfFund.getSourceType());
-		verifyRequest.setSourceFee(convertMoney(sourceOfFund.getFee()));
-		verifyRequest.setSourceFeeType(sourceOfFund.getFeeType());
-		verifyRequest.setServiceFee(convertMoney(serviceFee.getFee()));
-		verifyRequest.setServiceFeeType(serviceFee.getFeeType());
+		verifyRequest.setSource("EW");
+		verifyRequest.setSourceFee(convertMoney(sourceOfFundFee));
+		verifyRequest.setSourceFeeType("THB");
+		verifyRequest.setServiceFee(convertMoney(serviceFee));
+		verifyRequest.setServiceFeeType("THB");
 
 		billPaymentFacade.verify(verifyRequest);
 	}
@@ -159,14 +155,8 @@ public class BillPaymentBuilder {
 		Validate.notNull(amount, "data missing. how much to pay for this bill?");
 
 		Validate.notNull(serviceFee, "data missing. missing service fee value");
-		Validate.notNull(serviceFee.getFee(), "data missing. missing service fee value");
-		Validate.notNull(serviceFee.getFeeType(), "data missing. missing service fee type");
 
-		Validate.notNull(sourceOfFund, "data missing. verify paying from which source of fund");
-		Validate.notNull(sourceOfFund.getSourceType(), "data missing. missing source of fund source type");
-		Validate.isTrue(sourceOfFund.getSourceType().equals("EW"), "source of fund not supported");
-		Validate.notNull(sourceOfFund.getFee(), "data missing. missing source of fund fee");
-		Validate.notNull(sourceOfFund.getFeeType(), "data missing. missing source of fund fee type");
+		Validate.notNull(sourceOfFundFee, "data missing. missing source of fund fee value");
 
 		Validate.notNull(tmnID, "data missing. missing ewallet source of fund user detail?");
 		Validate.notNull(sessionID, "data missing. missing ewallet source of fund user detail?");
@@ -203,11 +193,12 @@ public class BillPaymentBuilder {
 		confirmRequest.setPaypointCode(payPointCode);
 
 		confirmRequest.setAmount(convertMoney(amount));
-		confirmRequest.setSource(sourceOfFund.getSourceType());
-		confirmRequest.setSourceFee(convertMoney(sourceOfFund.getFee()));
-		confirmRequest.setSourceFeeType(sourceOfFund.getFeeType());
-		confirmRequest.setServiceFee(convertMoney(serviceFee.getFee()));
-		confirmRequest.setServiceFeeType(serviceFee.getFeeType());
+		confirmRequest.setAmount(convertMoney(amount));
+		confirmRequest.setSource(sourceOfFundSourceType);
+		confirmRequest.setSourceFee(convertMoney(sourceOfFundFee));
+		confirmRequest.setSourceFeeType("THB");
+		confirmRequest.setServiceFee(convertMoney(serviceFee));
+		confirmRequest.setServiceFeeType("THB");
 
 		return billPaymentFacade.payBill(confirmRequest);
 	}

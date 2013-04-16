@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.bill.impl;
 
+import java.math.BigDecimal;
 import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
@@ -35,30 +36,20 @@ public class AsyncBillPayProcessor {
 		try {
 			BillPaymentDraft draftTransaction = billPaymentReceipt.getDraftTransaction();
 			Bill billInfo = draftTransaction.getBillInfo();
-			/*
-			BigDecimal amount = billPaymentInfo.getAmount();
-			SourceOfFundFee sourceOfFundFees[] = billPaymentInfo.getSourceOfFundFees();
-			SourceOfFundFee sourceOfFundFee = null;
-			int i = 0;
-			*/
+
+			BigDecimal amount = draftTransaction.getAmount();
+
 			billPaymentReceipt.setStatus(Transaction.Status.PROCESSING);
 			transactionRepo.saveBillPaymentTransaction(billPaymentReceipt, accessToken.getAccessTokenID());
 
-/*
-			for (i = 0; i < sourceOfFundFees.length; i++) {
-				if (sourceOfFundFees[i].getSourceType().equals("EW")) {
-					sourceOfFundFee = sourceOfFundFees[i];
-				}
-			}
-	*/
 
 			BillPaymentConfirmationInfo confirmationInfo = legacyFacade.billing()
 					.fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())
 					.aUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
-					.withMsisdn(accessToken.getMobileNumber())
+					.usingMobilePayPoint(accessToken.getMobileNumber())
 					.fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
 					.fromBillChannel("iPhone", "iPhone Application")
-					.paying(billInfo.getAmount(), billInfo.getServiceFee(), billInfo.getSourceOfFundFees()[0])
+					.paying(amount, billInfo.getServiceFee().calculateFee(amount), billInfo.getEwalletSourceOfFund().calculateFee(amount))
 					.performPayment();
 
 			billPaymentReceipt.setConfirmationInfo(confirmationInfo);

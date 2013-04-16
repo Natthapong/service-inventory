@@ -11,57 +11,32 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class BillPaySourceOfFund implements Serializable {
+public class ServiceFeeInfo implements Serializable {
 
-	private static final long serialVersionUID = -7741609765959925215L;
-	private String sourceType;
+	private static final long serialVersionUID = 1405463484466493619L;
 	private BigDecimal feeRate;
 	private String feeRateType;
-	private BigDecimal minFeeAmount = BigDecimal.ZERO;
-	private BigDecimal maxFeeAmount = BigDecimal.ZERO;
 
-	public BillPaySourceOfFund() {
-		super();
+	public ServiceFeeInfo() {
+
 	}
 
-	public String getSourceType() {
-		return sourceType;
-	}
-
-	public void setSourceType(String sourceType) {
-		this.sourceType = sourceType;
+	public ServiceFeeInfo(String feeRateType, BigDecimal feeRate) {
+		this.feeRate = feeRate;
+		this.feeRateType = feeRateType;
 	}
 
 	public BigDecimal getFeeRate() {
 		return feeRate;
 	}
-
 	public void setFeeRate(BigDecimal feeRate) {
 		this.feeRate = feeRate;
 	}
-
 	public String getFeeRateType() {
 		return feeRateType;
 	}
-
 	public void setFeeRateType(String feeRateType) {
 		this.feeRateType = feeRateType;
-	}
-
-	public BigDecimal getMinFeeAmount() {
-		return minFeeAmount;
-	}
-
-	public void setMinFeeAmount(BigDecimal minFeeAmount) {
-		this.minFeeAmount = minFeeAmount;
-	}
-
-	public BigDecimal getMaxFeeAmount() {
-		return maxFeeAmount;
-	}
-
-	public void setMaxFeeAmount(BigDecimal maxFeeAmount) {
-		this.maxFeeAmount = maxFeeAmount;
 	}
 
 	public BigDecimal calculateFee(BigDecimal amount) {
@@ -77,14 +52,4 @@ public class BillPaySourceOfFund implements Serializable {
 
 		throw new ServiceInventoryException(500, "500", "unknown fee rate type: " + feeRateType, "SIENGINE");
 	}
-
-	@Override
-	public String toString() {
-		return "BillPaySourceOfFund [sourceType=" + sourceType + ", fee=" + feeRate
-				+ ", feeType=" + feeRateType
-				+ ", minFeeAmount=" + minFeeAmount + ", maxFeeAmount="
-				+ maxFeeAmount + "]";
-	}
-
-
 }
