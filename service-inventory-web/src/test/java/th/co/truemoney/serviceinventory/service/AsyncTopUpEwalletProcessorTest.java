@@ -64,7 +64,7 @@ public class AsyncTopUpEwalletProcessorTest {
 		BigDecimal fee = new BigDecimal(30);
 		DirectDebit sourceOfFund = new DirectDebit("sourceID", "debit");
 
-		TopUpQuote quote = new TopUpQuote("1", sourceOfFund, accessToken.getAccessTokenID(), "", amount, fee);
+		TopUpQuote quote = new TopUpQuote("1", sourceOfFund, accessToken.getAccessTokenID(), amount, fee);
 		quote.setStatus(TopUpQuote.Status.OTP_CONFIRMED);
 
 		TopUpOrder order = new TopUpOrder(quote);

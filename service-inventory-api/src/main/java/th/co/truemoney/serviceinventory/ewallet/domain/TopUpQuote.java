@@ -17,8 +17,6 @@ public class TopUpQuote extends DraftTransaction {
 
 	private SourceOfFund sourceOfFund;
 
-	private String username;
-
 	private BigDecimal amount;
 
 	private BigDecimal topUpFee;
@@ -35,12 +33,11 @@ public class TopUpQuote extends DraftTransaction {
 	}
 
 	public TopUpQuote(String ID, SourceOfFund sourceOfFund,
-			String accessTokenID, String username, BigDecimal amount,
+			String accessTokenID, BigDecimal amount,
 			BigDecimal topUpFee) {
 		this.ID = ID;
 		this.sourceOfFund = sourceOfFund;
 		this.accessTokenID = accessTokenID;
-		this.username = username;
 		this.amount = amount;
 		this.topUpFee = topUpFee;
 		this.status = TopUpQuote.Status.CREATED;
@@ -71,14 +68,6 @@ public class TopUpQuote extends DraftTransaction {
 		this.sourceOfFund = sourceOfFund;
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
 	public BigDecimal getTopUpFee() {
 		return topUpFee;
 	}
@@ -106,7 +95,7 @@ public class TopUpQuote extends DraftTransaction {
 	@Override
 	public String toString() {
 		return "TopUpQuote [ID=" + ID + ", sourceOfFund=" + sourceOfFund
-				+ ", accessTokenID=" + accessTokenID + ", username=" + username
+				+ ", accessTokenID=" + accessTokenID
 				+ ", amount=" + amount + ", topUpFee=" + topUpFee
 				+ ", status=" + status + "]";
 	}

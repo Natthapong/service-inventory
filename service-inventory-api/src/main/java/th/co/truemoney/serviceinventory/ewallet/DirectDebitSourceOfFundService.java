@@ -6,5 +6,5 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface DirectDebitSourceOfFundService {
-	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenID) throws ServiceInventoryException;
+	public List<DirectDebit> getUserDirectDebitSources(String accessTokenID) throws ServiceInventoryException;
 }

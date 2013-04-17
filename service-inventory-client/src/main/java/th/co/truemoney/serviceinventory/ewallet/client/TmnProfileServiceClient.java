@@ -1,6 +1,8 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,9 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
-import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChannelInfo;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientLogin;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerLogin;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -35,15 +39,20 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	private HttpHeaders headers;
 
 	@Override
-	public String login(Integer channelID, Login login) throws ServiceInventoryException {
+	public String login(EWalletOwnerLogin userLogin, ClientLogin clientLogin, ChannelInfo channelInfo) throws ServiceInventoryException {
 
-		Validate.notNull(channelID, "channel id is required");
-		Validate.notNull(login, "login bean is required");
+		Validate.notNull(channelInfo, "channel info is required");
+		Validate.notNull(userLogin, "user login is required");
+		Validate.notNull(clientLogin, "client login is required");
 
+		HashMap<String, Object> map = new LinkedHashMap<String, Object>();
+		map.put("userLogin", userLogin);
+		map.put("appLogin", clientLogin);
+		map.put("channelInfo", channelInfo);
 
-		HttpEntity<Login> requestEntity = new HttpEntity<Login>(login, headers);
+		HttpEntity<HashMap<String, Object>> requestEntity = new HttpEntity<HashMap<String, Object>>(map, headers);
 
-		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getLoginURL(), HttpMethod.POST, requestEntity, String.class, channelID);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getLoginURL(), HttpMethod.POST, requestEntity, String.class);
 
 		String accessToken = responseEntity.getBody();
 
@@ -96,7 +105,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	@Override
 	public OTP createProfile(Integer channelID, TmnProfile tmnProfile) {
 		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(tmnProfile,headers);
-		ResponseEntity<OTP> responseEntity = restTemplate.exchange(endPoints.getCreateTruemoneyProfileURL(), HttpMethod.POST, 
+		ResponseEntity<OTP> responseEntity = restTemplate.exchange(endPoints.getCreateTruemoneyProfileURL(), HttpMethod.POST,
 				requestEntity, OTP.class, channelID);
 		return responseEntity.getBody();
 	}
@@ -104,7 +113,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	@Override
 	public TmnProfile confirmCreateProfile(Integer channelID, OTP otp) {
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
-		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getConfirmCreateTruemoneyProfileURL(), HttpMethod.POST, 
+		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getConfirmCreateTruemoneyProfileURL(), HttpMethod.POST,
 				requestEntity, TmnProfile.class, channelID);
 		return responseEntity.getBody();
 	}

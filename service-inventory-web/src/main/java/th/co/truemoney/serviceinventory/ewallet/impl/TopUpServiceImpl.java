@@ -73,7 +73,6 @@ public class TopUpServiceImpl implements TopUpService {
 		String orderID = UUID.randomUUID().toString();
 		topUpQuote.setID(orderID);
 		topUpQuote.setAccessTokenID(accessToken.getAccessTokenID());
-		topUpQuote.setUsername(accessToken.getUsername());
 		topUpQuote.setAmount(amount);
 		topUpQuote.setTopUpFee(topUpFee);
 		topUpQuote.setSourceOfFund(source);

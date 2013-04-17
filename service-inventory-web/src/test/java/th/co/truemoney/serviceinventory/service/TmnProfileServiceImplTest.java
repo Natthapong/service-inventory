@@ -18,7 +18,9 @@ import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChannelInfo;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientLogin;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerLogin;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
@@ -55,10 +57,13 @@ public class TmnProfileServiceImplTest {
 	public void shouldReturnAccessTokenWhenLoginSuccess() {
 
 		//given
-		when(mockProfileFacade.login(41, "user1.test.v1@gmail.com", "secret")).thenReturn(accessToken);
+		when(mockProfileFacade.login(40, "user1.test.v1@gmail.com", "secret")).thenReturn(accessToken);
 
 		//when
-		String result = this.profileService.login(41, new Login("user1.test.v1@gmail.com", "secret"));
+		String result = this.profileService.login(
+				new EWalletOwnerLogin("user1.test.v1@gmail.com", "secret"),
+				new ClientLogin("appKey", "appUser", "appPassword"),
+				new ChannelInfo(40, "iphone", "iphone"));
 
 		//then
 		assertNotNull(result);
@@ -70,11 +75,13 @@ public class TmnProfileServiceImplTest {
 	public void shouldThrowExceptionWhenLoginFail() {
 
 		//given
-		when(mockProfileFacade.login(41, "bad.user@gmail.com", "secret")).thenThrow(new SignonServiceException("401", "bad login"));
+		when(mockProfileFacade.login(40, "bad.user@gmail.com", "secret")).thenThrow(new SignonServiceException("401", "bad login"));
 
 		//when
 		try {
-			this.profileService.login(41, new Login("bad.user@gmail.com", "secret"));
+			this.profileService.login(new EWalletOwnerLogin("bad.user@gmail.com", "secret"),
+				new ClientLogin("appKey", "appUser", "appPassword"),
+				new ChannelInfo(40, "iphone", "iphone"));
 			Assert.fail();
 		} catch (SignonServiceException ex) {
 			assertEquals("401", ex.getErrorCode());
@@ -86,8 +93,12 @@ public class TmnProfileServiceImplTest {
 	public void shouldLogoutSuccessWhenUserWasLogined() {
 
 		//given
-		when(mockProfileFacade.login(41, "user1.test.v1@gmail.com", "secret")).thenReturn(accessToken);
-		String accessTokenID = this.profileService.login(41, new Login("user1.test.v1@gmail.com", "secret"));
+		when(mockProfileFacade.login(40, "user1.test.v1@gmail.com", "secret")).thenReturn(accessToken);
+
+		String accessTokenID = this.profileService.login(
+				new EWalletOwnerLogin("user1.test.v1@gmail.com", "secret"),
+				new ClientLogin("appKey", "appUser", "appPassword"),
+				new ChannelInfo(40, "iphone", "iphone"));
 
 		//when
 		profileService.logout(accessTokenID);

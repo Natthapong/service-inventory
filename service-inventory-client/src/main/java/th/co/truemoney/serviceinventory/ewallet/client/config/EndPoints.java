@@ -9,7 +9,7 @@ public class EndPoints {
 	private String host = "https://dev.truemoney.co.th";
 
 	public String getLoginURL() {
-		return host + "/service-inventory-web/v1/ewallet/login?channelID={channelID}";
+		return host + "/service-inventory-web/v1/ewallet/login";
 	}
 
 	public String getLogoutURL() {
@@ -17,7 +17,7 @@ public class EndPoints {
 	}
 
 	public String getUserDirectDebitSourceOfFundsURL() {
-		return host + "/service-inventory-web/v1/ewallet/profile/{username}/source-of-fund/direct-debits?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/ewallet/profile/source-of-fund/direct-debits?accessTokenID={accessTokenID}";
 	}
 
 	public String getUserProfileURL() {

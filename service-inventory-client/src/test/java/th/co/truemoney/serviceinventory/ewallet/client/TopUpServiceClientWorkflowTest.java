@@ -38,7 +38,10 @@ public class TopUpServiceClientWorkflowTest {
 	public void shouldSuccessTopUpEwalletUsingDirectDebitWorkflow() throws InterruptedException {
 
 		// login
-		String accessToken = profileService.login(41, TestData.createSuccessLogin());
+		String accessToken = profileService.login(
+				TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin(),
+				TestData.createSuccessChannelInfo());
 		assertNotNull(accessToken);
 
 		// create quote
@@ -102,7 +105,10 @@ public class TopUpServiceClientWorkflowTest {
 	@Test
 	public void shouldFailToCreateQuoteBecauseOfAmountLessThanBankMinimum() {
 
-			String accessToken = profileService.login(41, TestData.createSuccessLogin());
+			String accessToken = profileService.login(
+					TestData.createSuccessUserLogin(),
+					TestData.createSuccessClientLogin(),
+					TestData.createSuccessChannelInfo());
 			assertNotNull(accessToken);
 
 			// min == 300
@@ -119,7 +125,10 @@ public class TopUpServiceClientWorkflowTest {
 	@Test
 	public void shouldFailToCreateQuoteBecauseOfAmountMoreThanBankMaximum() {
 
-			String accessToken = profileService.login(41, TestData.createSuccessLogin());
+			String accessToken = profileService.login(
+					TestData.createSuccessUserLogin(),
+					TestData.createSuccessClientLogin(),
+					TestData.createSuccessChannelInfo());
 			assertNotNull(accessToken);
 
 			// max == 3,000

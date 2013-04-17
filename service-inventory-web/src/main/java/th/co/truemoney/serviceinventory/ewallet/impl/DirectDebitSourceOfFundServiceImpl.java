@@ -3,8 +3,6 @@ package th.co.truemoney.serviceinventory.ewallet.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +19,6 @@ import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 @Service
 public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSourceOfFundService {
 
-	private static Logger logger = LoggerFactory.getLogger(DirectDebitSourceOfFundServiceImpl.class);
-
 	@Autowired
 	private LegacyFacade legacyFacade;
 
@@ -33,15 +29,10 @@ public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSo
 	private AccessTokenRepository accessTokenRepo;
 
 	@Override
-	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenID)
+	public List<DirectDebit> getUserDirectDebitSources(String accessTokenID)
 			throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		logger.debug("retrieve access Token: " + accessToken.toString());
-
-		if (!accessToken.getUsername().equals(username)) {
-			throw new ServiceInventoryWebException("401", "unauthorized access");
-		}
 
 		String sessionID = accessToken.getSessionID();
 		String truemoneyID = accessToken.getTruemoneyID();

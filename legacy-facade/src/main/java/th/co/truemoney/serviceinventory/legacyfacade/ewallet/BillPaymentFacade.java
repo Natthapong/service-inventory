@@ -86,33 +86,15 @@ public class BillPaymentFacade {
 
 		} catch (FailResultCodeException ex) {
 			String errorNamespace = ex.getNamespace();
-			if (errorNamespace.equals("SIENGINE")) {
+			if ("SIENGINE".equals(errorNamespace)) {
 				throw new SIEngineTransactionFailException(ex);
-			} else if (errorNamespace.equalsIgnoreCase("UMARKET")) {
+			} else if ("UMARKET".equalsIgnoreCase(errorNamespace)) {
 				throw new UMarketSystemTransactionFailException(ex);
 			} else {
 				throw new UnknownSystemTransactionFailException(ex);
 			}
 		}
 	}
-
-	/*
-	private BigDecimal calculateTotalServiceFee(ServiceFee serviceFee, BigDecimal amount) {
-
-		String feeType = serviceFee.getFeeType();
-		BigDecimal fee = serviceFee.getFee() != null ? serviceFee.getFee() : BigDecimal.ZERO;
-
-		if ("THB".equals(feeType)) {
-			return fee;
-		} else if ("percent".equals(feeType)) {
-			return fee.multiply(amount).divide(new BigDecimal(100));
-		} else if (feeType != null) {
-			throw new UnknownServiceFeeType(feeType);
-		}
-
-		return BigDecimal.ZERO;
-	}
-	*/
 
 	private List<BillPaySourceOfFund> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {
 		List<SourceFee> sourceOfFundList = barcodeResponse.getExtraXML().getSourceFeeList();

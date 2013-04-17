@@ -52,7 +52,6 @@ public class ProfileFacade {
 				UUID.randomUUID().toString(),
 				signon.getSessionId(),
 				signon.getTmnId(),
-				credentialUsername,
 				profile.getMobile(),
 				profile.getEmail(),
 				channelID);

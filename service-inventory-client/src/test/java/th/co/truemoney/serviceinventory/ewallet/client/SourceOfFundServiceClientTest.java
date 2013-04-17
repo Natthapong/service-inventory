@@ -35,24 +35,23 @@ public class SourceOfFundServiceClientTest {
 
 	@Before
 	public void setUp() {
-		accessToken = profileClient.login(41, TestData.createSuccessLogin());
+		accessToken = profileClient.login(TestData.createSuccessUserLogin(), TestData.createSuccessClientLogin(), TestData.createSuccessChannelInfo());
 	}
 
 	@Test
 	public void shouldFail() {
 		try{
-			sourceOfFundServiceClient.getUserDirectDebitSources("hacker", accessToken);
+			sourceOfFundServiceClient.getUserDirectDebitSources("random access token");
 			Assert.fail();
 		}catch(ServiceInventoryException e){
-			assertEquals("401", e.getErrorCode());
-			assertEquals("unauthorized access", e.getErrorDescription());
+			assertEquals("10001", e.getErrorCode());
 		}
 	}
 
 	@Test
 	public void shouldSuccess(){
 
-		List<DirectDebit> debits = sourceOfFundServiceClient.getUserDirectDebitSources("local@tmn.com", accessToken);
+		List<DirectDebit> debits = sourceOfFundServiceClient.getUserDirectDebitSources(accessToken);
 		assertNotNull(debits);
 		assertEquals(3, debits.size());
 		assertEquals("SCB", debits.get(0).getBankCode());

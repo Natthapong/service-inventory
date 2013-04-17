@@ -6,7 +6,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 
 import org.junit.After;
 import org.junit.Before;
@@ -48,25 +47,13 @@ public class TmnTopupServiceClientURLTest {
 		reset(restTemplate);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void checkCreateOrderFromDirectDebitUrl(){
-		HashMap hashMap = new HashMap();
-		hashMap.put("id", "1234");
-		hashMap.put("amount", "2000");
-		hashMap.put("username", "username");
-		HashMap sourceOfFund = new HashMap();
-		sourceOfFund.put("bankCode", "SCB");
-		sourceOfFund.put("bankNameEn", "Test");
-		sourceOfFund.put("bankNameTh", "Test");
-		sourceOfFund.put("bankAccountNumber", "xxx213");
-		sourceOfFund.put("minAmount", "20");
-		sourceOfFund.put("maxAmount", "30000");
-		hashMap.put("sourceOfFund", sourceOfFund);
-		hashMap.put("topUpFee", "10");
-		hashMap.put("accessTokenID", "99999");
 
-		String accessToken = client.login(41, TestData.createSuccessLogin());
+		String accessToken = client.login(TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin(),
+				TestData.createSuccessChannelInfo());
+
 		// create quote
 		TopUpQuote quote = topupServiceClient.createAndVerifyTopUpQuote("1", new BigDecimal(310), accessToken);
 
@@ -78,7 +65,9 @@ public class TmnTopupServiceClientURLTest {
 	public void confirmOTPSuccess(){
 
 		// login
-		String accessToken = client.login(41, TestData.createSuccessLogin());
+		String accessToken = client.login(TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin(),
+				TestData.createSuccessChannelInfo());
 		assertNotNull(accessToken);
 
 		// create quote

@@ -39,7 +39,7 @@ public class GlobalExceptionsHandler {
 
 
 	@ExceptionHandler
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseStatus(HttpStatus.PRECONDITION_FAILED)
 	public @ResponseBody ErrorBean handleBeanValidationExceptions(MethodArgumentNotValidException exception) {
 
 		FieldError fieldError = exception.getBindingResult().getFieldError();
@@ -49,13 +49,13 @@ public class GlobalExceptionsHandler {
 	}
 
 	@ExceptionHandler
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseStatus(HttpStatus.PRECONDITION_FAILED)
 	public @ResponseBody ErrorBean handleBeanBindingValidationExceptions(BindException exception) {
 
 		FieldError fieldError = exception.getBindingResult().getFieldError();
 		String developerMessage = fieldError.getDefaultMessage() + ": " + fieldError.getField();
 
-		return new ErrorBean(412, "400", "Validation failed", ServiceInventoryWebException.NAMESPACE, developerMessage);
+		return new ErrorBean(412, "412", "Validation failed", ServiceInventoryWebException.NAMESPACE, developerMessage);
 	}
 
 	@ExceptionHandler

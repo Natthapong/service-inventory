@@ -37,7 +37,7 @@ public class P2PTransferServiceClientWorkflowTest {
 	public void shouldSuccessTransferEwallet() throws InterruptedException {
 
 		// login
-		String accessTokenID = profileServiceClient.login(41, TestData.createSuccessLogin());
+		String accessTokenID = profileServiceClient.login(TestData.createSuccessUserLogin(), TestData.createSuccessClientLogin(), TestData.createSuccessChannelInfo());
 		assertNotNull(accessTokenID);
 
 		// create transfer draft
@@ -98,7 +98,7 @@ public class P2PTransferServiceClientWorkflowTest {
 	@Test
 	public void shouldSucessResendOTP() throws InterruptedException {
 		// login
-				String accessTokenID = profileServiceClient.login(41, TestData.createSuccessLogin());
+				String accessTokenID = profileServiceClient.login(TestData.createSuccessUserLogin(), TestData.createSuccessClientLogin(), TestData.createSuccessChannelInfo());
 				assertNotNull(accessTokenID);
 
 				// create transfer draft

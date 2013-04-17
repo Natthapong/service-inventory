@@ -24,13 +24,16 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import th.co.truemoney.serviceinventory.bean.LoginRequest;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.SmsConfig;
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
-import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChannelInfo;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientLogin;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerLogin;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -61,16 +64,24 @@ public class TmnProfileControllerLoginFailTest {
 	@Test
 	public void shouldLoginFail() throws Exception {
 
-		when(this.tmnProfileServiceMock.login(any(Integer.class), any(Login.class))).thenThrow(
+		when(this.tmnProfileServiceMock.login(
+				any(EWalletOwnerLogin.class),
+				any(ClientLogin.class),
+				any(ChannelInfo.class))).thenThrow(
 				new SignonServiceException(
 						"1",
 						"error description"));
 
 		ObjectMapper mapper = new ObjectMapper();
-		Login login = new Login("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
+		EWalletOwnerLogin userLogin = new EWalletOwnerLogin("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
+		ClientLogin clientLogin = new ClientLogin("appKey", "appUser", "appPassword");
+		ChannelInfo channelInfo = new ChannelInfo(40, "channel", "channel Detail");
+
+		LoginRequest loginRequest = new LoginRequest(userLogin, clientLogin, channelInfo);
+
 		this.mockMvc.perform(post("/ewallet/login?channelID=41")
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsBytes(login)))
+			.content(mapper.writeValueAsBytes(loginRequest)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.errorCode").value("1"))
 			.andExpect(jsonPath("$.errorDescription").value("error description"))

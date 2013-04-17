@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,11 +22,10 @@ public class SourceOfFundController {
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
-	@RequestMapping(value = "/ewallet/profile/{username}/source-of-fund/direct-debits", method = RequestMethod.GET)
+	@RequestMapping(value = "/ewallet/profile/source-of-fund/direct-debits", method = RequestMethod.GET)
 	public @ResponseBody DirectDebit[] listDirectDebitSources(
-			@PathVariable("username") String username,
 			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID) {
-		List<DirectDebit> directDebits = sourceOfFundService.getUserDirectDebitSources(username, accessTokenID);
+		List<DirectDebit> directDebits = sourceOfFundService.getUserDirectDebitSources(accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 
 		return directDebits.toArray(new DirectDebit[directDebits.size()]);

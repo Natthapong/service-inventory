@@ -64,7 +64,7 @@ public class BillPaymentServiceImplTest {
 	@Before
 	public void setup() {
 
-		accessToken = new AccessToken("12345", "5555", "4444", "username", "0868185055", "tanathip.se@gmail.com", 41);
+		accessToken = new AccessToken("12345", "5555", "4444", "0868185055", "tanathip.se@gmail.com", 41);
 		accessTokenRepo.save(accessToken);
 
 		otpService = mock(OTPService.class);

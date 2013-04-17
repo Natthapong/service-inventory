@@ -138,10 +138,8 @@ public class BillPaymentBuilder {
 
 		verifyRequest.setAmount(convertMoney(amount));
 		verifyRequest.setSource("EW");
-		//verifyRequest.setSourceFee(convertMoney(sourceOfFundFee));
 		verifyRequest.setSourceFeeType("THB");
 		verifyRequest.setTotalSourceFee(convertMoney(sourceOfFundFee));
-		//verifyRequest.setServiceFee(convertMoney(serviceFee));
 		verifyRequest.setServiceFeeType("THB");
 		verifyRequest.setTotalServiceFee(convertMoney(serviceFee));
 
@@ -199,10 +197,8 @@ public class BillPaymentBuilder {
 		confirmRequest.setAmount(convertMoney(amount));
 		confirmRequest.setAmount(convertMoney(amount));
 		confirmRequest.setSource(sourceOfFundSourceType);
-		//confirmRequest.setSourceFee(convertMoney(sourceOfFundFee));
 		confirmRequest.setSourceFeeType("THB");
 		confirmRequest.setTotalSourceFee(convertMoney(sourceOfFundFee));
-		//confirmRequest.setServiceFee(convertMoney(serviceFee));
 		confirmRequest.setServiceFeeType("THB");
 		confirmRequest.setTotalServiceFee(convertMoney(serviceFee));
 

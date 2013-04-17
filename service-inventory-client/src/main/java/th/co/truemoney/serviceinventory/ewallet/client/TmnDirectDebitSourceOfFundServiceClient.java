@@ -29,14 +29,14 @@ public class TmnDirectDebitSourceOfFundServiceClient implements DirectDebitSourc
 	private HttpHeaders headers;
 
 	@Override
-	public List<DirectDebit> getUserDirectDebitSources(String username, String accessTokenID) throws ServiceInventoryException {
+	public List<DirectDebit> getUserDirectDebitSources(String accessTokenID) throws ServiceInventoryException {
 
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<DirectDebit[]> responseEntity = restTemplate.exchange(
 				environmentConfig.getUserDirectDebitSourceOfFundsURL(), HttpMethod.GET,
 				requestEntity, DirectDebit[].class,
-				username, accessTokenID);
+				accessTokenID);
 
 		return Arrays.asList(responseEntity.getBody());
 	}

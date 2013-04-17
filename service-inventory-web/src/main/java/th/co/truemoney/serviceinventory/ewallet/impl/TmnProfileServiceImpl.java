@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChannelInfo;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientLogin;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerLogin;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -41,13 +43,13 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	private RegisteringProfileRepository registeringProfileRepo;
 
 	@Override
-	public String login(Integer channelID, Login login)
+	public String login(EWalletOwnerLogin userLogin, ClientLogin clientLogin, ChannelInfo channelInfo)
 				throws SignonServiceException {
 
-		String initiator = login.getUsername();
-		String secret = login.getHashPassword();
+		String initiator = userLogin.getLoginKey();
+		String secret = userLogin.getLoginSecret();
 
-		AccessToken accessToken = legacyFacade.login(channelID, initiator, secret);
+		AccessToken accessToken = legacyFacade.login(channelInfo.getEwalletChannelId(), initiator, secret);
 
 		logger.info("Access token created: " + accessToken);
 

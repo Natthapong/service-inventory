@@ -2,6 +2,8 @@ package th.co.truemoney.serviceinventory.controller;
 
 import java.math.BigDecimal;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import th.co.truemoney.serviceinventory.bean.LoginRequest;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
-import th.co.truemoney.serviceinventory.ewallet.domain.Login;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
@@ -29,13 +31,12 @@ public class TmnProfileController {
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public @ResponseBody String login(
-		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		   @RequestBody Login login) {
+	public @ResponseBody String login(@Valid @RequestBody LoginRequest loginRequest) {
 
-		validateRequestParam(channelID);
-
-		return tmnProfileService.login(channelID, login);
+		return tmnProfileService.login(
+				loginRequest.getUserLogin(),
+				loginRequest.getAppLogin(),
+				loginRequest.getChannelInfo());
 	}
 
 	@RequestMapping(value = "/profile/{accessTokenID}", method = RequestMethod.GET)

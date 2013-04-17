@@ -11,7 +11,6 @@ public class AccessToken implements Serializable {
 	private String accessTokenID;
 	private String sessionID;
 	private String truemoneyID;
-	private String username;
 	private String mobileNumber;
 	private String email;
 	private Integer channelID;
@@ -24,18 +23,17 @@ public class AccessToken implements Serializable {
 	}
 
 	public AccessToken(String token, String sessionID, String tmnID, Integer channelID) {
-		this(token, sessionID, tmnID, null, null, null, channelID);
+		this(token, sessionID, tmnID, null, null, channelID);
 	}
-	
+
 	public AccessToken(String token,
 			String sessionID, String truemoneyID,
-			String username, String mobileNumber, String email,
+			String mobileNumber, String email,
 			Integer channelID) {
-		
+
 		this.accessTokenID = token;
 		this.sessionID = sessionID;
 		this.truemoneyID = truemoneyID;
-		this.username = username;
 		this.mobileNumber = mobileNumber;
 		this.email = email;
 		this.channelID = channelID;
@@ -63,14 +61,6 @@ public class AccessToken implements Serializable {
 
 	public void setTruemoneyID(String truemoneyID) {
 		this.truemoneyID = truemoneyID;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
 	}
 
 	public Integer getChannelID() {
@@ -103,7 +93,6 @@ public class AccessToken implements Serializable {
 			.append("accessTokenID: ", this.accessTokenID)
 			.append("sessionID: ", this.sessionID)
 			.append("truemoneyID: ", this.truemoneyID)
-			.append("username: ", this.username)
 			.append("mobileNumber: ", this.mobileNumber)
 			.append("email: ", this.email)
 			.append("channelID: ", this.channelID)

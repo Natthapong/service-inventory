@@ -37,8 +37,10 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 	@Test
 	public void shouldSuccessBillPayWorkflow() throws InterruptedException {
 		// login
-		String accessToken = profileService.login(41,
-				TestData.createSuccessLogin());
+		String accessToken = profileService.login(
+				TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin(),
+				TestData.createSuccessChannelInfo());
 		assertNotNull(accessToken);
 
 		String barcode = "|010554614953100 010004552 010520120200015601 85950";
