@@ -3,6 +3,8 @@ package th.co.truemoney.serviceinventory.bill.impl;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ import th.co.truemoney.serviceinventory.sms.OTPService;
 @Service
 public class BillPaymentServiceImpl implements  BillPaymentService {
 
+	private static Logger logger = LoggerFactory.getLogger(BillPaymentServiceImpl.class);
+	
 	@Autowired
 	private OTPService otpService;
 
@@ -81,8 +85,13 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 			throws ServiceInventoryException {
 
 		Bill billInfo = billInfoRepo.findBill(billID, accessTokenID);
+		
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
+		logger.debug("bill info: "+billInfo.toString());
+		
+		logger.debug("access token: "+accessToken.toString());
+		
 		//verify bill.
 		String verificationID = legacyFacade.billing()
 						.fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())

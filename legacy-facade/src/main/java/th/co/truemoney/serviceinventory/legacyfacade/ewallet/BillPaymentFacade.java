@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
@@ -26,6 +28,8 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class BillPaymentFacade {
 
+	private static final Logger logger = LoggerFactory.getLogger(BillPaymentFacade.class);
+	
 	@Autowired
 	private BillProxy billPayProxy;
 
@@ -56,6 +60,8 @@ public class BillPaymentFacade {
 		try {
 			GetBarcodeResponse barcodeResponse = billPayProxy.getBarcodeInformation(request);
 
+			logger.debug("GetBarcodeResponse :"+barcodeResponse.toString());
+			
 			Bill billInfo = new Bill();
 			billInfo.setTarget(barcodeResponse.getTarget());
 			billInfo.setLogoURL(barcodeResponse.getLogo());
@@ -82,6 +88,7 @@ public class BillPaymentFacade {
 			List<BillPaySourceOfFund> sourceOfFundFees = createSourceOfFundFeeList(barcodeResponse);
 			billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new BillPaySourceOfFund[sourceOfFundFees.size()]));
 
+			logger.debug("Bill: "+ billInfo.toString());
 			return billInfo;
 
 		} catch (FailResultCodeException ex) {
