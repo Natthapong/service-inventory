@@ -26,7 +26,7 @@ public class BillInformationRedisRepository implements BillInformationRepository
 	public Bill findBill(String billID, String accessTokenID) {
 
 		try {
-			String result = redisLoggingDao.getData(accessTokenID);
+			String result = redisLoggingDao.getData("bill:" + accessTokenID + ":" + billID);
 			if(result == null) {
 				throw new ResourceNotFoundException(Code.BILL_NOT_FOUND, "bill not found.");
 			}
@@ -44,7 +44,7 @@ public class BillInformationRedisRepository implements BillInformationRepository
 	public void saveBill(Bill bill, String accessTokenID) {
 		if (bill != null) {
 			try {
-				redisLoggingDao.addData(bill.getID(), mapper.writeValueAsString(bill), 15L);
+				redisLoggingDao.addData("bill:" + accessTokenID + ":" + bill.getID(), mapper.writeValueAsString(bill), 15L);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
