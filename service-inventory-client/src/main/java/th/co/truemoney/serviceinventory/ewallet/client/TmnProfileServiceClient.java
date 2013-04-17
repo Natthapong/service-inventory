@@ -15,9 +15,8 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChannelInfo;
-import th.co.truemoney.serviceinventory.ewallet.domain.ClientLogin;
-import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerLogin;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -39,16 +38,14 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	private HttpHeaders headers;
 
 	@Override
-	public String login(EWalletOwnerLogin userLogin, ClientLogin clientLogin, ChannelInfo channelInfo) throws ServiceInventoryException {
+	public String login(EWalletOwnerCredential userLogin, ClientCredential clientLogin) throws ServiceInventoryException {
 
-		Validate.notNull(channelInfo, "channel info is required");
 		Validate.notNull(userLogin, "user login is required");
 		Validate.notNull(clientLogin, "client login is required");
 
 		HashMap<String, Object> map = new LinkedHashMap<String, Object>();
 		map.put("userLogin", userLogin);
 		map.put("appLogin", clientLogin);
-		map.put("channelInfo", channelInfo);
 
 		HttpEntity<HashMap<String, Object>> requestEntity = new HttpEntity<HashMap<String, Object>>(map, headers);
 

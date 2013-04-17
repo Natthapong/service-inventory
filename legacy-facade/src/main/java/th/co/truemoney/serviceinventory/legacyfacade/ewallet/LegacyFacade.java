@@ -47,18 +47,6 @@ public class LegacyFacade {
 		return profileFacade.login(channelID, credentialUsername, credentialSecret);
 	}
 
-	public void logout(String sessionID, String truemoneyID) {
-		logout(channelID, sessionID, truemoneyID);
-	}
-
-	public void logout(Integer channelID, String sessionID, String truemoneyID) {
-		Validate.notNull(channelID, "from which channel");
-		Validate.notNull(sessionID, "missing sessionID");
-		Validate.notNull(truemoneyID, "missing TruemoneyID");
-
-		profileFacade.logout(channelID, sessionID, truemoneyID);
-	}
-
 	public UserProfileBuilder userProfile(String sessionID, String tmnID) {
 		return new UserProfileBuilder(balanceFacade, profileFacade, sourceOfFundFacade)
 					.aUser(sessionID, tmnID)
@@ -174,6 +162,14 @@ public class LegacyFacade {
 						.fromChannelID(channelID)
 						.fromUser(sessionID, tmnID)
 						.withAmount(amount);
+		}
+
+		public void logout() {
+			Validate.notNull(channelID, "from which channel");
+			Validate.notNull(sessionID, "missing sessionID");
+			Validate.notNull(tmnID, "missing TruemoneyID");
+
+			profileFacade.logout(channelID, sessionID, tmnID);
 		}
 
 	}

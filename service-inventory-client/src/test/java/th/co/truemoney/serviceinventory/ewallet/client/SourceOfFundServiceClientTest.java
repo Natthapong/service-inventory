@@ -35,7 +35,7 @@ public class SourceOfFundServiceClientTest {
 
 	@Before
 	public void setUp() {
-		accessToken = profileClient.login(TestData.createSuccessUserLogin(), TestData.createSuccessClientLogin(), TestData.createSuccessChannelInfo());
+		accessToken = profileClient.login(TestData.createSuccessUserLogin(), TestData.createSuccessClientLogin());
 	}
 
 	@Test

@@ -2,16 +2,15 @@ package th.co.truemoney.serviceinventory.ewallet;
 
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.ClientLogin;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChannelInfo;
-import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerLogin;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface TmnProfileService {
 
-	public String login(EWalletOwnerLogin ewalletLogin, ClientLogin clientLogin, ChannelInfo channelInfo) throws ServiceInventoryException;
+	public String login(EWalletOwnerCredential ewalletLogin, ClientCredential clientLogin) throws ServiceInventoryException;
 
     public TmnProfile getTruemoneyProfile(String accessTokenID) throws ServiceInventoryException;
 

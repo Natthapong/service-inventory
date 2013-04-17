@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class ClientLogin implements Serializable {
+public class ClientCredential implements Serializable {
 
 	private static final long serialVersionUID = 4474849252035980061L;
 
@@ -20,13 +20,26 @@ public class ClientLogin implements Serializable {
 	@NotNull
 	private String appPassword;
 
-	public ClientLogin() {
+	@NotNull
+	private	String channel;
+
+	@NotNull
+	private String channelDetail;
+
+	public ClientCredential() {
 	}
 
-	public ClientLogin(String appKey, String appUser, String appPassword) {
+	public ClientCredential(String appKey, String appUser, String appPassword) {
+		this(appKey, appUser, appPassword, null, null);
+	}
+
+	public ClientCredential(String appKey, String appUser, String appPassword,
+			String channel, String channelDetail) {
 		this.appKey = appKey;
 		this.appUser = appUser;
 		this.appPassword = appPassword;
+		this.channel = channel;
+		this.channelDetail = channelDetail;
 	}
 
 	public String getAppKey() {
@@ -53,5 +66,20 @@ public class ClientLogin implements Serializable {
 		this.appPassword = appPassword;
 	}
 
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
+	public String getChannelDetail() {
+		return channelDetail;
+	}
+
+	public void setChannelDetail(String channelDetail) {
+		this.channelDetail = channelDetail;
+	}
 
 }

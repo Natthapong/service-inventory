@@ -9,11 +9,15 @@ public class AccessToken implements Serializable {
 	private static final long serialVersionUID = -1447834526746021542L;
 
 	private String accessTokenID;
+
 	private String sessionID;
 	private String truemoneyID;
+	private Integer channelID;
+
 	private String mobileNumber;
 	private String email;
-	private Integer channelID;
+
+	private ClientCredential clientCredential;
 
 	public AccessToken() {
 	}
@@ -69,6 +73,14 @@ public class AccessToken implements Serializable {
 
 	public void setChannelID(Integer channelID) {
 		this.channelID = channelID;
+	}
+
+	public ClientCredential getClientCredential() {
+		return clientCredential;
+	}
+
+	public void setClientCredential(ClientCredential clientCredential) {
+		this.clientCredential = clientCredential;
 	}
 
 	public String getMobileNumber() {

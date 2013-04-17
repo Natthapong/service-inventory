@@ -35,8 +35,7 @@ public class TmnProfileController {
 
 		return tmnProfileService.login(
 				loginRequest.getUserLogin(),
-				loginRequest.getAppLogin(),
-				loginRequest.getChannelInfo());
+				loginRequest.getAppLogin());
 	}
 
 	@RequestMapping(value = "/profile/{accessTokenID}", method = RequestMethod.GET)

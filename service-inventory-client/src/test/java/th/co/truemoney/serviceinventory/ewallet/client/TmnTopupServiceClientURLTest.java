@@ -51,8 +51,7 @@ public class TmnTopupServiceClientURLTest {
 	public void checkCreateOrderFromDirectDebitUrl(){
 
 		String accessToken = client.login(TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin(),
-				TestData.createSuccessChannelInfo());
+				TestData.createSuccessClientLogin());
 
 		// create quote
 		TopUpQuote quote = topupServiceClient.createAndVerifyTopUpQuote("1", new BigDecimal(310), accessToken);
@@ -66,8 +65,7 @@ public class TmnTopupServiceClientURLTest {
 
 		// login
 		String accessToken = client.login(TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin(),
-				TestData.createSuccessChannelInfo());
+				TestData.createSuccessClientLogin());
 		assertNotNull(accessToken);
 
 		// create quote

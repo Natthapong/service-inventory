@@ -42,8 +42,7 @@ public class TmnTransferServiceClientTest {
 	public void setup(){
 		// login
 		accessToken = client.login(TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin(),
-				TestData.createSuccessChannelInfo());
+				TestData.createSuccessClientLogin());
 		// create transfer draft
 		p2pTransferDraft = p2pTransferServiceClient.createAndVerifyTransferDraft("0866011234", new BigDecimal("20.00"), accessToken);
 
@@ -214,8 +213,7 @@ public class TmnTransferServiceClientTest {
 	public void getTransactionResultFail() {
 		// login
 		String accessToken = client.login(TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin(),
-				TestData.createSuccessChannelInfo());
+				TestData.createSuccessClientLogin());
 
 		// create transfer draft
 		P2PTransferDraft p2pTransferDraft = p2pTransferServiceClient

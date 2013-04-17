@@ -39,8 +39,7 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 		// login
 		String accessToken = profileService.login(
 				TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin(),
-				TestData.createSuccessChannelInfo());
+				TestData.createSuccessClientLogin());
 		assertNotNull(accessToken);
 
 		String barcode = "|010554614953100 010004552 010520120200015601 85950";

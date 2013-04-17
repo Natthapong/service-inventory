@@ -18,9 +18,8 @@ import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChannelInfo;
-import th.co.truemoney.serviceinventory.ewallet.domain.ClientLogin;
-import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerLogin;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
@@ -61,9 +60,8 @@ public class TmnProfileServiceImplTest {
 
 		//when
 		String result = this.profileService.login(
-				new EWalletOwnerLogin("user1.test.v1@gmail.com", "secret"),
-				new ClientLogin("appKey", "appUser", "appPassword"),
-				new ChannelInfo(40, "iphone", "iphone"));
+				new EWalletOwnerCredential("user1.test.v1@gmail.com", "secret", 40),
+				new ClientCredential("appKey", "appUser", "appPassword"));
 
 		//then
 		assertNotNull(result);
@@ -79,9 +77,8 @@ public class TmnProfileServiceImplTest {
 
 		//when
 		try {
-			this.profileService.login(new EWalletOwnerLogin("bad.user@gmail.com", "secret"),
-				new ClientLogin("appKey", "appUser", "appPassword"),
-				new ChannelInfo(40, "iphone", "iphone"));
+			this.profileService.login(new EWalletOwnerCredential("bad.user@gmail.com", "secret", 40),
+				new ClientCredential("appKey", "appUser", "appPassword"));
 			Assert.fail();
 		} catch (SignonServiceException ex) {
 			assertEquals("401", ex.getErrorCode());
@@ -96,9 +93,8 @@ public class TmnProfileServiceImplTest {
 		when(mockProfileFacade.login(40, "user1.test.v1@gmail.com", "secret")).thenReturn(accessToken);
 
 		String accessTokenID = this.profileService.login(
-				new EWalletOwnerLogin("user1.test.v1@gmail.com", "secret"),
-				new ClientLogin("appKey", "appUser", "appPassword"),
-				new ChannelInfo(40, "iphone", "iphone"));
+				new EWalletOwnerCredential("user1.test.v1@gmail.com", "secret", 40),
+				new ClientCredential("appKey", "appUser", "appPassword"));
 
 		//when
 		profileService.logout(accessTokenID);

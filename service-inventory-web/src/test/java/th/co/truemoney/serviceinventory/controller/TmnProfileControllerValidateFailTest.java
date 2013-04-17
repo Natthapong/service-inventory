@@ -28,9 +28,8 @@ import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChannelInfo;
-import th.co.truemoney.serviceinventory.ewallet.domain.ClientLogin;
-import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerLogin;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -64,16 +63,15 @@ public class TmnProfileControllerValidateFailTest {
 
 		//given
 		when(this.tmnProfileServiceMock.login(
-				any(EWalletOwnerLogin.class),
-				any(ClientLogin.class),
-				any(ChannelInfo.class)))
+				any(EWalletOwnerCredential.class),
+				any(ClientCredential.class)))
 				.thenReturn("8e48e03be057319f40621fe9bcd123f750f6df1d");
 
 		ObjectMapper mapper = new ObjectMapper();
-		EWalletOwnerLogin userLogin = new EWalletOwnerLogin("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		ClientLogin clientLogin = new ClientLogin("appKey", "appUser", "appPassword");
+		EWalletOwnerCredential userLogin = new EWalletOwnerCredential("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847", 40);
+		ClientCredential clientLogin = new ClientCredential("appKey", "appUser", "appPassword");
 
-		LoginRequest loginRequest = new LoginRequest(userLogin, clientLogin, null);
+		LoginRequest loginRequest = new LoginRequest(userLogin, clientLogin);
 		this.mockMvc.perform(post("/ewallet/login")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(loginRequest)))
@@ -87,17 +85,15 @@ public class TmnProfileControllerValidateFailTest {
 
 		//given
 		when(this.tmnProfileServiceMock.login(
-				any(EWalletOwnerLogin.class),
-				any(ClientLogin.class),
-				any(ChannelInfo.class)))
+				any(EWalletOwnerCredential.class),
+				any(ClientCredential.class)))
 				.thenReturn("8e48e03be057319f40621fe9bcd123f750f6df1d");
 
 		ObjectMapper mapper = new ObjectMapper();
-		EWalletOwnerLogin userLogin = new EWalletOwnerLogin("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847");
-		ClientLogin clientLogin = new ClientLogin("appKey", "appUser", "appPassword");
-		ChannelInfo channelInfo = new ChannelInfo(null, "channel", "detail");
+		EWalletOwnerCredential userLogin = new EWalletOwnerCredential("user1.test.v1@gmail.com", "e6701de94fdda4347a3d31ec5c892ccadc88b847", 40);
+		ClientCredential clientLogin = new ClientCredential("appKey", "appUser", "appPassword");
 
-		LoginRequest loginRequest = new LoginRequest(userLogin, clientLogin, channelInfo);
+		LoginRequest loginRequest = new LoginRequest(userLogin, clientLogin);
 		this.mockMvc.perform(post("/ewallet/login")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(loginRequest)))

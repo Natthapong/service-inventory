@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class EWalletOwnerLogin implements Serializable {
+public class EWalletOwnerCredential implements Serializable {
 
 	private static final long serialVersionUID = -8973296808315132605L;
 
@@ -17,13 +17,17 @@ public class EWalletOwnerLogin implements Serializable {
 	@NotNull
 	private String loginSecret;
 
-	public EWalletOwnerLogin() {
+	@NotNull
+	private Integer channelId;
+
+	public EWalletOwnerCredential() {
 		super();
 	}
 
-	public EWalletOwnerLogin(String loginKey, String hashPassword) {
+	public EWalletOwnerCredential(String loginKey, String loginSecret, Integer channelID) {
 		this.loginKey = loginKey;
-		this.loginSecret = hashPassword;
+		this.loginSecret = loginSecret;
+		this.channelId = channelID;
 	}
 
 	public String getLoginKey() {
@@ -40,6 +44,14 @@ public class EWalletOwnerLogin implements Serializable {
 
 	public void setLoginSecret(String loginSecret) {
 		this.loginSecret = loginSecret;
+	}
+
+	public Integer getChannelId() {
+		return channelId;
+	}
+
+	public void setChannelId(Integer channelId) {
+		this.channelId = channelId;
 	}
 
 }

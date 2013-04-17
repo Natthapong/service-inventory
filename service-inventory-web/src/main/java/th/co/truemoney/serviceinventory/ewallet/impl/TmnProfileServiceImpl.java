@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChannelInfo;
-import th.co.truemoney.serviceinventory.ewallet.domain.ClientLogin;
-import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerLogin;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -43,13 +42,18 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	private RegisteringProfileRepository registeringProfileRepo;
 
 	@Override
-	public String login(EWalletOwnerLogin userLogin, ClientLogin clientLogin, ChannelInfo channelInfo)
+	public String login(EWalletOwnerCredential userLogin, ClientCredential clientLogin)
 				throws SignonServiceException {
 
+		//TODO: verify client login first???
+
+		Integer channelID = userLogin.getChannelId();
 		String initiator = userLogin.getLoginKey();
 		String secret = userLogin.getLoginSecret();
 
-		AccessToken accessToken = legacyFacade.login(channelInfo.getEwalletChannelId(), initiator, secret);
+		AccessToken accessToken = legacyFacade.login(channelID, initiator, secret);
+
+		accessToken.setClientCredential(clientLogin);
 
 		logger.info("Access token created: " + accessToken);
 
@@ -74,8 +78,8 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
-								.fromChannel(accessToken.getChannelID())
-				   				.getCurrentBalance();
+						   .fromChannel(accessToken.getChannelID())
+				   		   .getCurrentBalance();
 	}
 
 	@Override
@@ -85,9 +89,9 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 
 		accessTokenRepo.remove(accessTokenID);
 
-		legacyFacade.logout(accessToken.getChannelID(),
-							accessToken.getSessionID(),
-							accessToken.getTruemoneyID());
+		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+					.fromChannel(accessToken.getChannelID())
+					.logout();
 
 		return "";
 	}

@@ -16,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
-import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerLogin;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -80,7 +80,9 @@ public class TmnProfileServiceClientTest {
 	@Test
 	public void wrongUserNameShouldFail() {
 		try {
-			client.login(new EWalletOwnerLogin("randomUsername", "hackypassword"), TestData.createSuccessClientLogin(), TestData.createSuccessChannelInfo());
+			client.login(
+			  new EWalletOwnerCredential("randomUsername", "hackypassword", 40),
+			  TestData.createSuccessClientLogin());
 			fail();
 		} catch (ServiceInventoryException e) {
 			assertNotSame("0", e.getErrorCode());
@@ -91,8 +93,7 @@ public class TmnProfileServiceClientTest {
 	public void correctUsernameAndPasswordWillProduceAccessToken() {
 		try {
 			client.login(TestData.createSuccessUserLogin(),
-					TestData.createSuccessClientLogin(),
-					TestData.createSuccessChannelInfo());
+					TestData.createSuccessClientLogin());
 		} catch (ServiceInventoryException e) {
 			fail("should not throw exception");
 		}
@@ -102,9 +103,8 @@ public class TmnProfileServiceClientTest {
 	public void getUserProfile() {
 		String accessToken = client.login(
 				TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin(),
-				TestData.createSuccessChannelInfo()
-				);
+				TestData.createSuccessClientLogin());
+
 		TmnProfile tmnProfile = client.getTruemoneyProfile(accessToken);
 		assertNotNull(tmnProfile);
 		assertEquals("username", tmnProfile.getFullname());
@@ -114,8 +114,8 @@ public class TmnProfileServiceClientTest {
 	public void getBalance() {
 		String accessToken = client.login(
 				TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin(),
-				TestData.createSuccessChannelInfo());
+				TestData.createSuccessClientLogin());
+
 		BigDecimal balance = client.getEwalletBalance(accessToken);
 		assertEquals(new BigDecimal("2000.00"), balance);
 	}

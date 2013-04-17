@@ -40,8 +40,7 @@ public class TopUpServiceClientWorkflowTest {
 		// login
 		String accessToken = profileService.login(
 				TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin(),
-				TestData.createSuccessChannelInfo());
+				TestData.createSuccessClientLogin());
 		assertNotNull(accessToken);
 
 		// create quote
@@ -107,8 +106,7 @@ public class TopUpServiceClientWorkflowTest {
 
 			String accessToken = profileService.login(
 					TestData.createSuccessUserLogin(),
-					TestData.createSuccessClientLogin(),
-					TestData.createSuccessChannelInfo());
+					TestData.createSuccessClientLogin());
 			assertNotNull(accessToken);
 
 			// min == 300
@@ -127,8 +125,7 @@ public class TopUpServiceClientWorkflowTest {
 
 			String accessToken = profileService.login(
 					TestData.createSuccessUserLogin(),
-					TestData.createSuccessClientLogin(),
-					TestData.createSuccessChannelInfo());
+					TestData.createSuccessClientLogin());
 			assertNotNull(accessToken);
 
 			// max == 3,000
