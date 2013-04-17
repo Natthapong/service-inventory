@@ -11,6 +11,7 @@ import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -61,12 +62,14 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	public Bill retrieveBillInformation(String barcode, String accessTokenID)
 			throws ServiceInventoryException {
 
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
+		ClientCredential appData = token.getClientCredential();
+
 
 		Bill bill = legacyFacade.billing()
 								.readBillInfo(barcode)
-								   .fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
-								   .fromBillChannel("iPhone", "iPhone")
+								   .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+								   .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
 								   .getInformation();
 
 		bill.setID(UUID.randomUUID().toString());
@@ -81,9 +84,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 			throws ServiceInventoryException {
 
 		Bill billInfo = billInfoRepo.findBill(billID, accessTokenID);
-		
+
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		
+
 		//verify bill.
 		String verificationID = legacyFacade.billing()
 						.fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())

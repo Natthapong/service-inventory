@@ -14,6 +14,7 @@ import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
@@ -42,14 +43,16 @@ public class AsyncBillPayProcessor {
 			billPaymentReceipt.setStatus(Transaction.Status.PROCESSING);
 			transactionRepo.saveBillPaymentTransaction(billPaymentReceipt, accessToken.getAccessTokenID());
 
+			ClientCredential appData = accessToken.getClientCredential();
+
 			String verificationID = draftTransaction.getTransactionID();
 
 			BillPaymentConfirmationInfo confirmationInfo = legacyFacade.billing()
 					.fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())
 					.aUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
 					.usingMobilePayPoint(accessToken.getMobileNumber())
-					.fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
-					.fromBillChannel("iPhone", "iPhone")
+					.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+					.fromBillChannel(appData.getChannel(), appData.getChannelDetail())
 					.paying(amount, billInfo.getServiceFee().calculateFee(amount), billInfo.getEwalletSourceOfFund().calculateFee(amount))
 					.performPayment(verificationID);
 
