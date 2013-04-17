@@ -49,7 +49,7 @@ public class AsyncBillPayProcessor {
 					.aUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
 					.usingMobilePayPoint(accessToken.getMobileNumber())
 					.fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
-					.fromBillChannel("iPhone", "iPhone Application")
+					.fromBillChannel("iPhone", "iPhone")
 					.paying(amount, billInfo.getServiceFee().calculateFee(amount), billInfo.getEwalletSourceOfFund().calculateFee(amount))
 					.performPayment(verificationID);
 
