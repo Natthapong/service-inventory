@@ -51,7 +51,7 @@ public class BillPaymentStubbed {
 	}
 
 	public static BillPaymentDraft createStubbedBillPaymentDraftInfo() {
-		return new BillPaymentDraft("billID", createSuccessBillPaymentInfo(), new BigDecimal("10000"), BillPaymentDraft.Status.CREATED);
+		return new BillPaymentDraft("billID", createSuccessBillPaymentInfo(), new BigDecimal("10000"), "transactionID", BillPaymentDraft.Status.CREATED);
 	}
 
 }

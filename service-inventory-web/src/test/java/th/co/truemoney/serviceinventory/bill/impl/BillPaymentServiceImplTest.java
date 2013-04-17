@@ -140,7 +140,7 @@ public class BillPaymentServiceImplTest {
 		//given
 		OTP correctOTP = new OTP("0868185055", "refCode", "111111");
 
-		BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, BillPaymentDraft.Status.OTP_SENT);
+		BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, "transactionID", BillPaymentDraft.Status.OTP_SENT);
 		transactionRepo.saveBillPaymentDraft(invoice, accessToken.getAccessTokenID());
 
 		//when
@@ -166,7 +166,7 @@ public class BillPaymentServiceImplTest {
 		//given
 		OTP badOTP = new OTP("0868185055", "refCode", "111111");
 
-		BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, BillPaymentDraft.Status.OTP_SENT);
+		BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, "transactionID", BillPaymentDraft.Status.OTP_SENT);
 		transactionRepo.saveBillPaymentDraft(invoice, accessToken.getAccessTokenID());
 
 		Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpService).isValidOTP(badOTP);

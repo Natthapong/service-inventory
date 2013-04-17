@@ -42,6 +42,7 @@ public class AsyncBillPayProcessor {
 			billPaymentReceipt.setStatus(Transaction.Status.PROCESSING);
 			transactionRepo.saveBillPaymentTransaction(billPaymentReceipt, accessToken.getAccessTokenID());
 
+			String verificationID = draftTransaction.getTransactionID();
 
 			BillPaymentConfirmationInfo confirmationInfo = legacyFacade.billing()
 					.fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())
@@ -50,7 +51,7 @@ public class AsyncBillPayProcessor {
 					.fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
 					.fromBillChannel("iPhone", "iPhone Application")
 					.paying(amount, billInfo.getServiceFee().calculateFee(amount), billInfo.getEwalletSourceOfFund().calculateFee(amount))
-					.performPayment();
+					.performPayment(verificationID);
 
 			billPaymentReceipt.setConfirmationInfo(confirmationInfo);
 			billPaymentReceipt.setStatus(Transaction.Status.SUCCESS);

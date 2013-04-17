@@ -84,7 +84,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
 		//verify bill.
-		legacyFacade.billing()
+		String verificationID = legacyFacade.billing()
 						.fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())
 							.aUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
 							.usingMobilePayPoint(accessToken.getMobileNumber())
@@ -93,7 +93,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 							.paying(amount, billInfo.getServiceFee().calculateFee(amount), billInfo.getEwalletSourceOfFund().calculateFee(amount))
 							.verifyPayment();
 
-		BillPaymentDraft billDraft = new BillPaymentDraft(UUID.randomUUID().toString(), billInfo, amount, Status.CREATED);
+		BillPaymentDraft billDraft = new BillPaymentDraft(UUID.randomUUID().toString(), billInfo, amount, verificationID, Status.CREATED);
 		transactionRepository.saveBillPaymentDraft(billDraft, accessTokenID);
 		return billDraft;
 	}

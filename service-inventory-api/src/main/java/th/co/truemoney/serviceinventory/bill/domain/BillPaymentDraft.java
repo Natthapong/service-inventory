@@ -23,6 +23,8 @@ public class BillPaymentDraft extends DraftTransaction {
 	private String selectedSourceOfFundType;
 	private String otpReferenceCode;
 
+	private String transactionID;
+
 	public BillPaymentDraft() {
 		this(null, null, null, null);
 	}
@@ -39,10 +41,16 @@ public class BillPaymentDraft extends DraftTransaction {
 		this(ID, billInfo, amount, null);
 	}
 
-	public BillPaymentDraft(String ID, Bill billInfo, BigDecimal amount, Status status) {
+	public BillPaymentDraft(String ID, Bill billInfo, BigDecimal amount, String transactionID) {
+		this(ID, billInfo, amount, transactionID, null);
+	}
+
+
+	public BillPaymentDraft(String ID, Bill billInfo, BigDecimal amount, String transactionID, Status status) {
 		this.ID = ID;
 		this.status = status;
 		this.amount = amount;
+		this.transactionID = transactionID;
 		this.type = DRAFT_TYPE;
 		this.billInfo = billInfo;
 	}
@@ -62,6 +70,14 @@ public class BillPaymentDraft extends DraftTransaction {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+
+	public String getTransactionID() {
+		return transactionID;
+	}
+
+	public void setTransactionID(String transactionID) {
+		this.transactionID = transactionID;
 	}
 
 	public String getOtpReferenceCode() {

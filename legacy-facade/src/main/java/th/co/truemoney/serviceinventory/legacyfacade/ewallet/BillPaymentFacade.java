@@ -29,8 +29,13 @@ public class BillPaymentFacade {
 	@Autowired
 	private BillProxy billPayProxy;
 
-	public void verify(VerifyBillPayRequest billPayRequest){
-		 billPayProxy.verifyBillPay(billPayRequest);
+	public String verify(VerifyBillPayRequest billPayRequest){
+		try {
+			BillResponse verifyResponse = billPayProxy.verifyBillPay(billPayRequest);
+			return verifyResponse.getTransactionID();
+		} catch(FailResultCodeException ex) {
+			throw new VerifyBillPayFailException(ex);
+		}
 	}
 
 	public BillPaymentConfirmationInfo payBill(ConfirmBillPayRequest billRequest) {
@@ -187,11 +192,11 @@ public class BillPaymentFacade {
 		}
 	}
 
-	public static class VerifyEwalletFailException extends ServiceInventoryException{
+	public static class VerifyBillPayFailException extends ServiceInventoryException{
 		private static final long serialVersionUID = 3029606083785530229L;
 
-		public VerifyEwalletFailException(BillException ex) {
-			super(500,ex.getCode(),"Verify Ewallet fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
+		public VerifyBillPayFailException(BillException ex) {
+			super(500,ex.getCode(),"Verify Bill Pay fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
 		}
 	}
 

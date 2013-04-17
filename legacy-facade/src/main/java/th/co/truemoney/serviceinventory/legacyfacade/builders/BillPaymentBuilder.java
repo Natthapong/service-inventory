@@ -91,7 +91,7 @@ public class BillPaymentBuilder {
 		return this;
 	}
 
-	public void verifyPayment() {
+	public String verifyPayment() {
 		Validate.notNull(ref1, "barcode ref1 missing?");
 		Validate.notNull(ref2, "barcode ref2 missing?");
 
@@ -143,10 +143,11 @@ public class BillPaymentBuilder {
 		verifyRequest.setServiceFee(convertMoney(serviceFee));
 		verifyRequest.setServiceFeeType("THB");
 
-		billPaymentFacade.verify(verifyRequest);
+		return billPaymentFacade.verify(verifyRequest);
 	}
 
-	public BillPaymentConfirmationInfo performPayment() {
+	public BillPaymentConfirmationInfo performPayment(String transactionID) {
+		Validate.notNull(transactionID, "missing verification transaction ID");
 		Validate.notNull(ref1, "barcode ref1 missing?");
 		Validate.notNull(ref2, "barcode ref2 missing?");
 
@@ -172,6 +173,7 @@ public class BillPaymentBuilder {
 
 		ConfirmBillPayRequest confirmRequest = new ConfirmBillPayRequest();
 
+		confirmRequest.setTransRef(transactionID);
 		confirmRequest.setAppUser(appUser);
 		confirmRequest.setAppPassword(appPassword);
 		confirmRequest.setAppKey(appKey);

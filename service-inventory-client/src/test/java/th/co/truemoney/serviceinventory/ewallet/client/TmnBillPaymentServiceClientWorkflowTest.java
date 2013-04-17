@@ -69,6 +69,7 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 		BillPaymentDraft.Status draftStatus = billPaymentServiceClient.confirmBill(billDraft.getID(), otp, accessToken);
 		assertNotNull(draftStatus);
 		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, draftStatus);
+		assertNotNull(billDraft.getTransactionID());
 
 		// get transfer draft and check draft status
 		billDraft = billPaymentServiceClient.getBillPaymentDraftDetail(billDraft.getID(), accessToken);
