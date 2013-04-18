@@ -6,6 +6,7 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class AsyncP2PTransferProcessor {
 	@Autowired
 	private LegacyFacade legacyFacade;
 
+	@Async
 	public Future<P2PTransferTransaction> transferEwallet(P2PTransferTransaction p2pTransaction, AccessToken accessToken) {
 		try {
 

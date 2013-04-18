@@ -21,6 +21,8 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryCl
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
@@ -150,7 +152,9 @@ public class TmnTransferServiceClientTest {
 	}
 
 	@Test
-	public void getTransactionStatusSuccess() {
+	public void getTransactionStatusSuccess() throws Exception {
+
+
 		// get transfer draft
 		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
 
@@ -171,6 +175,14 @@ public class TmnTransferServiceClientTest {
 		P2PTransferTransaction.Status p2pTransactionStatus = p2pTransferServiceClient
 				.getTransferringStatus(p2pTransferDraft.getID(), accessToken);
 
+		// retry while processing
+		while (p2pTransactionStatus == P2PTransferTransaction.Status.PROCESSING) {
+			p2pTransactionStatus = p2pTransferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessToken);
+			System.out.println("processing top up ...");
+			Thread.sleep(1000);
+		}
+
+		p2pTransactionStatus = p2pTransferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessToken);
 		assertEquals(P2PTransferTransaction.Status.SUCCESS, p2pTransactionStatus);
 	}
 
