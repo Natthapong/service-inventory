@@ -3,7 +3,10 @@ package th.co.truemoney.serviceinventory.ewallet.client.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.params.CoreConnectionPNames;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +21,10 @@ import org.springframework.web.client.RestTemplate;
 @ComponentScan(basePackages="th.co.truemoney.serviceinventory.ewallet.client")
 public class ServiceInventoryClientConfig {
 
+	private static final int MAX_CONNECTION = 100;
+	private static final int MAX_PER_ROUTE = 5;
+	private static final int DEFAULT_READ_TIMEOUT_MILLISECONDS = 60 * 1000;
+
 	@Bean
 	public RestTemplate restTemplate() {
 		RestTemplate restTemplate = new RestTemplate();
@@ -28,7 +35,18 @@ public class ServiceInventoryClientConfig {
 
 	@Bean
 	public ClientHttpRequestFactory requestFactory() {
-		return new HttpComponentsClientHttpRequestFactory(new DefaultHttpClient());
+		DefaultHttpClient defaultHttpClient = new DefaultHttpClient(connectionPoolConnectionManager());
+		defaultHttpClient.getParams().setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,DEFAULT_READ_TIMEOUT_MILLISECONDS);
+
+		return new HttpComponentsClientHttpRequestFactory(defaultHttpClient);
+	}
+
+	@Bean
+	public ClientConnectionManager connectionPoolConnectionManager() {
+		PoolingClientConnectionManager poolConnectionManager = new PoolingClientConnectionManager();
+		poolConnectionManager.setMaxTotal(MAX_CONNECTION);
+		poolConnectionManager.setDefaultMaxPerRoute(MAX_PER_ROUTE);
+		return poolConnectionManager;
 	}
 
 	@Bean
