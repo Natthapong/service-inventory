@@ -18,13 +18,14 @@ import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.ewallet.client.TmnBillPaymentServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.TmnProfileServiceClient;
-import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
+import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfigTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.VPNEnvironmentIntegrationTest;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceInventoryClientConfig.class})
+@ContextConfiguration(classes = { ServiceInventoryClientConfigTest.class})
 @ActiveProfiles(profiles = "dev")
 @Category(VPNEnvironmentIntegrationTest.class)
 public class VPNEnvironmentTmnBillPaymentServiceClientWorkflowTest {
@@ -36,7 +37,7 @@ public class VPNEnvironmentTmnBillPaymentServiceClientWorkflowTest {
 	TmnProfileServiceClient profileService;
 
 	private String accessToken;
-
+	
 	@Before
 	public void setUp() {
 		// login
@@ -50,7 +51,15 @@ public class VPNEnvironmentTmnBillPaymentServiceClientWorkflowTest {
 
 	@Test
 	public void runTest() throws Exception {
-		shouldSuccessBillPayWorkflow("|303235768500 010003357 010220120100006170 217297");
+		try {
+			shouldSuccessBillPayWorkflow("|303235768500 010003357 010220120100006170 217297");
+		} catch (ServiceInventoryException ex) {
+			System.out.println(ex.getErrorCode());
+			System.out.println(ex.getErrorDescription());
+			System.out.println(ex.getDeveloperMessage());
+			
+		}
+		
 	}
 
 	public void shouldSuccessBillPayWorkflow(String barcode) throws InterruptedException {
