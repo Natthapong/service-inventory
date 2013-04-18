@@ -41,9 +41,10 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 	public TopUpQuote findTopUpQuote(String draftID, String accessTokenID) throws ServiceInventoryWebException {
 		try {
-			String result = redisLoggingDao.getData("quote:" + accessTokenID + ":" + draftID);
+			String key = "quote:" + accessTokenID + ":" + draftID;
+			String result = redisLoggingDao.getData(key);
 			if(result == null) {
-				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "qoute not found.");
+				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "qoute not found: " + key);
 			}
 			return mapper.readValue(result, TopUpQuote.class);
 		} catch (ResourceNotFoundException e) {
@@ -66,9 +67,10 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 	public TopUpOrder findTopUpOrder(String orderID, String accessTokenID) throws ServiceInventoryWebException {
 		try {
-			String result = redisLoggingDao.getData("order:" + accessTokenID + ":" + orderID);
+			String key = "order:" + accessTokenID + ":" + orderID;
+			String result = redisLoggingDao.getData(key);
 			if(result == null) {
-				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "TopUp Ewallet order not found.");
+				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "TopUp Ewallet order not found: " + key);
 			}
 
 			return mapper.readValue(result, TopUpOrder.class);
@@ -92,9 +94,10 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 	public P2PTransferDraft findP2PTransferDraft(String p2pTransferDraftID, String accessTokenID) {
 		try {
-			String result = redisLoggingDao.getData("p2pdraft:" + accessTokenID + ":" +p2pTransferDraftID);
+			String key = "p2pdraft:" + accessTokenID + ":" +p2pTransferDraftID;
+			String result = redisLoggingDao.getData(key);
 			if(result == null) {
-				throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "P2P transfer draft not found.");
+				throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "P2P transfer draft not found: " + key);
 			}
 
 			return mapper.readValue(result, P2PTransferDraft.class);
@@ -118,9 +121,10 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 	public P2PTransferTransaction findP2PTransferTransaction(String p2pTransactionID, String accessTokenID) {
 		try {
-			String result = redisLoggingDao.getData("p2pTrans:" + accessTokenID + ":" + p2pTransactionID);
+			String key = "p2pTrans:" + accessTokenID + ":" + p2pTransactionID;
+			String result = redisLoggingDao.getData(key);
 			if(result == null) {
-				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "P2P transfer transaction not found.");
+				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "P2P transfer transaction not found: " + key);
 			}
 
 			return mapper.readValue(result, P2PTransferTransaction.class);
@@ -147,9 +151,10 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 	public BillPaymentDraft findBillPaymentDraft(String billInvoiceID, String accessTokenID) {
 		try {
-			String result = redisLoggingDao.getData("billInvoice:" + accessTokenID + ":" + billInvoiceID);
+			String key = "billInvoice:" + accessTokenID + ":" + billInvoiceID;
+			String result = redisLoggingDao.getData(key);
 			if(result == null) {
-				throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "Bill invoice not found.");
+				throw new ResourceNotFoundException(Code.DRAFT_TRANSACTION_NOT_FOUND, "Bill invoice not found: " + key);
 			}
 
 			return mapper.readValue(result, BillPaymentDraft.class);
@@ -175,9 +180,10 @@ public class TransactionRedisRepository implements TransactionRepository {
 	public BillPaymentTransaction findBillPaymentTransaction(String billPaymentID, String accessTokenID) {
 
 		try {
-			String result = redisLoggingDao.getData("billPayment:" + accessTokenID + ":" + billPaymentID);
+			String key = "billPayment:" + accessTokenID + ":" + billPaymentID;
+			String result = redisLoggingDao.getData(key);
 			if(result == null) {
-				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "Bill payment not found.");
+				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "Bill payment not found: " + key);
 			}
 
 			return mapper.readValue(result, BillPaymentTransaction.class);
