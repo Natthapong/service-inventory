@@ -86,14 +86,15 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		Bill billInfo = billInfoRepo.findBill(billID, accessTokenID);
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		ClientCredential appData = accessToken.getClientCredential();
 
 		//verify bill.
 		String verificationID = legacyFacade.billing()
 						.fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())
 							.aUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
 							.usingMobilePayPoint(accessToken.getMobileNumber())
-							.fromApp("MOBILE_IPHONE", "IPHONE+1", "f7cb0d495ea6d989")
-							.fromBillChannel("iPhone", "iPhone")
+							.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+							.fromBillChannel(appData.getChannel(), appData.getChannelDetail())
 							.paying(amount, billInfo.getServiceFee().calculateFee(amount), billInfo.getEwalletSourceOfFund().calculateFee(amount))
 							.verifyPayment();
 
