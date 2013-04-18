@@ -138,7 +138,10 @@
 						<include>**/*.class</include>
 					</includes>
 					<argLine>-XX:-UseSplitVerifier</argLine>
-					<excludedGroups>th.co.truemoney.serviceinventory.ewallet.client.IntegrationTest</excludedGroups>
+					<excludedGroups>
+					    th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest,
+					    th.co.truemoney.serviceinventory.ewallet.client.testutils.VPNEnvironmentIntegrationTest
+					</excludedGroups>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -153,7 +156,7 @@
 					</dependency>
 				</dependencies>
 				<configuration>
-					<groups>th.co.truemoney.serviceinventory.ewallet.client.IntegrationTest</groups>
+					<groups>th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest</groups>
 				</configuration>
 				<executions>
 					<execution>
@@ -250,4 +253,41 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+	    <profile>
+	        <id>vpn-env</id>
+			<build>
+				<plugins>
+				    <plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>2.14</version>
+						<dependencies>
+							<dependency>
+								<groupId>org.apache.maven.surefire</groupId>
+								<artifactId>surefire-junit47</artifactId>
+								<version>2.14</version>
+							</dependency>
+						</dependencies>
+						<configuration>
+							<groups>th.co.truemoney.serviceinventory.ewallet.client.testutils.VPNEnvironmentIntegrationTest</groups>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+								<configuration>
+									<includes>
+										<include>**/*.class</include>
+									</includes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+	    </profile>
+	</profiles>
 </project>

@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.ewallet.client;
+package th.co.truemoney.serviceinventory.ewallet.client.testutils;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
