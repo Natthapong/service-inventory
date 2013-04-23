@@ -12,6 +12,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.legacyfacade.builders.BillPaymentBuilder;
 import th.co.truemoney.serviceinventory.legacyfacade.builders.GetBillInfoBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.builders.TopUpMobileBuilder;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
 
 public class LegacyFacade {
@@ -75,7 +76,11 @@ public class LegacyFacade {
 	public ProfileRegisteringBuilder registering() {
 		return new ProfileRegisteringBuilder(profileRegisteringFacade).fromChannel(channelID);
 	}
-
+	
+	public TopUpMobileBuilder topUpMobile() {
+		return new TopUpMobileBuilder(topUpMobileFacade);
+	}
+	
 	public LegacyFacade setBalanceFacade(BalanceFacade balanceFacade) {
 		this.balanceFacade = balanceFacade;
 		return this;
