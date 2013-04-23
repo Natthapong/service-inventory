@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.topup.mobile;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -68,16 +69,19 @@ public class TopupMobileTest {
 		
 		verify(restTemplate).exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(HttpEntity.class)
 				, eq(TopUpMobileDraft.class) , eq("12345"));
+		
+		fail("Kill Me");
 	}
 	
 	@Test(expected=ServiceInventoryException.class)
 	public void checkException(){
-		
 		when(restTemplate.exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(HttpEntity.class)
 			, eq(TopUpMobileDraft.class) , eq("12345")) ).thenThrow(
 					new ServiceInventoryException(400,"1001","Invalid Data Exception","SI-ENGINE"));
 		
 		TopUpMobileDraft topUpMobileDraft = topupMobileServicesClient.verifyAndCreateTopUpMobileDraft("0839952174", new BigDecimal(0) , "12345");
+		
+		
 		
 	}
 }
