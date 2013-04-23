@@ -25,7 +25,6 @@ public class TopUpMobile implements Serializable {
 	private String mobileNumber;
 	private BigDecimal remainBalance = BigDecimal.ZERO;
 	
-	private BigDecimal amount = BigDecimal.ZERO;
 	private BigDecimal minAmount = BigDecimal.ZERO;
 	private BigDecimal maxAmount = BigDecimal.ZERO;
 
@@ -82,14 +81,6 @@ public class TopUpMobile implements Serializable {
 
 	public void setRemainBalance(BigDecimal remainBalance) {
 		this.remainBalance = remainBalance;
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
 	}
 
 	public BigDecimal getMinAmount() {
