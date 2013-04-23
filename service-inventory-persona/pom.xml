@@ -22,7 +22,7 @@
 		
 		<dependency>
 			<groupId>th.co.truemoney.serviceinventory</groupId>
-			<artifactId>billpay-client</artifactId>
+			<artifactId>siengine-client</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		
