@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,5 +40,19 @@ public class PostController {
 
 		return new ModelAndView("forward:/WEB-INF/test-xml/confirm_bill_response.xml");
 	}
-
+	
+	/**
+	 * SI Engine dummy API for verify mobile top up service
+	 */
+	@RequestMapping(
+			value="/postVerifyTopup", 
+			method=RequestMethod.POST, 
+			consumes=MediaType.APPLICATION_XML_VALUE, 
+			produces=MediaType.APPLICATION_XML_VALUE)
+	public @ResponseBody ModelAndView verifyMobileTopup(@RequestBody String post) {
+		
+		System.out.println("confirm: request is : " + post);
+		
+		return new ModelAndView("forward:/WEB-INF/test-xml/verify_topup_response.xml");
+	}	
 }
