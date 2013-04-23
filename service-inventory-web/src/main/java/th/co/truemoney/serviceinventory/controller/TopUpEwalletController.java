@@ -9,82 +9,69 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 
 @Controller
+@RequestMapping(value = "/top-up/mobile")
 public class TopUpEwalletController {
-
-	@Autowired
-	private TopUpService topupService;
 
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
-	@RequestMapping(value = "/directdebit/{sourceOfFundID}/quote", method = RequestMethod.POST)
-	public @ResponseBody TopUpQuote createTopUpQuoteFromDirectDebit(
-		   @PathVariable String sourceOfFundID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-		   @RequestBody TopUpQuote quote) {
-
-		TopUpQuote topUpQuote = topupService.createAndVerifyTopUpQuote(sourceOfFundID, quote.getAmount(), accessTokenID);
+	@RequestMapping(value = "/draft", method = RequestMethod.POST)
+	public @ResponseBody TopUpMobileDraft verifyAndCreateTopUpMobileDraft(
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
+			@RequestBody TopUpMobileDraft draft) {
 		extendExpireAccessToken(accessTokenID);
-
-		return topUpQuote;
+		return null;
+	}
+	
+	@RequestMapping(value = "/draft/{topUpMobileDraftID}", method = RequestMethod.GET)
+	public @ResponseBody TopUpMobileDraft getTopUpMobileDraftDetail(
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
+			@RequestBody TopUpMobileDraft draft) {
+		extendExpireAccessToken(accessTokenID);
+		return null;
 	}
 
-	@RequestMapping(value = "/top-up/quote/{quoteID}", method = RequestMethod.GET)
-	public @ResponseBody TopUpQuote getTopUpQuoteDetails(@PathVariable String quoteID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-
+	@RequestMapping(value = "/draft/{topUpMobileDraftID}/otp", method = RequestMethod.POST)
+	public @ResponseBody TopUpMobileDraft submitTopUpMobileDraftRequest(
+			@PathVariable String topUpMobileDraftID,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return topupService.getTopUpQuoteDetails(quoteID, accessTokenID);
+		return null;
 	}
-
-	@RequestMapping(value = "/top-up/quote/{quoteID}/otp", method = RequestMethod.POST)
-	public @ResponseBody OTP submitTopUpRequest(
-		   @PathVariable String quoteID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-
-		extendExpireAccessToken(accessTokenID);
-		return topupService.submitTopUpRequest(quoteID, accessTokenID);
-	}
-
-	@RequestMapping(value = "/top-up/quote/{quoteID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody TopUpQuote.Status verifyOTPAndPerformTopUp(
-		   @PathVariable String quoteID,
-		   @PathVariable String refCode,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-		   @RequestBody OTP otp) {
-
+	
+	@RequestMapping(value = "/draft/{topUpMobileDraftID}/otp/{refCode}", method = RequestMethod.PUT)
+	public @ResponseBody TopUpMobileDraft.Status verifyOTPAndPerformToppingMobile(
+			@PathVariable String topUpMobileDraftID,
+			@PathVariable String refCode,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
+			@RequestBody OTP otp) {
 		if (otp != null) {
 			otp.setReferenceCode(refCode);
 		}
-
 		extendExpireAccessToken(accessTokenID);
-
-		return topupService.authorizeAndPerformTopUp(quoteID, otp, accessTokenID);
+		return null;
 	}
 
-	@RequestMapping(value = "/top-up/order/{orderID}/status", method = RequestMethod.GET)
-	public @ResponseBody TopUpOrder.Status getOrderStatus(
-		   @PathVariable String orderID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-
+	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
+	public @ResponseBody TopUpMobileTransaction.Status getToppingMobileStatus(
+			@PathVariable String transactionID,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-
-		return topupService.getTopUpProcessingStatus(orderID, accessTokenID);
+		return null;
 	}
 
-	@RequestMapping(value = "/top-up/order/{orderID}", method = RequestMethod.GET)
-	public @ResponseBody TopUpOrder getOrderInfo(
-		   @PathVariable String orderID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-
-		return topupService.getTopUpOrderResults(orderID, accessTokenID);
+	@RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.GET)
+	public @ResponseBody TopUpMobileTransaction getTransactionInfo(
+			@PathVariable String transactionID,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+		extendExpireAccessToken(accessTokenID);
+		return null;
 	}
 
 	private void extendExpireAccessToken(String accessTokenID) {

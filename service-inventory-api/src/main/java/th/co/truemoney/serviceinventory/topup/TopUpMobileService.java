@@ -9,7 +9,7 @@ import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 
 public interface TopUpMobileService {
 	
-	public TopUpMobileDraft verifyTopUpMobile(String targetMobileNumber, BigDecimal amount, String accessTokenID)
+	public TopUpMobileDraft verifyAndCreateTopUpMobileDraft(String targetMobileNumber, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException;
 	
 	public TopUpMobileDraft getTopUpMobileDraftDetail(String draftID, String accessTokenID)
