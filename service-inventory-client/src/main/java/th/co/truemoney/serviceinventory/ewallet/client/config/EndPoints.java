@@ -119,7 +119,7 @@ public class EndPoints {
 	}
 
 	public String getVerifyTopupMobile() {
-		return host + "/service-inventory-web/v1/topup/mobile/draft/verify-and-create?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/top-up/mobile/draft?accessTokenID={accessTokenID}";
 	}
 
 }
