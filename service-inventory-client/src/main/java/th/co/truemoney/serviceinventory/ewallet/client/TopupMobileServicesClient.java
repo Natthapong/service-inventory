@@ -88,11 +88,12 @@ public class TopupMobileServicesClient implements TopUpMobileService{
 	public TopUpMobileDraft verifyAndCreateTopUpMobileDraft(
 			String targetMobileNumber, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException {
+		
 		TopUpMobile topUpMobile = new TopUpMobile();
 		topUpMobile.setTarget(targetMobileNumber);
+		topUpMobile.setAmount(amount);
 		
 		TopUpMobileDraft topUpMobileDraft = new TopUpMobileDraft();
-		topUpMobileDraft.setAmount(amount);
 		topUpMobileDraft.setTopUpMobileInfo(topUpMobile);
 		
 		HttpEntity<TopUpMobileDraft> requestEntity = new HttpEntity<TopUpMobileDraft>(topUpMobileDraft, headers);
