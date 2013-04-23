@@ -70,7 +70,6 @@ public class TopupMobileTest {
 		verify(restTemplate).exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(HttpEntity.class)
 				, eq(TopUpMobileDraft.class) , eq("12345"));
 		
-		fail("Kill Me");
 	}
 	
 	@Test(expected=ServiceInventoryException.class)
