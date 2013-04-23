@@ -28,8 +28,6 @@ public class TopUpMobileDraft extends DraftTransaction {
 		this.topUpMobileInfo = topUpMobileInfo;
 	}
 
-	private BigDecimal amount = BigDecimal.ZERO;
-	
 	private String selectedSourceOfFundType;
 	private String otpReferenceCode;
 
@@ -56,20 +54,15 @@ public class TopUpMobileDraft extends DraftTransaction {
 	}
 
 	public TopUpMobileDraft(String ID, TopUpMobile topUpMobileInfo, BigDecimal amount, String transactionID, Status status) {
+		if (topUpMobileInfo == null) {
+			topUpMobileInfo = new TopUpMobile();
+		}
 		this.ID = ID;
 		this.status = status;
-		this.amount = amount;
 		this.transactionID = transactionID;
 		this.type = DRAFT_TYPE;
 		this.topUpMobileInfo = topUpMobileInfo;
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
+		this.topUpMobileInfo.setAmount(amount);
 	}
 
 	public String getSelectedSourceOfFundType() {
