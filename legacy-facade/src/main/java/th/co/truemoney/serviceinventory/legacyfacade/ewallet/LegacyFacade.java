@@ -29,9 +29,12 @@ public class LegacyFacade {
 
 	@Autowired(required = false)
 	private BillPaymentFacade billPaymentFacade;
-
+	
 	@Autowired(required = false)
 	private ProfileRegisteringFacade profileRegisteringFacade;
+	
+	@Autowired(required = false)
+	private TopUpMobileFacade topUpMobileFacade;
 
 	public LegacyFacade fromChannel(Integer channelID) {
 		this.channelID = channelID;
@@ -95,6 +98,11 @@ public class LegacyFacade {
 
 	public LegacyFacade setBillPaymentFacade(BillPaymentFacade billPaymentFacade) {
 		this.billPaymentFacade = billPaymentFacade;
+		return this;
+	}
+	
+	public LegacyFacade setTopUpMobileFacade(TopUpMobileFacade topUpMobileFacade) {
+		this.topUpMobileFacade = topUpMobileFacade;
 		return this;
 	}
 

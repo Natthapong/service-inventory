@@ -3,7 +3,7 @@ package th.co.truemoney.serviceinventory.topup.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPaySourceOfFund;
+import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -30,7 +30,7 @@ public class TopUpMobile implements Serializable {
 	private BigDecimal maxAmount = BigDecimal.ZERO;
 
 	private ServiceFeeInfo serviceFee;
-	private BillPaySourceOfFund[] sourceOfFundFees;
+	private SourceOfFund[] sourceOfFundFees;
 	
 	public TopUpMobile() {
 		super();
@@ -124,11 +124,11 @@ public class TopUpMobile implements Serializable {
 		this.serviceFee = serviceFee;
 	}
 
-	public BillPaySourceOfFund[] getSourceOfFundFees() {
+	public SourceOfFund[] getSourceOfFundFees() {
 		return sourceOfFundFees;
 	}
 
-	public void setSourceOfFundFees(BillPaySourceOfFund[] sourceOfFundFees) {
+	public void setSourceOfFundFees(SourceOfFund[] sourceOfFundFees) {
 		this.sourceOfFundFees = sourceOfFundFees;
 	}
 		
