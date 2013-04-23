@@ -12,6 +12,7 @@ import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.sms.OTPGenerator;
 import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
+import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 
 @Configuration
@@ -40,6 +41,11 @@ public class TestServiceInventoryConfig {
 	@Bean @Scope("singleton")
 	public P2PTransferService mockP2PTransferService() {
 		return Mockito.mock(P2PTransferService.class);
+	}
+	
+	@Bean @Scope("singleton")
+	public TopUpMobileService mockTopUpMobileService() {
+		return Mockito.mock(TopUpMobileService.class);
 	}
 
     @Bean

@@ -27,6 +27,7 @@ public class TopUpMobileFacade {
 		try {
 			VerifyTopUpAirtimeResponse verifyTopUpAirtimeResponse = topUpMobileProxy.verifyTopUpAirtime(verifyTopUpAirtimeRequest);
 			TopUpMobile topUpMobile = new TopUpMobile();
+			topUpMobile.setID(verifyTopUpAirtimeResponse.getTransactionID());
 			topUpMobile.setTarget(verifyTopUpAirtimeResponse.getTarget());
 			topUpMobile.setLogo(verifyTopUpAirtimeResponse.getLogo());
 			topUpMobile.setTitleTH(verifyTopUpAirtimeResponse.getTitleTH());

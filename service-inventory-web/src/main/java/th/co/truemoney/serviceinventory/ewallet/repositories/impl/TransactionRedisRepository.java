@@ -207,4 +207,23 @@ public class TransactionRedisRepository implements TransactionRepository {
 		}
 	}
 
+	@Override
+	public TopUpMobileDraft findTopUpMobileDraft(String topUpMobileId,
+			String accessTokenID) {
+		try {
+			String key = "topUpMobile:" + accessTokenID + ":" + topUpMobileId;
+			String result = redisLoggingDao.getData(key);
+			if(result == null) {
+				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "Topup Mobile not found: " + key);
+			}
+
+			return mapper.readValue(result, TopUpMobileDraft.class);
+		} catch (ServiceInventoryWebException e) {
+			throw e;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
+		}
+	}
+
 }

@@ -24,10 +24,12 @@ import th.co.truemoney.serviceinventory.ewallet.impl.DirectDebitSourceOfFundServ
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
+import th.co.truemoney.serviceinventory.ewallet.impl.TopUpMobileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.SourceOfFundPreference;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.SourceOfFundPreferenceImpl;
 import th.co.truemoney.serviceinventory.sms.OTPService;
+import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 
 @Configuration
@@ -60,6 +62,11 @@ public class ServiceInventoryConfig {
 	@Bean
 	public BillPaymentService getBillPaymentService(){
 		return new BillPaymentServiceImpl();
+	}
+	
+	@Bean
+	public TopUpMobileService getTopUpMobileService() {
+		return new TopUpMobileServiceImpl();
 	}
 
 	@Bean

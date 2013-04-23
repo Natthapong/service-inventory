@@ -158,4 +158,17 @@ public class TransactionMemoryRepository implements TransactionRepository {
 		topUpMobileMap.put(accessTokenID + ":" + topUpMobileDraft.getID(), topUpMobileDraft);
 	}
 
+	@Override
+	public TopUpMobileDraft findTopUpMobileDraft(String topUpMobileId,
+			String accessTokenID) {
+		TopUpMobileDraft topUpMobileDraft = topUpMobileMap.get(accessTokenID + ":" + topUpMobileId);
+		
+		if (topUpMobileDraft == null) {
+			throw new ResourceNotFoundException(
+					Code.TRANSACTION_NOT_FOUND,
+					"TopUpMobile not found.");
+		}
+		return topUpMobileDraft;
+	}
+
 }

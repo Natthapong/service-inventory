@@ -25,5 +25,5 @@ public interface TransactionRepository {
 	public BillPaymentTransaction findBillPaymentTransaction(String billPaymentID, String accessTokenID);
 	
 	public void saveTopUpMobileDraft(TopUpMobileDraft topUpMobileDraft,String accessTokenID);
-	
+	public TopUpMobileDraft findTopUpMobileDraft(String topUpMobileId,String accessTokenID);
 }

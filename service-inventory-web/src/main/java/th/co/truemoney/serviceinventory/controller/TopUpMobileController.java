@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
+import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 
@@ -20,13 +22,18 @@ public class TopUpMobileController {
 
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
-
+	
+	@Autowired
+	private TopUpMobileService topUpMobileService;
+		
 	@RequestMapping(value = "/draft", method = RequestMethod.POST)
 	public @ResponseBody TopUpMobileDraft verifyAndCreateTopUpMobileDraft(
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 			@RequestBody TopUpMobileDraft draft) {
 		extendExpireAccessToken(accessTokenID);
-		return null;
+		
+		TopUpMobile topUpInfo = draft.getTopUpMobileInfo();
+		return topUpMobileService.verifyAndCreateTopUpMobileDraft(topUpInfo.getMobileNumber(), topUpInfo.getAmount(), accessTokenID);
 	}
 	
 	@RequestMapping(value = "/draft/{topUpMobileDraftID}", method = RequestMethod.GET)

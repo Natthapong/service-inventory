@@ -11,6 +11,7 @@ import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileRegisteringFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.SourceOfFundFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpMobileFacade;
 
 @Configuration
 public class LegacyFacadeConfig {
@@ -46,6 +47,11 @@ public class LegacyFacadeConfig {
 	@Bean
 	public BillPaymentFacade billPaymentFacade() {
 		return new BillPaymentFacade();
+	}
+	
+	@Bean
+	public TopUpMobileFacade topUpMobileFacade() {
+		return new TopUpMobileFacade();
 	}
 	
 }

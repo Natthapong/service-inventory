@@ -1,74 +1,56 @@
-package th.co.truemoney.serviceinventory.ewallet.client;
+package th.co.truemoney.serviceinventory.ewallet.impl;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
+import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 
-@Service
-public class TopupMobileServicesClient implements TopUpMobileService{
+public class TopUpMobileServiceImpl implements TopUpMobileService {
 	
 	@Autowired
-	RestTemplate restTemplate;
+	private LegacyFacade legacyFacade;
 	
-	public RestTemplate getRestTemplate() {
-		return restTemplate;
-	}
-
-	public void setRestTemplate(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
-	}
-
 	@Autowired
-	private EndPoints endPoints;
-
-	public EndPoints getEndPoints() {
-		return endPoints;
-	}
-
-	public void setEndPoints(EndPoints endPoints) {
-		this.endPoints = endPoints;
-	}
-
+	private AccessTokenRepository accessTokenRepo;
+	
 	@Autowired
-	private HttpHeaders headers;
+	private TransactionRepository transactionRepo;
+
+	public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
+		this.accessTokenRepo = accessTokenRepo;
+	}
+
+	public void setTransactionRepo(TransactionRepository transactionRepo) {
+		this.transactionRepo = transactionRepo;
+	}
 
 	@Override
 	public TopUpMobileDraft verifyAndCreateTopUpMobileDraft(
 			String targetMobileNumber, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException {
 		
-		TopUpMobile topUpMobile = new TopUpMobile();
-		topUpMobile.setMobileNumber(targetMobileNumber);
-		topUpMobile.setAmount(amount);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		
-		TopUpMobileDraft topUpMobileDraft = new TopUpMobileDraft();
-		topUpMobileDraft.setTopUpMobileInfo(topUpMobile);
+		//verify topup mobile
+		TopUpMobile topUpMobile = legacyFacade.topUpMobile().verifyTopUpAirtime(targetMobileNumber, amount, accessToken);
 		
-		HttpEntity<TopUpMobileDraft> requestEntity = new HttpEntity<TopUpMobileDraft>(topUpMobileDraft, headers);
-		
-		ResponseEntity<TopUpMobileDraft> responseEntity = restTemplate.exchange(
-				endPoints.getVerifyTopupMobile(), HttpMethod.POST,
-				requestEntity, TopUpMobileDraft.class,accessTokenID);
-		
-		return responseEntity.getBody();
+		TopUpMobileDraft topUpMobileDraft = new TopUpMobileDraft(UUID.randomUUID().toString(), topUpMobile, topUpMobile.getAmount(), topUpMobile.getID(), Status.CREATED);
+		transactionRepo.saveTopUpMobileDraft(topUpMobileDraft, accessTokenID);
+		return topUpMobileDraft;
 	}
-	
-	
+
 	@Override
 	public TopUpMobileDraft getTopUpMobileDraftDetail(String draftID,
 			String accessTokenID) throws ServiceInventoryException {
@@ -104,6 +86,8 @@ public class TopupMobileServicesClient implements TopUpMobileService{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
+	
+	public void setLegacyFacade(LegacyFacade legacyFacade) {
+		this.legacyFacade = legacyFacade;
+	}
 }

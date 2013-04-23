@@ -18,6 +18,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
+import th.co.truemoney.serviceinventory.engine.client.proxy.TopUpMobileProxy;
+import th.co.truemoney.serviceinventory.engine.client.proxy.TopUpMobileProxyImpl;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
@@ -435,6 +437,11 @@ public class LocalEnvironmentConfig {
 	public BillProxy billPayProxy() {
 		return new BillProxyImpl();
 	}
+	
+	@Bean
+	public TopUpMobileProxy topUpMobileProxy() {
+		return new TopUpMobileProxyImpl();
+	}
 
 	@Bean @Qualifier("barcodeInfoURL") @Primary
 	public String barcodeInfoURL() {
@@ -451,7 +458,7 @@ public class LocalEnvironmentConfig {
 		return "http://localhost:8585/service-inventory-web/v1/test/postConfirmBill";
 	}
 	
-	@Bean @Qualifier("verifyTopupURL") @Primary
+	@Bean @Qualifier("verifyTopupMobileURL") @Primary
 	public String verifyMobileTopupURL() {
 		return "http://localhost:8585/service-inventory-web/v1/test/postVerifyTopup";
 	} 
