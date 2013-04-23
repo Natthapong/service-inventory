@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import th.co.truemoney.serviceinventory.ewallet.client.TopupMobileServicesClient;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 
 
 public class TopupMobileTest {
@@ -57,27 +58,26 @@ public class TopupMobileTest {
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void checkVerifyURL(){
-		HttpEntity<HashMap> requestEntity = new HttpEntity<HashMap>(headers);
+
+		ResponseEntity<TopUpMobileDraft> responseEntity = new ResponseEntity<TopUpMobileDraft>(new TopUpMobileDraft(), HttpStatus.OK);
 		
-		ResponseEntity<HashMap> responseEntity = new ResponseEntity<HashMap>(new HashMap(), HttpStatus.OK);
+		when(restTemplate.exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(HttpEntity.class)
+			, eq(TopUpMobileDraft.class) , eq("12345")) ).thenReturn(responseEntity);
 		
-		when(restTemplate.exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(ResponseEntity.class)
-			, eq(HashMap.class) , eq("12345")) ).thenReturn(responseEntity);
+		TopUpMobileDraft topUpMobileDraft = topupMobileServicesClient.verifyAndCreateTopUpMobileDraft("0839952174", new BigDecimal(0) , "12345");
 		
-		HashMap hashMap = topupMobileServicesClient.verify("12345", "0839952174", new BigDecimal(0));
-		
-		verify(restTemplate).exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(ResponseEntity.class)
-				, eq(HashMap.class) , eq("12345"));
+		verify(restTemplate).exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(HttpEntity.class)
+				, eq(TopUpMobileDraft.class) , eq("12345"));
 	}
 	
 	@Test(expected=ServiceInventoryException.class)
 	public void checkException(){
 		
-		when(restTemplate.exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(ResponseEntity.class)
-			, eq(HashMap.class) , eq("12345")) ).thenThrow(
+		when(restTemplate.exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(HttpEntity.class)
+			, eq(TopUpMobileDraft.class) , eq("12345")) ).thenThrow(
 					new ServiceInventoryException(400,"1001","Invalid Data Exception","SI-ENGINE"));
 		
-		HashMap hashMap = topupMobileServicesClient.verify("12345", "0839952174", new BigDecimal(0));
+		TopUpMobileDraft topUpMobileDraft = topupMobileServicesClient.verifyAndCreateTopUpMobileDraft("0839952174", new BigDecimal(0) , "12345");
 		
 	}
 }

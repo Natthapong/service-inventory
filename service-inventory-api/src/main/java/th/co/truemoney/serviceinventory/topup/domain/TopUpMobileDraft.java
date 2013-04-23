@@ -20,6 +20,14 @@ public class TopUpMobileDraft extends DraftTransaction {
 
 	TopUpMobile topUpMobileInfo;
 	
+	public TopUpMobile getTopUpMobileInfo() {
+		return topUpMobileInfo;
+	}
+
+	public void setTopUpMobileInfo(TopUpMobile topUpMobileInfo) {
+		this.topUpMobileInfo = topUpMobileInfo;
+	}
+
 	private BigDecimal amount = BigDecimal.ZERO;
 	
 	private String selectedSourceOfFundType;
