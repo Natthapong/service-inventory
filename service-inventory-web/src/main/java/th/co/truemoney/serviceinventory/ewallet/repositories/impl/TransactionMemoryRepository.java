@@ -11,6 +11,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionReposito
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
@@ -22,6 +23,7 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	public HashMap<String, P2PTransferTransaction> p2pTransactionMap = new LinkedHashMap<String, P2PTransferTransaction>();
 	public HashMap<String, BillPaymentDraft> billInvoiceMap = new LinkedHashMap<String, BillPaymentDraft>();
 	public HashMap<String, BillPaymentTransaction> billPaymentMap = new LinkedHashMap<String, BillPaymentTransaction>();
+	public HashMap<String, TopUpMobileDraft> topUpMobileMap = new LinkedHashMap<String, TopUpMobileDraft>();
 
 	@Override
 	public void saveTopUpQuote(TopUpQuote topupQuote,
@@ -147,6 +149,13 @@ public class TransactionMemoryRepository implements TransactionRepository {
 		p2pTransactionMap.clear();
 		billInvoiceMap.clear();
 		billPaymentMap.clear();
+		topUpMobileMap.clear();
+	}
+
+	@Override
+	public void saveTopUpMobileDraft(TopUpMobileDraft topUpMobileDraft,
+			String accessTokenID) {
+		topUpMobileMap.put(accessTokenID + ":" + topUpMobileDraft.getID(), topUpMobileDraft);
 	}
 
 }

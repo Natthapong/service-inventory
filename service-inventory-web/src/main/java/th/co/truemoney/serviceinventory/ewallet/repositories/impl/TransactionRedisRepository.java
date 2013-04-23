@@ -14,6 +14,7 @@ import th.co.truemoney.serviceinventory.exception.InternalServerErrorException;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
@@ -192,6 +193,17 @@ public class TransactionRedisRepository implements TransactionRepository {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
+		}
+	}
+
+	@Override
+	public void saveTopUpMobileDraft(TopUpMobileDraft topUpMobileDraft,
+			String accessTokenID) {
+		try {
+			redisLoggingDao.addData("topUpMobile:" + accessTokenID + ":" + topUpMobileDraft.getID(), mapper.writeValueAsString(topUpMobileDraft), 15L);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
 	}
 
