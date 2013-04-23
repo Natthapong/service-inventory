@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.TopupMobileServicesClient;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 
 public class TopupMobileTest {
@@ -49,24 +50,34 @@ public class TopupMobileTest {
 		acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
 		headers.setAccept(acceptableMediaTypes);
 		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		this.topupMobileServicesClient.setRestTemplate(restTemplate);
 	}
 	
 	@SuppressWarnings("rawtypes")
 	@Test
-	public void CheckVerifyURL(){
+	public void checkVerifyURL(){
 		HttpEntity<HashMap> requestEntity = new HttpEntity<HashMap>(headers);
-
-		this.topupMobileServicesClient.setRestTemplate(restTemplate);
 		
 		ResponseEntity<HashMap> responseEntity = new ResponseEntity<HashMap>(new HashMap(), HttpStatus.OK);
 		
 		when(restTemplate.exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(ResponseEntity.class)
 			, eq(HashMap.class) , eq("12345")) ).thenReturn(responseEntity);
 		
-		HashMap hashMap = topupMobileServicesClient.verify("12345", "", new BigDecimal(0));
+		HashMap hashMap = topupMobileServicesClient.verify("12345", "0839952174", new BigDecimal(0));
 		
 		verify(restTemplate).exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(ResponseEntity.class)
 				, eq(HashMap.class) , eq("12345"));
 	}
 	
+	@Test(expected=ServiceInventoryException.class)
+	public void checkException(){
+		
+		when(restTemplate.exchange(eq(endPoints.getVerifyTopupMobile()), eq(HttpMethod.POST), any(ResponseEntity.class)
+			, eq(HashMap.class) , eq("12345")) ).thenThrow(
+					new ServiceInventoryException(400,"1001","Invalid Data Exception","SI-ENGINE"));
+		
+		HashMap hashMap = topupMobileServicesClient.verify("12345", "0839952174", new BigDecimal(0));
+		
+	}
 }
