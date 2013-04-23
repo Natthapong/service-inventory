@@ -10,7 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaySourceOfFund;
+import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
 import th.co.truemoney.serviceinventory.engine.client.domain.SIEngineResponse;
@@ -79,8 +79,8 @@ public class BillPaymentFacade {
 			ServiceFeeInfo serviceFee = createServiceFee(barcodeResponse);
 			billInfo.setServiceFee(serviceFee);
 
-			List<BillPaySourceOfFund> sourceOfFundFees = createSourceOfFundFeeList(barcodeResponse);
-			billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new BillPaySourceOfFund[sourceOfFundFees.size()]));
+			List<SourceOfFund> sourceOfFundFees = createSourceOfFundFeeList(barcodeResponse);
+			billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new SourceOfFund[sourceOfFundFees.size()]));
 
 			return billInfo;
 
@@ -96,12 +96,12 @@ public class BillPaymentFacade {
 		}
 	}
 
-	private List<BillPaySourceOfFund> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {
+	private List<SourceOfFund> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {
 		List<SourceFee> sourceOfFundList = barcodeResponse.getExtraXML().getSourceFeeList();
-		List<BillPaySourceOfFund> sourceOfFundFees = new ArrayList<BillPaySourceOfFund>();
+		List<SourceOfFund> sourceOfFundFees = new ArrayList<SourceOfFund>();
 		for (SourceFee sourceFee : sourceOfFundList) {
 
-			BillPaySourceOfFund sourceOfFundFee = new BillPaySourceOfFund();
+			SourceOfFund sourceOfFundFee = new SourceOfFund();
 			sourceOfFundFee.setSourceType(sourceFee.getSource());
 			sourceOfFundFee.setFeeRateType(sourceFee.getSourceFeeType());
 
@@ -132,7 +132,7 @@ public class BillPaymentFacade {
 	}
 
 	private BigDecimal calculateSourceFee(SourceFee sourceFee,
-			BillPaySourceOfFund sourceOfFundFee) {
+			SourceOfFund sourceOfFundFee) {
 		BigDecimal decimalSourceFee = BigDecimal.ZERO;
 		if (sourceOfFundFee.getFeeRateType().equals("THB")) {
 			// fee type = fix

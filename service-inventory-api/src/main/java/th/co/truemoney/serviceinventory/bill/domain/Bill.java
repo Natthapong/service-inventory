@@ -38,7 +38,7 @@ public class Bill implements Serializable {
 	private BigDecimal maxAmount = BigDecimal.ZERO;
 
 	private ServiceFeeInfo serviceFee;
-	private BillPaySourceOfFund[] sourceOfFundFees;
+	private SourceOfFund[] sourceOfFundFees;
 
 	public Bill() {
 		super();
@@ -157,17 +157,17 @@ public class Bill implements Serializable {
 		this.serviceFee = serviceFee;
 	}
 
-	public BillPaySourceOfFund[] getSourceOfFundFees() {
+	public SourceOfFund[] getSourceOfFundFees() {
 		return sourceOfFundFees;
 	}
 
-	public void setSourceOfFundFees(BillPaySourceOfFund[] sourceOfFundFees) {
+	public void setSourceOfFundFees(SourceOfFund[] sourceOfFundFees) {
 		this.sourceOfFundFees = sourceOfFundFees;
 	}
 
-	public BillPaySourceOfFund getEwalletSourceOfFund() {
+	public SourceOfFund getEwalletSourceOfFund() {
 		if (sourceOfFundFees != null) {
-			for (BillPaySourceOfFund sof : sourceOfFundFees) {
+			for (SourceOfFund sof : sourceOfFundFees) {
 				if ("EW".equals(sof.getSourceType())) {
 					return sof;
 				}

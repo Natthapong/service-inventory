@@ -2,7 +2,7 @@ package th.co.truemoney.serviceinventory.topup.domain;
 
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPaySourceOfFund;
+import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -90,10 +90,10 @@ public class TopUpMobileDraft extends DraftTransaction {
 	}	
 	
 	@JsonIgnore
-	public BillPaySourceOfFund getSelectedSourceOfFund() {
+	public SourceOfFund getSelectedSourceOfFund() {
 
 		if (selectedSourceOfFundType != null && topUpMobileInfo != null && topUpMobileInfo.getSourceOfFundFees() != null) {
-			for (BillPaySourceOfFund sourceOfFundFee :  topUpMobileInfo.getSourceOfFundFees()) {
+			for (SourceOfFund sourceOfFundFee :  topUpMobileInfo.getSourceOfFundFees()) {
 				if (sourceOfFundFee.getSourceType().equals(selectedSourceOfFundType)) {
 					return sourceOfFundFee;
 				}
