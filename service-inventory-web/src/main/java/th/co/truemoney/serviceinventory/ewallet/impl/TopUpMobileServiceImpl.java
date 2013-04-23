@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
@@ -17,6 +18,7 @@ import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 
+@Service
 public class TopUpMobileServiceImpl implements TopUpMobileService {
 	
 	@Autowired

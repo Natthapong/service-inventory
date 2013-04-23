@@ -14,7 +14,7 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopU
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
-import th.co.truemoney.serviceinventory.engine.client.proxy.TopUpMobileProxy;
+import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 

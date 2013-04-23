@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import org.apache.commons.lang.Validate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -18,7 +19,7 @@ public class TopUpMobileBuilder {
 	private BigDecimal amount;
 	private AccessToken accessToken;
 	
-	
+	@Autowired(required = false)
 	public TopUpMobileBuilder(TopUpMobileFacade topUpMobileFacade) {
 		this.topUpMobileFacade = topUpMobileFacade;
 	}
