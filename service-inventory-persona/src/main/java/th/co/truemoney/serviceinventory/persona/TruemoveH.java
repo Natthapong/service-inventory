@@ -1,12 +1,12 @@
 package th.co.truemoney.serviceinventory.persona;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
-import th.co.truemoney.serviceinventory.bill.domain.services.ConfirmBillPayRequest;
-import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
-import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeResponse;
-import th.co.truemoney.serviceinventory.bill.domain.services.VerifyBillPayRequest;
-import th.co.truemoney.serviceinventory.bill.exception.BillException;
-import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
+import th.co.truemoney.serviceinventory.engine.client.domain.SIEngineResponse;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeResponse;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
+import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
+import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 
 public class TruemoveH implements BarcodePersona {
 
@@ -16,22 +16,22 @@ public class TruemoveH implements BarcodePersona {
 		return new BillProxy() {
 
 			@Override
-			public GetBarcodeResponse getBarcodeInformation(GetBarcodeRequest barcodeRequest) throws BillException {
+			public GetBarcodeResponse getBarcodeInformation(GetBarcodeRequest barcodeRequest) throws SIEngineException {
 				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
-			public BillResponse verifyBillPay(VerifyBillPayRequest billPayRequest)
-					throws BillException {
-				BillResponse billResponse = new BillResponse();
+			public SIEngineResponse verifyBillPay(VerifyBillPayRequest billPayRequest)
+					throws SIEngineException {
+				SIEngineResponse billResponse = new SIEngineResponse();
 				billResponse.setResultCode("0");
 				return billResponse;
 			}
 
 			@Override
-			public BillResponse confirmBillPay(ConfirmBillPayRequest billPayRequest)
-					throws BillException {
+			public SIEngineResponse confirmBillPay(ConfirmBillPayRequest billPayRequest)
+					throws SIEngineException {
 				// TODO Auto-generated method stub
 				return null;
 			}

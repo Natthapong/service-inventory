@@ -11,10 +11,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
-import th.co.truemoney.serviceinventory.bill.config.BillConfig;
 import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.email.EmailService;
+import th.co.truemoney.serviceinventory.engine.client.config.SIEngineConfig;
 import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -34,7 +34,7 @@ import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 @EnableAsync
 @EnableAspectJAutoProxy
 @ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop"})
-@Import({SmsConfig.class, TmnProfileConfig.class, BillConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, DevEnvironmentConfig.class })
+@Import({SmsConfig.class, TmnProfileConfig.class, SIEngineConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, DevEnvironmentConfig.class })
 public class ServiceInventoryConfig {
 
 	@Bean

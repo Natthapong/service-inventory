@@ -15,7 +15,7 @@
 		<servlet.version>2.5</servlet.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<ewallet.client.version>1.0-SNAPSHOT</ewallet.client.version>
-		<billpay.client.version>1.0-SNAPSHOT</billpay.client.version>
+		<siengine.client.version>1.0-SNAPSHOT</siengine.client.version>
 	</properties>
 
 	<modules>
@@ -40,8 +40,8 @@
 			</dependency>
 			<dependency>
 				<groupId>th.co.truemoney.serviceinventory</groupId>
-				<artifactId>billpay-client</artifactId>
-				<version>${billpay.client.version}</version>
+				<artifactId>siengine-client</artifactId>
+				<version>${siengine.client.version}</version>
 			</dependency>			
 			<dependency>
 				<groupId>com.googlecode.lambdaj</groupId>

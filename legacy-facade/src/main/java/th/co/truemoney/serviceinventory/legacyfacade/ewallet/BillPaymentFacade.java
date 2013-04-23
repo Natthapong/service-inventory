@@ -12,16 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaySourceOfFund;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
-import th.co.truemoney.serviceinventory.bill.domain.BillResponse;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
-import th.co.truemoney.serviceinventory.bill.domain.SourceFee;
-import th.co.truemoney.serviceinventory.bill.domain.services.ConfirmBillPayRequest;
-import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
-import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeResponse;
-import th.co.truemoney.serviceinventory.bill.domain.services.VerifyBillPayRequest;
-import th.co.truemoney.serviceinventory.bill.exception.BillException;
-import th.co.truemoney.serviceinventory.bill.exception.FailResultCodeException;
-import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
+import th.co.truemoney.serviceinventory.engine.client.domain.SIEngineResponse;
+import th.co.truemoney.serviceinventory.engine.client.domain.SourceFee;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeResponse;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
+import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
+import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
+import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class BillPaymentFacade {
@@ -31,7 +31,7 @@ public class BillPaymentFacade {
 
 	public String verify(VerifyBillPayRequest billPayRequest){
 		try {
-			BillResponse verifyResponse = billPayProxy.verifyBillPay(billPayRequest);
+			SIEngineResponse verifyResponse = billPayProxy.verifyBillPay(billPayRequest);
 			return verifyResponse.getTransactionID();
 		} catch(FailResultCodeException ex) {
 			throw new VerifyBillPayFailException(ex);
@@ -41,7 +41,7 @@ public class BillPaymentFacade {
 	public BillPaymentConfirmationInfo payBill(ConfirmBillPayRequest billRequest) {
 		try {
 			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			BillResponse billPayResponse = billPayProxy.confirmBillPay(billRequest);
+			SIEngineResponse billPayResponse = billPayProxy.confirmBillPay(billRequest);
 			BillPaymentConfirmationInfo confirmationInfo = new BillPaymentConfirmationInfo();
 			confirmationInfo.setTransactionID(billPayResponse.getReqTransactionID());
 			confirmationInfo.setTransactionDate(df.format(new Date()));
@@ -153,7 +153,7 @@ public class BillPaymentFacade {
 	public static class SIEngineTransactionFailException extends ServiceInventoryException {
 		private static final long serialVersionUID = 5955708376116171195L;
 
-		public SIEngineTransactionFailException(BillException ex) {
+		public SIEngineTransactionFailException(SIEngineException ex) {
 			super(500, ex.getCode(), "bill system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
 		}
 	}
@@ -161,7 +161,7 @@ public class BillPaymentFacade {
 	public static class UMarketSystemTransactionFailException extends ServiceInventoryException {
 		private static final long serialVersionUID = 3748885497125818864L;
 
-		public UMarketSystemTransactionFailException(BillException ex) {
+		public UMarketSystemTransactionFailException(SIEngineException ex) {
 			super(500, ex.getCode(), "umarket system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
 		}
 	}
@@ -169,7 +169,7 @@ public class BillPaymentFacade {
 	public static class UnknownSystemTransactionFailException extends ServiceInventoryException {
 		private static final long serialVersionUID = 5899038317339162588L;
 
-		public UnknownSystemTransactionFailException(BillException ex) {
+		public UnknownSystemTransactionFailException(SIEngineException ex) {
 			super(500, ex.getCode(),  "unknown system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
 		}
 	}
@@ -177,7 +177,7 @@ public class BillPaymentFacade {
 	public static class VerifyBillPayFailException extends ServiceInventoryException{
 		private static final long serialVersionUID = 3029606083785530229L;
 
-		public VerifyBillPayFailException(BillException ex) {
+		public VerifyBillPayFailException(SIEngineException ex) {
 			super(500,ex.getCode(),"Verify Bill Pay fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
 		}
 	}

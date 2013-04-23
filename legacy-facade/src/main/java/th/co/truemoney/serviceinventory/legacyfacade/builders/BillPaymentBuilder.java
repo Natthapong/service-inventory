@@ -8,8 +8,8 @@ import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
-import th.co.truemoney.serviceinventory.bill.domain.services.ConfirmBillPayRequest;
-import th.co.truemoney.serviceinventory.bill.domain.services.VerifyBillPayRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
 
 public class BillPaymentBuilder {

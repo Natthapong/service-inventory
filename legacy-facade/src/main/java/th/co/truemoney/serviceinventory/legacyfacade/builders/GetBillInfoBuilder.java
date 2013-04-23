@@ -4,7 +4,7 @@ import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.services.GetBarcodeRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
 
 public class GetBillInfoBuilder {

@@ -18,8 +18,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
-import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxy;
-import th.co.truemoney.serviceinventory.bill.proxy.impl.BillProxyImpl;
+import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
+import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxyImpl;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
