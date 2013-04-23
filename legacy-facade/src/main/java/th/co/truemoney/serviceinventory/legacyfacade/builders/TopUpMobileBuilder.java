@@ -10,12 +10,12 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopU
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpMobileFacade;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
-import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 
 public class TopUpMobileBuilder {
 	
 	private TopUpMobileFacade topUpMobileFacade;
-	private TopUpMobileDraft topUpMobileDraft;
+	private String targetMobileNumber;
+	private BigDecimal amount;
 	private AccessToken accessToken;
 	
 	
@@ -23,19 +23,16 @@ public class TopUpMobileBuilder {
 		this.topUpMobileFacade = topUpMobileFacade;
 	}
 
-	public TopUpMobile verifyTopUpAirtime(TopUpMobileDraft topUpMobileDraft, AccessToken accessToken) {
-		this.topUpMobileDraft = topUpMobileDraft;
+	public TopUpMobile verifyTopUpAirtime(String targetMobileNumber, BigDecimal amount, AccessToken accessToken) {
+		this.targetMobileNumber = targetMobileNumber;
+		this.amount = amount;
 		this.accessToken = accessToken;
 		return verifyPayment();
 	}
 
 	public TopUpMobile verifyPayment() {
-		Validate.notNull(topUpMobileDraft.getTopUpMobileInfo(), "barcode ref1 missing?");
-
-		Validate.notNull(topUpMobileDraft.getTopUpMobileInfo().getMobileNumber(), 
-				"data missing. verify topUp by mobile number?");
-		Validate.notNull(topUpMobileDraft.getTopUpMobileInfo().getAmount(), 
-				"data missing. how much to topUp?");
+		Validate.notNull(targetMobileNumber, "data missing. verify topUp by mobile number?");
+		Validate.notNull(amount, "data missing. how much to topUp?");
 
 		VerifyTopUpAirtimeRequest verifyRequest = new VerifyTopUpAirtimeRequest();
 
@@ -46,15 +43,15 @@ public class TopUpMobileBuilder {
 		verifyRequest.setChannel(accessToken.getClientCredential().getChannel());
 		verifyRequest.setChannelDetail(accessToken.getClientCredential().getChannelDetail());
 
-		verifyRequest.setCommandAction(topUpMobileDraft.getSelectedSourceOfFund().getSourceType());
+		verifyRequest.setCommandAction("EW");
 		verifyRequest.setTmnID(accessToken.getTruemoneyID());
 		verifyRequest.setControlFlag("01");
 
-		verifyRequest.setRef1(topUpMobileDraft.getTopUpMobileInfo().getMobileNumber());
+		verifyRequest.setRef1(targetMobileNumber);
 		verifyRequest.setOperator("true");
 
-		verifyRequest.setMsisdn(topUpMobileDraft.getTopUpMobileInfo().getMobileNumber());
-		verifyRequest.setAmount(convertMoney(topUpMobileDraft.getTopUpMobileInfo().getAmount()));
+		verifyRequest.setMsisdn(targetMobileNumber);
+		verifyRequest.setAmount(convertMoney(amount));
 		
 		return topUpMobileFacade.verifyTopUpMobile(verifyRequest);
 	}
