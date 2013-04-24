@@ -60,6 +60,23 @@ public class TopupMobileIntegrateTest {
 	}
 	
 	@Test
+	public void getTopUpMobileDraft() {
+		String accessToken = profileService.login(
+				TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin());
+		
+		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
+		assertNotNull(topUpMobileDraft);
+		
+		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
+		assertNotNull(otp);
+		
+		TopUpMobileDraft topUpMobileDraft2 = client.getTopUpMobileDraftDetail(topUpMobileDraft.getID() , accessToken);
+		assertNotNull(topUpMobileDraft2); 
+		
+	}
+	
+	@Test
 	public void verifyOTPAndPerformToppingMobile(){
 		
 		String accessToken = profileService.login(
