@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.client.TmnProfileServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.TopupMobileServicesClient;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
@@ -90,8 +91,9 @@ public class TopupMobileIntegrateTest {
 		assertNotNull(otp);
 		
 		otp.setOtpString("111111");
-		DraftTransaction.Status status = client.confirmTopUpMobile(topUpMobileDraft.getID(), otp, accessToken);
-		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, status);
-		
+		DraftTransaction.Status transactionStatus = client.confirmTopUpMobile(topUpMobileDraft.getID(), otp, accessToken);
+		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, transactionStatus);
 	}
+	
+	
 }
