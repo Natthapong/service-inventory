@@ -10,9 +10,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
+import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.engine.client.domain.SIEngineResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.SourceFee;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayRequest;
@@ -43,7 +43,7 @@ public class BillPaymentFacade {
 			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			SIEngineResponse billPayResponse = billPayProxy.confirmBillPay(billRequest);
 			BillPaymentConfirmationInfo confirmationInfo = new BillPaymentConfirmationInfo();
-			confirmationInfo.setTransactionID(billPayResponse.getReqTransactionID());
+			confirmationInfo.setTransactionID(billPayResponse.getTransactionID());
 			confirmationInfo.setTransactionDate(df.format(new Date()));
 			return confirmationInfo;
 		} catch (FailResultCodeException ex) {

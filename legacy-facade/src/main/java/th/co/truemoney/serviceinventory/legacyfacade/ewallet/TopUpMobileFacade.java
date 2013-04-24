@@ -62,7 +62,7 @@ public class TopUpMobileFacade {
 			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			SIEngineResponse topUpResponse = topUpMobileProxy.confirmTopUpAirtime(confirmRequest);
 			TopUpMobileConfirmationInfo confirmationInfo = new TopUpMobileConfirmationInfo();
-			confirmationInfo.setTransactionID(topUpResponse.getReqTransactionID());
+			confirmationInfo.setTransactionID(topUpResponse.getTransactionID());
 			confirmationInfo.setTransactionDate(df.format(new Date()));
 			return confirmationInfo;
 		} catch (FailResultCodeException ex) {
