@@ -3,11 +3,9 @@ package th.co.truemoney.serviceinventory.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.reset;
 
 import java.math.BigDecimal;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -109,8 +107,10 @@ public class TopUpMobileServiceImplTest {
 		OTP otpResponse = topUpMobileServiceImpl.sendOTP(topUpMobileDraft.getID(), accessToken.getAccessTokenID());
 		assertEquals(otpResponse, otp);
 		
-		TopUpMobileDraft topUpMobileDraft = transactionRepo.findTopUpMobileDraft("7788", accessToken.getAccessTokenID());
-		assertNotNull(topUpMobileDraft);
+		TopUpMobileDraft topUpMobileDraftResponse = transactionRepo.findTopUpMobileDraft(topUpMobileDraft.getID(), accessToken.getAccessTokenID());
+		assertNotNull(topUpMobileDraftResponse);
+		assertEquals(topUpMobileDraftResponse.getOtpReferenceCode(), otp.getReferenceCode());
+		assertEquals(topUpMobileDraftResponse.getStatus(), TopUpMobileDraft.Status.OTP_SENT);
 	}
 	
 	private TopUpMobile createTopUpMobile() {

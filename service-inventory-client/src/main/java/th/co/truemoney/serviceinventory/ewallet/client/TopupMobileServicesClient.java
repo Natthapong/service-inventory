@@ -77,10 +77,16 @@ public class TopupMobileServicesClient implements TopUpMobileService{
 	}
 
 	@Override
-	public OTP sendOTP(String draftID, String accessTokenID)
+	public OTP sendOTP(String topUpMobileDraftID, String accessTokenID)
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		
+		ResponseEntity<OTP> responseEntity = restTemplate.exchange(
+				endPoints.getSendOTPTopUpMobileURL(), HttpMethod.POST,
+				requestEntity, OTP.class, topUpMobileDraftID,accessTokenID);
+		
+		return responseEntity.getBody();
 	}
 
 	@Override
