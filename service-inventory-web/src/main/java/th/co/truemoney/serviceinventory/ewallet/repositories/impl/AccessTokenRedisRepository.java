@@ -27,7 +27,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 	public void save(AccessToken token) {
 		if (token != null) {
 			try {
-				redisLoggingDao.addData(token.getAccessTokenID(), mapper.writeValueAsString(token), 15L);
+				redisLoggingDao.addData(token.getAccessTokenID(), mapper.writeValueAsString(token), 20L);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
