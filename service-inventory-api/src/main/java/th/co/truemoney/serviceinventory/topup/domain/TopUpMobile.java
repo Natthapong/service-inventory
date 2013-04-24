@@ -131,5 +131,16 @@ public class TopUpMobile implements Serializable {
 	public void setSourceOfFundFees(SourceOfFund[] sourceOfFundFees) {
 		this.sourceOfFundFees = sourceOfFundFees;
 	}
+
+	public SourceOfFund getEwalletSourceOfFund() {
+		if (sourceOfFundFees != null) {
+			for (SourceOfFund sof : sourceOfFundFees) {
+				if ("EW".equals(sof.getSourceType())) {
+					return sof;
+				}
+			}
+		}
+		return null;
+	}
 		
 }

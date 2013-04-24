@@ -43,8 +43,8 @@ public class TopUpMobileTransaction extends Transaction {
 		this.ID = ID;
 	}
 
-	public BillPaymentDraft getDraftTransaction() {
-		return (BillPaymentDraft) super.getDraftTransaction();
+	public TopUpMobileDraft getDraftTransaction() {
+		return (TopUpMobileDraft) super.getDraftTransaction();
 	}
 
 	public void setDraftTransaction(BillPaymentDraft bill) {
