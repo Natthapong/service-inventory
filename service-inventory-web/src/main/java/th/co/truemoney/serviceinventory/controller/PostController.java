@@ -54,5 +54,21 @@ public class PostController {
 		System.out.println("confirm: request is : " + post);
 		
 		return new ModelAndView("forward:/WEB-INF/test-xml/verify_topup_response.xml");
-	}	
+
+	}
+	
+	/**
+	 * SI Engine dummy API for confirm mobile top up service
+	 */
+	@RequestMapping(
+			value="/postConfirmTopup", 
+			method=RequestMethod.POST, 
+			consumes=MediaType.APPLICATION_XML_VALUE, 
+			produces=MediaType.APPLICATION_XML_VALUE)
+	public @ResponseBody ModelAndView confirmMobileTopup(@RequestBody String post) {
+		
+		System.out.println("confirm: request is : " + post);
+		
+		return new ModelAndView("forward:/WEB-INF/test-xml/confirm_topup_response.xml");
+	}
 }

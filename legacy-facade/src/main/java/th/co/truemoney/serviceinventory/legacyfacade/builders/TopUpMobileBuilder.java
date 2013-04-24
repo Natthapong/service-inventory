@@ -41,6 +41,8 @@ public class TopUpMobileBuilder {
 		this.amount = amount;
 		this.accessToken = accessToken;		
 		this.transactionID = transactionID;
+		this.serviceFee = serviceFee;
+		this.sourceOfFundFee = sourceOfFundFee;
 		return confirmPayment();
 	}
 
