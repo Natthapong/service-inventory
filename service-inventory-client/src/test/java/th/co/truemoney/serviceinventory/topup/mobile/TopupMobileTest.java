@@ -101,12 +101,12 @@ public class TopupMobileTest {
 		ResponseEntity<DraftTransaction.Status> responseEntity = new ResponseEntity<DraftTransaction.Status>(HttpStatus.OK);
 		
 		when(restTemplate.exchange(eq(endPoints.getVerifyOTPAndPerformToppingMobile()), eq(HttpMethod.PUT), any(HttpEntity.class)
-				, eq(DraftTransaction.Status.class) , anyString() ,anyString()) ).thenReturn(responseEntity);
+				, eq(DraftTransaction.Status.class) , anyString() ,anyString(),anyString()) ).thenReturn(responseEntity);
 		
 		topupMobileServicesClient.confirmTopUpMobile("7788", new OTP(), "12345");
 		
 		verify(restTemplate).exchange(eq(endPoints.getVerifyOTPAndPerformToppingMobile()), eq(HttpMethod.PUT), any(HttpEntity.class)
-				, eq(DraftTransaction.Status.class) , anyString() ,anyString());
+				, eq(DraftTransaction.Status.class) , anyString() ,anyString(),anyString());
 		
 	}
 	
