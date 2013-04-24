@@ -69,6 +69,8 @@ public class GlobalExceptionsHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public @ResponseBody ErrorBean handleAllExceptions(Exception exception) {
 
+		exception.printStackTrace();
+		
 		return new ErrorBean(Integer.toString(HttpServletResponse.SC_INTERNAL_SERVER_ERROR), "INTERNAL_SERVER_ERROR");
 	}
 

@@ -128,4 +128,8 @@ public class EndPoints {
 	public String getVerifyOTPAndPerformToppingMobile(){
 		return host + "/service-inventory-web/v1/top-up/mobile/draft/{topUpMobileDraftID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
+
+	public String getTopUpMobileDraftDetailURL() {
+		return host + "/service-inventory-web/v1/top-up/mobile/draft/{topUpMobileDraftID}?accessTokenID={accessTokenID}";
+	}
 }
