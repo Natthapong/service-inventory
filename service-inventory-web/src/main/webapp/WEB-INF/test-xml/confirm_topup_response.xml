@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<response result_namespace="ENGINE" result_code="0"
+	result_desc="Success" req_transaction_id="3310R0041" transaction_id="20130419174529049074"
+	response_message="Success">
+	
+	<parameters>
+		<p k="trans_relation" v="27e8c5d9e37746c7e" />
+		<p k="remaining_balance" v="274700" />
+		<p k="amount" v="10100" />
+		<p k="msisdn" v="0864041515" />
+		<p k="approve_code" v="35138505" />
+	</parameters>
+</response>
