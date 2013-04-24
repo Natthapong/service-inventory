@@ -44,6 +44,7 @@ public class AsyncTopUpMobileProcessor {
 			transactionRepo.saveTopUpMobileTransaction(topUpMobileTransaction, accessToken.getAccessTokenID());
 
 			String verificationID = topUpMobileDraft.getTransactionID();
+			String target = topUpMobile.getTarget();
 			
 			TopUpMobileConfirmationInfo confirmationInfo = legacyFacade.topUpMobile()
 					.topUpAirtime(topUpMobile.getMobileNumber(), 
@@ -51,6 +52,7 @@ public class AsyncTopUpMobileProcessor {
 								  topUpMobile.getServiceFee().calculateFee(amount), 
 								  topUpMobile.getEwalletSourceOfFund().calculateFee(amount),
 								  verificationID, 
+								  target,
 								  accessToken);
 
 			topUpMobileTransaction.setConfirmationInfo(confirmationInfo);

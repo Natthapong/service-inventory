@@ -21,6 +21,7 @@ public class TopUpMobileBuilder {
 	private BigDecimal amount;
 	private AccessToken accessToken;
 	private String transactionID;
+	private String target;
 	private BigDecimal serviceFee;
 	private BigDecimal sourceOfFundFee;
 	
@@ -36,11 +37,12 @@ public class TopUpMobileBuilder {
 		return verifyPayment();
 	}
 	
-	public TopUpMobileConfirmationInfo topUpAirtime(String targetMobileNumber, BigDecimal amount, BigDecimal serviceFee, BigDecimal sourceOfFundFee, String transactionID, AccessToken accessToken) {
+	public TopUpMobileConfirmationInfo topUpAirtime(String targetMobileNumber, BigDecimal amount, BigDecimal serviceFee, BigDecimal sourceOfFundFee, String transactionID, String target, AccessToken accessToken) {
 		this.targetMobileNumber = targetMobileNumber;
 		this.amount = amount;
 		this.accessToken = accessToken;		
 		this.transactionID = transactionID;
+		this.target = target;
 		this.serviceFee = serviceFee;
 		this.sourceOfFundFee = sourceOfFundFee;
 		return confirmPayment();
@@ -48,6 +50,7 @@ public class TopUpMobileBuilder {
 
 	private TopUpMobileConfirmationInfo confirmPayment() {
 		Validate.notNull(transactionID, "data missing. confirm topUp by transactionID?");
+		Validate.notNull(target, "data missing. confirm topUp by target?");
 		Validate.notNull(targetMobileNumber, "data missing. confirm topUp by mobile number?");
 		Validate.notNull(amount, "data missing. how much to topUp?");
 		
@@ -71,6 +74,7 @@ public class TopUpMobileBuilder {
 		confirmRequest.setTransRef(transactionID);
 		confirmRequest.setMsisdn(targetMobileNumber);
 		confirmRequest.setAmount(convertMoney(amount));
+		confirmRequest.setTarget(target);
 		
 		confirmRequest.setSource("EW");
 		confirmRequest.setSourceFeeType("THB");
