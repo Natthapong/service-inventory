@@ -26,7 +26,7 @@ public class ProfileRedisRepository implements RegisteringProfileRepository {
 	@Override
 	public void saveRegisteringProfile(TmnProfile tmnProfile) {
 		try {
-			redisLoggingDao.addData("profile:" + tmnProfile.getMobileNumber(), mapper.writeValueAsString(tmnProfile), 5L);
+			redisLoggingDao.addData("profile:" + tmnProfile.getMobileNumber(), mapper.writeValueAsString(tmnProfile), 20L);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
