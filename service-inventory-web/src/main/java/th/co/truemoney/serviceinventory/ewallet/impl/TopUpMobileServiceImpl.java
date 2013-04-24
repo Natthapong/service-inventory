@@ -13,6 +13,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
+import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
@@ -29,6 +30,13 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	
 	@Autowired
 	private TransactionRepository transactionRepo;
+	
+	@Autowired
+	private OTPService otpService;
+
+	public void setOtpService(OTPService otpService) {
+		this.otpService = otpService;
+	}
 
 	public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
 		this.accessTokenRepo = accessTokenRepo;
@@ -66,8 +74,18 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	@Override
 	public OTP sendOTP(String draftID, String accessTokenID)
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		
+		OTP otp = otpService.send(accessToken.getMobileNumber());
+				
+		TopUpMobileDraft topUpMobileDraft = transactionRepo.findTopUpMobileDraft(draftID, accessTokenID);
+		topUpMobileDraft.setOtpReferenceCode(otp.getReferenceCode());
+		topUpMobileDraft.setStatus(TopUpMobileDraft.Status.OTP_SENT);
+		
+		transactionRepo.saveTopUpMobileDraft(topUpMobileDraft, accessTokenID);
+		
+		return otp;
 	}
 
 	@Override

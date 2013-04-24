@@ -65,4 +65,31 @@ public class OTP implements Serializable {
 			.toString();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OTP other = (OTP) obj;
+		if (mobileNumber == null) {
+			if (other.mobileNumber != null)
+				return false;
+		} else if (!mobileNumber.equals(other.mobileNumber))
+			return false;
+		if (otpString == null) {
+			if (other.otpString != null)
+				return false;
+		} else if (!otpString.equals(other.otpString))
+			return false;
+		if (referenceCode == null) {
+			if (other.referenceCode != null)
+				return false;
+		} else if (!referenceCode.equals(other.referenceCode))
+			return false;
+		return true;
+	}
+	
 }

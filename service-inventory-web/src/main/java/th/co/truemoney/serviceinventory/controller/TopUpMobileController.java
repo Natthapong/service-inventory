@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
+import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
@@ -25,13 +26,13 @@ public class TopUpMobileController {
 	
 	@Autowired
 	private TopUpMobileService topUpMobileService;
-		
+	
+	
 	@RequestMapping(value = "/draft", method = RequestMethod.POST)
 	public @ResponseBody TopUpMobileDraft verifyAndCreateTopUpMobileDraft(
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 			@RequestBody TopUpMobileDraft draft) {
 		extendExpireAccessToken(accessTokenID);
-		
 		TopUpMobile topUpInfo = draft.getTopUpMobileInfo();
 		return topUpMobileService.verifyAndCreateTopUpMobileDraft(topUpInfo.getMobileNumber(), topUpInfo.getAmount(), accessTokenID);
 	}
@@ -45,11 +46,11 @@ public class TopUpMobileController {
 	}
 
 	@RequestMapping(value = "/draft/{topUpMobileDraftID}/otp", method = RequestMethod.POST)
-	public @ResponseBody TopUpMobileDraft submitTopUpMobileDraftRequest(
+	public @ResponseBody OTP submitTopUpMobileDraftRequest(
 			@PathVariable String topUpMobileDraftID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return null;
+		return topUpMobileService.sendOTP(topUpMobileDraftID, accessTokenID);
 	}
 	
 	@RequestMapping(value = "/draft/{topUpMobileDraftID}/otp/{refCode}", method = RequestMethod.PUT)
