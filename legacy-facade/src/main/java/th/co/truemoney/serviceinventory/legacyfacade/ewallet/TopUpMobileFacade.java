@@ -2,21 +2,29 @@ package th.co.truemoney.serviceinventory.legacyfacade.ewallet;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
+import th.co.truemoney.serviceinventory.engine.client.domain.SIEngineResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.SourceFee;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmTopUpAirtimeRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmTopUpAirtimeResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade.UnknownSystemTransactionFailException;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileConfirmationInfo;
 
 public class TopUpMobileFacade {
 
@@ -49,6 +57,20 @@ public class TopUpMobileFacade {
 			return topUpMobile;
 		} catch(FailResultCodeException ex) {
 			throw new VerifyTopUpAirtimeFailException(ex);
+		}
+	}
+	
+	public TopUpMobileConfirmationInfo topUpMobile(ConfirmTopUpAirtimeRequest confirmRequest) {
+		try {
+			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			SIEngineResponse topUpResponse = topUpMobileProxy.confirmTopUpAirtime(confirmRequest);
+			TopUpMobileConfirmationInfo confirmationInfo = new TopUpMobileConfirmationInfo();
+			confirmationInfo.setTransactionID(topUpResponse.getReqTransactionID());
+			confirmationInfo.setTransactionDate(df.format(new Date()));
+			return confirmationInfo;
+		} catch (FailResultCodeException ex) {
+			// TODO map exception to corresponding throw
+			throw new UnknownSystemTransactionFailException(ex);
 		}
 	}
 	
