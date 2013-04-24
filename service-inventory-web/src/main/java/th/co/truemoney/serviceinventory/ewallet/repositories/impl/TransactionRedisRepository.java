@@ -15,6 +15,7 @@ import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
@@ -32,7 +33,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 	public void saveTopUpQuote(TopUpQuote topupQuote, String accessTokenID) throws ServiceInventoryWebException {
 		try {
-			redisLoggingDao.addData("quote:" + accessTokenID + ":" + topupQuote.getID(), mapper.writeValueAsString(topupQuote), 15L);
+			redisLoggingDao.addData("quote:" + accessTokenID + ":" + topupQuote.getID(), mapper.writeValueAsString(topupQuote), 20L);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
@@ -59,7 +60,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 	public void saveTopUpOrder(TopUpOrder topupOrder, String accessTokenID) throws ServiceInventoryWebException {
 		try {
-			redisLoggingDao.addData("order:" + accessTokenID + ":" + topupOrder.getID(), mapper.writeValueAsString(topupOrder), 15L);
+			redisLoggingDao.addData("order:" + accessTokenID + ":" + topupOrder.getID(), mapper.writeValueAsString(topupOrder), 20L);
 		} catch (Exception e) {
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
@@ -86,7 +87,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 	public void saveP2PTransferDraft(P2PTransferDraft p2pTransferDraft, String accessTokenID) {
 		try {
-			redisLoggingDao.addData("p2pdraft:" + accessTokenID + ":" +p2pTransferDraft.getID(), mapper.writeValueAsString(p2pTransferDraft), 15L);
+			redisLoggingDao.addData("p2pdraft:" + accessTokenID + ":" +p2pTransferDraft.getID(), mapper.writeValueAsString(p2pTransferDraft), 20L);
 		} catch (Exception e) {
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not stored data in repository.", e);
 		}
@@ -113,7 +114,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 	public void saveP2PTransferTransaction(P2PTransferTransaction p2pTransaction, String accessTokenID) {
 		try {
-			redisLoggingDao.addData("p2pTrans:" + accessTokenID + ":" +p2pTransaction.getID(), mapper.writeValueAsString(p2pTransaction), 15L);
+			redisLoggingDao.addData("p2pTrans:" + accessTokenID + ":" +p2pTransaction.getID(), mapper.writeValueAsString(p2pTransaction), 20L);
 		} catch (Exception e) {
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
@@ -143,7 +144,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 			BillPaymentDraft billInvoice,
 			String accessTokenID) {
 		try {
-			redisLoggingDao.addData("billInvoice:" + accessTokenID + ":" +billInvoice.getID(), mapper.writeValueAsString(billInvoice), 15L);
+			redisLoggingDao.addData("billInvoice:" + accessTokenID + ":" +billInvoice.getID(), mapper.writeValueAsString(billInvoice), 20L);
 		} catch (Exception e) {
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
@@ -170,7 +171,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	@Override
 	public void saveBillPaymentTransaction(BillPaymentTransaction billPayment, String accessTokenID) {
 		try {
-			redisLoggingDao.addData("billPayment:" + accessTokenID + ":" + billPayment.getID(), mapper.writeValueAsString(billPayment), 15L);
+			redisLoggingDao.addData("billPayment:" + accessTokenID + ":" + billPayment.getID(), mapper.writeValueAsString(billPayment), 20L);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
@@ -200,7 +201,7 @@ public class TransactionRedisRepository implements TransactionRepository {
 	public void saveTopUpMobileDraft(TopUpMobileDraft topUpMobileDraft,
 			String accessTokenID) {
 		try {
-			redisLoggingDao.addData("topUpMobile:" + accessTokenID + ":" + topUpMobileDraft.getID(), mapper.writeValueAsString(topUpMobileDraft), 15L);
+			redisLoggingDao.addData("topUpMobileDraft:" + accessTokenID + ":" + topUpMobileDraft.getID(), mapper.writeValueAsString(topUpMobileDraft), 20L);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
@@ -211,13 +212,41 @@ public class TransactionRedisRepository implements TransactionRepository {
 	public TopUpMobileDraft findTopUpMobileDraft(String topUpMobileId,
 			String accessTokenID) {
 		try {
-			String key = "topUpMobile:" + accessTokenID + ":" + topUpMobileId;
+			String key = "topUpMobileDraft:" + accessTokenID + ":" + topUpMobileId;
+			String result = redisLoggingDao.getData(key);
+			if(result == null) {
+				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "Topup Mobile draft not found: " + key);
+			}
+
+			return mapper.readValue(result, TopUpMobileDraft.class);
+		} catch (ServiceInventoryWebException e) {
+			throw e;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
+		}
+	}
+
+	@Override
+	public void saveTopUpMobileTransaction(TopUpMobileTransaction topUpMobileTransaction, String accessTokenID) {
+		try {
+			redisLoggingDao.addData("topUpMobile:" + accessTokenID + ":" + topUpMobileTransaction.getID(), mapper.writeValueAsString(topUpMobileTransaction), 20L);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
+		}		
+	}
+
+	@Override
+	public TopUpMobileTransaction findTopUpMobileTransaction(String topUpMobileTransactionID, String accessTokenID) {
+		try {
+			String key = "topUpMobile:" + accessTokenID + ":" + topUpMobileTransactionID;
 			String result = redisLoggingDao.getData(key);
 			if(result == null) {
 				throw new ResourceNotFoundException(Code.TRANSACTION_NOT_FOUND, "Topup Mobile not found: " + key);
 			}
 
-			return mapper.readValue(result, TopUpMobileDraft.class);
+			return mapper.readValue(result, TopUpMobileTransaction.class);
 		} catch (ServiceInventoryWebException e) {
 			throw e;
 		} catch (Exception e) {

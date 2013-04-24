@@ -5,6 +5,7 @@ import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
@@ -24,6 +25,9 @@ public interface TransactionRepository {
 	public void saveBillPaymentTransaction(BillPaymentTransaction billPayment, String accessTokenID);
 	public BillPaymentTransaction findBillPaymentTransaction(String billPaymentID, String accessTokenID);
 	
-	public void saveTopUpMobileDraft(TopUpMobileDraft topUpMobileDraft,String accessTokenID);
-	public TopUpMobileDraft findTopUpMobileDraft(String topUpMobileId,String accessTokenID);
+	public void saveTopUpMobileDraft(TopUpMobileDraft topUpMobileDraft, String accessTokenID);
+	public TopUpMobileDraft findTopUpMobileDraft(String topUpMobileId, String accessTokenID);
+	public void saveTopUpMobileTransaction(TopUpMobileTransaction topUpMobileTransaction, String accessTokenID);
+	public TopUpMobileTransaction findTopUpMobileTransaction(String topUpMobileTransactionID, String accessTokenID);
+	
 }

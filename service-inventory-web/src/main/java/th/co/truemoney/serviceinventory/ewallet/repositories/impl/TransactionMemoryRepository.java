@@ -12,6 +12,7 @@ import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
@@ -24,7 +25,8 @@ public class TransactionMemoryRepository implements TransactionRepository {
 	public HashMap<String, BillPaymentDraft> billInvoiceMap = new LinkedHashMap<String, BillPaymentDraft>();
 	public HashMap<String, BillPaymentTransaction> billPaymentMap = new LinkedHashMap<String, BillPaymentTransaction>();
 	public HashMap<String, TopUpMobileDraft> topUpMobileMap = new LinkedHashMap<String, TopUpMobileDraft>();
-
+	public HashMap<String, TopUpMobileTransaction> topUpMobileTransactionMap = new LinkedHashMap<String, TopUpMobileTransaction>();
+	
 	@Override
 	public void saveTopUpQuote(TopUpQuote topupQuote,
 			String accessTokenID) {
@@ -150,6 +152,7 @@ public class TransactionMemoryRepository implements TransactionRepository {
 		billInvoiceMap.clear();
 		billPaymentMap.clear();
 		topUpMobileMap.clear();
+		topUpMobileTransactionMap.clear();
 	}
 
 	@Override
@@ -169,6 +172,22 @@ public class TransactionMemoryRepository implements TransactionRepository {
 					"TopUpMobile not found.");
 		}
 		return topUpMobileDraft;
+	}
+
+	@Override
+	public void saveTopUpMobileTransaction(TopUpMobileTransaction topUpMobileTransaction, String accessTokenID) {
+		topUpMobileTransactionMap.put(accessTokenID + ":" + topUpMobileTransaction.getID(), topUpMobileTransaction);
+	}
+
+	@Override
+	public TopUpMobileTransaction findTopUpMobileTransaction(String topUpMobileTransactionID, String accessTokenID) {
+		TopUpMobileTransaction topUpMobileTransaction = topUpMobileTransactionMap.get(accessTokenID + ":" + topUpMobileTransactionID);
+		if (topUpMobileTransaction == null) {
+			throw new ResourceNotFoundException(
+					Code.TRANSACTION_NOT_FOUND,
+					"TopUpMobileTransaction not found.");
+		}
+		return topUpMobileTransaction;
 	}
 
 }
