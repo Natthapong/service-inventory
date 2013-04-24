@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.topup.mobile;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentCo
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 
@@ -39,7 +41,6 @@ public class TopupMobileIntegrateTest {
 				TestData.createSuccessUserLogin(),
 				TestData.createSuccessClientLogin());
 		
-		
 		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
 		assertNotNull(topUpMobileDraft);
 	}
@@ -51,11 +52,29 @@ public class TopupMobileIntegrateTest {
 				TestData.createSuccessUserLogin(),
 				TestData.createSuccessClientLogin());
 		
+		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
+		assertNotNull(topUpMobileDraft);
+		
+		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
+		assertNotNull(otp);
+	}
+	
+	@Test
+	public void verifyOTPAndPerformToppingMobile(){
+		
+		String accessToken = profileService.login(
+				TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin());
 		
 		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
 		assertNotNull(topUpMobileDraft);
 		
 		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
 		assertNotNull(otp);
+		
+		otp.setOtpString("111111");
+		DraftTransaction.Status status = client.confirmTopUpMobile(topUpMobileDraft.getID(), otp, accessToken);
+		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, status);
+		
 	}
 }
