@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.topup.mobile;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -26,6 +28,7 @@ import th.co.truemoney.serviceinventory.ewallet.client.TopupMobileServicesClient
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 
@@ -107,6 +110,20 @@ public class TopupMobileTest {
 		
 		verify(restTemplate).exchange(eq(endPoints.getVerifyOTPAndPerformToppingMobile()), eq(HttpMethod.PUT), any(HttpEntity.class)
 				, eq(DraftTransaction.Status.class) , anyString() ,anyString(),anyString());
+		
+	}
+	
+	@Test
+	public void getTopUpMobileStatus(){
+		
+		ResponseEntity<Transaction.Status> responseEntity = new ResponseEntity<Transaction.Status>(Transaction.Status.PROCESSING,HttpStatus.OK);
+		
+		when(restTemplate.exchange(eq(endPoints.getTopUpMobileStatusURL()), eq(HttpMethod.GET), any(HttpEntity.class),
+				eq(Transaction.Status.class) , anyString() , anyString() )).thenReturn(responseEntity);
+		
+		Transaction.Status transactionStatus = topupMobileServicesClient.getTopUpMobileStatus("7788", "12345");
+		assertNotNull(transactionStatus);
+		assertEquals(Transaction.Status.PROCESSING, transactionStatus);
 		
 	}
 	
