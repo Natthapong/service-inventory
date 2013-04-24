@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.TopupMobileServicesClient;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
@@ -92,6 +93,21 @@ public class TopupMobileTest {
 		
 		verify(restTemplate).exchange(eq(endPoints.getSendOTPTopUpMobileURL()), eq(HttpMethod.POST), any(HttpEntity.class)
 				, eq(OTP.class) , anyString(), eq("12345"));
+	}
+	
+	@Test
+	public void confirmTopUpMobile(){
+		
+		ResponseEntity<DraftTransaction.Status> responseEntity = new ResponseEntity<DraftTransaction.Status>(HttpStatus.OK);
+		
+		when(restTemplate.exchange(eq(endPoints.getVerifyOTPAndPerformToppingMobile()), eq(HttpMethod.PUT), any(HttpEntity.class)
+				, eq(DraftTransaction.Status.class) , anyString() ,anyString()) ).thenReturn(responseEntity);
+		
+		topupMobileServicesClient.confirmTopUpMobile("7788", new OTP(), "12345");
+		
+		verify(restTemplate).exchange(eq(endPoints.getVerifyOTPAndPerformToppingMobile()), eq(HttpMethod.PUT), any(HttpEntity.class)
+				, eq(DraftTransaction.Status.class) , anyString() ,anyString());
+		
 	}
 	
 }

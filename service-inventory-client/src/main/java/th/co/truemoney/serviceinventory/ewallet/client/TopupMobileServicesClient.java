@@ -11,8 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
@@ -90,14 +91,20 @@ public class TopupMobileServicesClient implements TopUpMobileService{
 	}
 
 	@Override
-	public Status confirmTopUpMobile(String draftID, OTP otp,
+	public DraftTransaction.Status confirmTopUpMobile(String draftID, OTP otp,
 			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
+		
+		ResponseEntity<DraftTransaction.Status> responseEntity = restTemplate.exchange(
+				endPoints.getVerifyOTPAndPerformToppingMobile(), HttpMethod.PUT,
+				requestEntity, DraftTransaction.Status.class, draftID , otp.getReferenceCode() , accessTokenID);
+		
+		return responseEntity.getBody();
 	}
 
 	@Override
-	public th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status getTopUpMobileStatus(
+	public Transaction.Status getTopUpMobileStatus(
 			String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
 		// TODO Auto-generated method stub
