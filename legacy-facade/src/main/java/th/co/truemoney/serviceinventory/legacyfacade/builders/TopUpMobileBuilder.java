@@ -16,11 +16,13 @@ import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileConfirmationInfo
 
 public class TopUpMobileBuilder {
 	
-	private String transactionID;
 	private TopUpMobileFacade topUpMobileFacade;
 	private String targetMobileNumber;
 	private BigDecimal amount;
 	private AccessToken accessToken;
+	private String transactionID;
+	private BigDecimal serviceFee;
+	private BigDecimal sourceOfFundFee;
 	
 	@Autowired(required = false)
 	public TopUpMobileBuilder(TopUpMobileFacade topUpMobileFacade) {
@@ -34,13 +36,11 @@ public class TopUpMobileBuilder {
 		return verifyPayment();
 	}
 	
-	public TopUpMobileConfirmationInfo topUpAirtime(String transactionID, String targetMobileNumber, BigDecimal amount, AccessToken accessToken) {
-		
-		this.transactionID = transactionID;
+	public TopUpMobileConfirmationInfo topUpAirtime(String targetMobileNumber, BigDecimal amount, BigDecimal serviceFee, BigDecimal sourceOfFundFee, String transactionID, AccessToken accessToken) {
 		this.targetMobileNumber = targetMobileNumber;
 		this.amount = amount;
-		this.accessToken = accessToken;
-		
+		this.accessToken = accessToken;		
+		this.transactionID = transactionID;
 		return confirmPayment();
 	}
 
@@ -57,10 +57,10 @@ public class TopUpMobileBuilder {
 
 		confirmRequest.setChannel(accessToken.getClientCredential().getChannel());
 		confirmRequest.setChannelDetail(accessToken.getClientCredential().getChannelDetail());
-		confirmRequest.setSession(accessToken.getSessionID());
 
 		confirmRequest.setCommandAction("EW");
 		confirmRequest.setTmnID(accessToken.getTruemoneyID());
+		confirmRequest.setSession(accessToken.getSessionID());
 		confirmRequest.setControlFlag("01");
 
 		confirmRequest.setRef1(targetMobileNumber);
@@ -69,6 +69,12 @@ public class TopUpMobileBuilder {
 		confirmRequest.setTransRef(transactionID);
 		confirmRequest.setMsisdn(targetMobileNumber);
 		confirmRequest.setAmount(convertMoney(amount));
+		
+		confirmRequest.setSource("EW");
+		confirmRequest.setSourceFeeType("THB");
+		confirmRequest.setTotalSourceFee(convertMoney(sourceOfFundFee));
+		confirmRequest.setServiceFeeType("THB");
+		confirmRequest.setTotalServiceFee(convertMoney(serviceFee));
 		
 		return topUpMobileFacade.topUpMobile(confirmRequest);
 	}
@@ -88,6 +94,7 @@ public class TopUpMobileBuilder {
 
 		verifyRequest.setCommandAction("EW");
 		verifyRequest.setTmnID(accessToken.getTruemoneyID());
+		verifyRequest.setSession(accessToken.getSessionID());
 		verifyRequest.setControlFlag("01");
 
 		verifyRequest.setRef1(targetMobileNumber);
