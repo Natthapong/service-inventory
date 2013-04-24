@@ -93,6 +93,7 @@ public class TopupMobileIntegrateTest {
 		otp.setOtpString("111111");
 		DraftTransaction.Status transactionStatus = client.confirmTopUpMobile(topUpMobileDraft.getID(), otp, accessToken);
 		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, transactionStatus);
+			
 	}
 	
 	
