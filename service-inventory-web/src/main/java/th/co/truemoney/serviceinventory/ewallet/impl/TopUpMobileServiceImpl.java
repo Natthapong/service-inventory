@@ -89,10 +89,29 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	}
 
 	@Override
-	public Status confirmTopUpMobile(String draftID, OTP otp,
-			String accessTokenID) throws ServiceInventoryException {
+	public Status confirmTopUpMobile(String draftID, OTP otp, String accessTokenID) 
+			throws ServiceInventoryException {
+		
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		TopUpMobileDraft topUpMobileDraft = transactionRepo.findTopUpMobileDraft(draftID, accessTokenID);
+
+		otpService.isValidOTP(otp);
+
+		topUpMobileDraft.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
+		transactionRepo.saveTopUpMobileDraft(topUpMobileDraft, accessTokenID);
+
+		TopUpMobileTransaction topUpMobileTransaction = new TopUpMobileTransaction(topUpMobileDraft);
+		topUpMobileTransaction.setStatus(TopUpMobileTransaction.Status.VERIFIED);
+		transactionRepo.saveTopUpMobileTransaction(topUpMobileTransaction, accessTokenID);
+
+		performTopUpMobile(topUpMobileTransaction, accessToken);
+		
+		return topUpMobileDraft.getStatus();
+	}
+
+	private void performTopUpMobile(TopUpMobileTransaction topUpMobileTransaction, AccessToken accessToken) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	@Override
