@@ -54,10 +54,13 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	}
 
 	@Override
-	public TopUpMobileDraft getTopUpMobileDraftDetail(String draftID,
-			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+	public TopUpMobileDraft getTopUpMobileDraftDetail(String draftID, String accessTokenID) 
+			throws ServiceInventoryException {
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+
+		TopUpMobileDraft topUpMobileDraft = transactionRepo.findTopUpMobileDraft(draftID, accessToken.getAccessTokenID());
+
+		return topUpMobileDraft;
 	}
 
 	@Override
