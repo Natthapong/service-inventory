@@ -18,6 +18,7 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentCo
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -41,5 +42,20 @@ public class TopupMobileIntegrateTest {
 		
 		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
 		assertNotNull(topUpMobileDraft);
+	}
+	
+	@Test
+	public void sendOTP(){
+		
+		String accessToken = profileService.login(
+				TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin());
+		
+		
+		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
+		assertNotNull(topUpMobileDraft);
+		
+		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
+		assertNotNull(otp);
 	}
 }
