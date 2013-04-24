@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.client.config;
 
-import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -121,5 +120,8 @@ public class EndPoints {
 	public String getVerifyTopupMobile() {
 		return host + "/service-inventory-web/v1/top-up/mobile/draft?accessTokenID={accessTokenID}";
 	}
-
+	
+	public String getSendOTPTopUpMobileURL(){
+		return host + "/service-inventory-web/v1/top-up/mobile/draft/{topUpMobileDraftID}/otp?accessTokenID={accessTokenID}";
+	}
 }
