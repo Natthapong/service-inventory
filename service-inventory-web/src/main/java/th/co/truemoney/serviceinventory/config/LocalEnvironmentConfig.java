@@ -458,9 +458,14 @@ public class LocalEnvironmentConfig {
 		return "http://localhost:8585/service-inventory-web/v1/test/postConfirmBill";
 	}
 	
-	@Bean @Qualifier("verifyTopupMobileURL") @Primary
-	public String verifyMobileTopupURL() {
+	@Bean @Qualifier("verifyTopUpMobileURL") @Primary
+	public String verifyTopUpMobileURL() {
 		return "http://localhost:8585/service-inventory-web/v1/test/postVerifyTopup";
-	} 
-
+	}
+	
+	@Bean @Qualifier("confirmTopUpMobileURL") @Primary
+	public String confirmTopUpMobileURL() {
+		return "http://localhost:8585/service-inventory-web/v1/test/postConfirmTopup";
+	}
+	
 }
