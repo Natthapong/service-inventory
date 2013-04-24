@@ -137,4 +137,8 @@ public class EndPoints {
 	public String getTopUpMobileStatusURL() {
 		return host + "/service-inventory-web/v1/top-up/mobile/transaction/{transactionID}/status?accessTokenID={accessTokenID}";
 	}
+
+	public String getTopUpMobileResultURL() {
+		return host + "/service-inventory-web/v1/top-up/mobile/transaction/{transactionID}?accessTokenID={accessTokenID}";
+	}
 }

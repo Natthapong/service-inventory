@@ -31,6 +31,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 
 
 public class TopupMobileTest {
@@ -125,6 +126,21 @@ public class TopupMobileTest {
 		assertNotNull(transactionStatus);
 		assertEquals(Transaction.Status.PROCESSING, transactionStatus);
 		
+	}
+	
+	@Test
+	public void getTopUpMobileResult(){
+		
+		ResponseEntity<TopUpMobileTransaction> responseEntity = new ResponseEntity<TopUpMobileTransaction>(new TopUpMobileTransaction(), HttpStatus.OK);
+		
+		when(restTemplate.exchange(eq(endPoints.getTopUpMobileResultURL()), eq(HttpMethod.GET), any(HttpEntity.class), eq(TopUpMobileTransaction.class), 
+				anyString() , anyString() )).thenReturn(responseEntity);
+		
+		TopUpMobileTransaction topUpMobileTransaction = topupMobileServicesClient.getTopUpMobileResult("7788", "12345");
+		assertNotNull(topUpMobileTransaction);
+		
+		verify(restTemplate).exchange(eq(endPoints.getTopUpMobileResultURL()), eq(HttpMethod.GET), any(HttpEntity.class), eq(TopUpMobileTransaction.class), 
+				anyString() , anyString() );
 	}
 	
 }

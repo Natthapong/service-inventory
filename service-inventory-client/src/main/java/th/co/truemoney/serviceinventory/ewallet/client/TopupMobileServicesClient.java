@@ -124,8 +124,13 @@ public class TopupMobileServicesClient implements TopUpMobileService{
 	@Override
 	public TopUpMobileTransaction getTopUpMobileResult(String transactionID,
 			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		
+		ResponseEntity<TopUpMobileTransaction> responseEntity = restTemplate.exchange(endPoints.getTopUpMobileResultURL(),
+				HttpMethod.GET, requestEntity, TopUpMobileTransaction.class, transactionID, accessTokenID);
+		
+		return responseEntity.getBody();
 	}
 
 
