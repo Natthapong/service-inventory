@@ -25,7 +25,7 @@ public class OTPRedisRepository implements OTPRepository {
 	@Override
 	public void save(OTP otp) {
 		try {
-			redisLoggingDao.addData(createKey(otp.getMobileNumber(), otp.getReferenceCode()), mapper.writeValueAsString(otp), 3L);
+			redisLoggingDao.addData(createKey(otp.getMobileNumber(), otp.getReferenceCode()), mapper.writeValueAsString(otp), 15L);
 		} catch (Exception e) {
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
