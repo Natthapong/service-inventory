@@ -33,6 +33,9 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	
 	@Autowired
 	private OTPService otpService;
+	
+	@Autowired
+	AsyncTopUpMobileProcessor asyncTopUpMobileProcessor;
 
 	public void setOtpService(OTPService otpService) {
 		this.otpService = otpService;
@@ -110,8 +113,7 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	}
 
 	private void performTopUpMobile(TopUpMobileTransaction topUpMobileTransaction, AccessToken accessToken) {
-		// TODO Auto-generated method stub
-		
+		asyncTopUpMobileProcessor.topUpMobile(topUpMobileTransaction, accessToken);		
 	}
 
 	@Override

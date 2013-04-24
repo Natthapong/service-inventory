@@ -10,14 +10,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.UMarketSystemTransactionFailException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
@@ -25,7 +24,7 @@ import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 @Service
 public class AsyncBillPayProcessor {
 
-	private static final Logger logger = LoggerFactory.getLogger(AsyncTopUpEwalletProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(AsyncBillPayProcessor.class);
 
 	@Autowired
 	private TransactionRepository transactionRepo;
