@@ -66,6 +66,9 @@ public class AsyncTopUpMobileProcessor {
 		} catch (Exception ex) {
 			topUpMobileTransaction.setFailStatus(TopUpMobileTransaction.FailStatus.UNKNOWN_FAILED);
 		}
+		
+		transactionRepo.saveTopUpMobileTransaction(topUpMobileTransaction, accessToken.getAccessTokenID());
+
 		return new AsyncResult<TopUpMobileTransaction>(topUpMobileTransaction);
 	}
 	
