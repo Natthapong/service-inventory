@@ -152,33 +152,15 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public BillPaymentTransaction.Status getBillPaymentStatus(
-			String billPaymentID, String accessTokenID)
+	public BillPaymentTransaction.Status getBillPaymentStatus(String billPaymentID, String accessTokenID)
 			throws ServiceInventoryException {
-
 		BillPaymentTransaction billPayment = getBillPaymentResult(billPaymentID, accessTokenID);
-		BillPaymentTransaction.Status paymentStatus = billPayment.getStatus();
-//		FailStatus failStatus = topUpOrder.getFailStatus();
-
-//		if(topUpStatus == BillPaymentTransaction.Status.FAILED) {
-//			if (failStatus == FailStatus.BANK_FAILED) {
-//				throw new ServiceInventoryWebException(Code.CONFIRM_BANK_FAILED,
-//						"bank confirmation processing fail.");
-//			} else if (failStatus == FailStatus.UMARKET_FAILED) {
-//				throw new ServiceInventoryWebException(Code.CONFIRM_UMARKET_FAILED,
-//						"u-market confirmation processing fail.");
-//			} else {
-//				throw new ServiceInventoryWebException(Code.CONFIRM_FAILED,
-//						"confirmation processing fail.");
-//			}
-//		}
-
-		return paymentStatus;
-
+		return billPayment.getStatus();
 	}
 
 	@Override
-	public BillPaymentTransaction getBillPaymentResult(String billPaymentID, String accessTokenID) throws ServiceInventoryException {
+	public BillPaymentTransaction getBillPaymentResult(String billPaymentID, String accessTokenID) 
+			throws ServiceInventoryException {
 		return transactionRepository.findBillPaymentTransaction(billPaymentID, accessTokenID);
 	}
 

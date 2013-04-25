@@ -117,18 +117,16 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	}
 
 	@Override
-	public th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status getTopUpMobileStatus(
-			String transactionID, String accessTokenID)
+	public TopUpMobileTransaction.Status getTopUpMobileStatus(String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		TopUpMobileTransaction topUpMobileTransaction = getTopUpMobileResult(transactionID, accessTokenID);
+		return topUpMobileTransaction.getStatus();
 	}
 
 	@Override
-	public TopUpMobileTransaction getTopUpMobileResult(String transactionID,
-			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+	public TopUpMobileTransaction getTopUpMobileResult(String transactionID, String accessTokenID) 
+			throws ServiceInventoryException {
+		return transactionRepo.findTopUpMobileTransaction(transactionID, accessTokenID);
 	}
 	
 	public void setLegacyFacade(LegacyFacade legacyFacade) {
