@@ -23,6 +23,7 @@ import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class, LocalEnvironmentConfig.class })
@@ -96,5 +97,26 @@ public class TopupMobileIntegrateTest {
 			
 	}
 	
+	@Test
+	public void getToppingMobileStatus(){
+		
+		String accessToken = profileService.login(
+				TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin());
+		
+		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
+		assertNotNull(topUpMobileDraft);
+		
+		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
+		assertNotNull(otp);
+		
+		otp.setOtpString("111111");
+		DraftTransaction.Status transactionStatus = client.confirmTopUpMobile(topUpMobileDraft.getID(), otp, accessToken);
+		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, transactionStatus);
+
+		TopUpMobileTransaction.Status status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
+		assertNotNull(status);
+		assertEquals(TopUpMobileTransaction.Status.SUCCESS, status);
+	}
 	
 }
