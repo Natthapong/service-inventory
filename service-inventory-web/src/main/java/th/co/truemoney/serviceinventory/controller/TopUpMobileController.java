@@ -70,7 +70,7 @@ public class TopUpMobileController {
 			@PathVariable String transactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return null;
+		return topUpMobileService.getTopUpMobileStatus(transactionID, accessTokenID);
 	}
 
 	@RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.GET)
@@ -78,7 +78,7 @@ public class TopUpMobileController {
 			@PathVariable String transactionID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return null;
+		return topUpMobileService.getTopUpMobileResult(transactionID, accessTokenID);
 	}
 
 	private void extendExpireAccessToken(String accessTokenID) {
