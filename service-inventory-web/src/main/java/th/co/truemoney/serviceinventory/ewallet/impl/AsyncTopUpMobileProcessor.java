@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
@@ -45,15 +46,18 @@ public class AsyncTopUpMobileProcessor {
 
 			String verificationID = topUpMobileDraft.getTransactionID();
 			String target = topUpMobile.getTarget();
+
+			ClientCredential appData = accessToken.getClientCredential();
 			
 			TopUpMobileConfirmationInfo confirmationInfo = legacyFacade.topUpMobile()
-					.topUpAirtime(topUpMobile.getMobileNumber(), 
-								  amount,
-								  topUpMobile.getServiceFee().calculateFee(amount), 
-								  topUpMobile.getEwalletSourceOfFund().calculateFee(amount),
-								  verificationID, 
-								  target,
-								  accessToken);
+					.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+					.fromTopUpChannel(appData.getChannel(), appData.getChannelDetail())
+					.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+					.toMobileNumber(topUpMobile.getMobileNumber())
+					.usingSourceOfFund("EW")
+					.withAmount(amount)
+					.andFee(topUpMobile.getServiceFee().calculateFee(amount), topUpMobile.getEwalletSourceOfFund().calculateFee(amount))
+					.topUpAirtime(verificationID, target);
 
 			topUpMobileTransaction.setConfirmationInfo(confirmationInfo);
 			topUpMobileTransaction.setStatus(Transaction.Status.SUCCESS);

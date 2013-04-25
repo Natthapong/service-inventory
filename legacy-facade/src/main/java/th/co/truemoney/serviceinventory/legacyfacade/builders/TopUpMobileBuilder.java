@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmTopUpAirtimeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeRequest;
-import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpMobileFacade;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileConfirmationInfo;
@@ -17,100 +16,164 @@ import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileConfirmationInfo
 public class TopUpMobileBuilder {
 	
 	private TopUpMobileFacade topUpMobileFacade;
+	
+	private String channel;
+	private String channelDetail;
+	
+	private String appUser;
+	private String appPassword;
+	private String appKey;
+	
+	private String sessionID;
+	private String tmnID;
+	private String commandAction;
+	
 	private String targetMobileNumber;
+	private String ref1;
 	private BigDecimal amount;
-	private AccessToken accessToken;
-	private String transactionID;
-	private String target;
 	private BigDecimal serviceFee;
 	private BigDecimal sourceOfFundFee;
-	
+	private String sourceOfFundSourceType;
+
 	@Autowired(required = false)
 	public TopUpMobileBuilder(TopUpMobileFacade topUpMobileFacade) {
 		this.topUpMobileFacade = topUpMobileFacade;
 	}
+	
+	public TopUpMobileBuilder fromTopUpChannel(String channel, String channelDetail) {
+		this.channel = channel;
+		this.channelDetail = channelDetail;
+		return this;
+	}
 
-	public TopUpMobile verifyTopUpAirtime(String targetMobileNumber, BigDecimal amount, AccessToken accessToken) {
-		this.targetMobileNumber = targetMobileNumber;
-		this.amount = amount;
-		this.accessToken = accessToken;
-		return verifyPayment();
+	public TopUpMobileBuilder fromApp(String appUser, String appPassword, String appKey) {
+		this.appUser = appUser;
+		this.appPassword = appPassword;
+		this.appKey = appKey;
+		return this;
 	}
 	
-	public TopUpMobileConfirmationInfo topUpAirtime(String targetMobileNumber, BigDecimal amount, BigDecimal serviceFee, BigDecimal sourceOfFundFee, String transactionID, String target, AccessToken accessToken) {
+	public TopUpMobileBuilder fromUser(String sessionID, String tmnID) {
+		this.sessionID = sessionID;
+		this.tmnID = tmnID;
+		return this;
+	}
+	
+	public TopUpMobileBuilder toMobileNumber(String targetMobileNumber) {
 		this.targetMobileNumber = targetMobileNumber;
-		this.amount = amount;
-		this.accessToken = accessToken;		
-		this.transactionID = transactionID;
-		this.target = target;
-		this.serviceFee = serviceFee;
-		this.sourceOfFundFee = sourceOfFundFee;
-		return confirmPayment();
+		this.ref1 = targetMobileNumber;
+		return this;
+	}
+	
+	public TopUpMobileBuilder usingSourceOfFund(String sourceOfFundSourceType) {
+		this.commandAction = sourceOfFundSourceType;
+		this.sourceOfFundSourceType = sourceOfFundSourceType;
+		return this;
 	}
 
-	private TopUpMobileConfirmationInfo confirmPayment() {
+	public TopUpMobileBuilder withAmount(BigDecimal amount) {
+		this.amount = amount;
+		return this;
+	}
+	
+	public TopUpMobileBuilder andFee(BigDecimal serviceFee, BigDecimal sourceOfFundFee) {
+		this.serviceFee = serviceFee;
+		this.sourceOfFundFee = sourceOfFundFee;
+		return this;
+	}
+	
+	public TopUpMobile verifyTopUpAirtime() {
+		Validate.notNull(targetMobileNumber, "data missing. verify topUp by mobile number?");
+		Validate.notNull(amount, "data missing. how much to topUp?");
+		Validate.notNull(ref1, "data missing. ref1 missing?");
+
+		Validate.notNull(tmnID, "data missing. missing ewallet source of fund user detail?");
+		Validate.notNull(sessionID, "data missing. missing ewallet source of fund user detail?");
+
+		Validate.notNull(appUser, "data missing.verify topping from which source?");
+		Validate.notNull(appPassword, "data missing. verify topping from which source?");
+		Validate.notNull(appKey, "data missing. verify topping from which source?");
+		Validate.notNull(channel, "data missing. verify topping from which channel?");
+		Validate.notNull(channelDetail, "data missing. verify topping from which channel detail.");
+		Validate.notNull(commandAction, "data missing. verify topping from which command action.");
+		
+		VerifyTopUpAirtimeRequest verifyRequest = new VerifyTopUpAirtimeRequest();
+
+		verifyRequest.setAppUser(appUser);
+		verifyRequest.setAppPassword(appPassword);
+		verifyRequest.setAppKey(appKey);
+		
+		verifyRequest.setChannel(channel);
+		verifyRequest.setChannelDetail(channelDetail);
+		verifyRequest.setCommandAction(commandAction);
+		
+		verifyRequest.setTmnID(tmnID);
+		verifyRequest.setSession(sessionID);
+
+		verifyRequest.setMsisdn(targetMobileNumber);
+		verifyRequest.setRef1(ref1);
+		verifyRequest.setAmount(convertMoney(amount));
+		
+		verifyRequest.setControlFlag("01");
+		verifyRequest.setOperator("true");
+		
+		return topUpMobileFacade.verifyTopUpMobile(verifyRequest);
+	}
+	
+	public TopUpMobileConfirmationInfo topUpAirtime(String transactionID, String target) {		
 		Validate.notNull(transactionID, "data missing. confirm topUp by transactionID?");
 		Validate.notNull(target, "data missing. confirm topUp by target?");
-		Validate.notNull(targetMobileNumber, "data missing. confirm topUp by mobile number?");
+		Validate.notNull(targetMobileNumber, "data missing. verify topUp by mobile number?");
 		Validate.notNull(amount, "data missing. how much to topUp?");
+		Validate.notNull(ref1, "data missing. ref1 missing?");
+
+		Validate.notNull(tmnID, "data missing. missing ewallet source of fund user detail?");
+		Validate.notNull(sessionID, "data missing. missing ewallet source of fund user detail?");
+
+		Validate.notNull(appUser, "data missing.verify topping from which source?");
+		Validate.notNull(appPassword, "data missing. verify topping from which source?");
+		Validate.notNull(appKey, "data missing. verify topping from which source?");
+		Validate.notNull(channel, "data missing. verify topping from which channel?");
+		Validate.notNull(channelDetail, "data missing. verify topping from which channel detail.");
+		Validate.notNull(commandAction, "data missing. verify topping from which command action.");
+		
+		Validate.notNull(serviceFee, "data missing. missing service fee value");
+		Validate.notNull(sourceOfFundFee, "data missing. missing source of fund fee value");
+		Validate.notNull(sourceOfFundSourceType, "data missing. missing source of fund value");
 		
 		ConfirmTopUpAirtimeRequest confirmRequest = new ConfirmTopUpAirtimeRequest();
 		
-		confirmRequest.setAppUser(accessToken.getClientCredential().getAppUser());
-		confirmRequest.setAppPassword(accessToken.getClientCredential().getAppPassword());
-		confirmRequest.setAppKey(accessToken.getClientCredential().getAppKey());
-
-		confirmRequest.setChannel(accessToken.getClientCredential().getChannel());
-		confirmRequest.setChannelDetail(accessToken.getClientCredential().getChannelDetail());
-
-		confirmRequest.setCommandAction("EW");
-		confirmRequest.setTmnID(accessToken.getTruemoneyID());
-		confirmRequest.setSession(accessToken.getSessionID());
-		confirmRequest.setControlFlag("01");
-
-		confirmRequest.setRef1(targetMobileNumber);
-		confirmRequest.setOperator("true");
-
-		confirmRequest.setTransRef(transactionID);
-		confirmRequest.setMsisdn(targetMobileNumber);
-		confirmRequest.setAmount(convertMoney(amount));
-		confirmRequest.setTarget(target);
+		confirmRequest.setAppUser(appUser);
+		confirmRequest.setAppPassword(appPassword);
+		confirmRequest.setAppKey(appKey);
 		
-		confirmRequest.setSource("EW");
+		confirmRequest.setChannel(channel);
+		confirmRequest.setChannelDetail(channelDetail);
+		confirmRequest.setCommandAction(commandAction);
+
+		confirmRequest.setTmnID(tmnID);
+		confirmRequest.setSession(sessionID);
+
+		confirmRequest.setMsisdn(targetMobileNumber);
+		confirmRequest.setRef1(ref1);
+		confirmRequest.setAmount(convertMoney(amount));
+		
+		confirmRequest.setSource(sourceOfFundSourceType);
 		confirmRequest.setSourceFeeType("THB");
 		confirmRequest.setTotalSourceFee(convertMoney(sourceOfFundFee));
 		confirmRequest.setServiceFeeType("THB");
 		confirmRequest.setTotalServiceFee(convertMoney(serviceFee));
 		
+		confirmRequest.setTransRef(transactionID);
+		confirmRequest.setTarget(target);
+		
+		confirmRequest.setControlFlag("01");
+		confirmRequest.setOperator("true");
+		
 		return topUpMobileFacade.topUpMobile(confirmRequest);
 	}
 
-	public TopUpMobile verifyPayment() {
-		Validate.notNull(targetMobileNumber, "data missing. verify topUp by mobile number?");
-		Validate.notNull(amount, "data missing. how much to topUp?");
-
-		VerifyTopUpAirtimeRequest verifyRequest = new VerifyTopUpAirtimeRequest();
-
-		verifyRequest.setAppUser(accessToken.getClientCredential().getAppUser());
-		verifyRequest.setAppPassword(accessToken.getClientCredential().getAppPassword());
-		verifyRequest.setAppKey(accessToken.getClientCredential().getAppKey());
-
-		verifyRequest.setChannel(accessToken.getClientCredential().getChannel());
-		verifyRequest.setChannelDetail(accessToken.getClientCredential().getChannelDetail());
-
-		verifyRequest.setCommandAction("EW");
-		verifyRequest.setTmnID(accessToken.getTruemoneyID());
-		verifyRequest.setSession(accessToken.getSessionID());
-		verifyRequest.setControlFlag("01");
-
-		verifyRequest.setRef1(targetMobileNumber);
-		verifyRequest.setOperator("true");
-
-		verifyRequest.setMsisdn(targetMobileNumber);
-		verifyRequest.setAmount(convertMoney(amount));
-		
-		return topUpMobileFacade.verifyTopUpMobile(verifyRequest);
-	}
+	
 	
 	private String convertMoney(BigDecimal value) {
 		BigDecimal scaled = value.setScale(2, RoundingMode.HALF_UP);

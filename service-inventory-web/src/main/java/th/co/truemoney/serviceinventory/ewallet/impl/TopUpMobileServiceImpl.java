@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -55,9 +56,17 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 			throws ServiceInventoryException {
 		
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		ClientCredential appData = accessToken.getClientCredential();
 		
 		//verify topup mobile
-		TopUpMobile topUpMobile = legacyFacade.topUpMobile().verifyTopUpAirtime(targetMobileNumber, amount, accessToken);
+		TopUpMobile topUpMobile = legacyFacade.topUpMobile()
+				.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+				.fromTopUpChannel(appData.getChannel(), appData.getChannelDetail())
+				.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				.toMobileNumber(targetMobileNumber)
+				.usingSourceOfFund("EW")
+				.withAmount(amount)
+				.verifyTopUpAirtime();				
 		
 		TopUpMobileDraft topUpMobileDraft = new TopUpMobileDraft(UUID.randomUUID().toString(), topUpMobile, topUpMobile.getAmount(), topUpMobile.getID(), Status.CREATED);
 		transactionRepo.saveTopUpMobileDraft(topUpMobileDraft, accessTokenID);
