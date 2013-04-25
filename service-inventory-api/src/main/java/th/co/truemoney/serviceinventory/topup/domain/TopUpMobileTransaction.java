@@ -1,6 +1,6 @@
 package th.co.truemoney.serviceinventory.topup.domain;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 
@@ -47,8 +47,8 @@ public class TopUpMobileTransaction extends Transaction {
 		return (TopUpMobileDraft) super.getDraftTransaction();
 	}
 
-	public void setDraftTransaction(BillPaymentDraft bill) {
-		super.setDraftTransaction(bill);
+	public void setDraftTransaction(TopUpMobileDraft topUpMobileDraft) {
+		super.setDraftTransaction(topUpMobileDraft);
 	}
 
 	public FailStatus getFailStatus() {

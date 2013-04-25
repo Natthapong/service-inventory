@@ -119,4 +119,32 @@ public class TopupMobileIntegrateTest {
 		assertEquals(TopUpMobileTransaction.Status.SUCCESS, status);
 	}
 	
+	@Test 
+	public void getTransactionInfo(){
+		
+		String accessToken = profileService.login(
+				TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin());
+		
+		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
+		assertNotNull(topUpMobileDraft);
+		
+		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
+		assertNotNull(otp);
+		
+		otp.setOtpString("111111");
+		DraftTransaction.Status transactionStatus = client.confirmTopUpMobile(topUpMobileDraft.getID(), otp, accessToken);
+		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, transactionStatus);
+
+		TopUpMobileTransaction.Status status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
+		assertNotNull(status);
+		assertEquals(TopUpMobileTransaction.Status.SUCCESS, status);
+		
+		TopUpMobileTransaction topUpMobileTransaction = client.getTopUpMobileResult(topUpMobileDraft.getID(), accessToken);
+		assertNotNull(topUpMobileTransaction);
+		assertNotNull(topUpMobileTransaction.getConfirmationInfo().getTransactionID());
+		assertNotNull(topUpMobileTransaction.getConfirmationInfo().getTransactionDate());
+		
+	}
+	
 }
