@@ -98,7 +98,7 @@ public class TopupMobileIntegrateTest {
 	}
 	
 	@Test
-	public void getToppingMobileStatus(){
+	public void getToppingMobileStatus() throws InterruptedException{
 		
 		String accessToken = profileService.login(
 				TestData.createSuccessUserLogin(),
@@ -116,11 +116,18 @@ public class TopupMobileIntegrateTest {
 
 		TopUpMobileTransaction.Status status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
 		assertNotNull(status);
+		
+		while (status == TopUpMobileTransaction.Status.PROCESSING) {
+			status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
+			System.out.println("processing top up ...");
+			Thread.sleep(1000);
+		}
+
 		assertEquals(TopUpMobileTransaction.Status.SUCCESS, status);
 	}
 	
 	@Test 
-	public void getTransactionInfo(){
+	public void getTransactionInfo() throws InterruptedException{
 		
 		String accessToken = profileService.login(
 				TestData.createSuccessUserLogin(),
@@ -138,6 +145,13 @@ public class TopupMobileIntegrateTest {
 
 		TopUpMobileTransaction.Status status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
 		assertNotNull(status);
+		
+		while (status == TopUpMobileTransaction.Status.PROCESSING) {
+			status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
+			System.out.println("processing top up ...");
+			Thread.sleep(1000);
+		}
+		
 		assertEquals(TopUpMobileTransaction.Status.SUCCESS, status);
 		
 		TopUpMobileTransaction topUpMobileTransaction = client.getTopUpMobileResult(topUpMobileDraft.getID(), accessToken);
