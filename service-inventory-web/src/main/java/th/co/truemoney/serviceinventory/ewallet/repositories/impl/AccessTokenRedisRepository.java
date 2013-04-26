@@ -65,7 +65,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 	@Override
 	public void extendAccessToken(String accessTokenID) {
 		try {
-			redisLoggingDao.setExpire(accessTokenID, 15L);
+			redisLoggingDao.setExpire(accessTokenID, 20L);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
