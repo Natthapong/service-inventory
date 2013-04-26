@@ -13,7 +13,6 @@ public class Activity implements Serializable {
 
 	private static final long serialVersionUID = 552116675059958627L;
 	
-	private String groupIcon;
 	private String type;
 	private String action;
 	private String ref1;
@@ -21,12 +20,6 @@ public class Activity implements Serializable {
 	private String reportID;
 	
 	public Activity() {
-	}
-	public String getGroupIcon() {
-		return groupIcon;
-	}
-	public void setGroupIcon(String groupIcon) {
-		this.groupIcon = groupIcon;
 	}
 	public String getType() {
 		return type;
