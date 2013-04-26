@@ -2,7 +2,6 @@ package th.co.truemoney.serviceinventory.topup.mobile;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 
@@ -62,8 +61,6 @@ public class TopupMobileIntegrateTest {
 			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
-		
-		fail("Listen a musiccccc");
 		
 		assertEquals(TopUpMobileTransaction.Status.SUCCESS, status);
 		
