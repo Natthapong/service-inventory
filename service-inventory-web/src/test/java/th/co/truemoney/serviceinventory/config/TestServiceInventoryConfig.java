@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
+import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
@@ -46,6 +47,11 @@ public class TestServiceInventoryConfig {
 	@Bean @Scope("singleton")
 	public TopUpMobileService mockTopUpMobileService() {
 		return Mockito.mock(TopUpMobileService.class);
+	}
+	
+	@Bean @Scope("singleton")
+	public ActivityService mockActivityService() {
+		return Mockito.mock(ActivityService.class);
 	}
 
     @Bean

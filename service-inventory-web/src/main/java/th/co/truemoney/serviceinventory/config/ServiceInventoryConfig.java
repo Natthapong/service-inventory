@@ -15,9 +15,11 @@ import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.engine.client.config.SIEngineConfig;
+import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
+import th.co.truemoney.serviceinventory.ewallet.impl.ActivityServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncP2PTransferProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpMobileProcessor;
@@ -68,6 +70,10 @@ public class ServiceInventoryConfig {
 	@Bean
 	public TopUpMobileService getTopUpMobileService() {
 		return new TopUpMobileServiceImpl();
+	}
+	
+	@Bean ActivityService getActivityService() {
+		return new ActivityServiceImpl();
 	}
 
 	@Bean

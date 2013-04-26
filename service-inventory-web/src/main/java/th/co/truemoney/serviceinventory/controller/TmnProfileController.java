@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.bean.LoginRequest;
+import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
+import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
+import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
@@ -26,6 +30,9 @@ public class TmnProfileController {
 
 	@Autowired
 	private TmnProfileService tmnProfileService;
+	
+	@Autowired
+	private ActivityService activityService;
 
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
@@ -95,6 +102,26 @@ public class TmnProfileController {
 		return tmnProfileService.confirmCreateProfile(channelID, otp);
 	}
 
+	@RequestMapping(value = "/activities/{accessTokenID}", method = RequestMethod.GET)
+	public @ResponseBody List<Activity> getActivities(@PathVariable String accessTokenID) {
+
+		List<Activity> activities = activityService.getActivities(accessTokenID);
+
+		extendExpireAccessToken(accessTokenID);
+		
+		return activities;
+	}
+	
+	@RequestMapping(value = "/activities/{accessTokenID}/detail/{reportID}", method = RequestMethod.GET)
+	public @ResponseBody ActivityDetail getActivityDetail(@PathVariable String accessTokenID, @PathVariable String reportID) {
+
+		ActivityDetail activityDetail = activityService.getActivityDetail(reportID, accessTokenID);
+
+		extendExpireAccessToken(accessTokenID);
+		
+		return activityDetail;
+	}
+	
 	private void extendExpireAccessToken(String accessTokenID) {
 		extendAccessTokenAsynService.setExpire(accessTokenID);
 	}
