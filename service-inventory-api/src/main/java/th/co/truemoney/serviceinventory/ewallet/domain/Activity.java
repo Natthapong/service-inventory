@@ -20,8 +20,7 @@ public class Activity implements Serializable {
 	private BigDecimal totalAmount;
 	private String reportID;
 	
-	private Activity() {
-		super();
+	public Activity() {
 	}
 	public String getGroupIcon() {
 		return groupIcon;

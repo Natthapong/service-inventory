@@ -26,7 +26,7 @@ public class ActivityDetail implements Serializable {
 	private String sourceOfFundType;
 
 	
-	private ActivityDetail() {
+	public ActivityDetail() {
 		super();
 	}
 	public String getGroupIcon() {
