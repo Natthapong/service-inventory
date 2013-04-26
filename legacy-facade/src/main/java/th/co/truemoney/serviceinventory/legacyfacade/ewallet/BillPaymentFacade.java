@@ -43,7 +43,7 @@ public class BillPaymentFacade {
 			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			SIEngineResponse billPayResponse = billPayProxy.confirmBillPay(billRequest);
 			BillPaymentConfirmationInfo confirmationInfo = new BillPaymentConfirmationInfo();
-			confirmationInfo.setTransactionID(billPayResponse.getTransactionID());
+			confirmationInfo.setTransactionID(billPayResponse.getApproveCode());
 			confirmationInfo.setTransactionDate(df.format(new Date()));
 			return confirmationInfo;
 		} catch (FailResultCodeException ex) {
