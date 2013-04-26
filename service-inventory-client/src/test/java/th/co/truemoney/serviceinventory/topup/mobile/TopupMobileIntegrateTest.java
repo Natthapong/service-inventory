@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.client.TmnProfileServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.TopupMobileServicesClient;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
@@ -34,101 +33,12 @@ public class TopupMobileIntegrateTest {
 	@Autowired 
 	private TmnProfileServiceClient profileService;
 	
-	@Autowired public TopupMobileServicesClient client;
+	@Autowired 
+	public TopupMobileServicesClient client;
 	
 	@Test
-	public void verify() {
-		
-		String accessToken = profileService.login(
-				TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin());
-		
-		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
-		assertNotNull(topUpMobileDraft);
-	}
+	public void successTopUpMobile() throws InterruptedException{
 	
-	@Test
-	public void sendOTP(){
-		
-		String accessToken = profileService.login(
-				TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin());
-		
-		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
-		assertNotNull(topUpMobileDraft);
-		
-		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
-		assertNotNull(otp);
-	}
-	
-	@Test
-	public void getTopUpMobileDraft() {
-		String accessToken = profileService.login(
-				TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin());
-		
-		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
-		assertNotNull(topUpMobileDraft);
-		
-		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
-		assertNotNull(otp);
-		
-		TopUpMobileDraft topUpMobileDraft2 = client.getTopUpMobileDraftDetail(topUpMobileDraft.getID() , accessToken);
-		assertNotNull(topUpMobileDraft2); 
-		
-	}
-	
-	@Test
-	public void verifyOTPAndPerformToppingMobile(){
-		
-		String accessToken = profileService.login(
-				TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin());
-		
-		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
-		assertNotNull(topUpMobileDraft);
-		
-		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
-		assertNotNull(otp);
-		
-		otp.setOtpString("111111");
-		DraftTransaction.Status transactionStatus = client.confirmTopUpMobile(topUpMobileDraft.getID(), otp, accessToken);
-		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, transactionStatus);
-			
-	}
-	
-	@Test
-	public void getToppingMobileStatus() throws InterruptedException{
-		
-		String accessToken = profileService.login(
-				TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin());
-		
-		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
-		assertNotNull(topUpMobileDraft);
-		
-		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
-		assertNotNull(otp);
-		
-		otp.setOtpString("111111");
-		DraftTransaction.Status transactionStatus = client.confirmTopUpMobile(topUpMobileDraft.getID(), otp, accessToken);
-		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, transactionStatus);
-
-		TopUpMobileTransaction.Status status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
-		assertNotNull(status);
-		
-		while (status == TopUpMobileTransaction.Status.PROCESSING) {
-			status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
-			System.out.println("processing top up ...");
-			Thread.sleep(1000);
-		}
-
-		assertEquals(TopUpMobileTransaction.Status.SUCCESS, status);
-	}
-	
-	@Test 
-	public void getTransactionInfo() throws InterruptedException{
-		
 		String accessToken = profileService.login(
 				TestData.createSuccessUserLogin(),
 				TestData.createSuccessClientLogin());
