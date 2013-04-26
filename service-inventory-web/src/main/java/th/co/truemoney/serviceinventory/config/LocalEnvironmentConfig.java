@@ -81,7 +81,7 @@ public class LocalEnvironmentConfig {
 		return new ActivityService() {
 			
 			@Override
-			public ActivityDetail getActivityDetail(String reportID,
+			public ActivityDetail getActivityDetail(Long reportID,
 					String accessTokenID) throws ServiceInventoryException {
 				ActivityDetail activityDetail = new ActivityDetail();
 				activityDetail.setAmount(new BigDecimal(1000));
@@ -93,7 +93,7 @@ public class LocalEnvironmentConfig {
 					throws ServiceInventoryException {
 				List<Activity> activities = new ArrayList<Activity>();
 				Activity activity = new Activity();
-				activity.setReportID("999");
+				activity.setReportID(new Long(999));
 				activities.add(activity);
 				return activities;
 			}

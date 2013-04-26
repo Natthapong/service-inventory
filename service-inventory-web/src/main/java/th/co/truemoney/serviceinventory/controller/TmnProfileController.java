@@ -113,7 +113,7 @@ public class TmnProfileController {
 	}
 	
 	@RequestMapping(value = "/activities/{accessTokenID}/detail/{reportID}", method = RequestMethod.GET)
-	public @ResponseBody ActivityDetail getActivityDetail(@PathVariable String accessTokenID, @PathVariable String reportID) {
+	public @ResponseBody ActivityDetail getActivityDetail(@PathVariable String accessTokenID, @PathVariable Long reportID) {
 
 		ActivityDetail activityDetail = activityService.getActivityDetail(reportID, accessTokenID);
 

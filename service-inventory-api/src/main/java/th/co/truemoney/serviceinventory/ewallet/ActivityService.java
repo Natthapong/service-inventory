@@ -11,7 +11,7 @@ public interface ActivityService {
 	public List<Activity> getActivities(String accessTokenID)
 		throws ServiceInventoryException;
 	
-	public ActivityDetail getActivityDetail(String reportID, String accessTokenID)
+	public ActivityDetail getActivityDetail(Long reportID, String accessTokenID)
 		throws ServiceInventoryException;
 	
 }

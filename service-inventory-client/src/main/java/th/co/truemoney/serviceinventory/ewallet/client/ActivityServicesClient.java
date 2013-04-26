@@ -42,7 +42,7 @@ public class ActivityServicesClient implements ActivityService{
 	}
 
 	@Override
-	public ActivityDetail getActivityDetail(String reportID,
+	public ActivityDetail getActivityDetail(Long reportID,
 			String accessTokenID) throws ServiceInventoryException {
 		
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);

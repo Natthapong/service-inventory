@@ -83,7 +83,7 @@ public class ActivityServicesClientTest {
 		when(restTemplate.exchange(eq(endPoints.getActivityDetailURL()), eq(HttpMethod.GET), any(HttpEntity.class)
 				, eq(ActivityDetail.class) , anyString() , anyString()) ).thenReturn(responseEntity);
 		
-		ActivityDetail activityDetailResponse = activityServicesClient.getActivityDetail("1234", "5678");
+		ActivityDetail activityDetailResponse = activityServicesClient.getActivityDetail(new Long(1234), "5678");
 		assertEquals(amount, activityDetailResponse.getAmount());
 		
 		verify(restTemplate).exchange(eq(endPoints.getActivityDetailURL()), eq(HttpMethod.GET), any(HttpEntity.class)

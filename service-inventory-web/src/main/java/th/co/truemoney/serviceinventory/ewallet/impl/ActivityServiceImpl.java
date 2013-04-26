@@ -19,7 +19,7 @@ public class ActivityServiceImpl implements ActivityService {
 	}
 
 	@Override
-	public ActivityDetail getActivityDetail(String reportID, String accessTokenID) throws ServiceInventoryException {
+	public ActivityDetail getActivityDetail(Long reportID, String accessTokenID) throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
