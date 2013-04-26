@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class TransactionHistoryDetail implements Serializable {
+public class ActivityDetail implements Serializable {
 
 	private static final long serialVersionUID = -7169633329969307484L;
 
@@ -28,7 +28,7 @@ public class TransactionHistoryDetail implements Serializable {
 	private ServiceFeeInfo serviceFeeInfo;
 	private SourceOfFund sourceOfFunds;
 	
-	private TransactionHistoryDetail() {
+	private ActivityDetail() {
 		super();
 	}
 	public String getGroupIcon() {
