@@ -93,4 +93,16 @@ public class Activity implements Serializable {
 		this.transactionDate = transactionDate;
 	}
 	
+	public BigDecimal getTotalFeeAmount() {
+		BigDecimal totalFeeAmount = BigDecimal.ZERO;
+		totalFeeAmount = totalFeeAmount.add(this.serviceFee);
+		totalFeeAmount = totalFeeAmount.add(this.sourceOfFundFee);
+		return totalFeeAmount;
+	}
+	
+	public BigDecimal getTotalAmount() {
+		BigDecimal totalFeeAmount = getTotalFeeAmount();
+		return totalFeeAmount.add(this.amount);
+	}
+	
 }
