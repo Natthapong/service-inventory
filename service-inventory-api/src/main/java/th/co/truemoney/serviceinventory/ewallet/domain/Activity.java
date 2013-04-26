@@ -17,7 +17,7 @@ public class Activity implements Serializable {
 	private String type;
 	private String action;
 	private String ref1;
-	private BigDecimal amount;
+	private BigDecimal totalAmount;
 	private String reportID;
 	
 	private Activity() {
@@ -46,12 +46,12 @@ public class Activity implements Serializable {
 	}
 	public void setRef1(String ref1) {
 		this.ref1 = ref1;
+	}	
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
 	}
-	public BigDecimal getAmount() {
-		return amount;
-	}
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 	public String getReportID() {
 		return reportID;

@@ -3,9 +3,6 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
-import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -24,9 +21,10 @@ public class ActivityDetail implements Serializable {
 	private String transactionID;
 	private String transactionDate;	
 	private BigDecimal amount;
+	private BigDecimal serviceFee;
+	private BigDecimal sourceOfFundFee;
 	private String sourceOfFundType;
-	private ServiceFeeInfo serviceFeeInfo;
-	private SourceOfFund sourceOfFunds;
+
 	
 	private ActivityDetail() {
 		super();
@@ -85,17 +83,17 @@ public class ActivityDetail implements Serializable {
 	public void setSourceOfFundType(String sourceOfFundType) {
 		this.sourceOfFundType = sourceOfFundType;
 	}
-	public ServiceFeeInfo getServiceFeeInfo() {
-		return serviceFeeInfo;
+	public BigDecimal getServiceFee() {
+		return serviceFee;
 	}
-	public void setServiceFeeInfo(ServiceFeeInfo serviceFeeInfo) {
-		this.serviceFeeInfo = serviceFeeInfo;
+	public void setServiceFee(BigDecimal serviceFee) {
+		this.serviceFee = serviceFee;
 	}
-	public SourceOfFund getSourceOfFunds() {
-		return sourceOfFunds;
+	public BigDecimal getSourceOfFundFee() {
+		return sourceOfFundFee;
 	}
-	public void setSourceOfFunds(SourceOfFund sourceOfFunds) {
-		this.sourceOfFunds = sourceOfFunds;
+	public void setSourceOfFundFee(BigDecimal sourceOfFundFee) {
+		this.sourceOfFundFee = sourceOfFundFee;
 	}
 	
 }
