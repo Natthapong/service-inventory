@@ -10,9 +10,7 @@
 	<packaging>war</packaging>
 
 	<properties>
-		<java-version>1.6</java-version>
 		<redis-version>1.0.2.RELEASE</redis-version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tmn.environment>dev</tmn.environment>
 		<tmn.repo>redis</tmn.repo>
 	</properties>
@@ -64,7 +62,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -88,7 +86,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<scope>test</scope>			
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-discovery</groupId>
@@ -121,22 +119,22 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 			<version>1.5.0-b01</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.9</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.jasypt</groupId>
 			<artifactId>jasypt</artifactId>
 			<version>1.9.0</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
@@ -146,29 +144,12 @@
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
 			<version>1.7.2</version>
-		</dependency>                     		
+		</dependency>
 	</dependencies>
 
 	<build>
 		<finalName>service-inventory-web</finalName>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.13</version>
-				<configuration>
-					<argLine>-XX:-UseSplitVerifier</argLine>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<source>${java-version}</source>
-					<target>${java-version}</target>
-					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>

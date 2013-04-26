@@ -19,25 +19,12 @@
 			<groupId>th.co.truemoney.serviceinventory</groupId>
 			<artifactId>ewallet-client</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>th.co.truemoney.serviceinventory</groupId>
 			<artifactId>siengine-client</artifactId>
 		</dependency>
-		
+
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<source>${java-version}</source>
-					<target>${java-version}</target>
-					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
