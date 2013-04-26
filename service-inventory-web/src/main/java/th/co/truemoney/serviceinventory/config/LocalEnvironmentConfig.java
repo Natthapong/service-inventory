@@ -2,6 +2,8 @@ package th.co.truemoney.serviceinventory.config;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Session;
@@ -22,6 +24,9 @@ import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxyImpl;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxyImpl;
+import th.co.truemoney.serviceinventory.ewallet.ActivityService;
+import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
+import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
@@ -55,6 +60,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResp
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
@@ -68,7 +74,32 @@ import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 @Configuration
 @Profile("local")
 public class LocalEnvironmentConfig {
-
+	
+	@Bean
+	@Primary
+	public ActivityService stubActivityService(){
+		return new ActivityService() {
+			
+			@Override
+			public ActivityDetail getActivityDetail(String reportID,
+					String accessTokenID) throws ServiceInventoryException {
+				ActivityDetail activityDetail = new ActivityDetail();
+				activityDetail.setAmount(new BigDecimal(1000));
+				return activityDetail;
+			}
+			
+			@Override
+			public List<Activity> getActivities(String accessTokenID)
+					throws ServiceInventoryException {
+				List<Activity> activities = new ArrayList<Activity>();
+				Activity activity = new Activity();
+				activity.setReportID("999");
+				activities.add(activity);
+				return activities;
+			}
+		};
+	}
+	
 	Adam adam = new Adam();
 	Eve eve = new Eve();
 

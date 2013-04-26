@@ -141,4 +141,12 @@ public class EndPoints {
 	public String getTopUpMobileResultURL() {
 		return host + "/service-inventory-web/v1/top-up/mobile/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
+
+	public String getActivitiesListURL() {
+		return host + "/service-inventory-web/v1/ewallet/activities/{accessTokenID}";
+	}
+
+	public String getActivityDetailURL() {
+		return host + "/service-inventory-web/v1/ewallet/activities/{accessTokenID}/detail/{reportID}";
+	}
 }
