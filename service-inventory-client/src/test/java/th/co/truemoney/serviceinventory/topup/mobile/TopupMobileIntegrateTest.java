@@ -29,46 +29,47 @@ import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 @ActiveProfiles(profiles = "local")
 @Category(IntegrationTest.class)
 public class TopupMobileIntegrateTest {
-	
-	@Autowired 
+
+	@Autowired
 	private TmnProfileServiceClient profileService;
-	
-	@Autowired 
+
+	@Autowired
 	public TopupMobileServicesClient client;
-	
+
 	@Test
 	public void successTopUpMobile() throws InterruptedException{
-	
+
 		String accessToken = profileService.login(
 				TestData.createSuccessUserLogin(),
 				TestData.createSuccessClientLogin());
-		
+
 		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
 		assertNotNull(topUpMobileDraft);
-		
+
 		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
 		assertNotNull(otp);
-		
+
 		otp.setOtpString("111111");
 		DraftTransaction.Status transactionStatus = client.confirmTopUpMobile(topUpMobileDraft.getID(), otp, accessToken);
 		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, transactionStatus);
 
+		Thread.sleep(100);
 		TopUpMobileTransaction.Status status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
 		assertNotNull(status);
-		
+
 		while (status == TopUpMobileTransaction.Status.PROCESSING) {
 			status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
 			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
-		
+
 		assertEquals(TopUpMobileTransaction.Status.SUCCESS, status);
-		
+
 		TopUpMobileTransaction topUpMobileTransaction = client.getTopUpMobileResult(topUpMobileDraft.getID(), accessToken);
 		assertNotNull(topUpMobileTransaction);
 		assertNotNull(topUpMobileTransaction.getConfirmationInfo().getTransactionID());
 		assertNotNull(topUpMobileTransaction.getConfirmationInfo().getTransactionDate());
-		
+
 	}
-	
+
 }
