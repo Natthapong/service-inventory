@@ -28,6 +28,12 @@ public class Activity implements Serializable {
 		this.serviceFee = BigDecimal.ZERO;
 		this.sourceOfFundFee = BigDecimal.ZERO;
 	}
+	
+	public Activity(Long reportID, String type) {
+		super();
+		this.reportID = reportID;
+		this.type = type;
+	}
 
 	public Long getReportID() {
 		return reportID;
