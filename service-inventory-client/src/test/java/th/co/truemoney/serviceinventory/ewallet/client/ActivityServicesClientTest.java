@@ -54,7 +54,6 @@ public class ActivityServicesClientTest {
 		
 	}
 	
-	@SuppressWarnings("rawtypes")
 	@Test 
 	public void getActivitiesURL(){
 

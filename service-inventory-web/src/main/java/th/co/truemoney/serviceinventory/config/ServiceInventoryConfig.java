@@ -41,7 +41,7 @@ import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 @ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop"})
 @Import({SmsConfig.class, TmnProfileConfig.class, SIEngineConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, DevEnvironmentConfig.class })
 public class ServiceInventoryConfig {
-
+	
 	@Bean
 	public TmnProfileService getTmnProfileService() {
 		return new TmnProfileServiceImpl();

@@ -29,7 +29,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class, LocalEnvironmentConfig.class })
 @ActiveProfiles(profiles = "local")
 @Category(IntegrationTest.class)
-public class TmnTopupServiceClientURLTest {
+public class TmnTopupServiceClientTest {
 
 	@Autowired
 	TmnTopUpServiceClient topupServiceClient;
