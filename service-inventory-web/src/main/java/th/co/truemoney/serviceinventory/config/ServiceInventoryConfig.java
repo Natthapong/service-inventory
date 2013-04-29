@@ -1,12 +1,17 @@
 package th.co.truemoney.serviceinventory.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -126,5 +131,23 @@ public class ServiceInventoryConfig {
 	public AsyncTopUpMobileProcessor getAsyncTopUpMobileProcessor() {
 		return new AsyncTopUpMobileProcessor();
 	}
+	
+	@Bean
+	public EndPoints endPoints() {
+		return new EndPoints();
+	}
+	
+	@Bean
+	@Qualifier("jsonHttpHeader")
+	public HttpHeaders defaultHttpHeaders() {
+		HttpHeaders headers = new HttpHeaders();
 
+		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+		acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+		headers.setAccept(acceptableMediaTypes);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		return headers;
+	}
+	
 }

@@ -1,0 +1,9 @@
+[
+ 		{
+ 			"action": "Truemove H+",
+ 			"type": "billpay",
+ 			"amount": 2000,
+ 			"ref1": "085-382-8482",
+ 			"transactionDate": "1367207620395"
+ 		}
+]
