@@ -19,7 +19,7 @@
 			<groupId>th.co.truemoney.serviceinventory</groupId>
 			<artifactId>service-inventory-api</artifactId>
 		</dependency>
-
+	
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
@@ -116,7 +116,14 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>com.tmn.core</groupId>
+			<artifactId>core-report-web</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<type>war</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -185,6 +192,14 @@
 							<type>war</type>
 							<properties>
 								<context>/service-inventory-web</context>
+							</properties>
+						</deployable>
+						<deployable>
+							<groupId>com.tmn.core</groupId>
+							<artifactId>core-report-web</artifactId>
+							<type>war</type>
+							<properties>
+								<context>/core-report-web</context>
 							</properties>
 						</deployable>
 					</deployables>

@@ -75,30 +75,35 @@ import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 @Profile("local")
 public class LocalEnvironmentConfig {
 	
-	@Bean
-	@Primary
-	public ActivityService stubActivityService(){
-		return new ActivityService() {
-			
-			@Override
-			public ActivityDetail getActivityDetail(Long reportID,
-					String accessTokenID) throws ServiceInventoryException {
-				ActivityDetail activityDetail = new ActivityDetail();
-				activityDetail.setAmount(new BigDecimal(1000));
-				return activityDetail;
-			}
-			
-			@Override
-			public List<Activity> getActivities(String accessTokenID)
-					throws ServiceInventoryException {
-				List<Activity> activities = new ArrayList<Activity>();
-				Activity activity = new Activity();
-				activity.setReportID(new Long(999));
-				activities.add(activity);
-				return activities;
-			}
-		};
+	@Bean @Qualifier("endpoint.host")
+	public String host() {
+		return "http://127.0.0.1:8585";
 	}
+	
+//	@Bean
+//	@Primary
+//	public ActivityService stubActivityService(){
+//		return new ActivityService() {
+//			
+//			@Override
+//			public ActivityDetail getActivityDetail(Long reportID,
+//					String accessTokenID) throws ServiceInventoryException {
+//				ActivityDetail activityDetail = new ActivityDetail();
+//				activityDetail.setAmount(new BigDecimal(1000));
+//				return activityDetail;
+//			}
+//			
+//			@Override
+//			public List<Activity> getActivities(String accessTokenID)
+//					throws ServiceInventoryException {
+//				List<Activity> activities = new ArrayList<Activity>();
+//				Activity activity = new Activity();
+//				activity.setReportID(new Long(999));
+//				activities.add(activity);
+//				return activities;
+//			}
+//		};
+//	}
 	
 	Adam adam = new Adam();
 	Eve eve = new Eve();
@@ -186,7 +191,7 @@ public class LocalEnvironmentConfig {
 						&& "password".equals(password)){
 					return new SignonResponse("1", "0", "namespace",
 							new String[] { "key" }, new String[] { "value" },
-							"sessionId", "trueMoneyId");
+							"sessionId", "1000");
 
 				}
 

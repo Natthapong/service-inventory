@@ -22,6 +22,11 @@ import th.co.truemoney.serviceinventory.sms.RandomOTPGeneraor;
 @Profile("dev")
 public class DevEnvironmentConfig {
 
+	@Bean @Qualifier("endpoint.host")
+	public String host() {
+		return "https://127.0.0.1:9443";
+	}
+	
 	@Value("${tmnprofile.endpoint}")
 	private String tmnProfileSoapEndpoint;
 	

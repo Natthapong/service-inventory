@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.Test;
@@ -49,10 +48,9 @@ public class ActivityServiceWorkflowTest {
 		assertTrue(activities.size()>0);
 		
 		Activity activity = activities.get(0);
-		
-		ActivityDetail activityDetail = client.getActivityDetail(activity.getReportID(), accessToken);
+		ActivityDetail activityDetail = client.getActivityDetail(1000L, accessToken);
 		assertNotNull(activityDetail);
-		assertEquals(new BigDecimal(1000), activityDetail.getAmount());
+		assertEquals(-200, activityDetail.getAmount().intValue());
 		
 	}
 	
