@@ -29,10 +29,15 @@ public class Activity implements Serializable {
 		this.sourceOfFundFee = BigDecimal.ZERO;
 	}
 	
-	public Activity(Long reportID, String type) {
-		super();
+	public Activity(Long reportID, String type, Date transactionDate, String action, String ref1) {
 		this.reportID = reportID;
 		this.type = type;
+		this.transactionDate = transactionDate;
+		this.action = action;
+		this.ref1 = ref1;
+		this.amount = BigDecimal.ZERO;
+		this.serviceFee = BigDecimal.ZERO;
+		this.sourceOfFundFee = BigDecimal.ZERO;
 	}
 
 	public Long getReportID() {
