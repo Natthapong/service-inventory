@@ -39,7 +39,7 @@ public class ActivityServiceImpl implements ActivityService {
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		
 		ResponseEntity<Activity[]> response = restTempalte.exchange(endPoints.getListAllReport(), 
-				HttpMethod.GET, new HttpEntity<String>(headers), Activity[].class, accessToken.getTruemoneyID() , accessTokenID);
+				HttpMethod.GET, new HttpEntity<String>(headers), Activity[].class, accessToken.getTruemoneyID());
 		
 		return Arrays.asList(response.getBody());
 	}
@@ -48,7 +48,7 @@ public class ActivityServiceImpl implements ActivityService {
 	public ActivityDetail getActivityDetail(Long reportID, String accessTokenID) throws ServiceInventoryException {
 		
 		ResponseEntity<ActivityDetail> response = restTempalte.exchange(endPoints.getReportDetail(), 
-				HttpMethod.GET, new HttpEntity<String>(headers), ActivityDetail.class, reportID , accessTokenID);
+				HttpMethod.GET, new HttpEntity<String>(headers), ActivityDetail.class, reportID );
 
 		return response.getBody();
 	}
