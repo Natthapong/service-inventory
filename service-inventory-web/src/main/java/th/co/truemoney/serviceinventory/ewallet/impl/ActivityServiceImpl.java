@@ -22,7 +22,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class ActivityServiceImpl implements ActivityService {
 
 	@Autowired
-	private RestTemplate restTempalte;
+	private RestTemplate restTemplate;
 	
 	@Autowired
 	private AccessTokenRepository accessTokenRepository;
@@ -38,7 +38,7 @@ public class ActivityServiceImpl implements ActivityService {
 		
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		
-		ResponseEntity<Activity[]> response = restTempalte.exchange(endPoints.getListAllReport(), 
+		ResponseEntity<Activity[]> response = restTemplate.exchange(endPoints.getListAllReport(), 
 				HttpMethod.GET, new HttpEntity<String>(headers), Activity[].class, accessToken.getTruemoneyID());
 		
 		return Arrays.asList(response.getBody());
@@ -47,14 +47,14 @@ public class ActivityServiceImpl implements ActivityService {
 	@Override
 	public ActivityDetail getActivityDetail(Long reportID, String accessTokenID) throws ServiceInventoryException {
 		
-		ResponseEntity<ActivityDetail> response = restTempalte.exchange(endPoints.getReportDetail(), 
+		ResponseEntity<ActivityDetail> response = restTemplate.exchange(endPoints.getReportDetail(), 
 				HttpMethod.GET, new HttpEntity<String>(headers), ActivityDetail.class, reportID );
 
 		return response.getBody();
 	}
 
 	public void setRestTemplate(RestTemplate restTemplate) {
-		this.restTempalte = restTemplate;
+		this.restTemplate = restTemplate;
 	}
 
 	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepo) {

@@ -2,6 +2,8 @@ package th.co.truemoney.serviceinventory.controller;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -19,6 +21,8 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 
 @ControllerAdvice
 public class GlobalExceptionsHandler {
+	
+	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionsHandler.class);
 
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -69,7 +73,9 @@ public class GlobalExceptionsHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public @ResponseBody ErrorBean handleAllExceptions(Exception exception) {
 
-		exception.printStackTrace();
+		logger.debug("=========================");
+		logger.error("SI:WEB "+exception.getMessage(), exception);
+		logger.debug("=========================");
 		
 		return new ErrorBean(Integer.toString(HttpServletResponse.SC_INTERNAL_SERVER_ERROR), "INTERNAL_SERVER_ERROR");
 	}
