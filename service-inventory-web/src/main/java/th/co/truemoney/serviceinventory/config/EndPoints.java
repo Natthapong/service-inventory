@@ -10,7 +10,7 @@ public class EndPoints {
 	}
 
 	public String getReportDetail() {
-		return host + "/core-report-web/transaction/history/detail/{reportID}";
+		return host + "/core-report-web/transaction/history/{trueMoneyID}/detail/{reportID}";
 	}
 
 }

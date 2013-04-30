@@ -51,7 +51,7 @@ public class ActivityServiceImplTest {
 		
 		MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
 
-		mockServer.expect(requestTo("https://127.0.0.1:9443/core-report-web/transaction/history/detail/9999"))
+		mockServer.expect(requestTo("https://127.0.0.1:9443/core-report-web/transaction/history/54321/detail/9999"))
 	 	 .andExpect(method(HttpMethod.GET))
 	     .andRespond(withSuccess(new ClassPathResource("json/stub_specific_activities.json"), MediaType.APPLICATION_JSON));
 	 

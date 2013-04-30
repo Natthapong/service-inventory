@@ -46,9 +46,11 @@ public class ActivityServiceImpl implements ActivityService {
 
 	@Override
 	public ActivityDetail getActivityDetail(Long reportID, String accessTokenID) throws ServiceInventoryException {
+
+		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		
 		ResponseEntity<ActivityDetail> response = restTemplate.exchange(endPoints.getReportDetail(), 
-				HttpMethod.GET, new HttpEntity<String>(headers), ActivityDetail.class, reportID );
+				HttpMethod.GET, new HttpEntity<String>(headers), ActivityDetail.class, accessToken.getTruemoneyID(), reportID );
 
 		return response.getBody();
 	}
