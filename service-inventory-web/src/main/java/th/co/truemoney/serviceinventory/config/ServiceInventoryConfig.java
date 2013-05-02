@@ -41,113 +41,113 @@ import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 
 @Configuration
-@EnableAsync
-@EnableAspectJAutoProxy
+@EnableAsync(proxyTargetClass = true)
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop"})
 @Import({SmsConfig.class, TmnProfileConfig.class, SIEngineConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, DevEnvironmentConfig.class })
 public class ServiceInventoryConfig {
-	
-	@Bean
-	public TmnProfileService getTmnProfileService() {
-		return new TmnProfileServiceImpl();
-	}
 
-	@Bean
-	public EnhancedDirectDebitSourceOfFundService directDebitSourceService() {
-		return new DirectDebitSourceOfFundServiceImpl();
-	}
+    @Bean
+    public TmnProfileService getTmnProfileService() {
+        return new TmnProfileServiceImpl();
+    }
 
-	@Bean
+    @Bean
+    public EnhancedDirectDebitSourceOfFundService directDebitSourceService() {
+        return new DirectDebitSourceOfFundServiceImpl();
+    }
+
+    @Bean
     public TopUpService getTopUpService() {
-    	return new TopUpServiceImpl();
+        return new TopUpServiceImpl();
     }
 
-	@Bean
+    @Bean
     public OTPService getOtpService() {
-    	return new OTPService();
+        return new OTPService();
     }
 
-	@Bean
-	public BillPaymentService getBillPaymentService(){
-		return new BillPaymentServiceImpl();
-	}
-	
-	@Bean
-	public TopUpMobileService getTopUpMobileService() {
-		return new TopUpMobileServiceImpl();
-	}
-	
-	@Bean ActivityService getActivityService() {
-		return new ActivityServiceImpl();
-	}
+    @Bean
+    public BillPaymentService getBillPaymentService(){
+        return new BillPaymentServiceImpl();
+    }
 
-	@Bean
-	public AsyncBillPayProcessor getAsyncBillPayProcessor() {
-		return new AsyncBillPayProcessor();
-	}
+    @Bean
+    public TopUpMobileService getTopUpMobileService() {
+        return new TopUpMobileServiceImpl();
+    }
+
+    @Bean ActivityService getActivityService() {
+        return new ActivityServiceImpl();
+    }
+
+    @Bean
+    public AsyncBillPayProcessor getAsyncBillPayProcessor() {
+        return new AsyncBillPayProcessor();
+    }
 
     @Bean
     public SourceOfFundPreference getDirectDebitConfig() {
-    	return new SourceOfFundPreferenceImpl();
+        return new SourceOfFundPreferenceImpl();
     }
 
     @Bean
     public AsyncTopUpEwalletProcessor getAsyncTopUpEwalletProcessor() {
-    	return new AsyncTopUpEwalletProcessor();
+        return new AsyncTopUpEwalletProcessor();
     }
 
     @Bean
     public Executor getAsyncExecutor() {
-    	ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    	executor.setCorePoolSize(7);
-    	executor.setMaxPoolSize(56);
-    	executor.setQueueCapacity(11);
-    	executor.setThreadNamePrefix("asyncExecutor-");
-    	executor.initialize();
-    	return executor;
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(7);
+        executor.setMaxPoolSize(56);
+        executor.setQueueCapacity(11);
+        executor.setThreadNamePrefix("asyncExecutor-");
+        executor.initialize();
+        return executor;
     }
 
     @Bean
     public ExtendAccessTokenAsynService getExtendAccessTokenAsynService() {
-    	return new ExtendAccessTokenAsynService();
+        return new ExtendAccessTokenAsynService();
     }
 
-	@Bean
+    @Bean
     public P2PTransferService getP2pTransferService() {
-    	return new P2PTransferServiceImpl();
+        return new P2PTransferServiceImpl();
     }
 
     @Bean
     public AsyncP2PTransferProcessor getAsyncP2PTransferProcessor() {
-    	return new AsyncP2PTransferProcessor();
+        return new AsyncP2PTransferProcessor();
     }
 
     @Bean
-	public EmailService emailService() {
-		return new EmailService();
-	}
-    
-	@Bean
-	public AsyncTopUpMobileProcessor getAsyncTopUpMobileProcessor() {
-		return new AsyncTopUpMobileProcessor();
-	}
-	
-	@Bean
-	public EndPoints endPoints() {
-		return new EndPoints();
-	}
-	
-	@Bean
-	@Qualifier("jsonHttpHeader")
-	public HttpHeaders defaultHttpHeaders() {
-		HttpHeaders headers = new HttpHeaders();
+    public EmailService emailService() {
+        return new EmailService();
+    }
 
-		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
-		acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
-		headers.setAccept(acceptableMediaTypes);
-		headers.setContentType(MediaType.APPLICATION_JSON);
+    @Bean
+    public AsyncTopUpMobileProcessor getAsyncTopUpMobileProcessor() {
+        return new AsyncTopUpMobileProcessor();
+    }
 
-		return headers;
-	}
-	
+    @Bean
+    public EndPoints endPoints() {
+        return new EndPoints();
+    }
+
+    @Bean
+    @Qualifier("jsonHttpHeader")
+    public HttpHeaders defaultHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+
+        List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+        acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+        headers.setAccept(acceptableMediaTypes);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return headers;
+    }
+
 }

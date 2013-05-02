@@ -185,6 +185,39 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>2.5.2</version>
+                    <configuration>
+                        <formats>
+                            <format>html</format>
+                            <format>xml</format>
+                        </formats>
+                        <instrumentation>
+                        <includes>
+                          <include>th/co/truemoney/serviceinventory/**/*.class</include>
+                        </includes>
+                      </instrumentation>
+                    </configuration>
+                <executions>
+                  <execution>
+                    <id>clean</id>
+                    <phase>pre-site</phase>
+                    <goals>
+                      <goal>clean</goal>
+                    </goals>
+                  </execution>
+                  <execution>
+                    <id>instrument</id>
+                    <phase>site</phase>
+                    <goals>
+                      <goal>instrument</goal>
+                      <goal>cobertura</goal>
+                    </goals>
+                  </execution>
+                </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

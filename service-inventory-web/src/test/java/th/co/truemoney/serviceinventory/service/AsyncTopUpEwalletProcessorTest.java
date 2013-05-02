@@ -27,142 +27,143 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionReposito
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.BankSystemTransactionFailException;
 
 public class AsyncTopUpEwalletProcessorTest {
 
-	// unit under test
-	private AsyncTopUpEwalletProcessor asyncService = new AsyncTopUpEwalletProcessor();
+    // unit under test
+    private AsyncTopUpEwalletProcessor asyncService = new AsyncTopUpEwalletProcessor();
 
-	private TransactionRepository transactionRepo = new TransactionMemoryRepository();
+    private TransactionRepository transactionRepo = new TransactionMemoryRepository();
 
-	private EwalletSoapProxy mockEwalletProxy = mock(EwalletSoapProxy.class);
+    private EwalletSoapProxy mockEwalletProxy = mock(EwalletSoapProxy.class);
 
-	private AccessToken accessToken = new AccessToken("tokenID", "sessionID", "tmnID", 41);
+    private AccessToken accessToken = new AccessToken("tokenID", "sessionID", "tmnID", 41);
 
-	private TopUpOrder incomingOrder;
-
-
-
-	@Before
-	public void setup() {
-
-		LegacyFacade legacyFacade = new LegacyFacade();
-		legacyFacade.setBalanceFacade(new BalanceFacade(mockEwalletProxy));
-
-		asyncService.setLegacyFacade(legacyFacade);
-		asyncService.setTransactionRepo(transactionRepo);
+    private TopUpOrder incomingOrder;
 
 
-		incomingOrder = setUpIncomingOrder();
 
-		transactionRepo.saveTopUpOrder(incomingOrder, "tokenID");
-	}
+    @Before
+    public void setup() {
 
-	private TopUpOrder setUpIncomingOrder() {
+        LegacyFacade legacyFacade = new LegacyFacade();
+        legacyFacade.setBalanceFacade(new BalanceFacade(mockEwalletProxy));
 
-		BigDecimal amount = new BigDecimal(400);
-		BigDecimal fee = new BigDecimal(30);
-		DirectDebit sourceOfFund = new DirectDebit("sourceID", "debit");
+        asyncService.setLegacyFacade(legacyFacade);
+        asyncService.setTransactionRepo(transactionRepo);
 
-		TopUpQuote quote = new TopUpQuote("1", sourceOfFund, accessToken.getAccessTokenID(), amount, fee);
-		quote.setStatus(TopUpQuote.Status.OTP_CONFIRMED);
 
-		TopUpOrder order = new TopUpOrder(quote);
-		order.setStatus(TopUpOrder.Status.PROCESSING);
+        incomingOrder = setUpIncomingOrder();
 
-		return order;
-	}
+        transactionRepo.saveTopUpOrder(incomingOrder, "tokenID");
+    }
 
-	@After
-	public void teardown() {
-		reset(mockEwalletProxy);
-	}
+    private TopUpOrder setUpIncomingOrder() {
 
-	@Test
-	public void topUpUtibaEwallet() {
+        BigDecimal amount = new BigDecimal(400);
+        BigDecimal fee = new BigDecimal(30);
+        DirectDebit sourceOfFund = new DirectDebit("sourceID", "debit");
 
-		//given
-		StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
-		moneyResponse.setResultCode("0");
-		when(mockEwalletProxy.addMoney(any(AddMoneyRequest.class))).thenReturn(moneyResponse);
+        TopUpQuote quote = new TopUpQuote("1", sourceOfFund, accessToken.getAccessTokenID(), amount, fee);
+        quote.setStatus(TopUpQuote.Status.OTP_CONFIRMED);
 
-		//when
-		Future<TopUpOrder> futureResult = asyncService.topUpUtibaEwallet(incomingOrder, accessToken);
+        TopUpOrder order = new TopUpOrder(quote);
+        order.setStatus(TopUpOrder.Status.PROCESSING);
 
-		//then
-		TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
+        return order;
+    }
 
-		assertEquals(true, futureResult.isDone());
-		assertEquals(TopUpOrder.Status.SUCCESS, valueFromRepo.getStatus());
-	}
+    @After
+    public void teardown() {
+        reset(mockEwalletProxy);
+    }
 
-	@Test
-	public void topUpUtibaEwalletBankFail() {
+    @Test
+    public void topUpUtibaEwallet() {
 
-		//given
-		when(mockEwalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("24010","bank fail"));
+        //given
+        StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
+        moneyResponse.setResultCode("0");
+        when(mockEwalletProxy.addMoney(any(AddMoneyRequest.class))).thenReturn(moneyResponse);
 
-		//when
-		Future<TopUpOrder> futureResult = asyncService.topUpUtibaEwallet(incomingOrder, accessToken);
+        //when
+        Future<TopUpOrder> futureResult = asyncService.topUpUtibaEwallet(incomingOrder, accessToken);
 
-		//then
-		TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
+        //then
+        TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
 
-		assertEquals(true, futureResult.isDone());
-		assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
-		assertEquals(FailStatus.BANK_FAILED, valueFromRepo.getFailStatus());
-	}
+        assertEquals(true, futureResult.isDone());
+        assertEquals(TopUpOrder.Status.SUCCESS, valueFromRepo.getStatus());
+    }
 
-	@Test
-	public void topUpUtibaEwalletUMarketFail() {
+    @Test
+    public void topUpUtibaEwalletBankFail() {
 
-		//given
-		when(mockEwalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("27","umarket fail"));
+        //given
+        when(mockEwalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("24010","bank fail"));
 
-		//when
-		Future<TopUpOrder> futureResult = asyncService.topUpUtibaEwallet(incomingOrder, accessToken);
+        //when
+        Future<TopUpOrder> futureResult = asyncService.topUpUtibaEwallet(incomingOrder, accessToken);
 
-		//then
-		TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), "tokenID");
+        //then
+        TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
 
-		assertEquals(true, futureResult.isDone());
-		assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
-		assertEquals(FailStatus.UMARKET_FAILED, valueFromRepo.getFailStatus());
-	}
+        assertEquals(true, futureResult.isDone());
+        assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
+        assertEquals(FailStatus.BANK_FAILED, valueFromRepo.getFailStatus());
+    }
 
-	@Test
-	public void topUpUtibaEwalletOthersFail() {
+    @Test
+    public void topUpUtibaEwalletUMarketFail() {
 
-		//given
-		when(mockEwalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("300",""));
+        //given
+        when(mockEwalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("27","umarket fail"));
 
-		//when
-		Future<TopUpOrder> futureResult = asyncService.topUpUtibaEwallet(incomingOrder, accessToken);
+        //when
+        Future<TopUpOrder> futureResult = asyncService.topUpUtibaEwallet(incomingOrder, accessToken);
 
-		//then
-		TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
+        //then
+        TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), "tokenID");
 
-		assertEquals(true, futureResult.isDone());
-		assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
-	}
+        assertEquals(true, futureResult.isDone());
+        assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
+        assertEquals(FailStatus.UMARKET_FAILED, valueFromRepo.getFailStatus());
+    }
 
-	@Test
-	public void topUpUtibaEwalletThrowException() {
+    @Test
+    public void topUpUtibaEwalletOthersFail() {
 
-		//given
-		when(mockEwalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new RuntimeException("test error"));
+        //given
+        when(mockEwalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new FailResultCodeException("300",""));
 
-		//when
-		Future<TopUpOrder> futureResult = asyncService.topUpUtibaEwallet(incomingOrder, accessToken);
+        //when
+        Future<TopUpOrder> futureResult = asyncService.topUpUtibaEwallet(incomingOrder, accessToken);
 
-		//then
-		TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
+        //then
+        TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
 
-		assertEquals(true, futureResult.isDone());
-		assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
-	}
+        assertEquals(true, futureResult.isDone());
+        assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
+    }
 
-	private TopUpOrder getTransactionFromRepoByID(String transactionID, String accessTokenID) {
-		return transactionRepo.findTopUpOrder(transactionID, accessTokenID);
-	}
+    @Test
+    public void topUpUtibaEwalletThrowException() {
+
+        //given‰
+        when(mockEwalletProxy.addMoney(any(AddMoneyRequest.class))).thenThrow(new BankSystemTransactionFailException(new FailResultCodeException("500", "fail")));
+
+        //when
+        Future<TopUpOrder> futureResult = asyncService.topUpUtibaEwallet(incomingOrder, accessToken);
+
+        //then
+        TopUpOrder valueFromRepo = getTransactionFromRepoByID(incomingOrder.getID(), accessToken.getAccessTokenID());
+
+        assertEquals(true, futureResult.isDone());
+        assertEquals(TopUpOrder.Status.FAILED, valueFromRepo.getStatus());
+    }
+
+    private TopUpOrder getTransactionFromRepoByID(String transactionID, String accessTokenID) {
+        return transactionRepo.findTopUpOrder(transactionID, accessTokenID);
+    }
 }

@@ -16,51 +16,52 @@ import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 
+
 @Configuration
 public class TestServiceInventoryConfig {
 
-	@Bean @Scope("singleton")
-	public BillPaymentService billPaymentServiceMock(){
-		return Mockito.mock(BillPaymentService.class);
-	}
+    @Bean @Scope("singleton")
+    public BillPaymentService billPaymentServiceMock(){
+        return Mockito.mock(BillPaymentService.class);
+    }
 
-	@Bean @Scope("singleton")
-	public TmnProfileService tmnProfileServiceMock() {
-		return Mockito.mock(TmnProfileService.class);
-	}
+    @Bean @Scope("singleton")
+    public TmnProfileService tmnProfileServiceMock() {
+        return Mockito.mock(TmnProfileService.class);
+    }
 
-	@Bean @Scope("singleton")
-	public EnhancedDirectDebitSourceOfFundService getSourceOfFundService() {
-		return Mockito.mock(EnhancedDirectDebitSourceOfFundService.class);
-	}
+    @Bean @Scope("singleton")
+    public EnhancedDirectDebitSourceOfFundService getSourceOfFundService() {
+        return Mockito.mock(EnhancedDirectDebitSourceOfFundService.class);
+    }
 
-	@Bean @Scope("singleton")
-	public TopUpService mockTopUpService() {
-		return Mockito.mock(TopUpService.class);
-	}
+    @Bean @Scope("singleton")
+    public TopUpService mockTopUpService() {
+        return Mockito.mock(TopUpService.class);
+    }
 
-	@Bean @Scope("singleton")
-	public P2PTransferService mockP2PTransferService() {
-		return Mockito.mock(P2PTransferService.class);
-	}
-	
-	@Bean @Scope("singleton")
-	public TopUpMobileService mockTopUpMobileService() {
-		return Mockito.mock(TopUpMobileService.class);
-	}
-	
-	@Bean @Scope("singleton")
-	public ActivityService mockActivityService() {
-		return Mockito.mock(ActivityService.class);
-	}
+    @Bean @Scope("singleton")
+    public P2PTransferService mockP2PTransferService() {
+        return Mockito.mock(P2PTransferService.class);
+    }
 
-    @Bean
-    public ExtendAccessTokenAsynService mockExtendAccessTokenAsynService() {
-    	return Mockito.mock(ExtendAccessTokenAsynService.class);
+    @Bean @Scope("singleton")
+    public TopUpMobileService mockTopUpMobileService() {
+        return Mockito.mock(TopUpMobileService.class);
+    }
+
+    @Bean @Scope("singleton")
+    public ActivityService mockActivityService() {
+        return Mockito.mock(ActivityService.class);
     }
 
     @Bean
-	public OTPGenerator otpGenerator() {
-		return new UnSecureOTPGenerator();
-	}
+    public ExtendAccessTokenAsynService mockExtendAccessTokenAsynService() {
+        return Mockito.mock(ExtendAccessTokenAsynService.class);
+    }
+
+    @Bean
+    public OTPGenerator otpGenerator() {
+        return new UnSecureOTPGenerator();
+    }
 }
