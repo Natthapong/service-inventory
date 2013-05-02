@@ -45,11 +45,11 @@
                 <artifactId>siengine-client</artifactId>
                 <version>${siengine.client.version}</version>
             </dependency>
-                        <dependency>
-    <groupId>mysql</groupId>
-    <artifactId>mysql-connector-java</artifactId>
-    <version>5.1.24</version>
-</dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.24</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.googlecode.lambdaj</groupId>
@@ -189,26 +189,28 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.6.2.201302030002</version>
-                    <configuration>
-                      <propertyName>jacoco.agent.argLine</propertyName>
-                      <destFile>${sonar.jacoco.itReportPath}</destFile>
-                      <append>true</append>
-                    </configuration>
-                    <executions>
-                      <execution>
-                        <id>agent</id>
-                        <goals>
-                          <goal>prepare-agent</goal>
-                        </goals>
-                      </execution>
-                    </executions>
-                  </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.6.2.201302030002</version>
+                <configuration>
+                    <propertyName>jacoco.agent.argLine</propertyName>
+                    <destFile>${sonar.jacoco.itReportPath}</destFile>
+                    <append>true</append>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <distributionManagement>
