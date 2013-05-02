@@ -45,7 +45,7 @@ public class ActivityServiceWorkflowTest {
 		
 		List<Activity> activities = client.getActivities(accessToken);
 		assertNotNull(activities);
-		assertTrue(activities.size()>0);
+		assertTrue(activities.size() > 0);
 		
 		Activity activity = activities.get(0);
 		ActivityDetail activityDetail = client.getActivityDetail(1000L, accessToken);

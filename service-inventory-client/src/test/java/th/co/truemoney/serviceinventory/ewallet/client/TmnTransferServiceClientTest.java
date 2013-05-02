@@ -175,6 +175,8 @@ public class TmnTransferServiceClientTest {
 		P2PTransferTransaction.Status p2pTransactionStatus = p2pTransferServiceClient
 				.getTransferringStatus(p2pTransferDraft.getID(), accessToken);
 
+		Thread.sleep(1000);
+		
 		// retry while processing
 		while (p2pTransactionStatus == P2PTransferTransaction.Status.PROCESSING) {
 			p2pTransactionStatus = p2pTransferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessToken);
