@@ -21,8 +21,6 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryCl
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
@@ -59,7 +57,7 @@ public class TmnTransferServiceClientTest {
 				.createAndVerifyTransferDraft("0868185055", new BigDecimal(2000),
 						accessToken);
 		assertNotNull(p2pTransferDraft);
-		assertEquals("Target Ful***", p2pTransferDraft.getFullname());
+		assertEquals("Tar*** Ful***", p2pTransferDraft.getFullname());
 	}
 
 	@Test
@@ -222,7 +220,7 @@ public class TmnTransferServiceClientTest {
 	public void getTransactionResultSuccess() {
 		// get transfer draft
 		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
-		assertEquals("Target Ful***", p2pTransferDraft.getFullname());
+		assertEquals("Tar*** Ful***", p2pTransferDraft.getFullname());
 	}
 
 	@Test
@@ -242,7 +240,7 @@ public class TmnTransferServiceClientTest {
 				.getTransferDraftDetails(p2pTransferDraft.getID(),
 						accessToken);
 
-		assertEquals("Target Ful***", transaction.getFullname());
+		assertEquals("Tar*** Ful***", transaction.getFullname());
 
 	}
 }
