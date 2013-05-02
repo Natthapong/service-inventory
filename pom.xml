@@ -155,6 +155,7 @@
                         </dependency>
                     </dependencies>
                     <configuration>
+                        <argLine>${jacoco.agent.argLine}</argLine>
                         <includes>
                             <include>**/*.class</include>
                         </includes>
@@ -179,6 +180,7 @@
                                 <goal>verify</goal>
                             </goals>
                             <configuration>
+                                <argLine>${jacoco.agent.argLine}</argLine>
                                 <includes>
                                     <include>**/*.class</include>
                                 </includes>
