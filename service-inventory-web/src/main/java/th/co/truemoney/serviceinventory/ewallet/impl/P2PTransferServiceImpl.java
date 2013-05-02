@@ -19,6 +19,7 @@ import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction.FailStatus;
+import th.co.truemoney.serviceinventory.util.MaskUtil;
 
 @Service
 public class P2PTransferServiceImpl implements P2PTransferService {
@@ -50,7 +51,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 						.toTargetUser(targetMobileNumber)
 						.verify();
 
-		String targetMarkedFullName = markFullName(targetName);
+		String targetMarkedFullName = MaskUtil.markFullName(targetName);
 
 		P2PTransferDraft draft = createP2PDraft(amount, targetMobileNumber, targetMarkedFullName, accessTokenID);
 		transactionRepo.saveP2PTransferDraft(draft, accessToken.getAccessTokenID());
@@ -147,37 +148,6 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 
 	private void performTransferMoney(AccessToken accessToken, P2PTransferTransaction p2pTransaction) {
 		asyncP2PTransferProcessor.transferEwallet(p2pTransaction, accessToken);
-	}
-
-	private String markFullName(String fullName)
-	{
-		String markName = "";
-
-		fullName = fullName != null ? fullName.trim() : "";
-
-		if (fullName == null || "".equals(fullName)) {
-			markName = "-";
-			return markName;
-		} else if (fullName.contains(" ")) {
-			String[] name = fullName.split("\\s{1,}"); // split space 1 or more
-			String markLastName = "";
-
-			if (name[1].length() > 3) {
-				markLastName = String.format("%s***", name[1].substring(0, 3));
-			} else {
-				markLastName = String.format("%s***", name[1].substring(0, 1));
-			}
-
-			markName = String.format("%s %s", name[0], markLastName);
-		} else {
-			if (fullName.length() > 5) {
-				markName = String.format("%s***", fullName.substring(0, 5));
-			} else {
-				markName = fullName;
-			}
-		}
-
-		return markName;
 	}
 
 	public void setLegacyFacade(LegacyFacade legacyFacade) {

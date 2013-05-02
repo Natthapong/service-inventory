@@ -18,6 +18,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
 import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.util.MaskUtil;
 
 public class ActivityServiceImpl implements ActivityService {
 
@@ -52,7 +53,16 @@ public class ActivityServiceImpl implements ActivityService {
 		ResponseEntity<ActivityDetail> response = restTemplate.exchange(endPoints.getReportDetail(), 
 				HttpMethod.GET, new HttpEntity<String>(headers), ActivityDetail.class, accessToken.getTruemoneyID(), reportID );
 
-		return response.getBody();
+		ActivityDetail activityDetail = response.getBody();
+		
+		if (activityDetail != null && activityDetail.getType().equals("transfer")) {
+			String targetName = activityDetail.getRef2();
+			if (targetName != null) {
+				activityDetail.setRef2(MaskUtil.markFullName(targetName));
+			}
+		}
+		
+		return activityDetail;
 	}
 
 	public void setRestTemplate(RestTemplate restTemplate) {
