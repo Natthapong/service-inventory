@@ -197,91 +197,41 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.6.2.201302030002</version>
-                <configuration>
-                    <propertyName>jacoco.agent.argLine</propertyName>
-                    <destFile>${jacoco.integrationReport}</destFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>jacoco-initialize</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>jacoco-site</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-<!--             <plugin> -->
-<!--                 <groupId>org.apache.maven.plugins</groupId> -->
-<!--                 <artifactId>maven-dependency-plugin</artifactId> -->
-<!--                 <executions> -->
-<!--                     Copy the ant tasks jar. Needed for ts.jacoco.report-ant . -->
-<!--                     <execution> -->
-<!--                         <id>jacoco-dependency-ant</id> -->
-<!--                         <goals> -->
-<!--                             <goal>copy</goal> -->
-<!--                         </goals> -->
-<!--                         <phase>process-test-resources</phase> -->
-<!--                         <inherited>false</inherited> -->
-<!--                         <configuration> -->
-<!--                             <artifactItems> -->
-<!--                                 <artifactItem> -->
-<!--                                     <groupId>org.jacoco</groupId> -->
-<!--                                     <artifactId>org.jacoco.ant</artifactId> -->
-<!--                                     <version>0.6.2.201302030002</version> -->
-<!--                                 </artifactItem> -->
-<!--                             </artifactItems> -->
-<!--                             <stripVersion>true</stripVersion> -->
-<!--                             <outputDirectory>${basedir}/target/jacoco-jars</outputDirectory> -->
-<!--                         </configuration> -->
-<!--                     </execution> -->
-<!--                 </executions> -->
-<!--             </plugin> -->
-<!--             <plugin> -->
-<!--                 <groupId>org.apache.maven.plugins</groupId> -->
-<!--                 <artifactId>maven-antrun-plugin</artifactId> -->
-<!--                 <version>1.6</version> -->
-<!--                 <executions> -->
-<!--                     <execution> -->
-<!--                         <phase>post-integration-test</phase> -->
-<!--                         <goals> -->
-<!--                             <goal>run</goal> -->
-<!--                         </goals> -->
-<!--                         <configuration> -->
-<!--                             <target> -->
-<!--                                 Execute an ant task within maven -->
-<!--                                 <echo message="Generating JaCoCo Reports" /> -->
-<!--                                 <taskdef name="merge" classname="org.jacoco.ant.MergeTask"> -->
-<!--                                     <classpath path="${basedir}/target/jacoco-jars/org.jacoco.ant.jar" /> -->
-<!--                                 </taskdef> -->
-<!--                                 <merge destfile="target/jacoco-merged.exec"> -->
-<!--                                     <fileset dir="target" includes="**/*.exec"/> -->
-<!--                                 </merge> -->
-<!--                             </target> -->
-<!--                         </configuration> -->
-<!--                     </execution> -->
-<!--                 </executions> -->
-<!--                 <dependencies> -->
-<!--                     <dependency> -->
-<!--                         <groupId>org.jacoco</groupId> -->
-<!--                         <artifactId>org.jacoco.ant</artifactId> -->
-<!--                         <version>0.6.2.201302030002</version> -->
-<!--                     </dependency> -->
-<!--                 </dependencies> -->
-<!--             </plugin> -->
-        </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>coverage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.6.2.201302030002</version>
+                        <configuration>
+                            <propertyName>jacoco.agent.argLine</propertyName>
+                            <destFile>${jacoco.integrationReport}</destFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>jacoco-initialize</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>jacoco-site</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 
     <distributionManagement>
