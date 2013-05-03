@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,110 +30,112 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
+import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class })
 @ActiveProfiles(profiles = {"local", "mem"})
+@Category(IntegrationTest.class)
 public class TopUpServiceImplConfirmOTPTest {
 
-	@Autowired
-	private TopUpServiceImpl topUpService;
+    @Autowired
+    private TopUpServiceImpl topUpService;
 
-	@Autowired
-	private AccessTokenRepository accessTokenRepo;
+    @Autowired
+    private AccessTokenRepository accessTokenRepo;
 
-	@Autowired
-	private TransactionRepository transactionRepo;
+    @Autowired
+    private TransactionRepository transactionRepo;
 
-	@Autowired
-	private OTPRepository otpRepo;
+    @Autowired
+    private OTPRepository otpRepo;
 
-	private OTPService otpServiceMock;
-	private AsyncTopUpEwalletProcessor asyncServiceMock;
+    private OTPService otpServiceMock;
+    private AsyncTopUpEwalletProcessor asyncServiceMock;
 
-	private AccessToken accessToken;
+    private AccessToken accessToken;
 
-	private OTP goodOTP;
+    private OTP goodOTP;
 
-	private TopUpQuote quote;
+    private TopUpQuote quote;
 
-	@Before
-	public void setup() {
+    @Before
+    public void setup() {
 
-		otpServiceMock = Mockito.mock(OTPService.class);
-		asyncServiceMock = mock(AsyncTopUpEwalletProcessor.class);
+        otpServiceMock = Mockito.mock(OTPService.class);
+        asyncServiceMock = mock(AsyncTopUpEwalletProcessor.class);
 
-		topUpService.setOtpService(otpServiceMock);
-		topUpService.setAsyncTopUpProcessor(asyncServiceMock);
+        topUpService.setOtpService(otpServiceMock);
+        topUpService.setAsyncTopUpProcessor(asyncServiceMock);
 
-		//given
-		accessToken =  new AccessToken("tokenID", "sessionID", "tmnID", 41);
-		accessTokenRepo.save(accessToken);
+        //given
+        accessToken =  new AccessToken("tokenID", "sessionID", "tmnID", 41);
+        accessTokenRepo.save(accessToken);
 
-		goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
-		otpRepo.save(goodOTP);
+        goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
+        otpRepo.save(goodOTP);
 
-		quote =  createQuote(accessToken, goodOTP);
-		transactionRepo.saveTopUpQuote(quote, accessToken.getAccessTokenID());
-	}
+        quote =  createQuote(accessToken, goodOTP);
+        transactionRepo.saveTopUpQuote(quote, accessToken.getAccessTokenID());
+    }
 
-	@Test
-	public void shouldConfirmOTPSuccess() {
+    @Test
+    public void shouldConfirmOTPSuccess() {
 
-		OTP goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
+        OTP goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
 
-		TopUpQuote.Status quoteStatus = topUpService.authorizeAndPerformTopUp(quote.getID(), goodOTP, accessToken.getAccessTokenID());
+        TopUpQuote.Status quoteStatus = topUpService.authorizeAndPerformTopUp(quote.getID(), goodOTP, accessToken.getAccessTokenID());
 
-		assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quoteStatus);
-		verify(asyncServiceMock).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
-	}
+        assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quoteStatus);
+        verify(asyncServiceMock).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
+    }
 
-	@Test
-	public void shouldFailWhenConfirmWithBadAccessToken() {
+    @Test
+    public void shouldFailWhenConfirmWithBadAccessToken() {
 
-		OTP invalidOTP = new OTP(accessToken.getMobileNumber(), "refCode", "HACKY");
+        OTP invalidOTP = new OTP(accessToken.getMobileNumber(), "refCode", "HACKY");
 
-		try {
-			topUpService.authorizeAndPerformTopUp(quote.getID(), invalidOTP, "unknown access token");
-		} catch (ServiceInventoryWebException e) {
-			assertEquals("10001", e.getErrorCode());
-		}
+        try {
+            topUpService.authorizeAndPerformTopUp(quote.getID(), invalidOTP, "unknown access token");
+        } catch (ServiceInventoryWebException e) {
+            assertEquals("10001", e.getErrorCode());
+        }
 
-		//should never call the processor
-		verify(asyncServiceMock, Mockito.never()).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
-	}
+        //should never call the processor
+        verify(asyncServiceMock, Mockito.never()).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
+    }
 
-	@Test
-	public void shouldFailWhenConfirmOTPStringIsIncorrect() {
+    @Test
+    public void shouldFailWhenConfirmOTPStringIsIncorrect() {
 
-		//when
-		Assert.assertEquals(TopUpQuote.Status.OTP_SENT, quote.getStatus());
-		Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpServiceMock).isValidOTP(any(OTP.class));
-		try {
-			topUpService.authorizeAndPerformTopUp(quote.getID(), new OTP(), accessToken.getAccessTokenID());
-			Assert.fail();
-		} catch (ServiceInventoryWebException e) {}
+        //when
+        Assert.assertEquals(TopUpQuote.Status.OTP_SENT, quote.getStatus());
+        Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpServiceMock).isValidOTP(any(OTP.class));
+        try {
+            topUpService.authorizeAndPerformTopUp(quote.getID(), new OTP(), accessToken.getAccessTokenID());
+            Assert.fail();
+        } catch (ServiceInventoryWebException e) {}
 
-		//then
-		Assert.assertEquals(TopUpQuote.Status.OTP_SENT, quote.getStatus());
+        //then
+        Assert.assertEquals(TopUpQuote.Status.OTP_SENT, quote.getStatus());
 
-		try {
-			transactionRepo.findTopUpOrder(quote.getID(), accessToken.getAccessTokenID());
-			Assert.fail("should not create/persist any top up order");
-		} catch(ServiceInventoryWebException e) {}
+        try {
+            transactionRepo.findTopUpOrder(quote.getID(), accessToken.getAccessTokenID());
+            Assert.fail("should not create/persist any top up order");
+        } catch(ServiceInventoryWebException e) {}
 
-		//should never call the processor
-		verify(asyncServiceMock, Mockito.never()).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
-	}
+        //should never call the processor
+        verify(asyncServiceMock, Mockito.never()).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
+    }
 
-	private TopUpQuote createQuote(AccessToken accessToken, OTP otp) {
-		TopUpQuote quote = new TopUpQuote();
-		quote.setID("quoteID");
-		quote.setStatus(TopUpQuote.Status.OTP_SENT);
-		quote.setOtpReferenceCode(otp.getReferenceCode());
-		quote.setAccessTokenID(accessToken.getAccessTokenID());
+    private TopUpQuote createQuote(AccessToken accessToken, OTP otp) {
+        TopUpQuote quote = new TopUpQuote();
+        quote.setID("quoteID");
+        quote.setStatus(TopUpQuote.Status.OTP_SENT);
+        quote.setOtpReferenceCode(otp.getReferenceCode());
+        quote.setAccessTokenID(accessToken.getAccessTokenID());
 
-		return quote;
-	}
+        return quote;
+    }
 
 }

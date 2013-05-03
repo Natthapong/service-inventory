@@ -13,6 +13,7 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,11 +31,13 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.SourceOfFundFacade;
+import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
+@Category(IntegrationTest.class)
 public class TopUpServiceImplVerifyAndCreateTopUpTest {
 
     //unit under test

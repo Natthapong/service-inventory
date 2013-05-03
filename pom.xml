@@ -17,7 +17,8 @@
         <ewallet.client.version>1.0-SNAPSHOT</ewallet.client.version>
         <siengine.client.version>1.0-SNAPSHOT</siengine.client.version>
         <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-        <sonar.jacoco.itReportPath>${project.parent.build.directory}/jacoco-integration.exec</sonar.jacoco.itReportPath>
+        <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-integration.exec</sonar.jacoco.itReportPath>
+        <jacoco.integrationReport>${project.basedir}/../target/jacoco-integration.exec</jacoco.integrationReport>
     </properties>
 
     <modules>
@@ -173,7 +174,10 @@
                         </dependency>
                     </dependencies>
                     <configuration>
-                        <argLine>${jacoco.agent.argLine}</argLine>
+                        <includes>
+                            <include>**/*.class</include>
+                        </includes>
+                        <testFailureIgnore>false</testFailureIgnore>
                     </configuration>
                     <executions>
                         <execution>
@@ -181,12 +185,6 @@
                                 <goal>integration-test</goal>
                                 <goal>verify</goal>
                             </goals>
-                            <configuration>
-                                <includes>
-                                    <include>**/*.class</include>
-                                </includes>
-                                <testFailureIgnore>false</testFailureIgnore>
-                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -199,22 +197,85 @@
                 <version>0.6.2.201302030002</version>
                 <configuration>
                     <propertyName>jacoco.agent.argLine</propertyName>
-                    <destFile>${sonar.jacoco.itReportPath}</destFile>
-<!--                     <dataFile>${sonar.jacoco.itReportPath}</dataFile> -->
-                    <includes><include>th/co/truemoney/serviceinventory/**.class</include></includes>
-                    <append>true</append>
+                    <destFile>${jacoco.integrationReport}</destFile>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>agent</id>
+                        <id>jacoco-initialize</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
+<!--             <plugin> -->
+<!--                 <groupId>org.apache.maven.plugins</groupId> -->
+<!--                 <artifactId>maven-dependency-plugin</artifactId> -->
+<!--                 <executions> -->
+<!--                     Copy the ant tasks jar. Needed for ts.jacoco.report-ant . -->
+<!--                     <execution> -->
+<!--                         <id>jacoco-dependency-ant</id> -->
+<!--                         <goals> -->
+<!--                             <goal>copy</goal> -->
+<!--                         </goals> -->
+<!--                         <phase>process-test-resources</phase> -->
+<!--                         <inherited>false</inherited> -->
+<!--                         <configuration> -->
+<!--                             <artifactItems> -->
+<!--                                 <artifactItem> -->
+<!--                                     <groupId>org.jacoco</groupId> -->
+<!--                                     <artifactId>org.jacoco.ant</artifactId> -->
+<!--                                     <version>0.6.2.201302030002</version> -->
+<!--                                 </artifactItem> -->
+<!--                             </artifactItems> -->
+<!--                             <stripVersion>true</stripVersion> -->
+<!--                             <outputDirectory>${basedir}/target/jacoco-jars</outputDirectory> -->
+<!--                         </configuration> -->
+<!--                     </execution> -->
+<!--                 </executions> -->
+<!--             </plugin> -->
+<!--             <plugin> -->
+<!--                 <groupId>org.apache.maven.plugins</groupId> -->
+<!--                 <artifactId>maven-antrun-plugin</artifactId> -->
+<!--                 <version>1.6</version> -->
+<!--                 <executions> -->
+<!--                     <execution> -->
+<!--                         <phase>post-integration-test</phase> -->
+<!--                         <goals> -->
+<!--                             <goal>run</goal> -->
+<!--                         </goals> -->
+<!--                         <configuration> -->
+<!--                             <target> -->
+<!--                                 Execute an ant task within maven -->
+<!--                                 <echo message="Generating JaCoCo Reports" /> -->
+<!--                                 <taskdef name="merge" classname="org.jacoco.ant.MergeTask"> -->
+<!--                                     <classpath path="${basedir}/target/jacoco-jars/org.jacoco.ant.jar" /> -->
+<!--                                 </taskdef> -->
+<!--                                 <merge destfile="target/jacoco-merged.exec"> -->
+<!--                                     <fileset dir="target" includes="**/*.exec"/> -->
+<!--                                 </merge> -->
+<!--                             </target> -->
+<!--                         </configuration> -->
+<!--                     </execution> -->
+<!--                 </executions> -->
+<!--                 <dependencies> -->
+<!--                     <dependency> -->
+<!--                         <groupId>org.jacoco</groupId> -->
+<!--                         <artifactId>org.jacoco.ant</artifactId> -->
+<!--                         <version>0.6.2.201302030002</version> -->
+<!--                     </dependency> -->
+<!--                 </dependencies> -->
+<!--             </plugin> -->
         </plugins>
     </build>
+
 
     <distributionManagement>
         <repository>

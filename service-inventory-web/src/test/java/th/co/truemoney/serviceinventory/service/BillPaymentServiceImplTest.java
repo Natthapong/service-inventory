@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,73 +40,75 @@ import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.stub.BillPaymentStubbed;
+import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
+@Category(IntegrationTest.class)
 public class BillPaymentServiceImplTest {
 
-	@Autowired
-	private BillPaymentServiceImpl billPayService;
+    @Autowired
+    private BillPaymentServiceImpl billPayService;
 
-	@Autowired
-	private AccessTokenMemoryRepository accessTokenRepo;
+    @Autowired
+    private AccessTokenMemoryRepository accessTokenRepo;
 
-	@Autowired
-	private TransactionMemoryRepository transactionRepo;
+    @Autowired
+    private TransactionMemoryRepository transactionRepo;
 
-	@Autowired
-	private LegacyFacade legacyFacade;
+    @Autowired
+    private LegacyFacade legacyFacade;
 
-	private OTPService otpService;
-	private AccessToken accessToken;
+    private OTPService otpService;
+    private AccessToken accessToken;
 
-	private AsyncBillPayProcessor asyncProcessor;
+    private AsyncBillPayProcessor asyncProcessor;
 
-	private BillPaymentFacade billPaymentFacade;
+    private BillPaymentFacade billPaymentFacade;
 
-	@Before
-	public void setup() {
+    @Before
+    public void setup() {
 
-		accessToken = new AccessToken("12345", "5555", "4444", "0868185055", "tanathip.se@gmail.com", 41);
-		accessToken.setClientCredential(new ClientCredential("appKey", "appUser", "appPassword", "channel", "channel detail"));
-		accessTokenRepo.save(accessToken);
+        accessToken = new AccessToken("12345", "5555", "4444", "0868185055", "tanathip.se@gmail.com", 41);
+        accessToken.setClientCredential(new ClientCredential("appKey", "appUser", "appPassword", "channel", "channel detail"));
+        accessTokenRepo.save(accessToken);
 
-		otpService = mock(OTPService.class);
-		billPayService.setOtpService(otpService);
+        otpService = mock(OTPService.class);
+        billPayService.setOtpService(otpService);
 
-		billPaymentFacade = mock(BillPaymentFacade.class);
-		legacyFacade.setBillPaymentFacade(billPaymentFacade);
+        billPaymentFacade = mock(BillPaymentFacade.class);
+        legacyFacade.setBillPaymentFacade(billPaymentFacade);
 
-		asyncProcessor = Mockito.mock(AsyncBillPayProcessor.class);
-		billPayService.setAsyncBillPayProcessor(asyncProcessor);
-	}
+        asyncProcessor = Mockito.mock(AsyncBillPayProcessor.class);
+        billPayService.setAsyncBillPayProcessor(asyncProcessor);
+    }
 
-	@After
-	public void tearDown() {
-		accessTokenRepo.clear();
-		transactionRepo.clear();
-	}
+    @After
+    public void tearDown() {
+        accessTokenRepo.clear();
+        transactionRepo.clear();
+    }
 
-	@Test
-	public void getBillInformation() {
+    @Test
+    public void getBillInformation() {
 
-		Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
 
-		when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
+        when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
-		//when
-		Bill billInformation = billPayService.retrieveBillInformation("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
+        //when
+        Bill billInformation = billPayService.retrieveBillInformation("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
 
-		//then
-		assertNotNull(billInformation);
-		verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
+        //then
+        assertNotNull(billInformation);
+        verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
 
-	}
+    }
 
 
-	@Test
-	public void createBillInvoice() {
+    @Test
+    public void createBillInvoice() {
 //
 //		when(otpService.send(anyString())).thenReturn(new OTP("0868185055", "refCode", "******"));
 //
@@ -119,81 +122,81 @@ public class BillPaymentServiceImplTest {
 //		Bill repoInvoice = transactionRepo.findBill(bill.getID(), accessToken.getAccessTokenID());
 //		assertNotNull(repoInvoice);
 //		assertEquals(BillPaymentDraft.Status.CREATED, repoInvoice.getStatus());
-	}
+    }
 
-	@Test
-	public void sendOTP() {
+    @Test
+    public void sendOTP() {
 
-		//given
-		BillPaymentDraft invoice = new BillPaymentDraft("invoiceID");
-		transactionRepo.saveBillPaymentDraft(invoice, accessToken.getAccessTokenID());
+        //given
+        BillPaymentDraft invoice = new BillPaymentDraft("invoiceID");
+        transactionRepo.saveBillPaymentDraft(invoice, accessToken.getAccessTokenID());
 
-		//when
-		when(otpService.send(accessToken.getMobileNumber())).thenReturn(new OTP());
+        //when
+        when(otpService.send(accessToken.getMobileNumber())).thenReturn(new OTP());
 
 
-		billPayService.sendOTP("invoiceID", accessToken.getAccessTokenID());
+        billPayService.sendOTP("invoiceID", accessToken.getAccessTokenID());
 
-		//then
-		verify(otpService).send(accessToken.getMobileNumber());
-	}
+        //then
+        verify(otpService).send(accessToken.getMobileNumber());
+    }
 
-	@Test
-	public void confirmOTPSuccess() {
+    @Test
+    public void confirmOTPSuccess() {
 
-		//given
-		OTP correctOTP = new OTP("0868185055", "refCode", "111111");
+        //given
+        OTP correctOTP = new OTP("0868185055", "refCode", "111111");
 
-		BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, "transactionID", BillPaymentDraft.Status.OTP_SENT);
-		transactionRepo.saveBillPaymentDraft(invoice, accessToken.getAccessTokenID());
+        BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, "transactionID", BillPaymentDraft.Status.OTP_SENT);
+        transactionRepo.saveBillPaymentDraft(invoice, accessToken.getAccessTokenID());
 
-		//when
-		BillPaymentDraft.Status confirmation = billPayService.confirmBill(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
+        //when
+        BillPaymentDraft.Status confirmation = billPayService.confirmBill(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
 
-		//then
-		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, confirmation);
-		verify(asyncProcessor).payBill(any(BillPaymentTransaction.class), any(AccessToken.class));
+        //then
+        assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, confirmation);
+        verify(asyncProcessor).payBill(any(BillPaymentTransaction.class), any(AccessToken.class));
 
-		BillPaymentDraft repoInvoice = transactionRepo.findBillPaymentDraft(invoice.getID(), accessToken.getAccessTokenID());
-		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, repoInvoice.getStatus());
-		verify(asyncProcessor).payBill(any(BillPaymentTransaction.class), any(AccessToken.class));
+        BillPaymentDraft repoInvoice = transactionRepo.findBillPaymentDraft(invoice.getID(), accessToken.getAccessTokenID());
+        assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, repoInvoice.getStatus());
+        verify(asyncProcessor).payBill(any(BillPaymentTransaction.class), any(AccessToken.class));
 
-		BillPaymentTransaction billPayment = transactionRepo.findBillPaymentTransaction(invoice.getID(), accessToken.getAccessTokenID());
+        BillPaymentTransaction billPayment = transactionRepo.findBillPaymentTransaction(invoice.getID(), accessToken.getAccessTokenID());
 
-		assertNotNull(billPayment);
-		assertEquals(BillPaymentTransaction.Status.VERIFIED, billPayment.getStatus());
-	}
+        assertNotNull(billPayment);
+        assertEquals(BillPaymentTransaction.Status.VERIFIED, billPayment.getStatus());
+    }
 
-	@Test
-	public void confirmOTPFail() {
+    @Test
+    public void confirmOTPFail() {
 
-		//given
-		OTP badOTP = new OTP("0868185055", "refCode", "111111");
+        //given
+        OTP badOTP = new OTP("0868185055", "refCode", "111111");
 
-		BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, "transactionID", BillPaymentDraft.Status.OTP_SENT);
-		transactionRepo.saveBillPaymentDraft(invoice, accessToken.getAccessTokenID());
+        BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, "transactionID", BillPaymentDraft.Status.OTP_SENT);
+        transactionRepo.saveBillPaymentDraft(invoice, accessToken.getAccessTokenID());
 
-		Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpService).isValidOTP(badOTP);
+        Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpService).isValidOTP(badOTP);
 
-		//when
-		try {
-			billPayService.confirmBill(invoice.getID(), badOTP, accessToken.getAccessTokenID());
-			Assert.fail();
-		} catch (ServiceInventoryWebException ex) {
-			Assert.assertEquals("otp error", ex.getErrorDescription());
-		}
+        //when
+        try {
+            billPayService.confirmBill(invoice.getID(), badOTP, accessToken.getAccessTokenID());
+            Assert.fail();
+        } catch (ServiceInventoryWebException ex) {
+            Assert.assertEquals("otp error", ex.getErrorDescription());
+        }
 
-		//then
-		BillPaymentDraft repoInvoice = transactionRepo.findBillPaymentDraft(invoice.getID(), accessToken.getAccessTokenID());
-		Assert.assertEquals(BillPaymentDraft.Status.OTP_SENT, repoInvoice.getStatus());
+        //then
+        BillPaymentDraft repoInvoice = transactionRepo.findBillPaymentDraft(invoice.getID(), accessToken.getAccessTokenID());
+        Assert.assertEquals(BillPaymentDraft.Status.OTP_SENT, repoInvoice.getStatus());
 
-		try {
-			transactionRepo.findBillPaymentTransaction(invoice.getID(), accessToken.getAccessTokenID());
-			Assert.fail();
-		} catch (ResourceNotFoundException ex) {
-			Assert.assertEquals(Code.TRANSACTION_NOT_FOUND, ex.getErrorCode());
-		}
+        try {
+            transactionRepo.findBillPaymentTransaction(invoice.getID(), accessToken.getAccessTokenID());
+            Assert.fail();
+        } catch (ResourceNotFoundException ex) {
+            Assert.assertEquals(Code.TRANSACTION_NOT_FOUND, ex.getErrorCode());
+        }
 
-	}
+    }
 
 }

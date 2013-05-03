@@ -12,6 +12,7 @@ import java.util.concurrent.Future;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
@@ -28,7 +29,9 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMem
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.BankSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
+@Category(IntegrationTest.class)
 public class AsyncTopUpEwalletProcessorTest {
 
     // unit under test
