@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -39,6 +40,7 @@ public class Bill implements Serializable {
 
 	private ServiceFeeInfo serviceFee;
 	private SourceOfFund[] sourceOfFundFees;
+	private Date dueDate;
 
 	public Bill() {
 		super();
@@ -208,10 +210,18 @@ public class Bill implements Serializable {
 	public void setMaxAmount(BigDecimal maxAmount) {
 		this.maxAmount = maxAmount;
 	}
+	
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
+	}
 
 	@Override
 	public String toString() {
-		return "BillInfo [target=" + target + ", logoURL=" + logoURL
+		return "Bill [ID=" + ID + ", target=" + target + ", logoURL=" + logoURL
 				+ ", titleTH=" + titleTH + ", titleEN=" + titleEN
 				+ ", ref1TitleTH=" + ref1TitleTH + ", ref1TitleEN="
 				+ ref1TitleEN + ", ref1=" + ref1 + ", ref2TitleTH="
@@ -221,6 +231,7 @@ public class Bill implements Serializable {
 				+ amount + ", minAmount=" + minAmount + ", maxAmount="
 				+ maxAmount + ", serviceFee=" + serviceFee
 				+ ", sourceOfFundFees=" + Arrays.toString(sourceOfFundFees)
-				+ "]";
+				+ ", dueDate=" + dueDate + "]";
 	}
+
 }

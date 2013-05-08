@@ -18,6 +18,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
+import th.co.truemoney.serviceinventory.bill.impl.BillPaymentValidationConfig;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.engine.client.config.SIEngineConfig;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
@@ -89,6 +90,11 @@ public class ServiceInventoryConfig {
     @Bean
     public SourceOfFundPreference getDirectDebitConfig() {
         return new SourceOfFundPreferenceImpl();
+    }
+    
+    @Bean
+    public BillPaymentValidationConfig getBillPaymentValidationConfig() {
+        return new BillPaymentValidationConfig();
     }
 
     @Bean
