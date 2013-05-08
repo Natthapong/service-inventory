@@ -39,6 +39,8 @@ public class Bill implements Serializable {
 
 	private ServiceFeeInfo serviceFee;
 	private SourceOfFund[] sourceOfFundFees;
+	
+	private boolean favoritable = false;
 
 	public Bill() {
 		super();
@@ -207,6 +209,14 @@ public class Bill implements Serializable {
 
 	public void setMaxAmount(BigDecimal maxAmount) {
 		this.maxAmount = maxAmount;
+	}
+
+	public boolean isFavoritable() {
+		return favoritable;
+	}
+
+	public void setFavoritable(boolean favoritable) {
+		this.favoritable = favoritable;
 	}
 
 	@Override
