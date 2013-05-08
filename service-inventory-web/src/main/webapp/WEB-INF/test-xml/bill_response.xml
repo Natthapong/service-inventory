@@ -19,6 +19,7 @@
 		<p k="target" v="tcg" />
 		<p k="amount" v="85950" />
 		<p k="service_max_amount" v="1000000" />
+		<p k="duedate_bill" v="310153" />
 	</parameters>
 	<extra_xml>
 		<source_fees>
