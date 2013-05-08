@@ -1,8 +1,10 @@
 package th.co.truemoney.serviceinventory.bill.impl;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
@@ -41,6 +45,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 	@Autowired
 	AsyncBillPayProcessor asyncBillPayProcessor;
+	
+	@Autowired
+	private BillPaymentValidationConfig validationConfig;
 
 	public void setOtpService(OTPService otpService) {
 		this.otpService = otpService;
@@ -71,12 +78,27 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 								   .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
 								   .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
 								   .getInformation();
-
+		
+		validateOverdue(bill.getTarget(), bill.getDueDate());
 		bill.setID(UUID.randomUUID().toString());
 		billInfoRepo.saveBill(bill, accessTokenID);
 
 		return bill;
 
+	}
+
+	private void validateOverdue(String billerCode, Date duedate) {
+		BillPaymentValidation billPaymentValidation = validationConfig.getBillValidation(billerCode);
+		if (billPaymentValidation != null && "TRUE".equals(billPaymentValidation.getValidateDuedate())) {
+			if (isOverdue(duedate)) {
+				throw new ServiceInventoryWebException(Code.BILL_OVER_DUE, "bill over due date.");
+			}
+		}
+	}
+	
+	public boolean isOverdue(Date duedate) {
+		DateTime dateTime = new DateTime(duedate);
+		return dateTime.plusDays(1).isBeforeNow();
 	}
 
 	@Override
