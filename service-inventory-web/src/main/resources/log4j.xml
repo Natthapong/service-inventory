@@ -12,7 +12,7 @@
 	
 	<!-- File Appenders -->
 	<appender name="fileBillPay" class="org.apache.log4j.FileAppender">
-		<param name="file" value="${catalina.home}/logs/billpay.log" />
+		<param name="file" value="./home/wasadmin/data/logs/billpay.log" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{dd/MM/yyyy - HH:mm:ss:SSS} [%t] %c{1} - %m%n" />
 		</layout>
