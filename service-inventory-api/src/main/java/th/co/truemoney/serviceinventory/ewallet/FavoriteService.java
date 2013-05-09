@@ -3,8 +3,11 @@ package th.co.truemoney.serviceinventory.ewallet;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
+import java.util.List;
+
 public interface FavoriteService {
 	
 	public Favorite addFavorite(Favorite favorite) throws ServiceInventoryException;
+    public List<Favorite> getFavorites(String serviceType, String accessTokenID) throws ServiceInventoryException;
 	
 }
