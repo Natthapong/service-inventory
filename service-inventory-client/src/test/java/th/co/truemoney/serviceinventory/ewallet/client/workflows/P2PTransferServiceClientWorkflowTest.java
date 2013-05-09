@@ -22,6 +22,7 @@ import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
@@ -76,9 +77,12 @@ public class P2PTransferServiceClientWorkflowTest {
 		p2pTransferDraft = transferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessTokenID);
 		assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, p2pTransferDraft.getStatus());
 
+		Transaction.Status transactionStatus = transferServiceClient.performTransfer(p2pTransferDraft.getID(), accessTokenID);
+		assertEquals(Transaction.Status.VERIFIED, transactionStatus);
+
 		// get order status
 		Thread.sleep(100);
-		Transaction.Status transactionStatus = transferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessTokenID);
+		transactionStatus = transferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessTokenID);
 		assertNotNull(transactionStatus);
 
 		// retry while processing
@@ -145,9 +149,12 @@ public class P2PTransferServiceClientWorkflowTest {
 				p2pTransferDraft = transferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessTokenID);
 				assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, p2pTransferDraft.getStatus());
 
+				Transaction.Status transactionStatus = transferServiceClient.performTransfer(p2pTransferDraft.getID(), accessTokenID);
+				assertEquals(Transaction.Status.VERIFIED, transactionStatus);
+
 				// get order status
 				Thread.sleep(100);
-				Transaction.Status transactionStatus = transferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessTokenID);
+				transactionStatus = transferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessTokenID);
 				assertNotNull(transactionStatus);
 
 				// retry while processing

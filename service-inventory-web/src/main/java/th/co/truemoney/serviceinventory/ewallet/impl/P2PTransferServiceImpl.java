@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
@@ -96,13 +98,27 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		p2pTransferDraft.setStatus(P2PTransferDraft.Status.OTP_CONFIRMED);
 		transactionRepo.saveDraftTransaction(p2pTransferDraft, accessToken.getAccessTokenID());
 
+		return p2pTransferDraft.getStatus();
+	}
+
+	@Override
+	public Status performTransfer(String transferDraftID, String accessTokenID)
+			throws ServiceInventoryException {
+
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		P2PTransferDraft p2pTransferDraft = getTransferDraftDetails(transferDraftID, accessTokenID);
+
+		if (P2PTransferDraft.Status.OTP_CONFIRMED != p2pTransferDraft.getStatus()) {
+			throw new UnVerifiedOwnerTransactionException();
+		}
+
 		P2PTransferTransaction p2pTransaction = new P2PTransferTransaction(p2pTransferDraft);
 		p2pTransaction.setStatus(P2PTransferTransaction.Status.VERIFIED);
 		transactionRepo.saveTransaction(p2pTransaction, accessToken.getAccessTokenID());
 
 		performTransferMoney(accessToken, p2pTransaction);
 
-		return p2pTransferDraft.getStatus();
+		return p2pTransaction.getStatus();
 	}
 
 	@Override
@@ -170,5 +186,4 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 			AsyncP2PTransferProcessor asyncP2PTransferProcessor) {
 		this.asyncP2PTransferProcessor = asyncP2PTransferProcessor;
 	}
-
 }

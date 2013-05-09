@@ -152,7 +152,6 @@ public class TmnTransferServiceClientTest {
 	@Test
 	public void getTransactionStatusSuccess() throws Exception {
 
-
 		// get transfer draft
 		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
 
@@ -170,11 +169,12 @@ public class TmnTransferServiceClientTest {
 		assertNotNull(draftStatus);
 		assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, draftStatus);
 
-		P2PTransferTransaction.Status p2pTransactionStatus = p2pTransferServiceClient
-				.getTransferringStatus(p2pTransferDraft.getID(), accessToken);
+		P2PTransferTransaction.Status p2pTransactionStatus = p2pTransferServiceClient.performTransfer(p2pTransferDraft.getID(), accessToken);
+		assertEquals(P2PTransferTransaction.Status.VERIFIED, p2pTransactionStatus);
 
+		p2pTransactionStatus = p2pTransferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessToken);
 		Thread.sleep(1000);
-		
+
 		// retry while processing
 		while (p2pTransactionStatus == P2PTransferTransaction.Status.PROCESSING) {
 			p2pTransactionStatus = p2pTransferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessToken);

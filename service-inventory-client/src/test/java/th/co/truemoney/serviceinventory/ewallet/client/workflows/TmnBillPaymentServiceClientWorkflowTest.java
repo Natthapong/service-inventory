@@ -62,7 +62,7 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 		assertEquals(BillPaymentDraft.Status.CREATED, billDraft.getStatus());
 
 		// send otp and waiting confirm
-		OTP otp = billPaymentServiceClient.sendOTP(billDraft.getID(), accessToken);
+		OTP otp = billPaymentServiceClient.requestOTP(billDraft.getID(), accessToken);
 		assertNotNull(otp);
 		assertNotNull(otp.getReferenceCode());
 
@@ -72,7 +72,7 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 
 		// confirm otp
 		otp.setOtpString("111111");
-		BillPaymentDraft.Status draftStatus = billPaymentServiceClient.confirmBill(billDraft.getID(), otp, accessToken);
+		BillPaymentDraft.Status draftStatus = billPaymentServiceClient.verifyOTP(billDraft.getID(), otp, accessToken);
 		assertNotNull(draftStatus);
 		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, draftStatus);
 		assertNotNull(billDraft.getTransactionID());
@@ -81,9 +81,11 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 		billDraft = billPaymentServiceClient.getBillPaymentDraftDetail(billDraft.getID(), accessToken);
 		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, billDraft.getStatus());
 
+		BillPaymentTransaction.Status transactionStatus = billPaymentServiceClient.performPayment(billDraft.getID(), accessToken);
+		assertEquals(BillPaymentTransaction.Status.VERIFIED, transactionStatus);
 		// get order status
 		Thread.sleep(100);
-		BillPaymentTransaction.Status transactionStatus = billPaymentServiceClient.getBillPaymentStatus(billDraft.getID(), accessToken);
+		transactionStatus = billPaymentServiceClient.getBillPaymentStatus(billDraft.getID(), accessToken);
 		assertNotNull(transactionStatus);
 
 		// retry while processing

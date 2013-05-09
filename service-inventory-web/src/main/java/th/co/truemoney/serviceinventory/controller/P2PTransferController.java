@@ -50,16 +50,27 @@ public class P2PTransferController {
 	}
 
 	@RequestMapping(value = "/draft/{transferDraftID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody P2PTransferDraft.Status verifyOTPAndPerformTransferring(
+	public @ResponseBody P2PTransferDraft.Status verifyOTP(
 			@PathVariable String transferDraftID,
 			@PathVariable String refCode,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
 			@RequestBody OTP otp) {
+
 		if (otp != null) {
 			otp.setReferenceCode(refCode);
 		}
+
 		extendExpireAccessToken(accessTokenID);
 		return p2pTransferService.verifyOTP(transferDraftID, otp, accessTokenID);
+	}
+
+	@RequestMapping(value = "/draft/{transferDraftID}", method = RequestMethod.PUT)
+	public @ResponseBody P2PTransferTransaction.Status performTransfer(
+			@PathVariable String transferDraftID,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+		extendExpireAccessToken(accessTokenID);
+		return p2pTransferService.performTransfer(transferDraftID, accessTokenID);
 	}
 
 	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)

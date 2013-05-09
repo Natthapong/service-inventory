@@ -22,6 +22,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionReposito
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
@@ -131,7 +132,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public OTP sendOTP(String invoiceID, String accessTokenID)
+	public OTP requestOTP(String invoiceID, String accessTokenID)
 			throws ServiceInventoryException {
 
 		// --- Get Account Detail from accessToken ---//
@@ -149,7 +150,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public BillPaymentDraft.Status confirmBill(String invoiceID, OTP otp,
+	public BillPaymentDraft.Status verifyOTP(String invoiceID, OTP otp,
 			String accessTokenID) throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
@@ -160,13 +161,27 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		invoiceDetails.setStatus(BillPaymentDraft.Status.OTP_CONFIRMED);
 		transactionRepository.saveDraftTransaction(invoiceDetails, accessTokenID);
 
+		return invoiceDetails.getStatus();
+	}
+
+	@Override
+	public BillPaymentTransaction.Status performPayment(String invoiceID, String accessTokenID)
+			throws ServiceInventoryException {
+
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		BillPaymentDraft invoiceDetails = getBillPaymentDraftDetail(invoiceID, accessTokenID);
+
+		if (BillPaymentDraft.Status.OTP_CONFIRMED != invoiceDetails.getStatus()) {
+			throw new UnVerifiedOwnerTransactionException();
+		}
+
 		BillPaymentTransaction billPaymentReceipt = new BillPaymentTransaction(invoiceDetails);
 		billPaymentReceipt.setStatus(BillPaymentTransaction.Status.VERIFIED);
 		transactionRepository.saveTransaction(billPaymentReceipt, accessTokenID);
 
 		performBillPay(billPaymentReceipt, accessToken);
 
-		return invoiceDetails.getStatus();
+		return billPaymentReceipt.getStatus();
 	}
 
 	private void performBillPay(BillPaymentTransaction billPaymentReceipt, AccessToken accessToken) {

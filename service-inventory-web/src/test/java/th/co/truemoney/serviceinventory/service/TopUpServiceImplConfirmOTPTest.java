@@ -107,9 +107,7 @@ public class TopUpServiceImplConfirmOTPTest {
     		assertEquals(Code.OWNER_UNVERIFIED, ex.getErrorCode());
     	}
 
-
         verify(asyncServiceMock, Mockito.never()).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
-
     }
 
     @Test

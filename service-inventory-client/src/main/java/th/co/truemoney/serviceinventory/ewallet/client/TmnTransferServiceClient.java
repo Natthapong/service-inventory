@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
@@ -63,7 +64,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<OTP> responseEntity = restTemplate.exchange(
-				endPoints.getP2PSubmitTransferRequestURL(), HttpMethod.POST,
+				endPoints.getP2PRequestOTPURL(), HttpMethod.POST,
 				requestEntity, OTP.class,
 				transferDraftID, accessTokenID);
 
@@ -76,9 +77,23 @@ public class TmnTransferServiceClient implements P2PTransferService {
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
 
 		ResponseEntity<P2PTransferDraft.Status> responseEntity = restTemplate.exchange(
-				endPoints.getP2PVerifyAndPerformTransferURL(), HttpMethod.PUT,
+				endPoints.getP2PVerifyOTPURL(), HttpMethod.PUT,
 				requestEntity, P2PTransferDraft.Status.class,
 				transferDraftID, otp.getReferenceCode(), accessTokenID);
+
+		return responseEntity.getBody();
+	}
+
+	@Override
+	public Status performTransfer(String transferDraftID, String accessTokenID)
+			throws ServiceInventoryException {
+
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+
+		ResponseEntity<P2PTransferTransaction.Status> responseEntity = restTemplate.exchange(
+				endPoints.getP2PPerformTransferURL(), HttpMethod.PUT,
+				requestEntity, P2PTransferTransaction.Status.class,
+				transferDraftID,  accessTokenID);
 
 		return responseEntity.getBody();
 	}

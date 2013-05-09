@@ -21,6 +21,9 @@ public interface P2PTransferService {
 	public P2PTransferDraft.Status verifyOTP(String transferDraftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException;
 
+	public P2PTransferTransaction.Status performTransfer(String transferDraftID, String accessTokenID)
+			throws ServiceInventoryException;
+
 	public P2PTransferTransaction.Status getTransferringStatus(String transactionID, String accessTokenID)
 			throws ServiceInventoryException;
 

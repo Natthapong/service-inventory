@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -24,6 +25,7 @@ import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncP2PTransferProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
@@ -31,6 +33,8 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepos
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.stub.P2PTransferStubbed;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
@@ -101,7 +105,25 @@ public class P2PTransferServiceImplConfirmOTPTest {
             P2PTransferDraft.Status quoteStatus = p2pService.verifyOTP(transferDraft.getID(), goodOTP, accessToken.getAccessTokenID());
 
             assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, quoteStatus);
+
+            Status performStatus = p2pService.performTransfer(transferDraft.getID(), accessToken.getAccessTokenID());
+            assertEquals(P2PTransferTransaction.Status.VERIFIED, performStatus);
+
             verify(asyncProcessorMock).transferEwallet(any(P2PTransferTransaction.class), any(AccessToken.class));
+        }
+
+        @Test
+        public void shouldThrowUnVerifiedExceptionWhenUserSkipsOTPVerify() {
+
+        	try {
+        		p2pService.performTransfer(transferDraft.getID(), accessToken.getAccessTokenID());
+        		fail();
+        	} catch (UnVerifiedOwnerTransactionException ex) {
+        		assertEquals(Code.OWNER_UNVERIFIED, ex.getErrorCode());
+        	}
+
+            verify(asyncProcessorMock, Mockito.never()).transferEwallet(any(P2PTransferTransaction.class), any(AccessToken.class));
+
         }
 
         @Test

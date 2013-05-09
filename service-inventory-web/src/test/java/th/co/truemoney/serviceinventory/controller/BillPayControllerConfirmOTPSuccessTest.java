@@ -70,7 +70,7 @@ public class BillPayControllerConfirmOTPSuccessTest {
 		//given
 		OTP otp = new OTP("112233", "refCode", "123");
 
-		when(billPaymentServiceMock.confirmBill(anyString(), any(OTP.class), anyString()))
+		when(billPaymentServiceMock.verifyOTP(anyString(), any(OTP.class), anyString()))
 			.thenReturn(BillPaymentDraft.Status.OTP_SENT);
 
 		this.mockMvc.perform(put("/bill-payment/invoice/myInvoiceID/otp/myRefCode?accessTokenID=12345", "1")
@@ -87,7 +87,7 @@ public class BillPayControllerConfirmOTPSuccessTest {
 		//given
 		OTP otp = new OTP("112233", "refCode", "123");
 
-		when(billPaymentServiceMock.confirmBill(anyString(), any(OTP.class), anyString()))
+		when(billPaymentServiceMock.verifyOTP(anyString(), any(OTP.class), anyString()))
 			.thenThrow(new ServiceInventoryWebException(Code.INVALID_OTP, "invalid OTP."));
 
 		this.mockMvc.perform(put("/bill-payment/invoice/myInvoiceID/otp/myRefCode?accessTokenID=12345", "1")

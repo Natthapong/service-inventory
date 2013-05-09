@@ -55,17 +55,17 @@ public class BillPaymentController {
 	}
 
 	@RequestMapping(value = "/invoice/{invoiceID}/otp", method = RequestMethod.POST)
-	public @ResponseBody OTP submitTopUpRequest(
+	public @ResponseBody OTP requestOTP(
 		   @PathVariable String invoiceID,
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
 		extendExpireAccessToken(accessTokenID);
-		return billPaymentService.sendOTP(invoiceID, accessTokenID);
+		return billPaymentService.requestOTP(invoiceID, accessTokenID);
 	}
 
 
 	@RequestMapping(value = "/invoice/{invoiceID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody BillPaymentDraft.Status confirmBill(
+	public @ResponseBody BillPaymentDraft.Status verifyOTP(
 			@PathVariable String invoiceID,
 			@PathVariable String refCode,
 			@RequestParam String accessTokenID,
@@ -77,7 +77,16 @@ public class BillPaymentController {
 
 		extendExpireAccessToken(accessTokenID);
 
-		return billPaymentService.confirmBill(invoiceID, otp, accessTokenID);
+		return billPaymentService.verifyOTP(invoiceID, otp, accessTokenID);
+	}
+
+	@RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.PUT)
+	public @ResponseBody BillPaymentTransaction.Status performPayment(
+			@PathVariable String invoiceID,
+			@RequestParam String accessTokenID) {
+
+		extendExpireAccessToken(accessTokenID);
+		return billPaymentService.performPayment(invoiceID, accessTokenID);
 	}
 
 	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)

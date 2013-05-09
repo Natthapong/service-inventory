@@ -53,6 +53,8 @@ public class TopupMobileIntegrateTest {
 		DraftTransaction.Status transactionStatus = client.verifyOTP(topUpMobileDraft.getID(), otp, accessToken);
 		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, transactionStatus);
 
+		client.performTopUpMobile(topUpMobileDraft.getID(), accessToken);
+
 		Thread.sleep(100);
 		TopUpMobileTransaction.Status status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
 		assertNotNull(status);

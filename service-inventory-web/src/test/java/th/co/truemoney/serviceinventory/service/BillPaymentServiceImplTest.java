@@ -94,7 +94,7 @@ public class BillPaymentServiceImplTest {
     @Test
     public void getBillInformation() {
 
-        Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+    	Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
 
         when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
@@ -169,7 +169,7 @@ public class BillPaymentServiceImplTest {
         when(otpService.send(accessToken.getMobileNumber())).thenReturn(new OTP());
 
 
-        billPayService.sendOTP("invoiceID", accessToken.getAccessTokenID());
+        billPayService.requestOTP("invoiceID", accessToken.getAccessTokenID());
 
         //then
         verify(otpService).send(accessToken.getMobileNumber());
@@ -185,20 +185,13 @@ public class BillPaymentServiceImplTest {
         transactionRepo.saveDraftTransaction(invoice, accessToken.getAccessTokenID());
 
         //when
-        BillPaymentDraft.Status confirmation = billPayService.confirmBill(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
+        BillPaymentDraft.Status confirmation = billPayService.verifyOTP(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
 
         //then
         assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, confirmation);
-        verify(asyncProcessor).payBill(any(BillPaymentTransaction.class), any(AccessToken.class));
 
         BillPaymentDraft repoInvoice = transactionRepo.findDraftTransaction(invoice.getID(), accessToken.getAccessTokenID(), BillPaymentDraft.class);
         assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, repoInvoice.getStatus());
-        verify(asyncProcessor).payBill(any(BillPaymentTransaction.class), any(AccessToken.class));
-
-        BillPaymentTransaction billPayment = transactionRepo.findTransaction(invoice.getID(), accessToken.getAccessTokenID(), BillPaymentTransaction.class);
-
-        assertNotNull(billPayment);
-        assertEquals(BillPaymentTransaction.Status.VERIFIED, billPayment.getStatus());
     }
 
     @Test
@@ -214,7 +207,7 @@ public class BillPaymentServiceImplTest {
 
         //when
         try {
-            billPayService.confirmBill(invoice.getID(), badOTP, accessToken.getAccessTokenID());
+            billPayService.verifyOTP(invoice.getID(), badOTP, accessToken.getAccessTokenID());
             Assert.fail();
         } catch (ServiceInventoryWebException ex) {
             Assert.assertEquals("otp error", ex.getErrorDescription());

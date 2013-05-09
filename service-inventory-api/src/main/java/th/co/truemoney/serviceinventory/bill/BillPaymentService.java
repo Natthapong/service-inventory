@@ -19,10 +19,13 @@ public interface BillPaymentService {
 	public BillPaymentDraft getBillPaymentDraftDetail(String invoiceID, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public OTP sendOTP(String invoiceID, String accessTokenID)
+	public OTP requestOTP(String invoiceID, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public BillPaymentDraft.Status confirmBill(String invoiceID, OTP otp, String accessTokenID)
+	public BillPaymentDraft.Status verifyOTP(String invoiceID, OTP otp, String accessTokenID)
+			throws ServiceInventoryException;
+
+	public BillPaymentTransaction.Status performPayment(String invoiceID, String accessTokenID)
 			throws ServiceInventoryException;
 
 	public BillPaymentTransaction.Status getBillPaymentStatus(String billPaymentID, String accessTokenID)

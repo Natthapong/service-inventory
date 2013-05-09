@@ -22,11 +22,11 @@ public class TopUpMobileController {
 
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
-	
+
 	@Autowired
 	private TopUpMobileService topUpMobileService;
-	
-	
+
+
 	@RequestMapping(value = "/draft", method = RequestMethod.POST)
 	public @ResponseBody TopUpMobileDraft verifyAndCreateTopUpMobileDraft(
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
@@ -35,7 +35,7 @@ public class TopUpMobileController {
 		TopUpMobile topUpInfo = draft.getTopUpMobileInfo();
 		return topUpMobileService.verifyAndCreateTopUpMobileDraft(topUpInfo.getMobileNumber(), topUpInfo.getAmount(), accessTokenID);
 	}
-	
+
 	@RequestMapping(value = "/draft/{topUpMobileDraftID}", method = RequestMethod.GET)
 	public @ResponseBody TopUpMobileDraft getTopUpMobileDraftDetail(
 			@PathVariable String topUpMobileDraftID,
@@ -51,9 +51,9 @@ public class TopUpMobileController {
 		extendExpireAccessToken(accessTokenID);
 		return topUpMobileService.requestOTP(topUpMobileDraftID, accessTokenID);
 	}
-	
+
 	@RequestMapping(value = "/draft/{topUpMobileDraftID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody TopUpMobileDraft.Status verifyOTPAndPerformToppingMobile(
+	public @ResponseBody TopUpMobileDraft.Status verifyOTPToppingMobile(
 			@PathVariable String topUpMobileDraftID,
 			@PathVariable String refCode,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
@@ -64,6 +64,16 @@ public class TopUpMobileController {
 		extendExpireAccessToken(accessTokenID);
 		return topUpMobileService.verifyOTP(topUpMobileDraftID, otp, accessTokenID);
 	}
+
+	@RequestMapping(value = "/draft/{topUpMobileDraftID}", method = RequestMethod.PUT)
+	public @ResponseBody TopUpMobileTransaction.Status performToppingMobile(
+			@PathVariable String topUpMobileDraftID,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+		extendExpireAccessToken(accessTokenID);
+		return topUpMobileService.performTopUpMobile(topUpMobileDraftID, accessTokenID);
+	}
+
 
 	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
 	public @ResponseBody TopUpMobileTransaction.Status getToppingMobileStatus(

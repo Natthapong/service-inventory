@@ -16,6 +16,7 @@ import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
@@ -77,26 +78,26 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	}
 
 	@Override
-	public OTP sendOTP(String invoiceID, String accessTokenID)
+	public OTP requestOTP(String invoiceID, String accessTokenID)
 			throws ServiceInventoryException {
 
 		HttpEntity<Bill> requestEntity = new HttpEntity<Bill>(headers);
 
 		ResponseEntity<OTP> responseEntity = restTemplate.exchange(
-				endPoints.getBillPaymentSendOTPConfirmURL(), HttpMethod.POST, requestEntity,
+				endPoints.getBillPaymentRequestOTPURL(), HttpMethod.POST, requestEntity,
 				OTP.class, invoiceID, accessTokenID);
 
 		return responseEntity.getBody();
 	}
 
 	@Override
-	public BillPaymentDraft.Status confirmBill(String invoiceID, OTP otp,
+	public BillPaymentDraft.Status verifyOTP(String invoiceID, OTP otp,
 			String accessTokenID) throws ServiceInventoryException {
 
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp, headers);
 
 		ResponseEntity<BillPaymentDraft.Status> responseEntity = restTemplate.exchange(
-				endPoints.getBillPayInvoiceOTPConfirmURL(), HttpMethod.PUT,
+				endPoints.getBillPayVerifyOTPURL(), HttpMethod.PUT,
 				requestEntity, BillPaymentDraft.Status.class,
 				invoiceID, otp.getReferenceCode(), accessTokenID);
 
@@ -104,8 +105,22 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	}
 
 	@Override
-	public BillPaymentTransaction.Status getBillPaymentStatus(
-			String billPaymentID, String accessTokenID)
+	public Status performPayment(String invoiceID, String accessTokenID)
+			throws ServiceInventoryException {
+
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+
+		ResponseEntity<BillPaymentTransaction.Status> responseEntity = restTemplate.exchange(
+				endPoints.getBillPaymentPerformURL(), HttpMethod.PUT,
+				requestEntity, BillPaymentTransaction.Status.class,
+				invoiceID, accessTokenID);
+
+		return responseEntity.getBody();
+
+	}
+
+	@Override
+	public BillPaymentTransaction.Status getBillPaymentStatus(String billPaymentID, String accessTokenID)
 			throws ServiceInventoryException {
 
 		HttpEntity<BillPaymentTransaction.Status> requestEntity = new HttpEntity<BillPaymentTransaction.Status>(headers);

@@ -105,7 +105,7 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	public Status verifyOTP(String draftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException {
 
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		accessTokenRepo.findAccessToken(accessTokenID);
 		TopUpMobileDraft topUpMobileDraft = getTopUpMobileDraftDetail(draftID, accessTokenID);
 
 		otpService.isValidOTP(otp);
@@ -113,18 +113,11 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 		topUpMobileDraft.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
 		transactionRepo.saveDraftTransaction(topUpMobileDraft, accessTokenID);
 
-		TopUpMobileTransaction topUpMobileTransaction = new TopUpMobileTransaction(topUpMobileDraft);
-		topUpMobileTransaction.setStatus(TopUpMobileTransaction.Status.VERIFIED);
-		transactionRepo.saveTransaction(topUpMobileTransaction, accessTokenID);
-
-		performTopUpMobile(topUpMobileTransaction, accessToken);
-
 		return topUpMobileDraft.getStatus();
 	}
 
 	@Override
-	public Transaction.Status performTopUpMobile(
-			String draftID, String accessTokenID)
+	public Transaction.Status performTopUpMobile(String draftID, String accessTokenID)
 			throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);

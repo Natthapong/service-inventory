@@ -21,7 +21,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 
 @ControllerAdvice
 public class GlobalExceptionsHandler {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionsHandler.class);
 
 	@ExceptionHandler
@@ -60,7 +60,6 @@ public class GlobalExceptionsHandler {
 
 	@ExceptionHandler
 	public @ResponseBody ErrorBean handleSystemException(ServiceInventoryException exception, HttpServletResponse response) {
-
 		Integer httpStatus = exception.getHttpStatus() != null ? exception.getHttpStatus() : 400;
 		exception.setHttpStatus(httpStatus);
 		response.setStatus(httpStatus);
@@ -76,7 +75,7 @@ public class GlobalExceptionsHandler {
 		logger.debug("=========================");
 		logger.error("SI:WEB "+exception.getMessage(), exception);
 		logger.debug("=========================");
-		
+
 		return new ErrorBean(Integer.toString(HttpServletResponse.SC_INTERNAL_SERVER_ERROR), "INTERNAL_SERVER_ERROR");
 	}
 

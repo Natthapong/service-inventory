@@ -58,67 +58,75 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/top-up/order/{orderID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getValidateEmailURL(){
+	public String getValidateEmailURL() {
 		return host + "/service-inventory-web/v1/ewallet/profiles/validate-email?channelID={channelID}";
 	}
 
-	public String getCreateTruemoneyProfileURL(){
+	public String getCreateTruemoneyProfileURL() {
 		return host + "/service-inventory-web/v1/ewallet/profiles?channelID={channelID}";
 	}
 
-	public String getConfirmCreateTruemoneyProfileURL(){
+	public String getConfirmCreateTruemoneyProfileURL() {
 		return host + "/service-inventory-web/v1/ewallet/profiles/verify-otp?channelID={channelID}";
 	}
 
-	public String getP2PCreateTransferDraftURL(){
+	public String getP2PCreateTransferDraftURL() {
 		return host + "/service-inventory-web/v1/transfer/draft?accessTokenID={accessTokenID}";
 	}
 
-	public String getP2PTransferDraftDetailsURL(){
+	public String getP2PTransferDraftDetailsURL() {
 		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getP2PSubmitTransferRequestURL(){
+	public String getP2PRequestOTPURL() {
 		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}/otp?accessTokenID={accessTokenID}";
 	}
 
-	public String getP2PVerifyAndPerformTransferURL(){
+	public String getP2PVerifyOTPURL() {
 		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
 
-	public String getP2PTransactionStatusURL(){
+	public String getP2PPerformTransferURL() {
+		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}?accessTokenID={accessTokenID}";
+	}
+
+	public String getP2PTransactionStatusURL() {
 		return host + "/service-inventory-web/v1/transfer/transaction/{transactionID}/status?accessTokenID={accessTokenID}";
 	}
 
-	public String getP2PTransactionInfoURL(){
+	public String getP2PTransactionInfoURL() {
 		return host + "/service-inventory-web/v1/transfer/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getScanBarcodeServiceURL(){
+	public String getScanBarcodeServiceURL() {
 		return host + "/service-inventory-web/v1/bill-payment/barcode/{barcode}?accessTokenID={accessTokenID}";
 	}
 
-	public String getCreateBillInvoiceURL(){
+	public String getCreateBillInvoiceURL() {
 		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getBillInvoiceDetailURL(){
+	public String getBillInvoiceDetailURL() {
 		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getBillPaymentSendOTPConfirmURL() {
+	public String getBillPaymentRequestOTPURL() {
 		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}/otp?accessTokenID={accessTokenID}";
 	}
 
-	public String getBillPayInvoiceOTPConfirmURL(){
+	public String getBillPayVerifyOTPURL() {
 		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
 
-	public String getBillPaymentStatusURL(){
+	public String getBillPaymentPerformURL() {
+		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}?accessTokenID={accessTokenID}";
+	}
+
+	public String getBillPaymentStatusURL() {
 		return host + "/service-inventory-web/v1/bill-payment/transaction/{transactionID}/status?accessTokenID={accessTokenID}";
 	}
 
-	public String getBillPaymentInfoURL(){
+	public String getBillPaymentInfoURL() {
 		return host + "/service-inventory-web/v1/bill-payment/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
 
