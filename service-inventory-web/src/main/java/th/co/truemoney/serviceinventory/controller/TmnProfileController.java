@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.bean.LoginRequest;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
+import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
 import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
@@ -35,6 +36,9 @@ public class TmnProfileController {
 	
 	@Autowired
 	private ActivityService activityService;
+	
+	@Autowired
+	private FavoriteService favoriteService;
 
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
@@ -124,6 +128,18 @@ public class TmnProfileController {
 		return activityDetail;
 	}
 	
+	@RequestMapping(value = "/favorites/{accessTokenID}" , method = RequestMethod.POST)
+	public @ResponseBody Favorite addFavorite(
+			@RequestBody Favorite favorite,
+			@PathVariable String accessTokenID) {
+		System.out.println("accessTokenID : "+ accessTokenID);
+		
+		Favorite favoriteResponse = favoriteService.addFavorite(favorite, accessTokenID);
+		extendExpireAccessToken(accessTokenID);
+		
+		return favoriteResponse;
+	}
+	
 	@RequestMapping(value = "/favorites" , method = RequestMethod.GET)
 	public @ResponseBody List<Favorite> getFavorites(
 			@RequestParam(value = "serviceType", defaultValue="") String serviceType,
@@ -131,8 +147,10 @@ public class TmnProfileController {
 		System.out.println("serviceType : "+ serviceType);
 		System.out.println("accessTokenID : "+ accessTokenID);
 		
+		List<Favorite> favorites = favoriteService.getFavorites(serviceType, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
-		return new ArrayList<Favorite>();
+		
+		return favorites;
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {
