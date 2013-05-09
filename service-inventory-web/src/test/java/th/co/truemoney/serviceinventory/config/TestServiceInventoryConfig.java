@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
+import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
@@ -53,6 +54,11 @@ public class TestServiceInventoryConfig {
     @Bean @Scope("singleton")
     public ActivityService mockActivityService() {
         return Mockito.mock(ActivityService.class);
+    }
+    
+    @Bean @Scope("singleton")
+    public FavoriteService mockFavoriteService() {
+        return Mockito.mock(FavoriteService.class);
     }
 
     @Bean
