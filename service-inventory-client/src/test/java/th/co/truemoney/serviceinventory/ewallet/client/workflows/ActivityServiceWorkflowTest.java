@@ -47,7 +47,6 @@ public class ActivityServiceWorkflowTest {
 		assertNotNull(activities);
 		assertTrue(activities.size() > 0);
 		
-		Activity activity = activities.get(0);
 		ActivityDetail activityDetail = client.getActivityDetail(1000L, accessToken);
 		assertNotNull(activityDetail);
 		assertEquals(-200, activityDetail.getAmount().intValue());

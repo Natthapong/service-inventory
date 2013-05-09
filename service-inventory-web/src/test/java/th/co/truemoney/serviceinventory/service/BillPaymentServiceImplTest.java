@@ -106,7 +106,40 @@ public class BillPaymentServiceImplTest {
 
     }
 
+    @Test
+    public void getBillOverDuedate() throws Exception {
 
+        Bill stubbedBillPaymentInfo = BillPaymentStubbed.createOverDueBillPaymentInfo();
+
+        when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
+
+        try {
+	        //when
+	        @SuppressWarnings("unused")
+			Bill billInformation = billPayService.retrieveBillInformation("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
+	        Assert.fail();
+        } catch (ServiceInventoryWebException e) {
+        	assertEquals("1012", e.getErrorCode());
+        }
+        verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
+
+    }
+
+    @Test
+    public void getBillNotOverDuedate() throws Exception {
+
+        Bill stubbedBillPaymentInfo = BillPaymentStubbed.createNotOverDueBillPaymentInfo();
+
+        when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
+        
+        //when
+        Bill billInformation = billPayService.retrieveBillInformation("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
+
+        //then
+        assertNotNull(billInformation);
+        verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
+    }
+    
     @Test
     public void createBillInvoice() {
 //

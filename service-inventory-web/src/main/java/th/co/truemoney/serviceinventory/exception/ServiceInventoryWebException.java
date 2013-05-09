@@ -40,6 +40,7 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
 		public static final String SEND_EMAIL_FAIL	 = "1009";
 		public static final String INVALID_OTP		 = "1010";
 		public static final String BILL_NOT_FOUND = "1011";
+		public static final String BILL_OVER_DUE  = "1012";	
 
 		//profile
 		public static final String INVALID_PROFILE_TYPE 	= "10000";

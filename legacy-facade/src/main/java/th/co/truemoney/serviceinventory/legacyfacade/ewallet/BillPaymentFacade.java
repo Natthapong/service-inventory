@@ -81,6 +81,8 @@ public class BillPaymentFacade {
 
 			List<SourceOfFund> sourceOfFundFees = createSourceOfFundFeeList(barcodeResponse);
 			billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new SourceOfFund[sourceOfFundFees.size()]));
+			
+			billInfo.setDueDate(barcodeResponse.getDueDate());
 
 			return billInfo;
 
