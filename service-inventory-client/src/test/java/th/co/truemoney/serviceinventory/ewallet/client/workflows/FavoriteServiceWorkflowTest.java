@@ -1,7 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.client.workflows;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -31,6 +30,20 @@ public class FavoriteServiceWorkflowTest {
 	
 	@Autowired
 	TmnProfileServiceClient profileService;
+	
+	@Test
+	public void addFavorite() {
+		String accessTokenID = profileService.login(
+				TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin());
+		
+		Favorite favorite = new Favorite();
+		
+		Favorite favoriteResponse = client.addFavorite(favorite, accessTokenID);
+		assertNotNull(favoriteResponse);
+		
+		assertEquals(new Long(1000), favoriteResponse.getFavoriteID());
+	}
 	
 	@Test
 	public void getFavorites() {
