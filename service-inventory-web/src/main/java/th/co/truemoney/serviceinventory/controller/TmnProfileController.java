@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -19,6 +20,7 @@ import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
 import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
+import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
@@ -120,6 +122,17 @@ public class TmnProfileController {
 		extendExpireAccessToken(accessTokenID);
 		
 		return activityDetail;
+	}
+	
+	@RequestMapping(value = "/favorites" , method = RequestMethod.GET)
+	public @ResponseBody List<Favorite> getFavorites(
+			@RequestParam(value = "serviceType", defaultValue="") String serviceType,
+			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID) {
+		System.out.println("serviceType : "+ serviceType);
+		System.out.println("accessTokenID : "+ accessTokenID);
+		
+		extendExpireAccessToken(accessTokenID);
+		return new ArrayList<Favorite>();
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {
