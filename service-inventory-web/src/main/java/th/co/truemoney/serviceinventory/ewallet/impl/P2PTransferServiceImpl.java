@@ -70,7 +70,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	}
 
 	@Override
-	public OTP submitTransferRequest(String transferDraftID, String accessTokenID)
+	public OTP requestOTP(String transferDraftID, String accessTokenID)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
@@ -86,7 +86,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 	}
 
 	@Override
-	public P2PTransferDraft.Status authorizeAndPerformTransfer(String transferDraftID, OTP otp, String accessTokenID)
+	public P2PTransferDraft.Status verifyOTP(String transferDraftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		P2PTransferDraft p2pTransferDraft = getTransferDraftDetails(transferDraftID, accessTokenID);

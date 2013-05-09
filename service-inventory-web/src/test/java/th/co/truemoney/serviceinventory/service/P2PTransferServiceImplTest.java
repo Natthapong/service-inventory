@@ -120,7 +120,7 @@ public class P2PTransferServiceImplTest {
         assertEquals(P2PTransferDraft.Status.CREATED, transferDraft.getStatus());
 
         //when
-        OTP otp = this.p2pService.submitTransferRequest(transferDraft.getID(), accessToken.getAccessTokenID());
+        OTP otp = this.p2pService.requestOTP(transferDraft.getID(), accessToken.getAccessTokenID());
 
         //then
         assertNotNull(otp);

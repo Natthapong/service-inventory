@@ -58,7 +58,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 	}
 
 	@Override
-	public OTP submitTransferRequest(String transferDraftID, String accessTokenID) {
+	public OTP requestOTP(String transferDraftID, String accessTokenID) {
 
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
@@ -71,7 +71,7 @@ public class TmnTransferServiceClient implements P2PTransferService {
 	}
 
 	@Override
-	public P2PTransferDraft.Status authorizeAndPerformTransfer(String transferDraftID, OTP otp, String accessTokenID) {
+	public P2PTransferDraft.Status verifyOTP(String transferDraftID, OTP otp, String accessTokenID) {
 
 		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
 

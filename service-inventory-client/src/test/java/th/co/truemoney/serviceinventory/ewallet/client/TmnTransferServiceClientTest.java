@@ -100,7 +100,7 @@ public class TmnTransferServiceClientTest {
 
 		assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
 
-		OTP otp = p2pTransferServiceClient.submitTransferRequest(p2pTransferDraft.getID(), accessToken);
+		OTP otp = p2pTransferServiceClient.requestOTP(p2pTransferDraft.getID(), accessToken);
 
 		assertNotNull(otp);
 		assertEquals("0891231234", otp.getMobileNumber());
@@ -109,7 +109,7 @@ public class TmnTransferServiceClientTest {
 	@Test
 	public void sendOTPFail() {
 		try {
-			p2pTransferServiceClient.submitTransferRequest("3", "12345");
+			p2pTransferServiceClient.requestOTP("3", "12345");
 		} catch (ServiceInventoryException serviceInventoryException) {
 			assertEquals("access token not found.",
 					serviceInventoryException.getErrorDescription());
@@ -124,7 +124,7 @@ public class TmnTransferServiceClientTest {
 
 		assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
 
-		OTP otp = p2pTransferServiceClient.submitTransferRequest(p2pTransferDraft.getID(), accessToken);
+		OTP otp = p2pTransferServiceClient.requestOTP(p2pTransferDraft.getID(), accessToken);
 
 		// get transfer draft and check draft status
 		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
@@ -132,7 +132,7 @@ public class TmnTransferServiceClientTest {
 
 		// confirm otp
 		otp.setOtpString("111111");
-		P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.authorizeAndPerformTransfer(p2pTransferDraft.getID(), otp, accessToken);
+		P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.verifyOTP(p2pTransferDraft.getID(), otp, accessToken);
 		assertNotNull(draftStatus);
 		assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED,
 				draftStatus);
@@ -141,7 +141,7 @@ public class TmnTransferServiceClientTest {
 	@Test
 	public void createTransactionFail() {
 		try {
-			p2pTransferServiceClient.authorizeAndPerformTransfer("3", new OTP(
+			p2pTransferServiceClient.verifyOTP("3", new OTP(
 					"0868185055", "112211", "marty"), "12345");
 			Assert.fail();
 		} catch (ServiceInventoryException e) {
@@ -158,7 +158,7 @@ public class TmnTransferServiceClientTest {
 
 		assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
 
-		OTP otp = p2pTransferServiceClient.submitTransferRequest(p2pTransferDraft.getID(), accessToken);
+		OTP otp = p2pTransferServiceClient.requestOTP(p2pTransferDraft.getID(), accessToken);
 
 		// get transfer draft and check draft status
 		p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
@@ -166,7 +166,7 @@ public class TmnTransferServiceClientTest {
 
 		// confirm otp
 		otp.setOtpString("111111");
-		P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.authorizeAndPerformTransfer(p2pTransferDraft.getID(), otp, accessToken);
+		P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.verifyOTP(p2pTransferDraft.getID(), otp, accessToken);
 		assertNotNull(draftStatus);
 		assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, draftStatus);
 
@@ -195,7 +195,7 @@ public class TmnTransferServiceClientTest {
 
 			assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
 
-			OTP otp = p2pTransferServiceClient.submitTransferRequest(p2pTransferDraft.getID(), accessToken);
+			OTP otp = p2pTransferServiceClient.requestOTP(p2pTransferDraft.getID(), accessToken);
 
 			// get transfer draft and check draft status
 			p2pTransferDraft = p2pTransferServiceClient.getTransferDraftDetails(p2pTransferDraft.getID(), accessToken);
@@ -203,7 +203,7 @@ public class TmnTransferServiceClientTest {
 
 			// confirm otp
 			otp.setOtpString("111121");
-			P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.authorizeAndPerformTransfer(p2pTransferDraft.getID(), otp, accessToken);
+			P2PTransferDraft.Status draftStatus = p2pTransferServiceClient.verifyOTP(p2pTransferDraft.getID(), otp, accessToken);
 			assertNotNull(draftStatus);
 			assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, draftStatus);
 

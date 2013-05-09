@@ -15,10 +15,10 @@ public interface P2PTransferService {
 	public P2PTransferDraft getTransferDraftDetails(String transferDraftID, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public OTP submitTransferRequest(String transferDraftID, String accessTokenID)
+	public OTP requestOTP(String transferDraftID, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public P2PTransferDraft.Status authorizeAndPerformTransfer(String transferDraftID, OTP otp, String accessTokenID)
+	public P2PTransferDraft.Status verifyOTP(String transferDraftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException;
 
 	public P2PTransferTransaction.Status getTransferringStatus(String transactionID, String accessTokenID)
