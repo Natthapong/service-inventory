@@ -150,6 +150,10 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/ewallet/activities/{accessTokenID}/detail/{reportID}";
 	}
 	
+	public String getAddFavoriteURL(){
+		return host + "/service-inventory-web/v1/ewallet/activities/{accessTokenID}/detail/{reportID}";
+	}
+	
 	public String getFavoritesURL() {
 		return host + "/service-inventory-web/v1/ewallet/favorites?serviceType={serviceType}&accessTokenID={accessTokenID}";
 	}

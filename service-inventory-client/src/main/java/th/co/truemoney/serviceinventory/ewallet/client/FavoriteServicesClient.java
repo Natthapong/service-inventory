@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
-
 import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
@@ -29,10 +28,18 @@ public class FavoriteServicesClient implements FavoriteService {
 	@Autowired
 	private HttpHeaders headers;
 	
-    @Override
-    public Favorite addFavorite(Favorite favorite) throws ServiceInventoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+	@Override
+	public Favorite addFavorite(Favorite favorite)
+			throws ServiceInventoryException {
+		
+		HttpEntity<Favorite> requestEntity = new HttpEntity<Favorite>(favorite, headers);
+		
+		ResponseEntity<Favorite> responseEntity = restTemplate.exchange(
+				endPoints.getAddFavoriteURL(), HttpMethod.POST,
+				requestEntity, Favorite.class);
+
+		return responseEntity.getBody();
+	}
 
     @Override
     public List<Favorite> getFavorites(String serviceType, String accessTokenID) throws ServiceInventoryException {
