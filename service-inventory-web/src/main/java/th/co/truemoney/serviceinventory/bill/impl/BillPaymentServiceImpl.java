@@ -45,7 +45,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 	@Autowired
 	AsyncBillPayProcessor asyncBillPayProcessor;
-	
+
 	@Autowired
 	private BillPaymentValidationConfig validationConfig;
 
@@ -78,7 +78,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 								   .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
 								   .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
 								   .getInformation();
-		
+
 		validateOverdue(bill.getTarget(), bill.getDueDate());
 		bill.setID(UUID.randomUUID().toString());
 		billInfoRepo.saveBill(bill, accessTokenID);
@@ -95,7 +95,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 			}
 		}
 	}
-	
+
 	public boolean isOverdue(Date duedate) {
 		DateTime dateTime = new DateTime(duedate);
 		return dateTime.plusDays(1).isBeforeNow();
@@ -121,13 +121,13 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 							.verifyPayment();
 
 		BillPaymentDraft billDraft = new BillPaymentDraft(UUID.randomUUID().toString(), billInfo, amount, verificationID, Status.CREATED);
-		transactionRepository.saveBillPaymentDraft(billDraft, accessTokenID);
+		transactionRepository.saveDraftTransaction(billDraft, accessTokenID);
 		return billDraft;
 	}
 
 	@Override
 	public BillPaymentDraft getBillPaymentDraftDetail(String invoiceID, String accessTokenID) throws ServiceInventoryException {
-		return transactionRepository.findBillPaymentDraft(invoiceID, accessTokenID);
+		return transactionRepository.findDraftTransaction(invoiceID, accessTokenID, BillPaymentDraft.class);
 	}
 
 	@Override
@@ -139,11 +139,11 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 		OTP otp = otpService.send(accessToken.getMobileNumber());
 
-		BillPaymentDraft billInvoice = transactionRepository.findBillPaymentDraft(invoiceID, accessTokenID);
+		BillPaymentDraft billInvoice = transactionRepository.findDraftTransaction(invoiceID, accessTokenID, BillPaymentDraft.class);
 		billInvoice.setOtpReferenceCode(otp.getReferenceCode());
 		billInvoice.setStatus(BillPaymentDraft.Status.OTP_SENT);
 
-		transactionRepository.saveBillPaymentDraft(billInvoice, accessTokenID);
+		transactionRepository.saveDraftTransaction(billInvoice, accessTokenID);
 
 		return otp;
 	}
@@ -158,11 +158,11 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		otpService.isValidOTP(otp);
 
 		invoiceDetails.setStatus(BillPaymentDraft.Status.OTP_CONFIRMED);
-		transactionRepository.saveBillPaymentDraft(invoiceDetails, accessTokenID);
+		transactionRepository.saveDraftTransaction(invoiceDetails, accessTokenID);
 
 		BillPaymentTransaction billPaymentReceipt = new BillPaymentTransaction(invoiceDetails);
 		billPaymentReceipt.setStatus(BillPaymentTransaction.Status.VERIFIED);
-		transactionRepository.saveBillPaymentTransaction(billPaymentReceipt, accessTokenID);
+		transactionRepository.saveTransaction(billPaymentReceipt, accessTokenID);
 
 		performBillPay(billPaymentReceipt, accessToken);
 
@@ -181,9 +181,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public BillPaymentTransaction getBillPaymentResult(String billPaymentID, String accessTokenID) 
+	public BillPaymentTransaction getBillPaymentResult(String billPaymentID, String accessTokenID)
 			throws ServiceInventoryException {
-		return transactionRepository.findBillPaymentTransaction(billPaymentID, accessTokenID);
+		return transactionRepository.findTransaction(billPaymentID, accessTokenID, BillPaymentTransaction.class);
 	}
 
 	public void setAsyncBillPayProcessor(AsyncBillPayProcessor asyncBillPayProcessor) {

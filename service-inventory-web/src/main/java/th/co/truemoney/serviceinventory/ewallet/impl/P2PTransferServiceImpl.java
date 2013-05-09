@@ -54,7 +54,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		String targetMarkedFullName = MaskUtil.markFullName(targetName);
 
 		P2PTransferDraft draft = createP2PDraft(amount, targetMobileNumber, targetMarkedFullName, accessTokenID);
-		transactionRepo.saveP2PTransferDraft(draft, accessToken.getAccessTokenID());
+		transactionRepo.saveDraftTransaction(draft, accessToken.getAccessTokenID());
 
 		return draft;
 	}
@@ -64,7 +64,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
-		P2PTransferDraft p2pTransferDraft = transactionRepo.findP2PTransferDraft(transferDraftID, accessToken.getAccessTokenID());
+		P2PTransferDraft p2pTransferDraft = transactionRepo.findDraftTransaction(transferDraftID, accessToken.getAccessTokenID(), P2PTransferDraft.class);
 
 		return p2pTransferDraft;
 	}
@@ -80,7 +80,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		p2pTransferDraft.setOtpReferenceCode(otp.getReferenceCode());
 		p2pTransferDraft.setStatus(P2PTransferDraft.Status.OTP_SENT);
 
-		transactionRepo.saveP2PTransferDraft(p2pTransferDraft, accessToken.getAccessTokenID());
+		transactionRepo.saveDraftTransaction(p2pTransferDraft, accessToken.getAccessTokenID());
 
 		return otp;
 	}
@@ -94,11 +94,11 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		otpService.isValidOTP(otp);
 
 		p2pTransferDraft.setStatus(P2PTransferDraft.Status.OTP_CONFIRMED);
-		transactionRepo.saveP2PTransferDraft(p2pTransferDraft, accessToken.getAccessTokenID());
+		transactionRepo.saveDraftTransaction(p2pTransferDraft, accessToken.getAccessTokenID());
 
 		P2PTransferTransaction p2pTransaction = new P2PTransferTransaction(p2pTransferDraft);
 		p2pTransaction.setStatus(P2PTransferTransaction.Status.VERIFIED);
-		transactionRepo.saveP2PTransferTransaction(p2pTransaction, accessToken.getAccessTokenID());
+		transactionRepo.saveTransaction(p2pTransaction, accessToken.getAccessTokenID());
 
 		performTransferMoney(accessToken, p2pTransaction);
 
@@ -130,7 +130,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 			throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		return transactionRepo.findP2PTransferTransaction(transactionID, accessToken.getAccessTokenID());
+		return transactionRepo.findTransaction(transactionID, accessToken.getAccessTokenID(), P2PTransferTransaction.class);
 	}
 
 	private P2PTransferDraft createP2PDraft(BigDecimal amount, String targetMobileNumber, String targetName, String byAccessToken) {

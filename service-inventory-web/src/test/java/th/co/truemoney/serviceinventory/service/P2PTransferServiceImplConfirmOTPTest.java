@@ -82,7 +82,7 @@ public class P2PTransferServiceImplConfirmOTPTest {
 
             transferDraft =  P2PTransferStubbed.createP2PDraft(new BigDecimal(100), "0987654321", "target name", accessToken.getAccessTokenID());
             transferDraft.setStatus(P2PTransferDraft.Status.OTP_SENT);
-            transactionRepo.saveP2PTransferDraft(transferDraft, accessToken.getAccessTokenID());
+            transactionRepo.saveDraftTransaction(transferDraft, accessToken.getAccessTokenID());
         }
 
         @After
@@ -136,8 +136,8 @@ public class P2PTransferServiceImplConfirmOTPTest {
             Assert.assertEquals(transferDraft.getStatus(), P2PTransferDraft.Status.OTP_SENT);
 
             try {
-                transactionRepo.findTopUpOrder(transferDraft.getID(), accessToken.getAccessTokenID());
-                Assert.fail("should not create/persist any top up order");
+                transactionRepo.findTransaction(transferDraft.getID(), accessToken.getAccessTokenID(), P2PTransferTransaction.class);
+                Assert.fail("should not create/persist any p2p transaction");
             } catch(ServiceInventoryWebException e) {}
 
             //should never call the processor

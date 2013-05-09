@@ -53,7 +53,7 @@ public class AsyncP2PTransferProcessor {
 			}
 
 			p2pTransaction.setStatus(Transaction.Status.PROCESSING);
-			transactionRepo.saveP2PTransferTransaction(p2pTransaction, accessToken.getAccessTokenID());
+			transactionRepo.saveTransaction(p2pTransaction, accessToken.getAccessTokenID());
 
 			P2PTransactionConfirmationInfo confirmationInfo = legacyFacade
 					.fromChannel(channelID)
@@ -74,7 +74,7 @@ public class AsyncP2PTransferProcessor {
 			p2pTransaction.setFailStatus(FailStatus.UNKNOWN_FAILED);
 		}
 
-		transactionRepo.saveP2PTransferTransaction(p2pTransaction, accessToken.getAccessTokenID());
+		transactionRepo.saveTransaction(p2pTransaction, accessToken.getAccessTokenID());
 
 		return new AsyncResult<P2PTransferTransaction> (p2pTransaction);
 	}

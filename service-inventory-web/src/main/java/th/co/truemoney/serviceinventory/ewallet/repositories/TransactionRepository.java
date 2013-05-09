@@ -1,33 +1,12 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories;
 
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
-import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 
 public interface TransactionRepository {
-	public void saveTopUpQuote(TopUpQuote topupQuote, String accessTokenID);
-	public TopUpQuote findTopUpQuote(String orderID, String accessTokenID);
-	public void saveTopUpOrder(TopUpOrder topupOrder, String accessTokenID);
-	public TopUpOrder findTopUpOrder(String orderID, String accessTokenID);
+	public void saveDraftTransaction(DraftTransaction draft, String accessTokenID);
+	public <T extends DraftTransaction> T findDraftTransaction(String draftID, String accessTokenID, Class<T> clazz);
 
-	public void saveP2PTransferDraft(P2PTransferDraft p2pTransferDraft, String accessTokenID);
-	public P2PTransferDraft findP2PTransferDraft(String p2pTransferDraftID, String accessTokenID);
-	public void saveP2PTransferTransaction(P2PTransferTransaction p2pTransaction, String accessTokenID);
-	public P2PTransferTransaction findP2PTransferTransaction(String p2pTransactionID, String accessTokenID);
-
-	public void saveBillPaymentDraft(BillPaymentDraft bill, String accessTokenID);
-	public BillPaymentDraft findBillPaymentDraft(String billID, String accessTokenID);
-	public void saveBillPaymentTransaction(BillPaymentTransaction billPayment, String accessTokenID);
-	public BillPaymentTransaction findBillPaymentTransaction(String billPaymentID, String accessTokenID);
-	
-	public void saveTopUpMobileDraft(TopUpMobileDraft topUpMobileDraft, String accessTokenID);
-	public TopUpMobileDraft findTopUpMobileDraft(String topUpMobileId, String accessTokenID);
-	public void saveTopUpMobileTransaction(TopUpMobileTransaction topUpMobileTransaction, String accessTokenID);
-	public TopUpMobileTransaction findTopUpMobileTransaction(String topUpMobileTransactionID, String accessTokenID);
-	
+	public void saveTransaction(Transaction transaction, String accessTokenID);
+	public <T extends Transaction> T findTransaction(String transactionID, String accessTokenID, Class<T> clazz);
 }

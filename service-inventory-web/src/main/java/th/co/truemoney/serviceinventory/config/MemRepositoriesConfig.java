@@ -36,16 +36,16 @@ public class MemRepositoriesConfig {
 		P2PTransferDraft p2pTransferDraft = new P2PTransferDraft("0868185055", new BigDecimal("20.00"));
 		p2pTransferDraft.setID("xxxx");
 		p2pTransferDraft.setAccessTokenID("12345");
-		transactionRepository.saveP2PTransferDraft(p2pTransferDraft, p2pTransferDraft.getAccessTokenID());
+		transactionRepository.saveDraftTransaction(p2pTransferDraft, p2pTransferDraft.getAccessTokenID());
 		p2pTransferDraft.setStatus(P2PTransferDraft.Status.OTP_CONFIRMED);
 
 		P2PTransferTransaction p2pTransaction = new P2PTransferTransaction(p2pTransferDraft);
-		transactionRepository.saveP2PTransferTransaction(p2pTransaction, p2pTransferDraft.getAccessTokenID());
+		transactionRepository.saveTransaction(p2pTransaction, p2pTransferDraft.getAccessTokenID());
 
 		TopUpQuote topUpQuote =  new TopUpQuote();
 		topUpQuote.setID("xxxx");
 		topUpQuote.setAccessTokenID("12345");
-		transactionRepository.saveTopUpQuote(topUpQuote, topUpQuote.getAccessTokenID());
+		transactionRepository.saveDraftTransaction(topUpQuote, topUpQuote.getAccessTokenID());
 
 		return transactionRepository;
 	}

@@ -131,7 +131,7 @@ public class BillPaymentServiceImplTest {
         Bill stubbedBillPaymentInfo = BillPaymentStubbed.createNotOverDueBillPaymentInfo();
 
         when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
-        
+
         //when
         Bill billInformation = billPayService.retrieveBillInformation("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
 
@@ -139,7 +139,7 @@ public class BillPaymentServiceImplTest {
         assertNotNull(billInformation);
         verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
     }
-    
+
     @Test
     public void createBillInvoice() {
 //
@@ -162,7 +162,7 @@ public class BillPaymentServiceImplTest {
 
         //given
         BillPaymentDraft invoice = new BillPaymentDraft("invoiceID");
-        transactionRepo.saveBillPaymentDraft(invoice, accessToken.getAccessTokenID());
+        transactionRepo.saveDraftTransaction(invoice, accessToken.getAccessTokenID());
 
         //when
         when(otpService.send(accessToken.getMobileNumber())).thenReturn(new OTP());
@@ -181,7 +181,7 @@ public class BillPaymentServiceImplTest {
         OTP correctOTP = new OTP("0868185055", "refCode", "111111");
 
         BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, "transactionID", BillPaymentDraft.Status.OTP_SENT);
-        transactionRepo.saveBillPaymentDraft(invoice, accessToken.getAccessTokenID());
+        transactionRepo.saveDraftTransaction(invoice, accessToken.getAccessTokenID());
 
         //when
         BillPaymentDraft.Status confirmation = billPayService.confirmBill(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
@@ -190,11 +190,11 @@ public class BillPaymentServiceImplTest {
         assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, confirmation);
         verify(asyncProcessor).payBill(any(BillPaymentTransaction.class), any(AccessToken.class));
 
-        BillPaymentDraft repoInvoice = transactionRepo.findBillPaymentDraft(invoice.getID(), accessToken.getAccessTokenID());
+        BillPaymentDraft repoInvoice = transactionRepo.findDraftTransaction(invoice.getID(), accessToken.getAccessTokenID(), BillPaymentDraft.class);
         assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, repoInvoice.getStatus());
         verify(asyncProcessor).payBill(any(BillPaymentTransaction.class), any(AccessToken.class));
 
-        BillPaymentTransaction billPayment = transactionRepo.findBillPaymentTransaction(invoice.getID(), accessToken.getAccessTokenID());
+        BillPaymentTransaction billPayment = transactionRepo.findTransaction(invoice.getID(), accessToken.getAccessTokenID(), BillPaymentTransaction.class);
 
         assertNotNull(billPayment);
         assertEquals(BillPaymentTransaction.Status.VERIFIED, billPayment.getStatus());
@@ -207,7 +207,7 @@ public class BillPaymentServiceImplTest {
         OTP badOTP = new OTP("0868185055", "refCode", "111111");
 
         BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, "transactionID", BillPaymentDraft.Status.OTP_SENT);
-        transactionRepo.saveBillPaymentDraft(invoice, accessToken.getAccessTokenID());
+        transactionRepo.saveDraftTransaction(invoice, accessToken.getAccessTokenID());
 
         Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpService).isValidOTP(badOTP);
 
@@ -220,11 +220,11 @@ public class BillPaymentServiceImplTest {
         }
 
         //then
-        BillPaymentDraft repoInvoice = transactionRepo.findBillPaymentDraft(invoice.getID(), accessToken.getAccessTokenID());
+        BillPaymentDraft repoInvoice = transactionRepo.findDraftTransaction(invoice.getID(), accessToken.getAccessTokenID(), BillPaymentDraft.class);
         Assert.assertEquals(BillPaymentDraft.Status.OTP_SENT, repoInvoice.getStatus());
 
         try {
-            transactionRepo.findBillPaymentTransaction(invoice.getID(), accessToken.getAccessTokenID());
+            transactionRepo.findTransaction(invoice.getID(), accessToken.getAccessTokenID(), BillPaymentTransaction.class);
             Assert.fail();
         } catch (ResourceNotFoundException ex) {
             Assert.assertEquals(Code.TRANSACTION_NOT_FOUND, ex.getErrorCode());

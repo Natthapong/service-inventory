@@ -22,19 +22,19 @@ import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 
 @Service
 public class TopUpMobileServiceImpl implements TopUpMobileService {
-	
+
 	@Autowired
 	private LegacyFacade legacyFacade;
-	
+
 	@Autowired
 	private AccessTokenRepository accessTokenRepo;
-	
+
 	@Autowired
 	private TransactionRepository transactionRepo;
-	
+
 	@Autowired
 	private OTPService otpService;
-	
+
 	@Autowired
 	AsyncTopUpMobileProcessor asyncTopUpMobileProcessor;
 
@@ -54,10 +54,10 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	public TopUpMobileDraft verifyAndCreateTopUpMobileDraft(
 			String targetMobileNumber, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException {
-		
+
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		ClientCredential appData = accessToken.getClientCredential();
-		
+
 		//verify topup mobile
 		TopUpMobile topUpMobile = legacyFacade.topUpMobile()
 				.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
@@ -66,19 +66,19 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 				.toMobileNumber(targetMobileNumber)
 				.usingSourceOfFund("EW")
 				.withAmount(amount)
-				.verifyTopUpAirtime();				
-		
+				.verifyTopUpAirtime();
+
 		TopUpMobileDraft topUpMobileDraft = new TopUpMobileDraft(UUID.randomUUID().toString(), topUpMobile, topUpMobile.getAmount(), topUpMobile.getID(), Status.CREATED);
-		transactionRepo.saveTopUpMobileDraft(topUpMobileDraft, accessTokenID);
+		transactionRepo.saveDraftTransaction(topUpMobileDraft, accessTokenID);
 		return topUpMobileDraft;
 	}
 
 	@Override
-	public TopUpMobileDraft getTopUpMobileDraftDetail(String draftID, String accessTokenID) 
+	public TopUpMobileDraft getTopUpMobileDraftDetail(String draftID, String accessTokenID)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
-		TopUpMobileDraft topUpMobileDraft = transactionRepo.findTopUpMobileDraft(draftID, accessToken.getAccessTokenID());
+		TopUpMobileDraft topUpMobileDraft = transactionRepo.findDraftTransaction(draftID, accessToken.getAccessTokenID(), TopUpMobileDraft.class);
 
 		return topUpMobileDraft;
 	}
@@ -86,43 +86,43 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	@Override
 	public OTP sendOTP(String draftID, String accessTokenID)
 			throws ServiceInventoryException {
-		
+
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		
+
 		OTP otp = otpService.send(accessToken.getMobileNumber());
-				
-		TopUpMobileDraft topUpMobileDraft = transactionRepo.findTopUpMobileDraft(draftID, accessTokenID);
+
+		TopUpMobileDraft topUpMobileDraft = transactionRepo.findDraftTransaction(draftID, accessTokenID, TopUpMobileDraft.class);
 		topUpMobileDraft.setOtpReferenceCode(otp.getReferenceCode());
 		topUpMobileDraft.setStatus(TopUpMobileDraft.Status.OTP_SENT);
-		
-		transactionRepo.saveTopUpMobileDraft(topUpMobileDraft, accessTokenID);
-		
+
+		transactionRepo.saveDraftTransaction(topUpMobileDraft, accessTokenID);
+
 		return otp;
 	}
 
 	@Override
-	public Status confirmTopUpMobile(String draftID, OTP otp, String accessTokenID) 
+	public Status confirmTopUpMobile(String draftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException {
-		
+
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		TopUpMobileDraft topUpMobileDraft = transactionRepo.findTopUpMobileDraft(draftID, accessTokenID);
+		TopUpMobileDraft topUpMobileDraft = transactionRepo.findDraftTransaction(draftID, accessTokenID, TopUpMobileDraft.class);
 
 		otpService.isValidOTP(otp);
 
 		topUpMobileDraft.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
-		transactionRepo.saveTopUpMobileDraft(topUpMobileDraft, accessTokenID);
+		transactionRepo.saveDraftTransaction(topUpMobileDraft, accessTokenID);
 
 		TopUpMobileTransaction topUpMobileTransaction = new TopUpMobileTransaction(topUpMobileDraft);
 		topUpMobileTransaction.setStatus(TopUpMobileTransaction.Status.VERIFIED);
-		transactionRepo.saveTopUpMobileTransaction(topUpMobileTransaction, accessTokenID);
+		transactionRepo.saveTransaction(topUpMobileTransaction, accessTokenID);
 
 		performTopUpMobile(topUpMobileTransaction, accessToken);
-		
+
 		return topUpMobileDraft.getStatus();
 	}
 
 	private void performTopUpMobile(TopUpMobileTransaction topUpMobileTransaction, AccessToken accessToken) {
-		asyncTopUpMobileProcessor.topUpMobile(topUpMobileTransaction, accessToken);		
+		asyncTopUpMobileProcessor.topUpMobile(topUpMobileTransaction, accessToken);
 	}
 
 	@Override
@@ -133,11 +133,11 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	}
 
 	@Override
-	public TopUpMobileTransaction getTopUpMobileResult(String transactionID, String accessTokenID) 
+	public TopUpMobileTransaction getTopUpMobileResult(String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
-		return transactionRepo.findTopUpMobileTransaction(transactionID, accessTokenID);
+		return transactionRepo.findTransaction(transactionID, accessTokenID, TopUpMobileTransaction.class);
 	}
-	
+
 	public void setLegacyFacade(LegacyFacade legacyFacade) {
 		this.legacyFacade = legacyFacade;
 	}

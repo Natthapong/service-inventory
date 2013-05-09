@@ -72,7 +72,7 @@ public class TopUpMobileServiceImplTest {
 
         topUpMobile = new TopUpMobile();
         topUpMobileDraft = new TopUpMobileDraft("7788",topUpMobile);
-        transactionRepo.saveTopUpMobileDraft(topUpMobileDraft, accessToken.getAccessTokenID());
+        transactionRepo.saveDraftTransaction(topUpMobileDraft, accessToken.getAccessTokenID());
 
         mockTopUpMobileFacade = Mockito.mock(TopUpMobileFacade.class);
         otpService = Mockito.mock(OTPService.class);
@@ -92,7 +92,7 @@ public class TopUpMobileServiceImplTest {
         TopUpMobileDraft topUpMobileDraft = topUpMobileServiceImpl.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(0) , "12345");
         assertEquals("130419013811", topUpMobileDraft.getTransactionID());
 
-        TopUpMobileDraft topUpMobileDraftFromRepo = transactionRepo.findTopUpMobileDraft(topUpMobileDraft.getID(), "12345");
+        TopUpMobileDraft topUpMobileDraftFromRepo = transactionRepo.findDraftTransaction(topUpMobileDraft.getID(), "12345", TopUpMobileDraft.class);
         assertNotNull(topUpMobileDraftFromRepo);
         assertEquals("130419013811", topUpMobileDraftFromRepo.getTransactionID());
     }
@@ -110,7 +110,7 @@ public class TopUpMobileServiceImplTest {
         OTP otpResponse = topUpMobileServiceImpl.sendOTP(topUpMobileDraft.getID(), accessToken.getAccessTokenID());
         assertEquals(otpResponse, otp);
 
-        TopUpMobileDraft topUpMobileDraftResponse = transactionRepo.findTopUpMobileDraft(topUpMobileDraft.getID(), accessToken.getAccessTokenID());
+        TopUpMobileDraft topUpMobileDraftResponse = transactionRepo.findDraftTransaction(topUpMobileDraft.getID(), accessToken.getAccessTokenID(), TopUpMobileDraft.class);
         assertNotNull(topUpMobileDraftResponse);
         assertEquals(topUpMobileDraftResponse.getOtpReferenceCode(), otp.getReferenceCode());
         assertEquals(topUpMobileDraftResponse.getStatus(), TopUpMobileDraft.Status.OTP_SENT);

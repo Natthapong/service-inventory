@@ -59,7 +59,7 @@ public class AsyncTopUpEwalletProcessorTest {
 
         incomingOrder = setUpIncomingOrder();
 
-        transactionRepo.saveTopUpOrder(incomingOrder, "tokenID");
+        transactionRepo.saveTransaction(incomingOrder, "tokenID");
     }
 
     private TopUpOrder setUpIncomingOrder() {
@@ -167,6 +167,6 @@ public class AsyncTopUpEwalletProcessorTest {
     }
 
     private TopUpOrder getTransactionFromRepoByID(String transactionID, String accessTokenID) {
-        return transactionRepo.findTopUpOrder(transactionID, accessTokenID);
+        return transactionRepo.findTransaction(transactionID, accessTokenID, TopUpOrder.class);
     }
 }

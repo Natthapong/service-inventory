@@ -63,7 +63,7 @@ public class TopUpServiceImpl implements TopUpService {
 
 		TopUpQuote topUpQuote = createTopUpQuote(amount, directDebitSource, topUpFee, accessToken);
 
-		transactionRepo.saveTopUpQuote(topUpQuote, accessTokenID);
+		transactionRepo.saveDraftTransaction(topUpQuote, accessTokenID);
 
 		return topUpQuote;
 	}
@@ -102,7 +102,7 @@ public class TopUpServiceImpl implements TopUpService {
 	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID)
 			throws ServiceInventoryException {
 
-		return transactionRepo.findTopUpQuote(quoteID, accessTokenID);
+		return transactionRepo.findDraftTransaction(quoteID, accessTokenID, TopUpQuote.class);
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class TopUpServiceImpl implements TopUpService {
 		topUpQuote.setOtpReferenceCode(otp.getReferenceCode());
 		topUpQuote.setStatus(TopUpQuote.Status.OTP_SENT);
 
-		transactionRepo.saveTopUpQuote(topUpQuote, accessTokenID);
+		transactionRepo.saveDraftTransaction(topUpQuote, accessTokenID);
 
 		return otp;
 	}
@@ -131,11 +131,11 @@ public class TopUpServiceImpl implements TopUpService {
 		otpService.isValidOTP(otp);
 
 		topUpQuote.setStatus(TopUpQuote.Status.OTP_CONFIRMED);
-		transactionRepo.saveTopUpQuote(topUpQuote, accessTokenID);
+		transactionRepo.saveDraftTransaction(topUpQuote, accessTokenID);
 
 		TopUpOrder topUpOrder = new TopUpOrder(topUpQuote);
 		topUpOrder.setStatus(TopUpOrder.Status.VERIFIED);
-		transactionRepo.saveTopUpOrder(topUpOrder, accessTokenID);
+		transactionRepo.saveTransaction(topUpOrder, accessTokenID);
 
 		performTopUp(topUpOrder, accessToken);
 
@@ -169,7 +169,7 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	public TopUpOrder getTopUpOrderResults(String orderID, String accessTokenID) throws ServiceInventoryException {
-		return transactionRepo.findTopUpOrder(orderID, accessTokenID);
+		return transactionRepo.findTransaction(orderID, accessTokenID, TopUpOrder.class);
 	}
 
 	public EnhancedDirectDebitSourceOfFundService getDirectDebitSourceService() {

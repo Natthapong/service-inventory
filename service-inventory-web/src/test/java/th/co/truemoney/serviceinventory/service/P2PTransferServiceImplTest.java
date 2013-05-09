@@ -1,7 +1,9 @@
 package th.co.truemoney.serviceinventory.service;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
@@ -80,7 +82,7 @@ public class P2PTransferServiceImplTest {
         otpRepo.save(goodOTP);
 
         transferDraft =  P2PTransferStubbed.createP2PDraft(new BigDecimal(100), "0987654321", "target name", accessToken.getAccessTokenID());
-        transactionRepo.saveP2PTransferDraft(transferDraft, accessToken.getAccessTokenID());
+        transactionRepo.saveDraftTransaction(transferDraft, accessToken.getAccessTokenID());
     }
 
     @After
@@ -121,7 +123,7 @@ public class P2PTransferServiceImplTest {
 
         //then
         assertNotNull(otp);
-        P2PTransferDraft repoValue = transactionRepo.findP2PTransferDraft(transferDraft.getID(), accessToken.getAccessTokenID());
+        P2PTransferDraft repoValue = transactionRepo.findDraftTransaction(transferDraft.getID(), accessToken.getAccessTokenID(), P2PTransferDraft.class);
         assertEquals(P2PTransferDraft.Status.OTP_SENT, repoValue.getStatus());
     }
 
@@ -131,11 +133,11 @@ public class P2PTransferServiceImplTest {
         //given
         transferDraft.setStatus(P2PTransferDraft.Status.OTP_CONFIRMED);
         P2PTransferTransaction p2pTrans = new P2PTransferTransaction(transferDraft);
-        transactionRepo.saveP2PTransferTransaction(p2pTrans, accessToken.getAccessTokenID());
+        transactionRepo.saveTransaction(p2pTrans, accessToken.getAccessTokenID());
 
         //given status is verified
         p2pTrans.setStatus(P2PTransferTransaction.Status.VERIFIED);
-        transactionRepo.saveP2PTransferTransaction(p2pTrans, accessToken.getAccessTokenID());
+        transactionRepo.saveTransaction(p2pTrans, accessToken.getAccessTokenID());
 
         //when status is verified
         P2PTransferTransaction.Status status =  this.p2pService.getTransferringStatus(transferDraft.getID(), accessToken.getAccessTokenID());
@@ -143,7 +145,7 @@ public class P2PTransferServiceImplTest {
 
         //given status is processing
         p2pTrans.setStatus(P2PTransferTransaction.Status.PROCESSING);
-        transactionRepo.saveP2PTransferTransaction(p2pTrans, accessToken.getAccessTokenID());
+        transactionRepo.saveTransaction(p2pTrans, accessToken.getAccessTokenID());
 
         //when status is processing
         status =  this.p2pService.getTransferringStatus(transferDraft.getID(), accessToken.getAccessTokenID());
@@ -151,7 +153,7 @@ public class P2PTransferServiceImplTest {
 
         //given status is success
         p2pTrans.setStatus(P2PTransferTransaction.Status.SUCCESS);
-        transactionRepo.saveP2PTransferTransaction(p2pTrans, accessToken.getAccessTokenID());
+        transactionRepo.saveTransaction(p2pTrans, accessToken.getAccessTokenID());
 
         //when status is processing
         status =  this.p2pService.getTransferringStatus(transferDraft.getID(), accessToken.getAccessTokenID());
@@ -164,12 +166,12 @@ public class P2PTransferServiceImplTest {
         //given
         transferDraft.setStatus(P2PTransferDraft.Status.OTP_CONFIRMED);
         P2PTransferTransaction p2pTrans = new P2PTransferTransaction(transferDraft);
-        transactionRepo.saveP2PTransferTransaction(p2pTrans, accessToken.getAccessTokenID());
+        transactionRepo.saveTransaction(p2pTrans, accessToken.getAccessTokenID());
 
         //given status has failed because umarket
         p2pTrans.setStatus(P2PTransferTransaction.Status.FAILED);
         p2pTrans.setFailStatus(FailStatus.UMARKET_FAILED);
-        transactionRepo.saveP2PTransferTransaction(p2pTrans, accessToken.getAccessTokenID());
+        transactionRepo.saveTransaction(p2pTrans, accessToken.getAccessTokenID());
 
         //when
         try {
@@ -182,7 +184,7 @@ public class P2PTransferServiceImplTest {
         //given status has failed because unknown failure
         p2pTrans.setStatus(P2PTransferTransaction.Status.FAILED);
         p2pTrans.setFailStatus(FailStatus.UNKNOWN_FAILED);
-        transactionRepo.saveP2PTransferTransaction(p2pTrans, accessToken.getAccessTokenID());
+        transactionRepo.saveTransaction(p2pTrans, accessToken.getAccessTokenID());
 
         //when
         try {
@@ -198,11 +200,11 @@ public class P2PTransferServiceImplTest {
         //given
         transferDraft.setStatus(P2PTransferDraft.Status.OTP_CONFIRMED);
         P2PTransferTransaction p2pTrans = new P2PTransferTransaction(transferDraft);
-        transactionRepo.saveP2PTransferTransaction(p2pTrans, accessToken.getAccessTokenID());
+        transactionRepo.saveTransaction(p2pTrans, accessToken.getAccessTokenID());
 
         //given status has failed because umarket
         p2pTrans.setStatus(P2PTransferTransaction.Status.SUCCESS);
-        transactionRepo.saveP2PTransferTransaction(p2pTrans, accessToken.getAccessTokenID());
+        transactionRepo.saveTransaction(p2pTrans, accessToken.getAccessTokenID());
 
         //when using bad trans id
         try {

@@ -42,7 +42,7 @@ public class AsyncBillPayProcessor {
 			BigDecimal amount = draftTransaction.getAmount();
 
 			billPaymentReceipt.setStatus(Transaction.Status.PROCESSING);
-			transactionRepo.saveBillPaymentTransaction(billPaymentReceipt, accessToken.getAccessTokenID());
+			transactionRepo.saveTransaction(billPaymentReceipt, accessToken.getAccessTokenID());
 
 			ClientCredential appData = accessToken.getClientCredential();
 
@@ -69,7 +69,7 @@ public class AsyncBillPayProcessor {
 			billPaymentReceipt.setFailStatus(BillPaymentTransaction.FailStatus.UNKNOWN_FAILED);
 		}
 
-		transactionRepo.saveBillPaymentTransaction(billPaymentReceipt, accessToken.getAccessTokenID());
+		transactionRepo.saveTransaction(billPaymentReceipt, accessToken.getAccessTokenID());
 
 		return new AsyncResult<BillPaymentTransaction> (billPaymentReceipt);
 	}

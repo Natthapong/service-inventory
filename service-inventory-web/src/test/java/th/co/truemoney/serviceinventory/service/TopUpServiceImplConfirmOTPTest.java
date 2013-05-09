@@ -76,7 +76,7 @@ public class TopUpServiceImplConfirmOTPTest {
         otpRepo.save(goodOTP);
 
         quote =  createQuote(accessToken, goodOTP);
-        transactionRepo.saveTopUpQuote(quote, accessToken.getAccessTokenID());
+        transactionRepo.saveDraftTransaction(quote, accessToken.getAccessTokenID());
     }
 
     @Test
@@ -120,7 +120,7 @@ public class TopUpServiceImplConfirmOTPTest {
         Assert.assertEquals(TopUpQuote.Status.OTP_SENT, quote.getStatus());
 
         try {
-            transactionRepo.findTopUpOrder(quote.getID(), accessToken.getAccessTokenID());
+            transactionRepo.findTransaction(quote.getID(), accessToken.getAccessTokenID(), TopUpOrder.class);
             Assert.fail("should not create/persist any top up order");
         } catch(ServiceInventoryWebException e) {}
 

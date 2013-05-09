@@ -24,9 +24,9 @@ import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 
 @Service
 public class AsyncTopUpMobileProcessor {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(AsyncTopUpMobileProcessor.class);
-	
+
 	@Autowired
 	private TransactionRepository transactionRepo;
 
@@ -38,17 +38,17 @@ public class AsyncTopUpMobileProcessor {
 		try {
 			TopUpMobileDraft topUpMobileDraft = topUpMobileTransaction.getDraftTransaction();
 			TopUpMobile topUpMobile = topUpMobileDraft.getTopUpMobileInfo();
-			
+
 			BigDecimal amount = topUpMobile.getAmount();
 
 			topUpMobileTransaction.setStatus(Transaction.Status.PROCESSING);
-			transactionRepo.saveTopUpMobileTransaction(topUpMobileTransaction, accessToken.getAccessTokenID());
+			transactionRepo.saveTransaction(topUpMobileTransaction, accessToken.getAccessTokenID());
 
 			String verificationID = topUpMobileDraft.getTransactionID();
 			String target = topUpMobile.getTarget();
 
 			ClientCredential appData = accessToken.getClientCredential();
-			
+
 			TopUpMobileConfirmationInfo confirmationInfo = legacyFacade.topUpMobile()
 					.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
 					.fromTopUpChannel(appData.getChannel(), appData.getChannelDetail())
@@ -70,10 +70,10 @@ public class AsyncTopUpMobileProcessor {
 		} catch (Exception ex) {
 			topUpMobileTransaction.setFailStatus(TopUpMobileTransaction.FailStatus.UNKNOWN_FAILED);
 		}
-		
-		transactionRepo.saveTopUpMobileTransaction(topUpMobileTransaction, accessToken.getAccessTokenID());
+
+		transactionRepo.saveTransaction(topUpMobileTransaction, accessToken.getAccessTokenID());
 
 		return new AsyncResult<TopUpMobileTransaction>(topUpMobileTransaction);
 	}
-	
+
 }
