@@ -15,11 +15,13 @@ import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
@@ -101,12 +103,11 @@ public class TopUpServiceImpl implements TopUpService {
 	@Override
 	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID)
 			throws ServiceInventoryException {
-
 		return transactionRepo.findDraftTransaction(quoteID, accessTokenID, TopUpQuote.class);
 	}
 
 	@Override
-	public OTP submitTopUpRequest(String quoteID, String accessTokenID)
+	public OTP requestOTP(String quoteID, String accessTokenID)
 			throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
@@ -123,9 +124,9 @@ public class TopUpServiceImpl implements TopUpService {
 	}
 
 	@Override
-	public TopUpQuote.Status authorizeAndPerformTopUp(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryWebException {
+	public TopUpQuote.Status verifyOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryWebException {
 
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		accessTokenRepo.findAccessToken(accessTokenID);
 		TopUpQuote topUpQuote = getTopUpQuoteDetails(quoteID, accessTokenID);
 
 		otpService.isValidOTP(otp);
@@ -133,18 +134,29 @@ public class TopUpServiceImpl implements TopUpService {
 		topUpQuote.setStatus(TopUpQuote.Status.OTP_CONFIRMED);
 		transactionRepo.saveDraftTransaction(topUpQuote, accessTokenID);
 
+		return topUpQuote.getStatus();
+	}
+
+	@Override
+	public Status performTopUp(String quoteID, String accessTokenID)
+			throws ServiceInventoryException {
+
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		TopUpQuote topUpQuote = getTopUpQuoteDetails(quoteID, accessTokenID);
+
+		if (TopUpQuote.Status.OTP_CONFIRMED != topUpQuote.getStatus()) {
+			throw new UnVerifiedOwnerTransactionException();
+		}
+
 		TopUpOrder topUpOrder = new TopUpOrder(topUpQuote);
 		topUpOrder.setStatus(TopUpOrder.Status.VERIFIED);
 		transactionRepo.saveTransaction(topUpOrder, accessTokenID);
 
-		performTopUp(topUpOrder, accessToken);
-
-		return topUpQuote.getStatus();
-	}
-
-	private void performTopUp(TopUpOrder topUpOrder, AccessToken accessToken) {
 		asyncTopUpProcessor.topUpUtibaEwallet(topUpOrder, accessToken);
+
+		return topUpOrder.getStatus();
 	}
+
 
 	@Override
 	public TopUpOrder.Status getTopUpProcessingStatus(String orderID, String accessTokenID) throws ServiceInventoryWebException {

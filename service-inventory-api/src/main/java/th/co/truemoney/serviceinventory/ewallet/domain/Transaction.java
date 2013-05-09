@@ -33,7 +33,7 @@ public abstract class Transaction implements Serializable {
 
 	public enum Status {
 
-		CREATED("CREATED"), VERIFIED("VERIFIED"), PROCESSING("PROCESSING"),
+		VERIFIED("VERIFIED"), PROCESSING("PROCESSING"),
 		SUCCESS("SUCCESS"), FAILED("FAILED");
 
 		private String status;

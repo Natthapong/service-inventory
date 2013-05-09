@@ -49,7 +49,7 @@ public class TopUpMobileController {
 			@PathVariable String topUpMobileDraftID,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return topUpMobileService.sendOTP(topUpMobileDraftID, accessTokenID);
+		return topUpMobileService.requestOTP(topUpMobileDraftID, accessTokenID);
 	}
 	
 	@RequestMapping(value = "/draft/{topUpMobileDraftID}/otp/{refCode}", method = RequestMethod.PUT)
@@ -62,7 +62,7 @@ public class TopUpMobileController {
 			otp.setReferenceCode(refCode);
 		}
 		extendExpireAccessToken(accessTokenID);
-		return topUpMobileService.confirmTopUpMobile(topUpMobileDraftID, otp, accessTokenID);
+		return topUpMobileService.verifyOTP(topUpMobileDraftID, otp, accessTokenID);
 	}
 
 	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)

@@ -46,11 +46,11 @@ public class TopupMobileIntegrateTest {
 		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
 		assertNotNull(topUpMobileDraft);
 
-		OTP otp = client.sendOTP(topUpMobileDraft.getID() , accessToken);
+		OTP otp = client.requestOTP(topUpMobileDraft.getID() , accessToken);
 		assertNotNull(otp);
 
 		otp.setOtpString("111111");
-		DraftTransaction.Status transactionStatus = client.confirmTopUpMobile(topUpMobileDraft.getID(), otp, accessToken);
+		DraftTransaction.Status transactionStatus = client.verifyOTP(topUpMobileDraft.getID(), otp, accessToken);
 		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, transactionStatus);
 
 		Thread.sleep(100);

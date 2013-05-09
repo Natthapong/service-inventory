@@ -8,17 +8,20 @@ import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 
 public interface TopUpMobileService {
-	
+
 	public TopUpMobileDraft verifyAndCreateTopUpMobileDraft(String targetMobileNumber, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException;
-	
+
 	public TopUpMobileDraft getTopUpMobileDraftDetail(String draftID, String accessTokenID)
 			throws ServiceInventoryException;
-	
-	public OTP sendOTP(String draftID, String accessTokenID)
+
+	public OTP requestOTP(String draftID, String accessTokenID)
 			throws ServiceInventoryException;
-	
-	public TopUpMobileDraft.Status confirmTopUpMobile(String draftID, OTP otp, String accessTokenID)
+
+	public TopUpMobileDraft.Status verifyOTP(String draftID, OTP otp, String accessTokenID)
+			throws ServiceInventoryException;
+
+	public TopUpMobileTransaction.Status performTopUpMobile(String draftID, String accessTokenID)
 			throws ServiceInventoryException;
 
 	public TopUpMobileTransaction.Status getTopUpMobileStatus(String transactionID, String accessTokenID)
@@ -26,5 +29,5 @@ public interface TopUpMobileService {
 
 	public TopUpMobileTransaction getTopUpMobileResult(String transactionID, String accessTokenID)
 			throws ServiceInventoryException;
-	
+
 }

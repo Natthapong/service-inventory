@@ -83,7 +83,7 @@ public class TmnTopupServiceClientTest {
 		assertEquals(TopUpQuote.Status.CREATED, quote.getStatus());
 
 		// request otp
-		OTP otp = topupServiceClient.submitTopUpRequest(quote.getID(), accessToken);
+		OTP otp = topupServiceClient.requestOTP(quote.getID(), accessToken);
 
 		assertNotNull(otp);
 		assertNotNull(otp.getReferenceCode());

@@ -50,11 +50,11 @@ public class TopUpEwalletController {
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
 		extendExpireAccessToken(accessTokenID);
-		return topupService.submitTopUpRequest(quoteID, accessTokenID);
+		return topupService.requestOTP(quoteID, accessTokenID);
 	}
 
 	@RequestMapping(value = "/top-up/quote/{quoteID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody TopUpQuote.Status verifyOTPAndPerformTopUp(
+	public @ResponseBody TopUpQuote.Status verifyOTP(
 		   @PathVariable String quoteID,
 		   @PathVariable String refCode,
 		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
@@ -66,7 +66,16 @@ public class TopUpEwalletController {
 
 		extendExpireAccessToken(accessTokenID);
 
-		return topupService.authorizeAndPerformTopUp(quoteID, otp, accessTokenID);
+		return topupService.verifyOTP(quoteID, otp, accessTokenID);
+	}
+
+	@RequestMapping(value = "/top-up/quote/{quoteID}", method = RequestMethod.PUT)
+	public @ResponseBody TopUpOrder.Status performTopUp(
+		   @PathVariable String quoteID,
+		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+		extendExpireAccessToken(accessTokenID);
+		return topupService.performTopUp(quoteID, accessTokenID);
 	}
 
 	@RequestMapping(value = "/top-up/order/{orderID}/status", method = RequestMethod.GET)

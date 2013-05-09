@@ -13,9 +13,11 @@ public interface TopUpService {
 
 	public TopUpQuote getTopUpQuoteDetails(String quoteID, String accessTokenID) throws ServiceInventoryException;
 
-	public OTP submitTopUpRequest(String quoteID, String accessTokenID) throws ServiceInventoryException;
+	public OTP requestOTP(String quoteID, String accessTokenID) throws ServiceInventoryException;
 
-	public TopUpQuote.Status authorizeAndPerformTopUp(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException;
+	public TopUpQuote.Status verifyOTP(String quoteID, OTP otp, String accessTokenID) throws ServiceInventoryException;
+
+	public TopUpOrder.Status performTopUp(String quoteID, String accessTokenID) throws ServiceInventoryException;
 
 	public TopUpOrder.Status getTopUpProcessingStatus(String topUpOrderID, String accessTokenID) throws ServiceInventoryException;
 

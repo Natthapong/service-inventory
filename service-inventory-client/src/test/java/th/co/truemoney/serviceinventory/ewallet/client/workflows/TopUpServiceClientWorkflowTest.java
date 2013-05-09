@@ -24,6 +24,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -60,7 +61,7 @@ public class TopUpServiceClientWorkflowTest {
 		assertEquals(TopUpQuote.Status.CREATED, quote.getStatus());
 
 		// request otp
-		OTP otp = topUpService.submitTopUpRequest(quote.getID(), accessToken);
+		OTP otp = topUpService.requestOTP(quote.getID(), accessToken);
 
 		assertNotNull(otp);
 		assertNotNull(otp.getReferenceCode());
@@ -72,7 +73,7 @@ public class TopUpServiceClientWorkflowTest {
 
 		// confirm otp
 		otp.setOtpString("111111");
-		TopUpQuote.Status quoteStatus = topUpService.authorizeAndPerformTopUp(quote.getID(), otp, accessToken);
+		TopUpQuote.Status quoteStatus = topUpService.verifyOTP(quote.getID(), otp, accessToken);
 
 		assertNotNull(quoteStatus);
 		assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quoteStatus);
@@ -82,9 +83,12 @@ public class TopUpServiceClientWorkflowTest {
 		// quote status changed
 		assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quote.getStatus());
 
+		Transaction.Status topUpOrderStatus = topUpService.performTopUp(quote.getID(), accessToken);
+		assertEquals(TopUpOrder.Status.VERIFIED, topUpOrderStatus);
+
 		// get order status
 		Thread.sleep(100);
-		Transaction.Status topUpOrderStatus = topUpService.getTopUpProcessingStatus(quote.getID(), accessToken);
+		topUpOrderStatus = topUpService.getTopUpProcessingStatus(quote.getID(), accessToken);
 		assertNotNull(topUpOrderStatus);
 
 		// retry while processing

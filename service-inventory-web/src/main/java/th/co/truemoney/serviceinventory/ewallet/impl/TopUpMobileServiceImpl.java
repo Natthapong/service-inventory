@@ -10,9 +10,11 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
@@ -77,14 +79,13 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	public TopUpMobileDraft getTopUpMobileDraftDetail(String draftID, String accessTokenID)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-
 		TopUpMobileDraft topUpMobileDraft = transactionRepo.findDraftTransaction(draftID, accessToken.getAccessTokenID(), TopUpMobileDraft.class);
 
 		return topUpMobileDraft;
 	}
 
 	@Override
-	public OTP sendOTP(String draftID, String accessTokenID)
+	public OTP requestOTP(String draftID, String accessTokenID)
 			throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
@@ -101,11 +102,11 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	}
 
 	@Override
-	public Status confirmTopUpMobile(String draftID, OTP otp, String accessTokenID)
+	public Status verifyOTP(String draftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		TopUpMobileDraft topUpMobileDraft = transactionRepo.findDraftTransaction(draftID, accessTokenID, TopUpMobileDraft.class);
+		TopUpMobileDraft topUpMobileDraft = getTopUpMobileDraftDetail(draftID, accessTokenID);
 
 		otpService.isValidOTP(otp);
 
@@ -119,6 +120,27 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 		performTopUpMobile(topUpMobileTransaction, accessToken);
 
 		return topUpMobileDraft.getStatus();
+	}
+
+	@Override
+	public Transaction.Status performTopUpMobile(
+			String draftID, String accessTokenID)
+			throws ServiceInventoryException {
+
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		TopUpMobileDraft topUpMobileDraft = getTopUpMobileDraftDetail(draftID, accessTokenID);
+
+		if (TopUpMobileDraft.Status.OTP_CONFIRMED != topUpMobileDraft.getStatus()) {
+			throw new UnVerifiedOwnerTransactionException();
+		}
+
+		TopUpMobileTransaction topUpMobileTransaction = new TopUpMobileTransaction(topUpMobileDraft);
+		topUpMobileTransaction.setStatus(TopUpMobileTransaction.Status.VERIFIED);
+		transactionRepo.saveTransaction(topUpMobileTransaction, accessTokenID);
+
+		performTopUpMobile(topUpMobileTransaction, accessToken);
+
+		return topUpMobileTransaction.getStatus();
 	}
 
 	private void performTopUpMobile(TopUpMobileTransaction topUpMobileTransaction, AccessToken accessToken) {

@@ -108,7 +108,7 @@ public class TopUpMobileServiceImplTest {
 
         Mockito.when(otpService.send(any(String.class))).thenReturn(otp);
 
-        OTP otpResponse = topUpMobileServiceImpl.sendOTP(topUpMobileDraft.getID(), accessToken.getAccessTokenID());
+        OTP otpResponse = topUpMobileServiceImpl.requestOTP(topUpMobileDraft.getID(), accessToken.getAccessTokenID());
         assertEquals(otpResponse, otp);
 
         TopUpMobileDraft topUpMobileDraftResponse = transactionRepo.findDraftTransaction(topUpMobileDraft.getID(), accessToken.getAccessTokenID(), TopUpMobileDraft.class);

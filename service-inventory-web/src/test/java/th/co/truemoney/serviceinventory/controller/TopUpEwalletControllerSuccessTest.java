@@ -63,7 +63,7 @@ public class TopUpEwalletControllerSuccessTest {
 	public void shouldSuccess() throws Exception {
 
 		//given
-		when(topupServiceMock.submitTopUpRequest(anyString(), anyString())).thenReturn(new OTP("11233", "refCode"));
+		when(topupServiceMock.requestOTP(anyString(), anyString())).thenReturn(new OTP("11233", "refCode"));
 
 		this.mockMvc.perform(post("/top-up/quote/{quoteID}/otp?accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "12345")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -76,7 +76,7 @@ public class TopUpEwalletControllerSuccessTest {
 	public void confirmPlaceOrderSuccess() throws Exception {
 		OTP otp = new OTP("112233", "refCode", "123");
 		//given
-		when(topupServiceMock.authorizeAndPerformTopUp(anyString(), any(OTP.class), anyString())).thenReturn(TopUpQuote.Status.OTP_SENT);
+		when(topupServiceMock.verifyOTP(anyString(), any(OTP.class), anyString())).thenReturn(TopUpQuote.Status.OTP_SENT);
 
 		ObjectMapper mapper = new ObjectMapper();
 		this.mockMvc.perform(put("/top-up/quote/{quoteID}/otp/refCode?accessTokenID=12345", "1")

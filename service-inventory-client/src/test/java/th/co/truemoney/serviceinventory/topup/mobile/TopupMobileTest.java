@@ -90,12 +90,12 @@ public class TopupMobileTest {
 		
 		ResponseEntity<OTP> responseEntity = new ResponseEntity<OTP>(HttpStatus.OK);
 		
-		when(restTemplate.exchange(eq(endPoints.getSendOTPTopUpMobileURL()), eq(HttpMethod.POST), any(HttpEntity.class)
+		when(restTemplate.exchange(eq(endPoints.getRequestOTPTopUpMobileURL()), eq(HttpMethod.POST), any(HttpEntity.class)
 				, eq(OTP.class) , anyString() ,eq("12345")) ).thenReturn(responseEntity);
 		
-		topupMobileServicesClient.sendOTP("7788", "12345");
+		topupMobileServicesClient.requestOTP("7788", "12345");
 		
-		verify(restTemplate).exchange(eq(endPoints.getSendOTPTopUpMobileURL()), eq(HttpMethod.POST), any(HttpEntity.class)
+		verify(restTemplate).exchange(eq(endPoints.getRequestOTPTopUpMobileURL()), eq(HttpMethod.POST), any(HttpEntity.class)
 				, eq(OTP.class) , anyString(), eq("12345"));
 	}
 	
@@ -104,12 +104,12 @@ public class TopupMobileTest {
 		
 		ResponseEntity<DraftTransaction.Status> responseEntity = new ResponseEntity<DraftTransaction.Status>(HttpStatus.OK);
 		
-		when(restTemplate.exchange(eq(endPoints.getVerifyOTPAndPerformToppingMobile()), eq(HttpMethod.PUT), any(HttpEntity.class)
+		when(restTemplate.exchange(eq(endPoints.getVerifyOTPToppingMobileURL()), eq(HttpMethod.PUT), any(HttpEntity.class)
 				, eq(DraftTransaction.Status.class) , anyString() ,anyString(),anyString()) ).thenReturn(responseEntity);
 		
-		topupMobileServicesClient.confirmTopUpMobile("7788", new OTP(), "12345");
+		topupMobileServicesClient.verifyOTP("7788", new OTP(), "12345");
 		
-		verify(restTemplate).exchange(eq(endPoints.getVerifyOTPAndPerformToppingMobile()), eq(HttpMethod.PUT), any(HttpEntity.class)
+		verify(restTemplate).exchange(eq(endPoints.getVerifyOTPToppingMobileURL()), eq(HttpMethod.PUT), any(HttpEntity.class)
 				, eq(DraftTransaction.Status.class) , anyString() ,anyString(),anyString());
 		
 	}
