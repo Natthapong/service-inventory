@@ -23,6 +23,7 @@ import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.engine.client.config.SIEngineConfig;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
+import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.impl.ActivityServiceImpl;
@@ -31,6 +32,7 @@ import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpMobileProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.DirectDebitSourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
+import th.co.truemoney.serviceinventory.ewallet.impl.FavoriteServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpMobileServiceImpl;
@@ -80,6 +82,11 @@ public class ServiceInventoryConfig {
 
     @Bean ActivityService getActivityService() {
         return new ActivityServiceImpl();
+    }
+    
+    @Bean
+    public FavoriteService getFavoriteService() {
+    	return new FavoriteServiceImpl();
     }
 
     @Bean
