@@ -48,14 +48,15 @@
 		<appender-ref ref="console" />
 	</logger>
 	
+	<category name="fileBillPay">
+		<level value="debug" />
+		<appender-ref ref="fileBillPay" />
+	</category>
+
 	<root>
 		<priority value="warn" />
 		<appender-ref ref="console" />
 	</root>
 	
-	<category name="fileBillPay">
-		<level value="debug" />
-		<appender-ref ref="fileBillPay" />
-	</category>
 	
 </log4j:configuration>
