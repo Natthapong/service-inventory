@@ -71,7 +71,7 @@ public class EmailService {
 		} catch (TemplateException e) {
 			logger.error(e.getMessage());			
 			logger.error("EmailService.sendWelcomeEmail.receiver.email : "+receiverEmail);
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage());			
 			logger.error("EmailService.sendWelcomeEmail.receiver.email : "+receiverEmail);
 		}	
