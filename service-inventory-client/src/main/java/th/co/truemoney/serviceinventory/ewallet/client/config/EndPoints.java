@@ -149,4 +149,8 @@ public class EndPoints {
 	public String getActivityDetailURL() {
 		return host + "/service-inventory-web/v1/ewallet/activities/{accessTokenID}/detail/{reportID}";
 	}
+	
+	public String getFavoritesURL() {
+		return host + "/service-inventory-web/v1/ewallet/favorites?serviceType={serviceType}&accessTokenID={accessTokenID}";
+	}
 }
