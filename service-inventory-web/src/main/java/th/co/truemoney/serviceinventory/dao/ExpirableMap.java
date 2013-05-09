@@ -1,6 +1,6 @@
 package th.co.truemoney.serviceinventory.dao;
 
-public interface RedisLoggingDao {
+public interface ExpirableMap {
 	public void addData(String key, String value, Long expired);
 	public void addData(String key, String value);
 	public void delete(String key);

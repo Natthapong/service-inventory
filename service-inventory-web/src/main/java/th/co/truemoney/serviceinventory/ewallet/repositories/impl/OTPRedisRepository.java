@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
+import th.co.truemoney.serviceinventory.dao.ExpirableMap;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.exception.InternalServerErrorException;
@@ -20,7 +20,7 @@ public class OTPRedisRepository implements OTPRepository {
 	ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
-	private RedisLoggingDao redisLoggingDao;
+	private ExpirableMap redisLoggingDao;
 
 	@Override
 	public void save(OTP otp) {

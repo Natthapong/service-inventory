@@ -27,12 +27,13 @@ import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
+import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
@@ -55,7 +56,7 @@ public class BillPaymentServiceImplTest {
     private AccessTokenMemoryRepository accessTokenRepo;
 
     @Autowired
-    private TransactionMemoryRepository transactionRepo;
+    private TransactionRepositoryImpl transactionRepo;
 
     @Autowired
     private LegacyFacade legacyFacade;
@@ -87,7 +88,7 @@ public class BillPaymentServiceImplTest {
     @After
     public void tearDown() {
         accessTokenRepo.clear();
-        transactionRepo.clear();
+        transactionRepo.setExpirableMap(new MemoryExpirableMap());
     }
 
     @Test

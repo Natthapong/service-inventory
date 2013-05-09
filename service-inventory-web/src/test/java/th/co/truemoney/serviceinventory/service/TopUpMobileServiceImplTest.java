@@ -19,13 +19,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
+import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpMobileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpMobileFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
@@ -41,7 +42,7 @@ public class TopUpMobileServiceImplTest {
 
     private AccessTokenMemoryRepository accessTokenRepo;
 
-    private TransactionMemoryRepository transactionRepo;
+    private TransactionRepositoryImpl transactionRepo;
 
     private AccessToken accessToken;
 
@@ -64,7 +65,7 @@ public class TopUpMobileServiceImplTest {
     public void setup() {
 
         accessTokenRepo = new AccessTokenMemoryRepository();
-        transactionRepo = new TransactionMemoryRepository();
+        transactionRepo = new TransactionRepositoryImpl(new MemoryExpirableMap());
 
         accessToken = new AccessToken("12345", "5555", "4444", "0868185055", "tanathip.se@gmail.com", 41);
         accessToken.setClientCredential(new ClientCredential("appKey", "appUser", "appPassword", "channel", "channel detail"));

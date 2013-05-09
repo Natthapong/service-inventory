@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
+import th.co.truemoney.serviceinventory.dao.ExpirableMap;
 import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
 import th.co.truemoney.serviceinventory.exception.InternalServerErrorException;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
@@ -20,7 +20,7 @@ public class BillInformationRedisRepository implements BillInformationRepository
 	private ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
-	private RedisLoggingDao redisLoggingDao;
+	private ExpirableMap redisLoggingDao;
 
 	@Override
 	public Bill findBill(String billID, String accessTokenID) {

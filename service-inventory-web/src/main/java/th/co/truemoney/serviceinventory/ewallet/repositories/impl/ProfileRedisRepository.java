@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
+import th.co.truemoney.serviceinventory.dao.ExpirableMap;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileRepository;
 import th.co.truemoney.serviceinventory.exception.InternalServerErrorException;
@@ -21,7 +21,7 @@ public class ProfileRedisRepository implements RegisteringProfileRepository {
 	private ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
-	private RedisLoggingDao redisLoggingDao;
+	private ExpirableMap redisLoggingDao;
 
 	@Override
 	public void saveRegisteringProfile(TmnProfile tmnProfile) {

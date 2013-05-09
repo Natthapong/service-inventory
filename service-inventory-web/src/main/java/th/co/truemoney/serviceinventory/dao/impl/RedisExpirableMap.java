@@ -5,10 +5,10 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import th.co.truemoney.serviceinventory.dao.RedisLoggingDao;
+import th.co.truemoney.serviceinventory.dao.ExpirableMap;
 import th.co.truemoney.serviceinventory.util.BasicEncryptUtil;
 
-public class RedisLoggingDaoImpl implements RedisLoggingDao {
+public class RedisExpirableMap implements ExpirableMap {
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;

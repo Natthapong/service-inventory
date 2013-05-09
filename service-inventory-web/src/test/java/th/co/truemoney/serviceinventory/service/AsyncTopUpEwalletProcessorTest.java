@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
@@ -25,7 +26,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapPro
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.BankSystemTransactionFailException;
@@ -37,7 +38,7 @@ public class AsyncTopUpEwalletProcessorTest {
     // unit under test
     private AsyncTopUpEwalletProcessor asyncService = new AsyncTopUpEwalletProcessor();
 
-    private TransactionRepository transactionRepo = new TransactionMemoryRepository();
+    private TransactionRepository transactionRepo = new TransactionRepositoryImpl(new MemoryExpirableMap());
 
     private EwalletSoapProxy mockEwalletProxy = mock(EwalletSoapProxy.class);
 

@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import th.co.truemoney.serviceinventory.dao.ExpirableMap;
+import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
@@ -16,7 +18,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMem
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.BillInformationMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.ProfileMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
@@ -31,7 +33,7 @@ public class MemRepositoriesConfig {
 
 	@Bean
 	public TransactionRepository memOrderRepository() {
-		TransactionRepository transactionRepository = new TransactionMemoryRepository();
+		TransactionRepositoryImpl transactionRepository = new TransactionRepositoryImpl(memoryExpirableMap());
 
 		P2PTransferDraft p2pTransferDraft = new P2PTransferDraft("0868185055", new BigDecimal("20.00"));
 		p2pTransferDraft.setID("xxxx");
@@ -48,6 +50,11 @@ public class MemRepositoriesConfig {
 		transactionRepository.saveDraftTransaction(topUpQuote, topUpQuote.getAccessTokenID());
 
 		return transactionRepository;
+	}
+
+	@Bean
+	public ExpirableMap memoryExpirableMap() {
+		return new MemoryExpirableMap();
 	}
 
 	@Bean

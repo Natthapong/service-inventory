@@ -21,13 +21,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
+import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncP2PTransferProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
-import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
@@ -52,7 +53,7 @@ public class P2PTransferServiceImplTest {
     private AccessTokenMemoryRepository accessTokenRepo;
 
     @Autowired
-    private TransactionMemoryRepository transactionRepo;
+    private TransactionRepositoryImpl transactionRepo;
 
     @Autowired
     private OTPMemoryRepository otpRepo;
@@ -82,13 +83,13 @@ public class P2PTransferServiceImplTest {
         otpRepo.save(goodOTP);
 
         transferDraft =  P2PTransferStubbed.createP2PDraft(new BigDecimal(100), "0987654321", "target name", accessToken.getAccessTokenID());
+        transactionRepo.setExpirableMap(new MemoryExpirableMap());
         transactionRepo.saveDraftTransaction(transferDraft, accessToken.getAccessTokenID());
     }
 
     @After
     public void teardown() {
         accessTokenRepo.clear();
-        transactionRepo.clear();
         otpRepo.clear();
     }
 
