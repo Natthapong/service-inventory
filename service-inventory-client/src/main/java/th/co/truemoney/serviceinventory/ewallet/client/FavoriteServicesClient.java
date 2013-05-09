@@ -29,14 +29,14 @@ public class FavoriteServicesClient implements FavoriteService {
 	private HttpHeaders headers;
 	
 	@Override
-	public Favorite addFavorite(Favorite favorite)
+	public Favorite addFavorite(Favorite favorite, String accessTokenID)
 			throws ServiceInventoryException {
 		
 		HttpEntity<Favorite> requestEntity = new HttpEntity<Favorite>(favorite, headers);
 		
 		ResponseEntity<Favorite> responseEntity = restTemplate.exchange(
 				endPoints.getAddFavoriteURL(), HttpMethod.POST,
-				requestEntity, Favorite.class);
+				requestEntity, Favorite.class, accessTokenID);
 
 		return responseEntity.getBody();
 	}

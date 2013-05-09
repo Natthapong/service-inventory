@@ -6,8 +6,6 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import java.util.List;
 
 public interface FavoriteService {
-	
-	public Favorite addFavorite(Favorite favorite) throws ServiceInventoryException;
-    public List<Favorite> getFavorites(String serviceType, String accessTokenID) throws ServiceInventoryException;
-	
+	public Favorite addFavorite(Favorite favorite, String accessTokenID) throws ServiceInventoryException;
+    public List<Favorite> getFavorites(String serviceType, String accessTokenID) throws ServiceInventoryException;		
 }
