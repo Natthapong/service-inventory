@@ -53,11 +53,11 @@ public class FavoriteServiceWorkflowTest {
 
 		assertNotNull(accessTokenID);
 		
-		List<Favorite> favorites = client.getFavorites("billpay", accessTokenID);
+		List<Favorite> favorites = client.getFavorites(accessTokenID);
 		assertNotNull(favorites);
 		assertEquals(0, favorites.size());
 		
-		favorites = client.getFavorites(null, accessTokenID);
+		favorites = client.getFavorites(accessTokenID);
 		assertNotNull(favorites);
 		assertEquals(0, favorites.size());
 	}

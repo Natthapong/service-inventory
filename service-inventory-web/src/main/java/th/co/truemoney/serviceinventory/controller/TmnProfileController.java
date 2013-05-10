@@ -142,12 +142,10 @@ public class TmnProfileController {
 	
 	@RequestMapping(value = "/favorites/{accessTokenID}" , method = RequestMethod.GET)
 	public @ResponseBody List<Favorite> getFavorites(
-			@PathVariable String accessTokenID,
-			@RequestParam(value = "serviceType", defaultValue="") String serviceType) {
-		System.out.println("serviceType : "+ serviceType);
-		System.out.println("accessTokenID : "+ accessTokenID);
+			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID) {
+
 		
-		List<Favorite> favorites = favoriteService.getFavorites(serviceType, accessTokenID);
+		List<Favorite> favorites = favoriteService.getFavorites(accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 		
 		return favorites;

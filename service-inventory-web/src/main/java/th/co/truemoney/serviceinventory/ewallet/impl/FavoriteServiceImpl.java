@@ -25,7 +25,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 	}
 
 	@Override
-	public List<Favorite> getFavorites(String serviceType, String accessTokenID)
+	public List<Favorite> getFavorites(String accessTokenID)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		return new ArrayList<Favorite>();

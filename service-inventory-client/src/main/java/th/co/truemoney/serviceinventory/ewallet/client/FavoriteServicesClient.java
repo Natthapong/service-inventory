@@ -42,11 +42,12 @@ public class FavoriteServicesClient implements FavoriteService {
 	}
 
     @Override
-    public List<Favorite> getFavorites(String serviceType, String accessTokenID) throws ServiceInventoryException {
+    public List<Favorite> getFavorites(String accessTokenID) throws ServiceInventoryException {
     	HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 		ResponseEntity<Favorite[]> responseEntity = restTemplate.exchange(
 				endPoints.getFavoritesURL(), HttpMethod.GET,
-				requestEntity, Favorite[].class, accessTokenID, serviceType);
+
+				requestEntity, Favorite[].class, accessTokenID);
         return Arrays.asList(responseEntity.getBody());
     }
 

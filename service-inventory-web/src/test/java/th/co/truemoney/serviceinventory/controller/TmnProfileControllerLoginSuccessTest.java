@@ -121,9 +121,9 @@ public class TmnProfileControllerLoginSuccessTest {
 		List<Favorite> favorites = new ArrayList<Favorite>();
 		favorites.add(favorite);
 		
-		when(this.favoriteServiceMock.getFavorites(eq("billpay"), anyString())).thenReturn(favorites);
+		when(this.favoriteServiceMock.getFavorites(anyString())).thenReturn(favorites);
 		
-		this.mockMvc.perform(get("/ewallet/favorites/{accessTokenID}?serviceType={serviceType}", "12345", "billpay")
+		this.mockMvc.perform(get("/ewallet/favorites?accessTokenID={accessTokenID}", "12345")
 		.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())	
 		.andExpect(jsonPath("$.[0].favoriteID").value(1000))

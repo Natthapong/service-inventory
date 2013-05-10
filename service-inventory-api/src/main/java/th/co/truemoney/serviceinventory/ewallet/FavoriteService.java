@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface FavoriteService {
 	public Favorite addFavorite(Favorite favorite, String accessTokenID) throws ServiceInventoryException;
-    public List<Favorite> getFavorites(String serviceType, String accessTokenID) throws ServiceInventoryException;		
+    public List<Favorite> getFavorites(String accessTokenID) throws ServiceInventoryException;		
 }

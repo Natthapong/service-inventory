@@ -71,9 +71,9 @@ public class FavoriteServicesClientTest {
 		ResponseEntity<Favorite[]> responseEntity = new ResponseEntity<Favorite[]>(favorites,HttpStatus.OK);
 		
 		when(restTemplate.exchange(eq(endPoints.getFavoritesURL()), eq(HttpMethod.GET), any(HttpEntity.class)
-				, eq(Favorite[].class) , anyString(), anyString()) ).thenReturn(responseEntity);
+				, eq(Favorite[].class) , anyString()) ).thenReturn(responseEntity);
 		
-		List<Favorite> favoriteResults = client.getFavorites("billpay", "12345");
+		List<Favorite> favoriteResults = client.getFavorites("12345");
 		Assert.assertNotNull(favoriteResults);
 	}
 }
