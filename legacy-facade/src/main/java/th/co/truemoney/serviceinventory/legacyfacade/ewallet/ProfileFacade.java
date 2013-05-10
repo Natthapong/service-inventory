@@ -1,16 +1,26 @@
 package th.co.truemoney.serviceinventory.legacyfacade.ewallet;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.FavoriteContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritableRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -70,11 +80,82 @@ public class ProfileFacade {
 
 		return tmnProfile;
 	}
+	
+	public List<Favorite> getListFavorite(Integer channelID, String sessionID,
+			String tmnID, String serviceType) {
+		SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
+		
+		ListFavoriteRequest listFavoriteRequest = new ListFavoriteRequest();
+		listFavoriteRequest.setChannelId(channelID);
+		listFavoriteRequest.setServiceType(serviceType);
+		listFavoriteRequest.setSecurityContext(securityContext);
+		
+		ListFavoriteResponse listFavoriteResponse = this.tmnProfileProxy.listFavorite(listFavoriteRequest);
+		FavoriteContext[] favoriteContext = listFavoriteResponse.getFavoriteList();
 
+		List<Favorite> list = new ArrayList<Favorite>();
+		for(FavoriteContext context : favoriteContext){
+			Favorite favorite = new Favorite();
+			favorite.setAmount(context.getAmount());
+			favorite.setFavoriteID(new Long(context.getFavoriteId()));
+			favorite.setRef1(context.getReference1());
+			favorite.setServiceCode(context.getServiceCode());
+			favorite.setServiceType(context.getServiceType());
+			list.add(favorite);
+		}
+		return list;
+	}
+
+	public Boolean isFavorite(Integer channelID, String sessionID,
+			String tmnID, String serviceType, String serviceCode,
+			String reference1) {
+		
+		StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavoritable(createIsFavoritableRequest(
+				channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
+		
+		if(!standardBizResponse.getResultCode().equals("0")){
+			return false;
+		}
+		
+		return true;
+	}
+
+	public Favorite addFavorite(Integer channelID, String sessionID,
+			String tmnID, Favorite favorite) {
+		SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
+		
+		AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest();
+		addFavoriteRequest.setAmount(favorite.getAmount());
+		addFavoriteRequest.setChannelId(channelID);
+		addFavoriteRequest.setReference1(favorite.getRef1());
+		addFavoriteRequest.setServiceCode(favorite.getServiceCode());
+		addFavoriteRequest.setServiceType(favorite.getServiceType());
+		addFavoriteRequest.setSecurityContext(securityContext);
+		
+		StandardBizResponse standardBizResponse = this.tmnProfileProxy.addFavorite(addFavoriteRequest);
+		//will add favorite id later
+		return favorite;
+	}
+	
 	public void logout(Integer channelID, String sessionID, String truemoneyID) {
 		this.tmnSecurityProxy.terminateSession(createAccessRequest(channelID, sessionID, truemoneyID));
 	}
-
+	
+	private IsFavoritableRequest createIsFavoritableRequest(Integer channelID, String sessionID,
+			String tmnID, String serviceType, String serviceCode,
+			String reference1){
+		SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
+		
+		IsFavoritableRequest favoritableRequest = new IsFavoritableRequest();
+		favoritableRequest.setChannelId(channelID);
+		favoritableRequest.setServiceType(serviceType);
+		favoritableRequest.setServiceCode(serviceCode);
+		favoritableRequest.setReference1(reference1);
+		favoritableRequest.setSecurityContext(securityContext);
+		
+		return favoritableRequest;
+	}
+	
 	private StandardBizRequest createAccessRequest(Integer channelID, String sessionID, String truemoneyID) {
 		SecurityContext securityContext = new SecurityContext(sessionID, truemoneyID);
 
