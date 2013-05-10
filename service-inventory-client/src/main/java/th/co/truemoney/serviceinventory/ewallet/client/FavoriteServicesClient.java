@@ -50,7 +50,7 @@ public class FavoriteServicesClient implements FavoriteService {
 				requestEntity, Favorite[].class, accessTokenID);
         return Arrays.asList(responseEntity.getBody());
     }
-
+	
 	public void setRestTemplate(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}
@@ -62,4 +62,6 @@ public class FavoriteServicesClient implements FavoriteService {
 	public void setHeaders(HttpHeaders headers) {
 		this.headers = headers;
 	}
+
+
 }

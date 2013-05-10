@@ -134,13 +134,24 @@ public class LocalEnvironmentConfig {
             @Override
             public StandardBizResponse isFavoritable(IsFavoritableRequest isIsFavoritableRequest)
                     throws EwalletException {
-                return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+            	if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
+					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+				}else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
+					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+				}
+				return new StandardBizResponse("1", "001", "namespace", new String[] { "key" }, new String[] { "value" });
             }
 
 			@Override
 			public AddFavoriteResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
 					throws EwalletException {
-				return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
+				if(addFavoriteRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
+					return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
+				}else if(addFavoriteRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
+					return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
+				}else{
+					throw new FailResultCodeException("500", "stub namespace.");
+				}
 			}
 
             @Override
@@ -148,8 +159,8 @@ public class LocalEnvironmentConfig {
                     throws EwalletException {
                 FavoriteContext[] favoriteContexts = new FavoriteContext[3];
                 favoriteContexts[0] = new FavoriteContext("1", "", "", "", new BigDecimal("1.00"), "");
-                favoriteContexts[0] = new FavoriteContext("2", "", "", "", new BigDecimal("1.00"), "");
-                favoriteContexts[0] = new FavoriteContext("3", "", "", "", new BigDecimal("1.00"), "");
+                favoriteContexts[1] = new FavoriteContext("2", "", "", "", new BigDecimal("1.00"), "");
+                favoriteContexts[2] = new FavoriteContext("3", "", "", "", new BigDecimal("1.00"), "");
 
                 return new ListFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContexts);
             }
