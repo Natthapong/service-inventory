@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
@@ -73,6 +74,12 @@ public class Adam implements Persona {
 				return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
 			}
 
+			@Override
+			public StandardBizResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
+					throws EwalletException {
+				return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+			}
+			
 			@Override
 			public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
 					throws EwalletException {
