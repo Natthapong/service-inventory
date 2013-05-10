@@ -9,7 +9,11 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRespon
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.FavoriteContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritableRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
@@ -62,6 +66,24 @@ public class Eve implements Persona {
 						new String[] { "key" }, new String[] { "value" },
 						sourceContext);
 			}
+
+			@Override
+			public StandardBizResponse isFavoritable(IsFavoritableRequest isIsFavoritableRequest)
+					throws EwalletException {
+				return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+			}
+
+			@Override
+			public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
+					throws EwalletException {
+				FavoriteContext[] favoriteContexts = new FavoriteContext[3];
+				favoriteContexts[0] = new FavoriteContext("1", "", "", "", new BigDecimal("1.00"), "");
+				favoriteContexts[0] = new FavoriteContext("2", "", "", "", new BigDecimal("1.00"), "");
+				favoriteContexts[0] = new FavoriteContext("3", "", "", "", new BigDecimal("1.00"), "");
+
+				return new ListFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContexts);
+			}
+			
 		};
 	}
 
