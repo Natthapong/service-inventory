@@ -30,6 +30,7 @@ public abstract class DraftTransaction implements Serializable {
 	protected String accessTokenID;
 	protected String type;
 	protected Status status;
+	protected String otpReferenceCode;
 
 	public static enum Status {
 		CREATED("CREATED"), OTP_SENT("SENT"), OTP_CONFIRMED("CONFIRMED");
@@ -75,6 +76,14 @@ public abstract class DraftTransaction implements Serializable {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public String getOtpReferenceCode() {
+		return otpReferenceCode;
+	}
+
+	public void setOtpReferenceCode(String otpReferenceCode) {
+		this.otpReferenceCode = otpReferenceCode;
 	}
 
 }

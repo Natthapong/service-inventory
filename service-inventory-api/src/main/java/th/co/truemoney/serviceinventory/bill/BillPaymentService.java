@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface BillPaymentService {
@@ -17,12 +16,6 @@ public interface BillPaymentService {
 			throws ServiceInventoryException;
 
 	public BillPaymentDraft getBillPaymentDraftDetail(String invoiceID, String accessTokenID)
-			throws ServiceInventoryException;
-
-	public OTP requestOTP(String invoiceID, String accessTokenID)
-			throws ServiceInventoryException;
-
-	public BillPaymentDraft.Status verifyOTP(String invoiceID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException;
 
 	public BillPaymentTransaction.Status performPayment(String invoiceID, String accessTokenID)

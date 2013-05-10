@@ -9,14 +9,12 @@ import org.springframework.stereotype.Service;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
@@ -35,14 +33,7 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	private TransactionRepository transactionRepo;
 
 	@Autowired
-	private OTPService otpService;
-
-	@Autowired
 	AsyncTopUpMobileProcessor asyncTopUpMobileProcessor;
-
-	public void setOtpService(OTPService otpService) {
-		this.otpService = otpService;
-	}
 
 	public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
 		this.accessTokenRepo = accessTokenRepo;
@@ -85,38 +76,6 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	}
 
 	@Override
-	public OTP requestOTP(String draftID, String accessTokenID)
-			throws ServiceInventoryException {
-
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-
-		OTP otp = otpService.send(accessToken.getMobileNumber());
-
-		TopUpMobileDraft topUpMobileDraft = transactionRepo.findDraftTransaction(draftID, accessTokenID, TopUpMobileDraft.class);
-		topUpMobileDraft.setOtpReferenceCode(otp.getReferenceCode());
-		topUpMobileDraft.setStatus(TopUpMobileDraft.Status.OTP_SENT);
-
-		transactionRepo.saveDraftTransaction(topUpMobileDraft, accessTokenID);
-
-		return otp;
-	}
-
-	@Override
-	public Status verifyOTP(String draftID, OTP otp, String accessTokenID)
-			throws ServiceInventoryException {
-
-		accessTokenRepo.findAccessToken(accessTokenID);
-		TopUpMobileDraft topUpMobileDraft = getTopUpMobileDraftDetail(draftID, accessTokenID);
-
-		otpService.isValidOTP(otp);
-
-		topUpMobileDraft.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
-		transactionRepo.saveDraftTransaction(topUpMobileDraft, accessTokenID);
-
-		return topUpMobileDraft.getStatus();
-	}
-
-	@Override
 	public Transaction.Status performTopUpMobile(String draftID, String accessTokenID)
 			throws ServiceInventoryException {
 
@@ -155,5 +114,9 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 
 	public void setLegacyFacade(LegacyFacade legacyFacade) {
 		this.legacyFacade = legacyFacade;
+	}
+
+	public void setAsyncTopUpMobileProcessor(AsyncTopUpMobileProcessor asyncTopUpMobileProcessor) {
+		this.asyncTopUpMobileProcessor = asyncTopUpMobileProcessor;
 	}
 }

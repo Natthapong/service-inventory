@@ -15,11 +15,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class TopUpMobileDraft extends DraftTransaction {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final String DRAFT_TYPE = "mobileTopUp";
 
 	TopUpMobile topUpMobileInfo;
-	
+
 	public TopUpMobile getTopUpMobileInfo() {
 		return topUpMobileInfo;
 	}
@@ -29,8 +29,6 @@ public class TopUpMobileDraft extends DraftTransaction {
 	}
 
 	private String selectedSourceOfFundType;
-	private String otpReferenceCode;
-
 	private String transactionID;
 
 	public TopUpMobileDraft() {
@@ -73,22 +71,14 @@ public class TopUpMobileDraft extends DraftTransaction {
 		this.selectedSourceOfFundType = selectedSourceOfFundType;
 	}
 
-	public String getOtpReferenceCode() {
-		return otpReferenceCode;
-	}
-
-	public void setOtpReferenceCode(String otpReferenceCode) {
-		this.otpReferenceCode = otpReferenceCode;
-	}
-
 	public String getTransactionID() {
 		return transactionID;
 	}
 
 	public void setTransactionID(String transactionID) {
 		this.transactionID = transactionID;
-	}	
-	
+	}
+
 	@JsonIgnore
 	public SourceOfFund getSelectedSourceOfFund() {
 

@@ -11,11 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
@@ -75,33 +74,6 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 		BillPaymentDraft billInvoice = responseEntity.getBody();
 
 		return billInvoice;
-	}
-
-	@Override
-	public OTP requestOTP(String invoiceID, String accessTokenID)
-			throws ServiceInventoryException {
-
-		HttpEntity<Bill> requestEntity = new HttpEntity<Bill>(headers);
-
-		ResponseEntity<OTP> responseEntity = restTemplate.exchange(
-				endPoints.getBillPaymentRequestOTPURL(), HttpMethod.POST, requestEntity,
-				OTP.class, invoiceID, accessTokenID);
-
-		return responseEntity.getBody();
-	}
-
-	@Override
-	public BillPaymentDraft.Status verifyOTP(String invoiceID, OTP otp,
-			String accessTokenID) throws ServiceInventoryException {
-
-		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp, headers);
-
-		ResponseEntity<BillPaymentDraft.Status> responseEntity = restTemplate.exchange(
-				endPoints.getBillPayVerifyOTPURL(), HttpMethod.PUT,
-				requestEntity, BillPaymentDraft.Status.class,
-				invoiceID, otp.getReferenceCode(), accessTokenID);
-
-		return responseEntity.getBody();
 	}
 
 	@Override

@@ -15,7 +15,6 @@ import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
@@ -24,13 +23,9 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
 public class BillPaymentServiceImpl implements  BillPaymentService {
-
-	@Autowired
-	private OTPService otpService;
 
 	@Autowired
 	private AccessTokenRepository accessTokenRepo;
@@ -49,10 +44,6 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 	@Autowired
 	private BillPaymentValidationConfig validationConfig;
-
-	public void setOtpService(OTPService otpService) {
-		this.otpService = otpService;
-	}
 
 	public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
 		this.accessTokenRepo = accessTokenRepo;
@@ -129,39 +120,6 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	@Override
 	public BillPaymentDraft getBillPaymentDraftDetail(String invoiceID, String accessTokenID) throws ServiceInventoryException {
 		return transactionRepository.findDraftTransaction(invoiceID, accessTokenID, BillPaymentDraft.class);
-	}
-
-	@Override
-	public OTP requestOTP(String invoiceID, String accessTokenID)
-			throws ServiceInventoryException {
-
-		// --- Get Account Detail from accessToken ---//
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-
-		OTP otp = otpService.send(accessToken.getMobileNumber());
-
-		BillPaymentDraft billInvoice = transactionRepository.findDraftTransaction(invoiceID, accessTokenID, BillPaymentDraft.class);
-		billInvoice.setOtpReferenceCode(otp.getReferenceCode());
-		billInvoice.setStatus(BillPaymentDraft.Status.OTP_SENT);
-
-		transactionRepository.saveDraftTransaction(billInvoice, accessTokenID);
-
-		return otp;
-	}
-
-	@Override
-	public BillPaymentDraft.Status verifyOTP(String invoiceID, OTP otp,
-			String accessTokenID) throws ServiceInventoryException {
-
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		BillPaymentDraft invoiceDetails = getBillPaymentDraftDetail(invoiceID, accessTokenID);
-
-		otpService.isValidOTP(otp);
-
-		invoiceDetails.setStatus(BillPaymentDraft.Status.OTP_CONFIRMED);
-		transactionRepository.saveDraftTransaction(invoiceDetails, accessTokenID);
-
-		return invoiceDetails.getStatus();
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package th.co.truemoney.serviceinventory.topup;
 
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
@@ -13,12 +12,6 @@ public interface TopUpMobileService {
 			throws ServiceInventoryException;
 
 	public TopUpMobileDraft getTopUpMobileDraftDetail(String draftID, String accessTokenID)
-			throws ServiceInventoryException;
-
-	public OTP requestOTP(String draftID, String accessTokenID)
-			throws ServiceInventoryException;
-
-	public TopUpMobileDraft.Status verifyOTP(String draftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException;
 
 	public TopUpMobileTransaction.Status performTopUpMobile(String draftID, String accessTokenID)

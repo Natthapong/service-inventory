@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
@@ -16,7 +15,6 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
@@ -36,9 +34,6 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 
 	@Autowired
 	private AsyncP2PTransferProcessor asyncP2PTransferProcessor;
-
-	@Autowired
-	private OTPService otpService;
 
 	@Override
 	public P2PTransferDraft createAndVerifyTransferDraft(String targetMobileNumber, BigDecimal amount, String accessTokenID) {
@@ -69,36 +64,6 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		P2PTransferDraft p2pTransferDraft = transactionRepo.findDraftTransaction(transferDraftID, accessToken.getAccessTokenID(), P2PTransferDraft.class);
 
 		return p2pTransferDraft;
-	}
-
-	@Override
-	public OTP requestOTP(String transferDraftID, String accessTokenID)
-			throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-
-		OTP otp = otpService.send(accessToken.getMobileNumber());
-
-		P2PTransferDraft p2pTransferDraft = getTransferDraftDetails(transferDraftID, accessTokenID);
-		p2pTransferDraft.setOtpReferenceCode(otp.getReferenceCode());
-		p2pTransferDraft.setStatus(P2PTransferDraft.Status.OTP_SENT);
-
-		transactionRepo.saveDraftTransaction(p2pTransferDraft, accessToken.getAccessTokenID());
-
-		return otp;
-	}
-
-	@Override
-	public P2PTransferDraft.Status verifyOTP(String transferDraftID, OTP otp, String accessTokenID)
-			throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		P2PTransferDraft p2pTransferDraft = getTransferDraftDetails(transferDraftID, accessTokenID);
-
-		otpService.isValidOTP(otp);
-
-		p2pTransferDraft.setStatus(P2PTransferDraft.Status.OTP_CONFIRMED);
-		transactionRepo.saveDraftTransaction(p2pTransferDraft, accessToken.getAccessTokenID());
-
-		return p2pTransferDraft.getStatus();
 	}
 
 	@Override
@@ -176,10 +141,6 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 
 	public void setTransactionRepository(TransactionRepository transactionRepo) {
 		this.transactionRepo = transactionRepo;
-	}
-
-	public void setOtpService(OTPService otpService) {
-		this.otpService = otpService;
 	}
 
 	public void setAsyncP2PTransferProcessor(

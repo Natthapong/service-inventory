@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import th.co.truemoney.serviceinventory.authen.TransactionAuthenService;
+import th.co.truemoney.serviceinventory.authen.impl.TransactionAuthenServiceImpl;
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
@@ -71,6 +73,11 @@ public class ServiceInventoryConfig {
     }
 
     @Bean
+    public TransactionAuthenService getTransactionAuthenService() {
+    	return new TransactionAuthenServiceImpl();
+    }
+
+    @Bean
     public BillPaymentService getBillPaymentService(){
         return new BillPaymentServiceImpl();
     }
@@ -98,7 +105,7 @@ public class ServiceInventoryConfig {
     public SourceOfFundPreference getDirectDebitConfig() {
         return new SourceOfFundPreferenceImpl();
     }
-    
+
     @Bean
     public BillPaymentValidationConfig getBillPaymentValidationConfig() {
         return new BillPaymentValidationConfig();

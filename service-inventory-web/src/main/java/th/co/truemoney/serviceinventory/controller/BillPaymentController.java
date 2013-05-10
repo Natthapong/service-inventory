@@ -13,7 +13,6 @@ import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 
 @Controller
@@ -52,32 +51,6 @@ public class BillPaymentController {
 
 		extendExpireAccessToken(accessTokenID);
 		return billPaymentService.getBillPaymentDraftDetail(invoiceID, accessTokenID);
-	}
-
-	@RequestMapping(value = "/invoice/{invoiceID}/otp", method = RequestMethod.POST)
-	public @ResponseBody OTP requestOTP(
-		   @PathVariable String invoiceID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-
-		extendExpireAccessToken(accessTokenID);
-		return billPaymentService.requestOTP(invoiceID, accessTokenID);
-	}
-
-
-	@RequestMapping(value = "/invoice/{invoiceID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody BillPaymentDraft.Status verifyOTP(
-			@PathVariable String invoiceID,
-			@PathVariable String refCode,
-			@RequestParam String accessTokenID,
-			@RequestBody OTP otp) {
-
-		if (otp != null) {
-			otp.setReferenceCode(refCode);
-		}
-
-		extendExpireAccessToken(accessTokenID);
-
-		return billPaymentService.verifyOTP(invoiceID, otp, accessTokenID);
 	}
 
 	@RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.PUT)

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
@@ -42,27 +41,6 @@ public class TopUpMobileController {
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
 		return topUpMobileService.getTopUpMobileDraftDetail(topUpMobileDraftID, accessTokenID);
-	}
-
-	@RequestMapping(value = "/draft/{topUpMobileDraftID}/otp", method = RequestMethod.POST)
-	public @ResponseBody OTP submitTopUpMobileDraftRequest(
-			@PathVariable String topUpMobileDraftID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-		extendExpireAccessToken(accessTokenID);
-		return topUpMobileService.requestOTP(topUpMobileDraftID, accessTokenID);
-	}
-
-	@RequestMapping(value = "/draft/{topUpMobileDraftID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody TopUpMobileDraft.Status verifyOTPToppingMobile(
-			@PathVariable String topUpMobileDraftID,
-			@PathVariable String refCode,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-			@RequestBody OTP otp) {
-		if (otp != null) {
-			otp.setReferenceCode(refCode);
-		}
-		extendExpireAccessToken(accessTokenID);
-		return topUpMobileService.verifyOTP(topUpMobileDraftID, otp, accessTokenID);
 	}
 
 	@RequestMapping(value = "/draft/{topUpMobileDraftID}", method = RequestMethod.PUT)

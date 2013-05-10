@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import th.co.truemoney.serviceinventory.authen.TransactionAuthenService;
 import th.co.truemoney.serviceinventory.ewallet.client.TmnProfileServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.TmnTopUpServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
@@ -24,7 +25,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,6 +35,9 @@ public class TopUpServiceClientWorkflowTest {
 
 	@Autowired
 	TmnTopUpServiceClient topUpService;
+
+	@Autowired
+	TransactionAuthenService authenService;
 
 	@Autowired
 	TmnProfileServiceClient profileService;
@@ -61,7 +64,7 @@ public class TopUpServiceClientWorkflowTest {
 		assertEquals(TopUpQuote.Status.CREATED, quote.getStatus());
 
 		// request otp
-		OTP otp = topUpService.requestOTP(quote.getID(), accessToken);
+		OTP otp = authenService.requestOTP(quote.getID(), accessToken);
 
 		assertNotNull(otp);
 		assertNotNull(otp.getReferenceCode());
@@ -73,7 +76,7 @@ public class TopUpServiceClientWorkflowTest {
 
 		// confirm otp
 		otp.setOtpString("111111");
-		TopUpQuote.Status quoteStatus = topUpService.verifyOTP(quote.getID(), otp, accessToken);
+		TopUpQuote.Status quoteStatus = authenService.verifyOTP(quote.getID(), otp, accessToken);
 
 		assertNotNull(quoteStatus);
 		assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quoteStatus);

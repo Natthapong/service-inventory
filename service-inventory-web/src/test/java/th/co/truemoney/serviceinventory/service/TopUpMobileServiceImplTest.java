@@ -2,7 +2,9 @@ package th.co.truemoney.serviceinventory.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
 
@@ -23,16 +25,18 @@ import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpMobileProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpMobileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpMobileFacade;
-import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class })
@@ -56,10 +60,9 @@ public class TopUpMobileServiceImplTest {
     @Autowired
     private LegacyFacade legacyFacade;
 
-    @Autowired
-    private OTPService otpService;
-
     private TopUpMobileFacade mockTopUpMobileFacade;
+
+	private AsyncTopUpMobileProcessor asyncTopUpMobileProcessor;
 
     @Before
     public void setup() {
@@ -76,11 +79,12 @@ public class TopUpMobileServiceImplTest {
         transactionRepo.saveDraftTransaction(topUpMobileDraft, accessToken.getAccessTokenID());
 
         mockTopUpMobileFacade = Mockito.mock(TopUpMobileFacade.class);
-        otpService = Mockito.mock(OTPService.class);
 
         topUpMobileServiceImpl.setAccessTokenRepo(accessTokenRepo);
         topUpMobileServiceImpl.setTransactionRepo(transactionRepo);
-        topUpMobileServiceImpl.setOtpService(otpService);
+
+        asyncTopUpMobileProcessor = Mockito.mock(AsyncTopUpMobileProcessor.class);
+        topUpMobileServiceImpl.setAsyncTopUpMobileProcessor(asyncTopUpMobileProcessor);
 
         legacyFacade.setTopUpMobileFacade(mockTopUpMobileFacade);
     }
@@ -99,22 +103,16 @@ public class TopUpMobileServiceImplTest {
     }
 
     @Test
-    public void sendOTP(){
+    public void shouldThrowUnVerifiedExceptionWhenUserSkipsOTPVerify() {
 
-        OTP otp = new OTP();
-        otp.setMobileNumber("0868185055");
-        otp.setOtpString("020406");
-        otp.setReferenceCode("rdmf");
+    	try {
+    		topUpMobileServiceImpl.performTopUpMobile(topUpMobileDraft.getID(), accessToken.getAccessTokenID());
+    		fail();
+    	} catch (UnVerifiedOwnerTransactionException ex) {
+    		assertEquals(Code.OWNER_UNVERIFIED, ex.getErrorCode());
+    	}
 
-        Mockito.when(otpService.send(any(String.class))).thenReturn(otp);
-
-        OTP otpResponse = topUpMobileServiceImpl.requestOTP(topUpMobileDraft.getID(), accessToken.getAccessTokenID());
-        assertEquals(otpResponse, otp);
-
-        TopUpMobileDraft topUpMobileDraftResponse = transactionRepo.findDraftTransaction(topUpMobileDraft.getID(), accessToken.getAccessTokenID(), TopUpMobileDraft.class);
-        assertNotNull(topUpMobileDraftResponse);
-        assertEquals(topUpMobileDraftResponse.getOtpReferenceCode(), otp.getReferenceCode());
-        assertEquals(topUpMobileDraftResponse.getStatus(), TopUpMobileDraft.Status.OTP_SENT);
+        verify(asyncTopUpMobileProcessor, Mockito.never()).topUpMobile(any(TopUpMobileTransaction.class), any(AccessToken.class));
     }
 
     private TopUpMobile createTopUpMobile() {

@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.TmnProfileServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.TopupMobileServicesClient;
+import th.co.truemoney.serviceinventory.ewallet.client.TransactionAuthenServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
@@ -36,6 +37,9 @@ public class TopupMobileIntegrateTest {
 	@Autowired
 	public TopupMobileServicesClient client;
 
+	@Autowired
+	public TransactionAuthenServiceClient authenClient;
+
 	@Test
 	public void successTopUpMobile() throws InterruptedException{
 
@@ -46,11 +50,11 @@ public class TopupMobileIntegrateTest {
 		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
 		assertNotNull(topUpMobileDraft);
 
-		OTP otp = client.requestOTP(topUpMobileDraft.getID() , accessToken);
+		OTP otp = authenClient.requestOTP(topUpMobileDraft.getID() , accessToken);
 		assertNotNull(otp);
 
 		otp.setOtpString("111111");
-		DraftTransaction.Status transactionStatus = client.verifyOTP(topUpMobileDraft.getID(), otp, accessToken);
+		DraftTransaction.Status transactionStatus = authenClient.verifyOTP(topUpMobileDraft.getID(), otp, accessToken);
 		assertEquals(DraftTransaction.Status.OTP_CONFIRMED, transactionStatus);
 
 		client.performTopUpMobile(topUpMobileDraft.getID(), accessToken);

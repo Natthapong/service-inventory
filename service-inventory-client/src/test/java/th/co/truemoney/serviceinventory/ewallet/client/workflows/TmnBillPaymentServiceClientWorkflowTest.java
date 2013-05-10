@@ -18,6 +18,7 @@ import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.ewallet.client.TmnBillPaymentServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.TmnProfileServiceClient;
+import th.co.truemoney.serviceinventory.ewallet.client.TransactionAuthenServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
@@ -34,6 +35,9 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 
 	@Autowired
 	TmnBillPaymentServiceClient billPaymentServiceClient;
+
+	@Autowired
+	TransactionAuthenServiceClient authenClient;
 
 	@Autowired
 	TmnProfileServiceClient profileService;
@@ -62,7 +66,7 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 		assertEquals(BillPaymentDraft.Status.CREATED, billDraft.getStatus());
 
 		// send otp and waiting confirm
-		OTP otp = billPaymentServiceClient.requestOTP(billDraft.getID(), accessToken);
+		OTP otp = authenClient.requestOTP(billDraft.getID(), accessToken);
 		assertNotNull(otp);
 		assertNotNull(otp.getReferenceCode());
 
@@ -72,7 +76,7 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 
 		// confirm otp
 		otp.setOtpString("111111");
-		BillPaymentDraft.Status draftStatus = billPaymentServiceClient.verifyOTP(billDraft.getID(), otp, accessToken);
+		BillPaymentDraft.Status draftStatus = authenClient.verifyOTP(billDraft.getID(), otp, accessToken);
 		assertNotNull(draftStatus);
 		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, draftStatus);
 		assertNotNull(billDraft.getTransactionID());

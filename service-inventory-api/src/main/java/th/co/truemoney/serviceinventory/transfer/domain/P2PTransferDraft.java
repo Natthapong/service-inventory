@@ -22,8 +22,6 @@ public class P2PTransferDraft extends DraftTransaction {
 
 	private String fullname;
 
-	private String otpReferenceCode;
-
 	public P2PTransferDraft() {
 		type = DRAFT_TYPE;
 	}
@@ -83,14 +81,6 @@ public class P2PTransferDraft extends DraftTransaction {
 
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
-	}
-
-	public String getOtpReferenceCode() {
-		return otpReferenceCode;
-	}
-
-	public void setOtpReferenceCode(String otpReferenceCode) {
-		this.otpReferenceCode = otpReferenceCode;
 	}
 
 	@Override

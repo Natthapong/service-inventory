@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
@@ -54,32 +53,6 @@ public class TmnTransferServiceClient implements P2PTransferService {
 				endPoints.getP2PTransferDraftDetailsURL(), HttpMethod.GET,
 				requestEntity, P2PTransferDraft.class,
 				transferDraftID, accessTokenID);
-
-		return responseEntity.getBody();
-	}
-
-	@Override
-	public OTP requestOTP(String transferDraftID, String accessTokenID) {
-
-		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
-
-		ResponseEntity<OTP> responseEntity = restTemplate.exchange(
-				endPoints.getP2PRequestOTPURL(), HttpMethod.POST,
-				requestEntity, OTP.class,
-				transferDraftID, accessTokenID);
-
-		return responseEntity.getBody();
-	}
-
-	@Override
-	public P2PTransferDraft.Status verifyOTP(String transferDraftID, OTP otp, String accessTokenID) {
-
-		HttpEntity<OTP> requestEntity = new HttpEntity<OTP>(otp,headers);
-
-		ResponseEntity<P2PTransferDraft.Status> responseEntity = restTemplate.exchange(
-				endPoints.getP2PVerifyOTPURL(), HttpMethod.PUT,
-				requestEntity, P2PTransferDraft.Status.class,
-				transferDraftID, otp.getReferenceCode(), accessTokenID);
 
 		return responseEntity.getBody();
 	}

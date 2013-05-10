@@ -3,7 +3,6 @@ package th.co.truemoney.serviceinventory.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
@@ -32,7 +31,6 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRep
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
-import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.stub.P2PTransferStubbed;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
@@ -59,7 +57,6 @@ public class P2PTransferServiceImplTest {
     private OTPMemoryRepository otpRepo;
 
     //mock
-    private OTPService otpServiceMock;
     private AsyncP2PTransferProcessor asyncP2PProcessorMock;
 
     //setup data
@@ -70,10 +67,8 @@ public class P2PTransferServiceImplTest {
     @Before
     public void setup() {
 
-        this.otpServiceMock = Mockito.mock(OTPService.class);
         this.asyncP2PProcessorMock = Mockito.mock(AsyncP2PTransferProcessor.class);
 
-        this.p2pService.setOtpService(otpServiceMock);
         this.p2pService.setAsyncP2PTransferProcessor(asyncP2PProcessorMock);
 
         accessToken = new AccessToken("1234567890", "0987654321", "1111111111", "0866012345", "local@tmn.com", 41);
@@ -111,22 +106,6 @@ public class P2PTransferServiceImplTest {
         assertNotNull(newTransferDraft);
     }
 
-    @Test
-    public void shouldSendConfirmingOTPWhenSubmitTransferral() {
-
-        //given
-        OTP mockOTP = new OTP(accessToken.getMobileNumber(), "referenceCode", "otpString");
-        when(otpServiceMock.send(accessToken.getMobileNumber())).thenReturn(mockOTP);
-        assertEquals(P2PTransferDraft.Status.CREATED, transferDraft.getStatus());
-
-        //when
-        OTP otp = this.p2pService.requestOTP(transferDraft.getID(), accessToken.getAccessTokenID());
-
-        //then
-        assertNotNull(otp);
-        P2PTransferDraft repoValue = transactionRepo.findDraftTransaction(transferDraft.getID(), accessToken.getAccessTokenID(), P2PTransferDraft.class);
-        assertEquals(P2PTransferDraft.Status.OTP_SENT, repoValue.getStatus());
-    }
 
     @Test
     public void shouldReturnCorrectStatusWhenGetTransactionStatusGivesGoodStatuses() {

@@ -20,8 +20,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
@@ -31,15 +29,11 @@ import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
-import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.stub.BillPaymentStubbed;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
@@ -61,7 +55,6 @@ public class BillPaymentServiceImplTest {
     @Autowired
     private LegacyFacade legacyFacade;
 
-    private OTPService otpService;
     private AccessToken accessToken;
 
     private AsyncBillPayProcessor asyncProcessor;
@@ -74,9 +67,6 @@ public class BillPaymentServiceImplTest {
         accessToken = new AccessToken("12345", "5555", "4444", "0868185055", "tanathip.se@gmail.com", 41);
         accessToken.setClientCredential(new ClientCredential("appKey", "appUser", "appPassword", "channel", "channel detail"));
         accessTokenRepo.save(accessToken);
-
-        otpService = mock(OTPService.class);
-        billPayService.setOtpService(otpService);
 
         billPaymentFacade = mock(BillPaymentFacade.class);
         legacyFacade.setBillPaymentFacade(billPaymentFacade);
@@ -141,89 +131,5 @@ public class BillPaymentServiceImplTest {
         verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
     }
 
-    @Test
-    public void createBillInvoice() {
-//
-//		when(otpService.send(anyString())).thenReturn(new OTP("0868185055", "refCode", "******"));
-//
-//		when(billPaymentFacade.verify(any(BillRequest.class))).thenReturn(BillPaymentStubbed.createSuccessBillPaymentInfo());
-//
-//		Bill bill = billPayService.createBill(new BillInfo("iphone","1234","1234",new BigDecimal(100)), accessToken.getAccessTokenID());
-//
-//		assertNotNull(bill);
-//		assertEquals(BillPaymentDraft.Status.CREATED, bill.getStatus());
-//
-//		Bill repoInvoice = transactionRepo.findBill(bill.getID(), accessToken.getAccessTokenID());
-//		assertNotNull(repoInvoice);
-//		assertEquals(BillPaymentDraft.Status.CREATED, repoInvoice.getStatus());
-    }
-
-    @Test
-    public void sendOTP() {
-
-        //given
-        BillPaymentDraft invoice = new BillPaymentDraft("invoiceID");
-        transactionRepo.saveDraftTransaction(invoice, accessToken.getAccessTokenID());
-
-        //when
-        when(otpService.send(accessToken.getMobileNumber())).thenReturn(new OTP());
-
-
-        billPayService.requestOTP("invoiceID", accessToken.getAccessTokenID());
-
-        //then
-        verify(otpService).send(accessToken.getMobileNumber());
-    }
-
-    @Test
-    public void confirmOTPSuccess() {
-
-        //given
-        OTP correctOTP = new OTP("0868185055", "refCode", "111111");
-
-        BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, "transactionID", BillPaymentDraft.Status.OTP_SENT);
-        transactionRepo.saveDraftTransaction(invoice, accessToken.getAccessTokenID());
-
-        //when
-        BillPaymentDraft.Status confirmation = billPayService.verifyOTP(invoice.getID(), correctOTP, accessToken.getAccessTokenID());
-
-        //then
-        assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, confirmation);
-
-        BillPaymentDraft repoInvoice = transactionRepo.findDraftTransaction(invoice.getID(), accessToken.getAccessTokenID(), BillPaymentDraft.class);
-        assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, repoInvoice.getStatus());
-    }
-
-    @Test
-    public void confirmOTPFail() {
-
-        //given
-        OTP badOTP = new OTP("0868185055", "refCode", "111111");
-
-        BillPaymentDraft invoice = new BillPaymentDraft("invoiceID", null, null, "transactionID", BillPaymentDraft.Status.OTP_SENT);
-        transactionRepo.saveDraftTransaction(invoice, accessToken.getAccessTokenID());
-
-        Mockito.doThrow(new ServiceInventoryWebException("error", "otp error")).when(otpService).isValidOTP(badOTP);
-
-        //when
-        try {
-            billPayService.verifyOTP(invoice.getID(), badOTP, accessToken.getAccessTokenID());
-            Assert.fail();
-        } catch (ServiceInventoryWebException ex) {
-            Assert.assertEquals("otp error", ex.getErrorDescription());
-        }
-
-        //then
-        BillPaymentDraft repoInvoice = transactionRepo.findDraftTransaction(invoice.getID(), accessToken.getAccessTokenID(), BillPaymentDraft.class);
-        Assert.assertEquals(BillPaymentDraft.Status.OTP_SENT, repoInvoice.getStatus());
-
-        try {
-            transactionRepo.findTransaction(invoice.getID(), accessToken.getAccessTokenID(), BillPaymentTransaction.class);
-            Assert.fail();
-        } catch (ResourceNotFoundException ex) {
-            Assert.assertEquals(Code.TRANSACTION_NOT_FOUND, ex.getErrorCode());
-        }
-
-    }
 
 }

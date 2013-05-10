@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
+import th.co.truemoney.serviceinventory.authen.TransactionAuthenService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
@@ -33,6 +34,9 @@ public class TmnTopupServiceClientTest {
 
 	@Autowired
 	TmnTopUpServiceClient topupServiceClient;
+
+	@Autowired
+	TransactionAuthenService authenService;
 
 	@Autowired
 	TmnProfileServiceClient client;
@@ -83,7 +87,7 @@ public class TmnTopupServiceClientTest {
 		assertEquals(TopUpQuote.Status.CREATED, quote.getStatus());
 
 		// request otp
-		OTP otp = topupServiceClient.requestOTP(quote.getID(), accessToken);
+		OTP otp = authenService.requestOTP(quote.getID(), accessToken);
 
 		assertNotNull(otp);
 		assertNotNull(otp.getReferenceCode());

@@ -16,13 +16,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.TmnProfileServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.TmnTransferServiceClient;
+import th.co.truemoney.serviceinventory.ewallet.client.TransactionAuthenServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
-import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
@@ -34,6 +34,9 @@ public class P2PTransferServiceClientWorkflowTest {
 
 	@Autowired
 	TmnTransferServiceClient transferServiceClient;
+
+	@Autowired
+	TransactionAuthenServiceClient authenClient;
 
 	@Autowired
 	TmnProfileServiceClient profileServiceClient;
@@ -59,7 +62,7 @@ public class P2PTransferServiceClientWorkflowTest {
 		assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
 
 		// send otp and waiting confirm
-		OTP otp = transferServiceClient.requestOTP(p2pTransferDraft.getID(), accessTokenID);
+		OTP otp = authenClient.requestOTP(p2pTransferDraft.getID(), accessTokenID);
 		assertNotNull(otp);
 		assertNotNull(otp.getReferenceCode());
 
@@ -69,7 +72,7 @@ public class P2PTransferServiceClientWorkflowTest {
 
 		// confirm otp
 		otp.setOtpString("111111");
-		P2PTransferDraft.Status draftStatus = transferServiceClient.verifyOTP(p2pTransferDraft.getID(), otp, accessTokenID);
+		P2PTransferDraft.Status draftStatus = authenClient.verifyOTP(p2pTransferDraft.getID(), otp, accessTokenID);
 		assertNotNull(draftStatus);
 		assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, draftStatus);
 
@@ -123,12 +126,12 @@ public class P2PTransferServiceClientWorkflowTest {
 				assertEquals(P2PTransferDraft.Status.CREATED, p2pTransferDraft.getStatus());
 
 				// send otp and waiting confirm
-				OTP firstOtp = transferServiceClient.requestOTP(p2pTransferDraft.getID(), accessTokenID);
+				OTP firstOtp = authenClient.requestOTP(p2pTransferDraft.getID(), accessTokenID);
 				assertNotNull(firstOtp);
 				assertNotNull(firstOtp.getReferenceCode());
 
 				// send otp and waiting confirm
-				OTP secondOtp = transferServiceClient.requestOTP(p2pTransferDraft.getID(), accessTokenID);
+				OTP secondOtp = authenClient.requestOTP(p2pTransferDraft.getID(), accessTokenID);
 				assertNotNull(secondOtp);
 				assertNotNull(secondOtp.getReferenceCode());
 
@@ -141,7 +144,7 @@ public class P2PTransferServiceClientWorkflowTest {
 
 				// confirm otp
 				secondOtp.setOtpString("111111");
-				P2PTransferDraft.Status draftStatus = transferServiceClient.verifyOTP(p2pTransferDraft.getID(), secondOtp, accessTokenID);
+				P2PTransferDraft.Status draftStatus = authenClient.verifyOTP(p2pTransferDraft.getID(), secondOtp, accessTokenID);
 				assertNotNull(draftStatus);
 				assertEquals(P2PTransferDraft.Status.OTP_CONFIRMED, draftStatus);
 

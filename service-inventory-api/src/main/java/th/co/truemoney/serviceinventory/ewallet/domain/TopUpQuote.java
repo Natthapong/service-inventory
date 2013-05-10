@@ -21,8 +21,6 @@ public class TopUpQuote extends DraftTransaction {
 
 	private BigDecimal topUpFee;
 
-	private String otpReferenceCode;
-
 	public TopUpQuote() {
 		type = DRAFT_TYPE;
 	}
@@ -82,14 +80,6 @@ public class TopUpQuote extends DraftTransaction {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
-	}
-
-	public String getOtpReferenceCode() {
-		return otpReferenceCode;
-	}
-
-	public void setOtpReferenceCode(String otpReferenceCode) {
-		this.otpReferenceCode = otpReferenceCode;
 	}
 
 	@Override

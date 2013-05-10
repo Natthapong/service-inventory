@@ -38,14 +38,6 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/top-up/quote/{quoteID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getTopUpRequestOTPURL() {
-		return host + "/service-inventory-web/v1/top-up/quote/{quoteID}/otp?accessTokenID={accessTokenID}";
-	}
-
-	public String getTopUpVerifyOTPURL() {
-		return host + "/service-inventory-web/v1/top-up/quote/{quoteID}/otp/{refCode}?accessTokenID={accessTokenID}";
-	}
-
 	public String getTopUpPerformURL() {
 		return host + "/service-inventory-web/v1/top-up/quote/{quoteID}?accessTokenID={accessTokenID}";
 	}
@@ -78,14 +70,6 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getP2PRequestOTPURL() {
-		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}/otp?accessTokenID={accessTokenID}";
-	}
-
-	public String getP2PVerifyOTPURL() {
-		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}/otp/{refCode}?accessTokenID={accessTokenID}";
-	}
-
 	public String getP2PPerformTransferURL() {
 		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}?accessTokenID={accessTokenID}";
 	}
@@ -110,14 +94,6 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getBillPaymentRequestOTPURL() {
-		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}/otp?accessTokenID={accessTokenID}";
-	}
-
-	public String getBillPayVerifyOTPURL() {
-		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}/otp/{refCode}?accessTokenID={accessTokenID}";
-	}
-
 	public String getBillPaymentPerformURL() {
 		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}?accessTokenID={accessTokenID}";
 	}
@@ -132,14 +108,6 @@ public class EndPoints {
 
 	public String getVerifyTopupMobile() {
 		return host + "/service-inventory-web/v1/top-up/mobile/draft?accessTokenID={accessTokenID}";
-	}
-
-	public String getRequestOTPTopUpMobileURL(){
-		return host + "/service-inventory-web/v1/top-up/mobile/draft/{topUpMobileDraftID}/otp?accessTokenID={accessTokenID}";
-	}
-
-	public String getVerifyOTPToppingMobileURL(){
-		return host + "/service-inventory-web/v1/top-up/mobile/draft/{topUpMobileDraftID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
 
 	public String getPerformToppingMobileURL(){
@@ -172,5 +140,13 @@ public class EndPoints {
 	
 	public String getFavoritesURL() {
 		return host + "/service-inventory-web/v1/ewallet/favorites?serviceType={serviceType}&accessTokenID={accessTokenID}";
+	}
+
+	public String getTransactionRequestOTPURL() {
+		return host + "/service-inventory-web/v1/authen/draft/{draftID}/otp?accessTokenID={accessTokenID}";
+	}
+
+	public String getTransactionVerifyOTPURL() {
+		return host + "/service-inventory-web/v1/authen/draft/{draftID}/otp/{refCode}?accessTokenID={accessTokenID}";
 	}
 }

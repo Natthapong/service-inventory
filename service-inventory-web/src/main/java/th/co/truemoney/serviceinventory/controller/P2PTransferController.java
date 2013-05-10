@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
@@ -39,29 +38,6 @@ public class P2PTransferController {
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
 		return p2pTransferService.getTransferDraftDetails(transferDraftID, accessTokenID);
-	}
-
-	@RequestMapping(value = "/draft/{transferDraftID}/otp", method = RequestMethod.POST)
-	public @ResponseBody OTP submitTransferDraftRequest(
-			@PathVariable String transferDraftID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.requestOTP(transferDraftID, accessTokenID);
-	}
-
-	@RequestMapping(value = "/draft/{transferDraftID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody P2PTransferDraft.Status verifyOTP(
-			@PathVariable String transferDraftID,
-			@PathVariable String refCode,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-			@RequestBody OTP otp) {
-
-		if (otp != null) {
-			otp.setReferenceCode(refCode);
-		}
-
-		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.verifyOTP(transferDraftID, otp, accessTokenID);
 	}
 
 	@RequestMapping(value = "/draft/{transferDraftID}", method = RequestMethod.PUT)

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
@@ -42,31 +41,6 @@ public class TopUpEwalletController {
 
 		extendExpireAccessToken(accessTokenID);
 		return topupService.getTopUpQuoteDetails(quoteID, accessTokenID);
-	}
-
-	@RequestMapping(value = "/top-up/quote/{quoteID}/otp", method = RequestMethod.POST)
-	public @ResponseBody OTP submitTopUpRequest(
-		   @PathVariable String quoteID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-
-		extendExpireAccessToken(accessTokenID);
-		return topupService.requestOTP(quoteID, accessTokenID);
-	}
-
-	@RequestMapping(value = "/top-up/quote/{quoteID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody TopUpQuote.Status verifyOTP(
-		   @PathVariable String quoteID,
-		   @PathVariable String refCode,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-		   @RequestBody OTP otp) {
-
-		if (otp != null) {
-			otp.setReferenceCode(refCode);
-		}
-
-		extendExpireAccessToken(accessTokenID);
-
-		return topupService.verifyOTP(quoteID, otp, accessTokenID);
 	}
 
 	@RequestMapping(value = "/top-up/quote/{quoteID}", method = RequestMethod.PUT)

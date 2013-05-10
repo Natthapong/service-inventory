@@ -21,8 +21,6 @@ public class BillPaymentDraft extends DraftTransaction {
 
 	private BigDecimal amount;
 	private String selectedSourceOfFundType;
-	private String otpReferenceCode;
-
 	private String transactionID;
 
 	public BillPaymentDraft() {
@@ -78,14 +76,6 @@ public class BillPaymentDraft extends DraftTransaction {
 
 	public void setTransactionID(String transactionID) {
 		this.transactionID = transactionID;
-	}
-
-	public String getOtpReferenceCode() {
-		return otpReferenceCode;
-	}
-
-	public void setOtpReferenceCode(String otpReferenceCode) {
-		this.otpReferenceCode = otpReferenceCode;
 	}
 
 	public void setSelectedSourceOfFundType(String selectedSourceOfFundType) {

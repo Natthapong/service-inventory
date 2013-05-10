@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import th.co.truemoney.serviceinventory.authen.TransactionAuthenService;
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
@@ -59,6 +60,11 @@ public class TestServiceInventoryConfig {
     @Bean @Scope("singleton")
     public FavoriteService mockFavoriteService() {
         return Mockito.mock(FavoriteService.class);
+    }
+
+    @Bean @Scope("singleton")
+    public TransactionAuthenService mockTransactionAuthenService() {
+        return Mockito.mock(TransactionAuthenService.class);
     }
 
     @Bean
