@@ -27,140 +27,142 @@ import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
 @Service
 public class BillPaymentServiceImpl implements  BillPaymentService {
 
-	@Autowired
-	private AccessTokenRepository accessTokenRepo;
+    @Autowired
+    private AccessTokenRepository accessTokenRepo;
 
-	@Autowired
-	private BillInformationRepository billInfoRepo;
+    @Autowired
+    private BillInformationRepository billInfoRepo;
 
-	@Autowired
-	private TransactionRepository transactionRepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
 
-	@Autowired
-	private LegacyFacade legacyFacade;
+    @Autowired
+    private LegacyFacade legacyFacade;
 
-	@Autowired
-	AsyncBillPayProcessor asyncBillPayProcessor;
+    @Autowired
+    AsyncBillPayProcessor asyncBillPayProcessor;
 
-	@Autowired
-	private BillPaymentValidationConfig validationConfig;
+    @Autowired
+    private BillPaymentValidationConfig validationConfig;
 
-	public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
-		this.accessTokenRepo = accessTokenRepo;
-	}
+    public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
+        this.accessTokenRepo = accessTokenRepo;
+    }
 
-	public void setTransactionRepository(TransactionRepository transactionRepository) {
-		this.transactionRepository = transactionRepository;
-	}
+    public void setTransactionRepository(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
 
-	public void setLegacyFacade(LegacyFacade legacyFacade) {
-		this.legacyFacade = legacyFacade;
+    public void setLegacyFacade(LegacyFacade legacyFacade) {
+        this.legacyFacade = legacyFacade;
 
-	}
-	@Override
-	public Bill retrieveBillInformation(String barcode, String accessTokenID)
-			throws ServiceInventoryException {
+    }
+    @Override
+    public Bill retrieveBillInformation(String barcode, String accessTokenID)
+            throws ServiceInventoryException {
 
-		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
-		ClientCredential appData = token.getClientCredential();
+        AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
+        ClientCredential appData = token.getClientCredential();
 
 
-		Bill bill = legacyFacade.billing()
-								.readBillInfo(barcode)
-								   .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
-								   .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
-								   .getInformation();
+        Bill bill = legacyFacade.billing()
+                                .readBillInfo(barcode)
+                                   .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+                                   .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
+                                   .getInformation();
 
-		validateOverdue(bill.getTarget(), bill.getDueDate());
-		bill.setID(UUID.randomUUID().toString());
-		billInfoRepo.saveBill(bill, accessTokenID);
+        validateOverdue(bill.getTarget(), bill.getDueDate());
+        bill.setID(UUID.randomUUID().toString());
+        billInfoRepo.saveBill(bill, accessTokenID);
 
-		return bill;
+        return bill;
 
-	}
+    }
 
-	private void validateOverdue(String billerCode, Date duedate) {
-		BillPaymentValidation billPaymentValidation = validationConfig.getBillValidation(billerCode);
-		if (billPaymentValidation != null && "TRUE".equals(billPaymentValidation.getValidateDuedate())) {
-			if (isOverdue(duedate)) {
-				throw new ServiceInventoryWebException(Code.BILL_OVER_DUE, "bill over due date.");
-			}
-		}
-	}
+    private void validateOverdue(String billerCode, Date duedate) {
+        BillPaymentValidation billPaymentValidation = validationConfig.getBillValidation(billerCode);
+        if (billPaymentValidation != null && "TRUE".equals(billPaymentValidation.getValidateDuedate())) {
+            if (isOverdue(duedate)) {
+                throw new ServiceInventoryWebException(Code.BILL_OVER_DUE, "bill over due date.");
+            }
+        }
+    }
 
-	public boolean isOverdue(Date duedate) {
-		DateTime dateTime = new DateTime(duedate);
-		return dateTime.plusDays(1).isBeforeNow();
-	}
+    public boolean isOverdue(Date duedate) {
+        DateTime dateTime = new DateTime(duedate);
+        return dateTime.plusDays(1).isBeforeNow();
+    }
 
-	@Override
-	public BillPaymentDraft verifyPaymentAbility(String billID, BigDecimal amount, String accessTokenID)
-			throws ServiceInventoryException {
+    @Override
+    public BillPaymentDraft verifyPaymentAbility(String billID, BigDecimal amount, String accessTokenID)
+            throws ServiceInventoryException {
 
-		Bill billInfo = billInfoRepo.findBill(billID, accessTokenID);
+        Bill billInfo = billInfoRepo.findBill(billID, accessTokenID);
 
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		ClientCredential appData = accessToken.getClientCredential();
+        AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+        ClientCredential appData = accessToken.getClientCredential();
 
-		//verify bill.
-		String verificationID = legacyFacade.billing()
-						.fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())
-							.aUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
-							.usingMobilePayPoint(accessToken.getMobileNumber())
-							.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
-							.fromBillChannel(appData.getChannel(), appData.getChannelDetail())
-							.paying(amount, billInfo.getServiceFee().calculateFee(amount), billInfo.getEwalletSourceOfFund().calculateFee(amount))
-							.verifyPayment();
+        BigDecimal sofFee = billInfo.getEwalletSourceOfFund() != null ? billInfo.getEwalletSourceOfFund().calculateFee(amount) : BigDecimal.ZERO;
 
-		BillPaymentDraft billDraft = new BillPaymentDraft(UUID.randomUUID().toString(), billInfo, amount, verificationID, Status.CREATED);
-		transactionRepository.saveDraftTransaction(billDraft, accessTokenID);
-		return billDraft;
-	}
+        //verify bill.
+        String verificationID = legacyFacade.billing()
+                        .fromBill(billInfo.getRef1(), billInfo.getRef2(), billInfo.getTarget())
+                            .aUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+                            .usingMobilePayPoint(accessToken.getMobileNumber())
+                            .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+                            .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
+                            .paying(amount, billInfo.getServiceFee().calculateFee(amount), sofFee)
+                            .verifyPayment();
 
-	@Override
-	public BillPaymentDraft getBillPaymentDraftDetail(String invoiceID, String accessTokenID) throws ServiceInventoryException {
-		return transactionRepository.findDraftTransaction(invoiceID, accessTokenID, BillPaymentDraft.class);
-	}
+        BillPaymentDraft billDraft = new BillPaymentDraft(UUID.randomUUID().toString(), billInfo, amount, verificationID, Status.CREATED);
+        transactionRepository.saveDraftTransaction(billDraft, accessTokenID);
+        return billDraft;
+    }
 
-	@Override
-	public BillPaymentTransaction.Status performPayment(String invoiceID, String accessTokenID)
-			throws ServiceInventoryException {
+    @Override
+    public BillPaymentDraft getBillPaymentDraftDetail(String invoiceID, String accessTokenID) throws ServiceInventoryException {
+        return transactionRepository.findDraftTransaction(invoiceID, accessTokenID, BillPaymentDraft.class);
+    }
 
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		BillPaymentDraft invoiceDetails = getBillPaymentDraftDetail(invoiceID, accessTokenID);
+    @Override
+    public BillPaymentTransaction.Status performPayment(String invoiceID, String accessTokenID)
+            throws ServiceInventoryException {
 
-		if (BillPaymentDraft.Status.OTP_CONFIRMED != invoiceDetails.getStatus()) {
-			throw new UnVerifiedOwnerTransactionException();
-		}
+        AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+        BillPaymentDraft invoiceDetails = getBillPaymentDraftDetail(invoiceID, accessTokenID);
 
-		BillPaymentTransaction billPaymentReceipt = new BillPaymentTransaction(invoiceDetails);
-		billPaymentReceipt.setStatus(BillPaymentTransaction.Status.VERIFIED);
-		transactionRepository.saveTransaction(billPaymentReceipt, accessTokenID);
+        if (BillPaymentDraft.Status.OTP_CONFIRMED != invoiceDetails.getStatus()) {
+            throw new UnVerifiedOwnerTransactionException();
+        }
 
-		performBillPay(billPaymentReceipt, accessToken);
+        BillPaymentTransaction billPaymentReceipt = new BillPaymentTransaction(invoiceDetails);
+        billPaymentReceipt.setStatus(BillPaymentTransaction.Status.VERIFIED);
+        transactionRepository.saveTransaction(billPaymentReceipt, accessTokenID);
 
-		return billPaymentReceipt.getStatus();
-	}
+        performBillPay(billPaymentReceipt, accessToken);
 
-	private void performBillPay(BillPaymentTransaction billPaymentReceipt, AccessToken accessToken) {
-		asyncBillPayProcessor.payBill(billPaymentReceipt, accessToken);
-	}
+        return billPaymentReceipt.getStatus();
+    }
 
-	@Override
-	public BillPaymentTransaction.Status getBillPaymentStatus(String billPaymentID, String accessTokenID)
-			throws ServiceInventoryException {
-		BillPaymentTransaction billPayment = getBillPaymentResult(billPaymentID, accessTokenID);
-		return billPayment.getStatus();
-	}
+    private void performBillPay(BillPaymentTransaction billPaymentReceipt, AccessToken accessToken) {
+        asyncBillPayProcessor.payBill(billPaymentReceipt, accessToken);
+    }
 
-	@Override
-	public BillPaymentTransaction getBillPaymentResult(String billPaymentID, String accessTokenID)
-			throws ServiceInventoryException {
-		return transactionRepository.findTransaction(billPaymentID, accessTokenID, BillPaymentTransaction.class);
-	}
+    @Override
+    public BillPaymentTransaction.Status getBillPaymentStatus(String billPaymentID, String accessTokenID)
+            throws ServiceInventoryException {
+        BillPaymentTransaction billPayment = getBillPaymentResult(billPaymentID, accessTokenID);
+        return billPayment.getStatus();
+    }
 
-	public void setAsyncBillPayProcessor(AsyncBillPayProcessor asyncBillPayProcessor) {
-		this.asyncBillPayProcessor = asyncBillPayProcessor;
-	}
+    @Override
+    public BillPaymentTransaction getBillPaymentResult(String billPaymentID, String accessTokenID)
+            throws ServiceInventoryException {
+        return transactionRepository.findTransaction(billPaymentID, accessTokenID, BillPaymentTransaction.class);
+    }
+
+    public void setAsyncBillPayProcessor(AsyncBillPayProcessor asyncBillPayProcessor) {
+        this.asyncBillPayProcessor = asyncBillPayProcessor;
+    }
 
 }

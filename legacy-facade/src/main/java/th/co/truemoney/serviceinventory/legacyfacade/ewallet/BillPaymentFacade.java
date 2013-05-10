@@ -26,172 +26,176 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class BillPaymentFacade {
 
-	@Autowired
-	private BillProxy billPayProxy;
+    @Autowired
+    private BillProxy billPayProxy;
 
-	public String verify(VerifyBillPayRequest billPayRequest){
-		try {
-			SIEngineResponse verifyResponse = billPayProxy.verifyBillPay(billPayRequest);
-			return verifyResponse.getTransactionID();
-		} catch(FailResultCodeException ex) {
-			throw new VerifyBillPayFailException(ex);
-		}
-	}
+    public String verify(VerifyBillPayRequest billPayRequest){
+        try {
+            SIEngineResponse verifyResponse = billPayProxy.verifyBillPay(billPayRequest);
+            return verifyResponse.getTransactionID();
+        } catch(FailResultCodeException ex) {
+            throw new VerifyBillPayFailException(ex);
+        }
+    }
 
-	public BillPaymentConfirmationInfo payBill(ConfirmBillPayRequest billRequest) {
-		try {
-			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			SIEngineResponse billPayResponse = billPayProxy.confirmBillPay(billRequest);
-			BillPaymentConfirmationInfo confirmationInfo = new BillPaymentConfirmationInfo();
-			confirmationInfo.setTransactionID(billPayResponse.getApproveCode());
-			confirmationInfo.setTransactionDate(df.format(new Date()));
-			return confirmationInfo;
-		} catch (FailResultCodeException ex) {
-			// TODO map exception to corresponding throw
-			throw new UnknownSystemTransactionFailException(ex);
-		}
-	}
+    public BillPaymentConfirmationInfo payBill(ConfirmBillPayRequest billRequest) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            SIEngineResponse billPayResponse = billPayProxy.confirmBillPay(billRequest);
+            BillPaymentConfirmationInfo confirmationInfo = new BillPaymentConfirmationInfo();
+            confirmationInfo.setTransactionID(billPayResponse.getApproveCode());
+            confirmationInfo.setTransactionDate(df.format(new Date()));
+            return confirmationInfo;
+        } catch (FailResultCodeException ex) {
+            // TODO map exception to corresponding throw
+            throw new UnknownSystemTransactionFailException(ex);
+        }
+    }
 
-	public Bill getBarcodeInformation(GetBarcodeRequest request) {
-		try {
-			GetBarcodeResponse barcodeResponse = billPayProxy.getBarcodeInformation(request);
+    public Bill getBarcodeInformation(GetBarcodeRequest request) {
+        try {
+            GetBarcodeResponse barcodeResponse = billPayProxy.getBarcodeInformation(request);
 
-			Bill billInfo = new Bill();
-			billInfo.setTarget(barcodeResponse.getTarget());
-			billInfo.setLogoURL(barcodeResponse.getLogo());
-			billInfo.setTitleTH(barcodeResponse.getTitleTH());
-			billInfo.setTitleEN(barcodeResponse.getTitleEN());
+            Bill billInfo = new Bill();
+            billInfo.setTarget(barcodeResponse.getTarget());
+            billInfo.setLogoURL(barcodeResponse.getLogo());
+            billInfo.setTitleTH(barcodeResponse.getTitleTH());
+            billInfo.setTitleEN(barcodeResponse.getTitleEN());
 
-			billInfo.setRef1TitleTH(barcodeResponse.getRef1TitleTH());
-			billInfo.setRef1TitleEN(barcodeResponse.getRef1TitleEN());
-			billInfo.setRef1(barcodeResponse.getRef1());
+            billInfo.setRef1TitleTH(barcodeResponse.getRef1TitleTH());
+            billInfo.setRef1TitleEN(barcodeResponse.getRef1TitleEN());
+            billInfo.setRef1(barcodeResponse.getRef1());
 
-			billInfo.setRef2TitleTH(barcodeResponse.getRef2TitleTH());
-			billInfo.setRef2TitleEN(barcodeResponse.getRef2TitleEN());
-			billInfo.setRef2(barcodeResponse.getRef2());
+            billInfo.setRef2TitleTH(barcodeResponse.getRef2TitleTH());
+            billInfo.setRef2TitleEN(barcodeResponse.getRef2TitleEN());
+            billInfo.setRef2(barcodeResponse.getRef2());
 
-			billInfo.setPartialPayment(barcodeResponse.getPartialPayment());
-			billInfo.setCallCenterNumber(barcodeResponse.getCallCenterNumber());
-			billInfo.setAmount(barcodeResponse.getAmount());
-			billInfo.setMinAmount(barcodeResponse.getMinAmount());
-			billInfo.setMaxAmount(barcodeResponse.getMaxAmount());
+            billInfo.setPartialPayment(barcodeResponse.getPartialPayment());
+            billInfo.setCallCenterNumber(barcodeResponse.getCallCenterNumber());
+            billInfo.setAmount(barcodeResponse.getAmount());
+            billInfo.setMinAmount(barcodeResponse.getMinAmount());
+            billInfo.setMaxAmount(barcodeResponse.getMaxAmount());
 
-			ServiceFeeInfo serviceFee = createServiceFee(barcodeResponse);
-			billInfo.setServiceFee(serviceFee);
+            ServiceFeeInfo serviceFee = createServiceFee(barcodeResponse);
+            billInfo.setServiceFee(serviceFee);
 
-			List<SourceOfFund> sourceOfFundFees = createSourceOfFundFeeList(barcodeResponse);
-			billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new SourceOfFund[sourceOfFundFees.size()]));
-			
-			billInfo.setDueDate(barcodeResponse.getDueDate());
+            List<SourceOfFund> sourceOfFundFees = createSourceOfFundFeeList(barcodeResponse);
+            billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new SourceOfFund[sourceOfFundFees.size()]));
 
-			return billInfo;
+            billInfo.setDueDate(barcodeResponse.getDueDate());
 
-		} catch (FailResultCodeException ex) {
-			String errorNamespace = ex.getNamespace();
-			if ("SIENGINE".equals(errorNamespace)) {
-				throw new SIEngineTransactionFailException(ex);
-			} else if ("UMARKET".equalsIgnoreCase(errorNamespace)) {
-				throw new UMarketSystemTransactionFailException(ex);
-			} else {
-				throw new UnknownSystemTransactionFailException(ex);
-			}
-		}
-	}
+            return billInfo;
 
-	private List<SourceOfFund> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {
-		List<SourceFee> sourceOfFundList = barcodeResponse.getExtraXML().getSourceFeeList();
-		List<SourceOfFund> sourceOfFundFees = new ArrayList<SourceOfFund>();
-		for (SourceFee sourceFee : sourceOfFundList) {
+        } catch (FailResultCodeException ex) {
+            String errorNamespace = ex.getNamespace();
+            if ("SIENGINE".equals(errorNamespace)) {
+                throw new SIEngineTransactionFailException(ex);
+            } else if ("UMARKET".equalsIgnoreCase(errorNamespace)) {
+                throw new UMarketSystemTransactionFailException(ex);
+            } else {
+                throw new UnknownSystemTransactionFailException(ex);
+            }
+        }
+    }
 
-			SourceOfFund sourceOfFundFee = new SourceOfFund();
-			sourceOfFundFee.setSourceType(sourceFee.getSource());
-			sourceOfFundFee.setFeeRateType(sourceFee.getSourceFeeType());
+    private List<SourceOfFund> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {
+        List<SourceFee> sourceOfFundList = barcodeResponse.getExtraXML().getSourceFeeList();
+        List<SourceOfFund> sourceOfFundFees = new ArrayList<SourceOfFund>();
+        for (SourceFee sourceFee : sourceOfFundList) {
 
-			BigDecimal calculatedSourceFee = calculateSourceFee(sourceFee, sourceOfFundFee);
-			sourceOfFundFee.setFeeRate(calculatedSourceFee.setScale(2, RoundingMode.HALF_UP));
-			sourceOfFundFee.setMinFeeAmount(convertStringToFraction(sourceFee.getMinAmount()));
-			sourceOfFundFee.setMaxFeeAmount(convertStringToFraction(sourceFee.getMaxAmount()));
+            SourceOfFund sourceOfFundFee = new SourceOfFund();
+            sourceOfFundFee.setSourceType(sourceFee.getSource());
+            sourceOfFundFee.setFeeRateType(sourceFee.getSourceFeeType());
 
-			sourceOfFundFees.add(sourceOfFundFee);
-		}
-		return sourceOfFundFees;
-	}
+            BigDecimal calculatedSourceFee = calculateSourceFee(sourceFee, sourceOfFundFee);
+            sourceOfFundFee.setFeeRate(calculatedSourceFee.setScale(2, RoundingMode.HALF_UP));
+            sourceOfFundFee.setMinFeeAmount(convertStringToFraction(sourceFee.getMinAmount()));
+            sourceOfFundFee.setMaxFeeAmount(convertStringToFraction(sourceFee.getMaxAmount()));
 
-	private ServiceFeeInfo createServiceFee(GetBarcodeResponse barcodeResponse) {
-		ServiceFeeInfo serviceFee = new ServiceFeeInfo();
-		serviceFee.setFeeRateType(barcodeResponse.getServiceFeeType());
-		BigDecimal decimalServiceFee = BigDecimal.ZERO;
-		if (serviceFee.getFeeRateType().equals("THB")) {
-			// fee type = fix
-			BigDecimal fee = barcodeResponse.getServiceFee() != null ? new BigDecimal(barcodeResponse.getServiceFee()) : BigDecimal.ZERO;
-			decimalServiceFee = fee.divide(new BigDecimal("100"));
-		} else {
-			// fee type = percent
-			decimalServiceFee = barcodeResponse.getServiceFee() != null ? new BigDecimal(barcodeResponse.getServiceFee()) : BigDecimal.ZERO;
-		}
-		serviceFee.setFeeRate(decimalServiceFee.setScale(2, RoundingMode.HALF_UP));
-		return serviceFee;
-	}
+            sourceOfFundFees.add(sourceOfFundFee);
+        }
+        return sourceOfFundFees;
+    }
 
-	private BigDecimal calculateSourceFee(SourceFee sourceFee,
-			SourceOfFund sourceOfFundFee) {
-		BigDecimal decimalSourceFee = BigDecimal.ZERO;
-		if (sourceOfFundFee.getFeeRateType().equals("THB")) {
-			// fee type = fix
-			BigDecimal fee = sourceFee.getSourceFee() != null ? new BigDecimal(sourceFee.getSourceFee()) : BigDecimal.ZERO;
-			decimalSourceFee = fee.divide(new BigDecimal("100"));
-		} else {
-			// fee type = percent
-			decimalSourceFee = sourceFee.getSourceFee() != null ? new BigDecimal(sourceFee.getSourceFee()) : BigDecimal.ZERO;;
-		}
-		return decimalSourceFee;
-	}
+    private ServiceFeeInfo createServiceFee(GetBarcodeResponse barcodeResponse) {
+        ServiceFeeInfo serviceFee = new ServiceFeeInfo();
+        serviceFee.setFeeRateType(barcodeResponse.getServiceFeeType());
+        BigDecimal decimalServiceFee = BigDecimal.ZERO;
+        if (serviceFee.getFeeRateType().equals("THB")) {
+            // fee type = fix
+            BigDecimal fee = barcodeResponse.getServiceFee() != null ? new BigDecimal(barcodeResponse.getServiceFee()) : BigDecimal.ZERO;
+            decimalServiceFee = fee.divide(new BigDecimal("100"));
+        } else {
+            // fee type = percent
+            decimalServiceFee = barcodeResponse.getServiceFee() != null ? new BigDecimal(barcodeResponse.getServiceFee()) : BigDecimal.ZERO;
+        }
+        serviceFee.setFeeRate(decimalServiceFee.setScale(2, RoundingMode.HALF_UP));
+        return serviceFee;
+    }
 
-	private BigDecimal convertStringToFraction(String value) {
-		BigDecimal decimal = (value != null) ? new BigDecimal(value) : BigDecimal.ZERO;
-		return decimal.divide(new BigDecimal("100"));
-	}
+    private BigDecimal calculateSourceFee(SourceFee sourceFee,
+            SourceOfFund sourceOfFundFee) {
+        BigDecimal decimalSourceFee = BigDecimal.ZERO;
+        if (sourceOfFundFee.getFeeRateType().equals("THB")) {
+            // fee type = fix
+            BigDecimal fee = sourceFee.getSourceFee() != null ? new BigDecimal(sourceFee.getSourceFee()) : BigDecimal.ZERO;
+            decimalSourceFee = fee.divide(new BigDecimal("100"));
+        } else {
+            // fee type = percent
+            decimalSourceFee = sourceFee.getSourceFee() != null ? new BigDecimal(sourceFee.getSourceFee()) : BigDecimal.ZERO;;
+        }
+        return decimalSourceFee;
+    }
 
-	public static class SIEngineTransactionFailException extends ServiceInventoryException {
-		private static final long serialVersionUID = 5955708376116171195L;
+    private BigDecimal convertStringToFraction(String value) {
+        BigDecimal decimal = (value != null) ? new BigDecimal(value) : BigDecimal.ZERO;
+        return decimal.divide(new BigDecimal("100"));
+    }
 
-		public SIEngineTransactionFailException(SIEngineException ex) {
-			super(500, ex.getCode(), "bill system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
-		}
-	}
+    public static class SIEngineTransactionFailException extends ServiceInventoryException {
+        private static final long serialVersionUID = 5955708376116171195L;
 
-	public static class UMarketSystemTransactionFailException extends ServiceInventoryException {
-		private static final long serialVersionUID = 3748885497125818864L;
+        public SIEngineTransactionFailException(SIEngineException ex) {
+            super(500, ex.getCode(), "bill system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
+        }
+    }
 
-		public UMarketSystemTransactionFailException(SIEngineException ex) {
-			super(500, ex.getCode(), "umarket system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
-		}
-	}
+    public static class UMarketSystemTransactionFailException extends ServiceInventoryException {
+        private static final long serialVersionUID = 3748885497125818864L;
 
-	public static class UnknownSystemTransactionFailException extends ServiceInventoryException {
-		private static final long serialVersionUID = 5899038317339162588L;
+        public UMarketSystemTransactionFailException(SIEngineException ex) {
+            super(500, ex.getCode(), "umarket system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
+        }
+    }
 
-		public UnknownSystemTransactionFailException(SIEngineException ex) {
-			super(500, ex.getCode(),  "unknown system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
-		}
-	}
+    public static class UnknownSystemTransactionFailException extends ServiceInventoryException {
+        private static final long serialVersionUID = 5899038317339162588L;
 
-	public static class VerifyBillPayFailException extends ServiceInventoryException{
-		private static final long serialVersionUID = 3029606083785530229L;
+        public UnknownSystemTransactionFailException(SIEngineException ex) {
+            super(500, ex.getCode(),  "unknown system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
+        }
+    }
 
-		public VerifyBillPayFailException(SIEngineException ex) {
-			super(500,ex.getCode(),"Verify Bill Pay fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
-		}
-	}
+    public static class VerifyBillPayFailException extends ServiceInventoryException{
+        private static final long serialVersionUID = 3029606083785530229L;
 
-	public static class UnknownServiceFeeType extends ServiceInventoryException {
+        public VerifyBillPayFailException(SIEngineException ex) {
+            super(500,ex.getCode(),"Verify Bill Pay fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
+        }
+    }
 
-		private static final long serialVersionUID = 5313680069554085972L;
-		private static final String UNKNOWN_SERVICE_FEE_TYPE = "xxxx";
+    public static class UnknownServiceFeeType extends ServiceInventoryException {
 
-		public UnknownServiceFeeType(String feeType) {
-			super(500, UNKNOWN_SERVICE_FEE_TYPE,  "unknown fee type code: " + feeType, "BILL-PROXY", null);
-		}
-	}
+        private static final long serialVersionUID = 5313680069554085972L;
+        private static final String UNKNOWN_SERVICE_FEE_TYPE = "xxxx";
+
+        public UnknownServiceFeeType(String feeType) {
+            super(500, UNKNOWN_SERVICE_FEE_TYPE,  "unknown fee type code: " + feeType, "BILL-PROXY", null);
+        }
+    }
+
+    public void setBillPayProxy(BillProxy billPayProxy) {
+        this.billPayProxy = billPayProxy;
+    }
 
 }
