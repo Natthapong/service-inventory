@@ -46,7 +46,7 @@ public class FavoriteServicesClient implements FavoriteService {
     	HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 		ResponseEntity<Favorite[]> responseEntity = restTemplate.exchange(
 				endPoints.getFavoritesURL(), HttpMethod.GET,
-				requestEntity, Favorite[].class, serviceType, accessTokenID);
+				requestEntity, Favorite[].class, accessTokenID, serviceType);
         return Arrays.asList(responseEntity.getBody());
     }
 

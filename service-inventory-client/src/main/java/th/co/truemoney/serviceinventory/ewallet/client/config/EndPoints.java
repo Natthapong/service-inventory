@@ -139,7 +139,7 @@ public class EndPoints {
 	}
 	
 	public String getFavoritesURL() {
-		return host + "/service-inventory-web/v1/ewallet/favorites?serviceType={serviceType}&accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/ewallet/favorites/{accessTokenID}?serviceType={serviceType}";
 	}
 
 	public String getTransactionRequestOTPURL() {
