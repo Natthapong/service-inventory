@@ -42,7 +42,8 @@ public class Bill implements Serializable {
 	private SourceOfFund[] sourceOfFundFees;
 	
 	private boolean favoritable = false;
-
+	private String payWith = "barcode";
+	
 	private Date dueDate;
 
 	public Bill() {
@@ -228,6 +229,14 @@ public class Bill implements Serializable {
 
 	public void setFavoritable(boolean favoritable) {
 		this.favoritable = favoritable;
+	}
+
+	public String getPayWith() {
+		return payWith;
+	}
+
+	public void setPayWith(String payWith) {
+		this.payWith = payWith;
 	}
 
 	@Override

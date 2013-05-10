@@ -9,6 +9,19 @@ public class Favorite {
 	private String ref1;
 	private BigDecimal amount;
 
+	public Favorite() {
+	}
+	
+	public Favorite(Long favoriteID, String serviceType, String serviceCode,
+			String ref1, BigDecimal amount) {
+		super();
+		this.favoriteID = favoriteID;
+		this.serviceType = serviceType;
+		this.serviceCode = serviceCode;
+		this.ref1 = ref1;
+		this.amount = amount;
+	}
+	
 	public Long getFavoriteID() {
 		return favoriteID;
 	}
