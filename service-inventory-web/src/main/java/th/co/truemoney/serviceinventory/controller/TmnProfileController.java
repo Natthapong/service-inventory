@@ -140,7 +140,7 @@ public class TmnProfileController {
 		return favoriteResponse;
 	}
 	
-	@RequestMapping(value = "/favorites/{accessTokenID}" , method = RequestMethod.GET)
+	@RequestMapping(value = "/favorites" , method = RequestMethod.GET)
 	public @ResponseBody List<Favorite> getFavorites(
 			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID) {
 
