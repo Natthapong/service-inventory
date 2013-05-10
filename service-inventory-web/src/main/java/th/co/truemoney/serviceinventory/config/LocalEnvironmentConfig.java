@@ -24,6 +24,7 @@ import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateResponse;
@@ -136,11 +137,11 @@ public class LocalEnvironmentConfig {
                 return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
             }
 
-            @Override
-            public StandardBizResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
-                    throws EwalletException {
-                return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
-            }
+			@Override
+			public AddFavoriteResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
+					throws EwalletException {
+				return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
+			}
 
             @Override
             public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
