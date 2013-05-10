@@ -149,7 +149,6 @@ public class TmnTransferServiceClientTest {
 			Thread.sleep(1000);
 		}
 
-		p2pTransactionStatus = p2pTransferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessToken);
 		assertEquals(P2PTransferTransaction.Status.SUCCESS, p2pTransactionStatus);
 	}
 
