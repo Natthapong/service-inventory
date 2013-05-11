@@ -19,6 +19,7 @@
         <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
         <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-integration.exec</sonar.jacoco.itReportPath>
         <jacoco.integrationReport>${project.basedir}/../target/jacoco-integration.exec</jacoco.integrationReport>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     </properties>
 
     <modules>
