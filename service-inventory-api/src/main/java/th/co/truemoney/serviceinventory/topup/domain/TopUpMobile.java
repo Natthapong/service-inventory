@@ -14,133 +14,133 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class TopUpMobile implements Serializable {
 
-	private static final long serialVersionUID = -3008611520827994960L;
+    private static final long serialVersionUID = -3008611520827994960L;
 
-	private String ID;
-	
-	private String logo;
-	private String titleTH;
-	private String titleEN;
-	private String target;
-	private String mobileNumber;
-	private BigDecimal remainBalance = BigDecimal.ZERO;
-	
-	private BigDecimal amount = BigDecimal.ZERO;
-	private BigDecimal minAmount = BigDecimal.ZERO;
-	private BigDecimal maxAmount = BigDecimal.ZERO;
+    private String ID;
 
-	private ServiceFeeInfo serviceFee;
-	private SourceOfFund[] sourceOfFundFees;
-	
-	public TopUpMobile() {
-		super();
-	}
+    private String logo;
+    private String titleTH;
+    private String titleEN;
+    private String target;
+    private String mobileNumber;
+    private BigDecimal remainBalance = BigDecimal.ZERO;
 
-	public String getID() {
-		return ID;
-	}
+    private BigDecimal amount = BigDecimal.ZERO;
+    private BigDecimal minAmount = BigDecimal.ZERO;
+    private BigDecimal maxAmount = BigDecimal.ZERO;
 
-	public void setID(String iD) {
-		ID = iD;
-	}
+    private ServiceFeeInfo serviceFee;
+    private SourceOfFund[] sourceOfFundFees;
 
-	public String getLogo() {
-		return logo;
-	}
+    public TopUpMobile() {
+        super();
+    }
 
-	public void setLogo(String logo) {
-		this.logo = logo;
-	}
+    public String getID() {
+        return ID;
+    }
 
-	public String getTitleTH() {
-		return titleTH;
-	}
+    public void setID(String iD) {
+        ID = iD;
+    }
 
-	public void setTitleTH(String titleTH) {
-		this.titleTH = titleTH;
-	}
+    public String getLogo() {
+        return logo;
+    }
 
-	public String getTitleEN() {
-		return titleEN;
-	}
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
 
-	public void setTitleEN(String titleEN) {
-		this.titleEN = titleEN;
-	}
+    public String getTitleTH() {
+        return titleTH;
+    }
 
-	public String getTarget() {
-		return target;
-	}
+    public void setTitleTH(String titleTH) {
+        this.titleTH = titleTH;
+    }
 
-	public void setTarget(String target) {
-		this.target = target;
-	}
+    public String getTitleEN() {
+        return titleEN;
+    }
 
-	public BigDecimal getRemainBalance() {
-		return remainBalance;
-	}
+    public void setTitleEN(String titleEN) {
+        this.titleEN = titleEN;
+    }
 
-	public void setRemainBalance(BigDecimal remainBalance) {
-		this.remainBalance = remainBalance;
-	}
-	
-	public BigDecimal getAmount() {
-		return amount;
-	}
+    public String getTarget() {
+        return target;
+    }
 
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
+    public void setTarget(String target) {
+        this.target = target;
+    }
 
-	public BigDecimal getMinAmount() {
-		return minAmount;
-	}
+    public BigDecimal getRemainBalance() {
+        return remainBalance;
+    }
 
-	public void setMinAmount(BigDecimal minAmount) {
-		this.minAmount = minAmount;
-	}
+    public void setRemainBalance(BigDecimal remainBalance) {
+        this.remainBalance = remainBalance;
+    }
 
-	public BigDecimal getMaxAmount() {
-		return maxAmount;
-	}
+    public BigDecimal getAmount() {
+        return amount;
+    }
 
-	public void setMaxAmount(BigDecimal maxAmount) {
-		this.maxAmount = maxAmount;
-	}
-	
-	public String getMobileNumber() {
-		return mobileNumber;
-	}
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 
-	public void setMobileNumber(String mobileNumber) {
-		this.mobileNumber = mobileNumber;
-	}
+    public BigDecimal getMinAmount() {
+        return minAmount;
+    }
 
-	public ServiceFeeInfo getServiceFee() {
-		return serviceFee;
-	}
+    public void setMinAmount(BigDecimal minAmount) {
+        this.minAmount = minAmount;
+    }
 
-	public void setServiceFee(ServiceFeeInfo serviceFee) {
-		this.serviceFee = serviceFee;
-	}
+    public BigDecimal getMaxAmount() {
+        return maxAmount;
+    }
 
-	public SourceOfFund[] getSourceOfFundFees() {
-		return sourceOfFundFees;
-	}
+    public void setMaxAmount(BigDecimal maxAmount) {
+        this.maxAmount = maxAmount;
+    }
 
-	public void setSourceOfFundFees(SourceOfFund[] sourceOfFundFees) {
-		this.sourceOfFundFees = sourceOfFundFees;
-	}
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
 
-	public SourceOfFund getEwalletSourceOfFund() {
-		if (sourceOfFundFees != null) {
-			for (SourceOfFund sof : sourceOfFundFees) {
-				if ("EW".equals(sof.getSourceType())) {
-					return sof;
-				}
-			}
-		}
-		return null;
-	}
-		
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public ServiceFeeInfo getServiceFee() {
+        return serviceFee;
+    }
+
+    public void setServiceFee(ServiceFeeInfo serviceFee) {
+        this.serviceFee = serviceFee;
+    }
+
+    public SourceOfFund[] getSourceOfFundFees() {
+        return sourceOfFundFees;
+    }
+
+    public void setSourceOfFundFees(SourceOfFund[] sourceOfFundFees) {
+        this.sourceOfFundFees = (sourceOfFundFees != null) ? sourceOfFundFees.clone() : null;
+    }
+
+    public SourceOfFund getEwalletSourceOfFund() {
+        if (sourceOfFundFees != null) {
+            for (SourceOfFund sof : sourceOfFundFees) {
+                if ("EW".equals(sof.getSourceType())) {
+                    return sof;
+                }
+            }
+        }
+        return null;
+    }
+
 }
