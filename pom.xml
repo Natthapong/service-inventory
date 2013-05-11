@@ -186,8 +186,6 @@
                         </dependency>
                     </dependencies>
                     <configuration>
-                        <forkCount>0</forkCount>
-                        <reuseForks>false</reuseForks>
                         <argLine>
                             -javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.itReportPath} -Xmx1024m -XX:MaxPermSize=256m
                         </argLine>
