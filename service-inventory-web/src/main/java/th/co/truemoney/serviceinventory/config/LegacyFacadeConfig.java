@@ -5,13 +5,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileRegisteringFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.SourceOfFundFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpMobileFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BillPaymentFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.ProfileFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.ProfileRegisteringFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.SourceOfFundFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.TopUpMobileFacade;
 
 @Configuration
 public class LegacyFacadeConfig {
