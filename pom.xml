@@ -171,6 +171,7 @@
                         </includes>
                         <argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}</argLine>
                         <testFailureIgnore>false</testFailureIgnore>
+                        <forkMode>never</forkMode>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -185,6 +186,7 @@
                         </dependency>
                     </dependencies>
                     <configuration>
+                        <forkMode>never</forkMode>
                         <argLine>
                             -javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.itReportPath}
                         </argLine>
