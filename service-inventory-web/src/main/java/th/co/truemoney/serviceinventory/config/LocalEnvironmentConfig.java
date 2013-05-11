@@ -79,8 +79,8 @@ public class LocalEnvironmentConfig {
         return "http://127.0.0.1:8585";
     }
 
-    Adam adam = new Adam();
-    Eve eve = new Eve();
+    private Adam adam = new Adam();
+    private Eve eve = new Eve();
 
     @Bean
     @Primary
@@ -134,25 +134,25 @@ public class LocalEnvironmentConfig {
             @Override
             public StandardBizResponse isFavoritable(IsFavoritableRequest isIsFavoritableRequest)
                     throws EwalletException {
-            	if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
-					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
-				}else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
-					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
-				}
-				return new StandardBizResponse("1", "001", "namespace", new String[] { "key" }, new String[] { "value" });
+                if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
+                    return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+                }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
+                    return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+                }
+                return new StandardBizResponse("1", "001", "namespace", new String[] { "key" }, new String[] { "value" });
             }
 
-			@Override
-			public AddFavoriteResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
-					throws EwalletException {
-				if(addFavoriteRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
-					return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
-				}else if(addFavoriteRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
-					return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
-				}else{
-					throw new FailResultCodeException("500", "stub namespace.");
-				}
-			}
+            @Override
+            public AddFavoriteResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
+                    throws EwalletException {
+                if(addFavoriteRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
+                    return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
+                }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
+                    return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
+                }else{
+                    throw new FailResultCodeException("500", "stub namespace.");
+                }
+            }
 
             @Override
             public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
@@ -361,22 +361,22 @@ public class LocalEnvironmentConfig {
             }
 
             @Override
-            public StandardBizResponse isCreatable(
-                    IsCreatableRequest isCreatableRequest)
-                    throws EwalletException {
-                if(isCreatableRequest != null && "local@tmn.com".equals(isCreatableRequest.getLoginId())){
-                    throw new FailResultCodeException("401", "EWALLET-PROXY");
+            public StandardBizResponse isCreatable(IsCreatableRequest isCreatableRequest) throws EwalletException {
+                if(isCreatableRequest != null) {
+                    if ("local@tmn.com".equals(isCreatableRequest.getLoginId())) {
+                        throw new FailResultCodeException("401", "EWALLET-PROXY");
+                    } else {
+                        return new StandardBizResponse("1", "0", "EWALLET-PROXY", new String[] { "email" }, new String[] { isCreatableRequest.getLoginId() });
+                    }
+
                 }else{
-                    return new StandardBizResponse("1", "0", "EWALLET-PROXY",
-                        new String[] { "email" }, new String[] { isCreatableRequest.getLoginId() });
+                    throw new FailResultCodeException("401", "EWALLET-PROXY");
                 }
             }
 
             @Override
-            public StandardBizResponse updateAccount(
-                    UpdateAccountRequest updateAccountRequest)
+            public StandardBizResponse updateAccount(UpdateAccountRequest updateAccountRequest)
                     throws EwalletException {
-                // TODO Auto-generated method stub
                 return null;
             }
 
