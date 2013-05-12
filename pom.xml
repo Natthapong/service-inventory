@@ -169,7 +169,6 @@
                         <includes>
                             <include>**/*.class</include>
                         </includes>
-                        <argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}</argLine>
                         <testFailureIgnore>false</testFailureIgnore>
                         <forkMode>always</forkMode>
                     </configuration>
@@ -186,9 +185,6 @@
                         </dependency>
                     </dependencies>
                     <configuration>
-                        <argLine>
-                            -javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.itReportPath}
-                        </argLine>
                         <includes>
                             <include>**/*.class</include>
                         </includes>
@@ -209,29 +205,54 @@
 
     <profiles>
         <profile>
-            <id>integration-coverage-report</id>
+            <id>coverage</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.6.2.201302030002</version>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.14</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.surefire</groupId>
+                                <artifactId>surefire-junit47</artifactId>
+                                <version>2.14</version>
+                            </dependency>
+                        </dependencies>
                         <configuration>
-                            <propertyName>jacoco.agent.argLine</propertyName>
-                            <destFile>${jacoco.integrationReport}</destFile>
+                            <includes>
+                                <include>**/*.class</include>
+                            </includes>
+                            <argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}</argLine>
+                            <testFailureIgnore>false</testFailureIgnore>
+                            <forkMode>always</forkMode>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.14</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.surefire</groupId>
+                                <artifactId>surefire-junit47</artifactId>
+                                <version>2.14</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <argLine>
+                                -javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.itReportPath}
+                            </argLine>
+                            <includes>
+                                <include>**/*.class</include>
+                            </includes>
+                            <testFailureIgnore>false</testFailureIgnore>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>jacoco-initialize</id>
                                 <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>jacoco-site</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>report</goal>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
                                 </goals>
                             </execution>
                         </executions>
