@@ -12,9 +12,11 @@ import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
@@ -152,6 +154,19 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     public BillPaymentTransaction.Status getBillPaymentStatus(String billPaymentID, String accessTokenID)
             throws ServiceInventoryException {
         BillPaymentTransaction billPayment = getBillPaymentResult(billPaymentID, accessTokenID);
+        
+        if (Transaction.Status.FAILED == billPayment.getStatus()) {
+        	FailStatus failSts = billPayment.getFailStatus();
+        	if (FailStatus.PCS_FAILED == failSts) {
+        		throw new ServiceInventoryWebException(Code.CONFIRM_PCS_FAILED, "pcs confirmation processing fail.");
+        	} else if (FailStatus.TPP_FAILED == failSts) {
+        		throw new ServiceInventoryWebException(Code.CONFIRM_TPP_FAILED, "tpp confirmation processing fail.");
+        	} else if (FailStatus.UMARKET_FAILED == failSts) {
+        		throw new ServiceInventoryWebException(Code.CONFIRM_UMARKET_FAILED, "u-market confirmation processing fail.");
+        	} else { //UNKNOWN FAIL
+        		throw new ServiceInventoryWebException(Code.CONFIRM_FAILED, "confirmation processing fail.");
+        	}
+        }
         return billPayment.getStatus();
     }
 
