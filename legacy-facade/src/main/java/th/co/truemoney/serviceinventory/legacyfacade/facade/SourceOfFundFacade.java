@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.legacyfacade.ewallet;
+package th.co.truemoney.serviceinventory.legacyfacade.facade;
 
 import java.util.ArrayList;
 import java.util.List;

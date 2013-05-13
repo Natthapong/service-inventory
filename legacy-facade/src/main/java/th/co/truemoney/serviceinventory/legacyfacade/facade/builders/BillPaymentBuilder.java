@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.legacyfacade.builders;
+package th.co.truemoney.serviceinventory.legacyfacade.facade.builders;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BillPaymentFacade;
 
 public class BillPaymentBuilder {
 

@@ -32,8 +32,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BillPaymentFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BillPaymentFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade;
 import th.co.truemoney.serviceinventory.stub.BillPaymentStubbed;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 

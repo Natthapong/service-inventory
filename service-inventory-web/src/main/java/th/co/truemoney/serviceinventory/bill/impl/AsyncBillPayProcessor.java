@@ -18,8 +18,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.UMarketSystemTransactionFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade.UMarketSystemTransactionFailException;
 
 @Service
 public class AsyncBillPayProcessor {
@@ -59,6 +59,10 @@ public class AsyncBillPayProcessor {
 
 			billPaymentReceipt.setConfirmationInfo(confirmationInfo);
 			billPaymentReceipt.setStatus(Transaction.Status.SUCCESS);
+			
+			if(!billInfo.getPayWith().equals("favorite") && isFavoritable(accessToken,billInfo.getTarget(),billInfo.getRef1())){
+				billPaymentReceipt.getDraftTransaction().getBillInfo().setFavoritable(true);
+			}
 
 			logger.info("AsyncService.payBill.resultTransactionID: " + confirmationInfo.getTransactionID());
 		} catch (UMarketSystemTransactionFailException e) {
@@ -74,4 +78,11 @@ public class AsyncBillPayProcessor {
 		return new AsyncResult<BillPaymentTransaction> (billPaymentReceipt);
 	}
 
+	private Boolean isFavoritable(AccessToken accessToken,String serviceCode,String ref1){
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				.fromChannel(accessToken.getChannelID())
+				.withServiceCode(serviceCode)
+				.withRefernce1(ref1)
+				.isFavoritable();
+	}
 }

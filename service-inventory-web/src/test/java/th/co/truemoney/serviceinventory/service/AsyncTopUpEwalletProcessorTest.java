@@ -27,9 +27,9 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.BankSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade.BankSystemTransactionFailException;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @Category(IntegrationTest.class)

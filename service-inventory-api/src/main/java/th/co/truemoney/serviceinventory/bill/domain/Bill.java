@@ -14,235 +14,244 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class Bill implements Serializable {
 
-	private static final long serialVersionUID = 6473783007140066887L;
+    private static final long serialVersionUID = 6473783007140066887L;
 
-	private String ID;
+    private String ID;
 
-	private String target;
-	private String logoURL;
-	private String titleTH;
-	private String titleEN;
+    private String target;
+    private String logoURL;
+    private String titleTH;
+    private String titleEN;
 
-	private String ref1TitleTH;
-	private String ref1TitleEN;
-	private String ref1;
+    private String ref1TitleTH;
+    private String ref1TitleEN;
+    private String ref1;
 
-	private String ref2TitleTH;
-	private String ref2TitleEN;
-	private String ref2;
+    private String ref2TitleTH;
+    private String ref2TitleEN;
+    private String ref2;
 
-	private String partialPayment;
-	private String callCenterNumber;
+    private String partialPayment;
+    private String callCenterNumber;
 
-	private BigDecimal amount = BigDecimal.ZERO;
-	private BigDecimal minAmount = BigDecimal.ZERO;
-	private BigDecimal maxAmount = BigDecimal.ZERO;
+    private BigDecimal amount = BigDecimal.ZERO;
+    private BigDecimal minAmount = BigDecimal.ZERO;
+    private BigDecimal maxAmount = BigDecimal.ZERO;
 
-	private ServiceFeeInfo serviceFee;
-	private SourceOfFund[] sourceOfFundFees;
-	
-	private boolean favoritable = false;
+    private ServiceFeeInfo serviceFee;
+    private SourceOfFund[] sourceOfFundFees;
 
-	private Date dueDate;
+    private boolean favoritable = false;
+    private String payWith = "barcode";
 
-	public Bill() {
-		super();
-	}
+    private Date dueDate;
 
-	public Bill(String ID, String target, String ref1, String ref2,
-			BigDecimal amount) {
-		this.ID = ID;
-		this.target = target;
-		this.ref1 = ref1;
-		this.ref2 = ref2;
-		this.amount = amount;
-	}
+    public Bill() {
+        super();
+    }
 
-	public String getID() {
-		return ID;
-	}
+    public Bill(String ID, String target, String ref1, String ref2,
+            BigDecimal amount) {
+        this.ID = ID;
+        this.target = target;
+        this.ref1 = ref1;
+        this.ref2 = ref2;
+        this.amount = amount;
+    }
 
-	public void setID(String iD) {
-		ID = iD;
-	}
+    public String getID() {
+        return ID;
+    }
 
-	public String getTarget() {
-		return target;
-	}
+    public void setID(String iD) {
+        ID = iD;
+    }
 
-	public void setTarget(String target) {
-		this.target = target;
-	}
+    public String getTarget() {
+        return target;
+    }
 
-	public String getLogoURL() {
-		return logoURL;
-	}
+    public void setTarget(String target) {
+        this.target = target;
+    }
 
-	public void setLogoURL(String logoURL) {
-		this.logoURL = logoURL;
-	}
+    public String getLogoURL() {
+        return logoURL;
+    }
 
-	public String getTitleTH() {
-		return titleTH;
-	}
+    public void setLogoURL(String logoURL) {
+        this.logoURL = logoURL;
+    }
 
-	public void setTitleTH(String titleTH) {
-		this.titleTH = titleTH;
-	}
+    public String getTitleTH() {
+        return titleTH;
+    }
 
-	public String getTitleEN() {
-		return titleEN;
-	}
+    public void setTitleTH(String titleTH) {
+        this.titleTH = titleTH;
+    }
 
-	public void setTitleEN(String titleEN) {
-		this.titleEN = titleEN;
-	}
+    public String getTitleEN() {
+        return titleEN;
+    }
 
-	public String getRef1TitleTH() {
-		return ref1TitleTH;
-	}
+    public void setTitleEN(String titleEN) {
+        this.titleEN = titleEN;
+    }
 
-	public void setRef1TitleTH(String ref1TitleTH) {
-		this.ref1TitleTH = ref1TitleTH;
-	}
+    public String getRef1TitleTH() {
+        return ref1TitleTH;
+    }
 
-	public String getRef1TitleEN() {
-		return ref1TitleEN;
-	}
+    public void setRef1TitleTH(String ref1TitleTH) {
+        this.ref1TitleTH = ref1TitleTH;
+    }
 
-	public void setRef1TitleEN(String ref1TitleEN) {
-		this.ref1TitleEN = ref1TitleEN;
-	}
+    public String getRef1TitleEN() {
+        return ref1TitleEN;
+    }
 
-	public String getRef1() {
-		return ref1;
-	}
+    public void setRef1TitleEN(String ref1TitleEN) {
+        this.ref1TitleEN = ref1TitleEN;
+    }
 
-	public void setRef1(String ref1) {
-		this.ref1 = ref1;
-	}
+    public String getRef1() {
+        return ref1;
+    }
 
-	public String getRef2TitleTH() {
-		return ref2TitleTH;
-	}
+    public void setRef1(String ref1) {
+        this.ref1 = ref1;
+    }
 
-	public void setRef2TitleTH(String ref2TitleTH) {
-		this.ref2TitleTH = ref2TitleTH;
-	}
+    public String getRef2TitleTH() {
+        return ref2TitleTH;
+    }
 
-	public String getRef2TitleEN() {
-		return ref2TitleEN;
-	}
+    public void setRef2TitleTH(String ref2TitleTH) {
+        this.ref2TitleTH = ref2TitleTH;
+    }
 
-	public void setRef2TitleEN(String ref2TitleEN) {
-		this.ref2TitleEN = ref2TitleEN;
-	}
+    public String getRef2TitleEN() {
+        return ref2TitleEN;
+    }
 
-	public String getRef2() {
-		return ref2;
-	}
+    public void setRef2TitleEN(String ref2TitleEN) {
+        this.ref2TitleEN = ref2TitleEN;
+    }
 
-	public void setRef2(String ref2) {
-		this.ref2 = ref2;
-	}
+    public String getRef2() {
+        return ref2;
+    }
 
-	public BigDecimal getAmount() {
-		return amount.setScale(2, RoundingMode.HALF_UP);
-	}
+    public void setRef2(String ref2) {
+        this.ref2 = ref2;
+    }
 
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
+    public BigDecimal getAmount() {
+        return amount.setScale(2, RoundingMode.HALF_UP);
+    }
 
-	public ServiceFeeInfo getServiceFee() {
-		return serviceFee;
-	}
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 
-	public void setServiceFee(ServiceFeeInfo serviceFee) {
-		this.serviceFee = serviceFee;
-	}
+    public ServiceFeeInfo getServiceFee() {
+        return serviceFee;
+    }
 
-	public SourceOfFund[] getSourceOfFundFees() {
-		return sourceOfFundFees;
-	}
+    public void setServiceFee(ServiceFeeInfo serviceFee) {
+        this.serviceFee = serviceFee;
+    }
 
-	public void setSourceOfFundFees(SourceOfFund[] sourceOfFundFees) {
-		this.sourceOfFundFees = sourceOfFundFees;
-	}
+    public SourceOfFund[] getSourceOfFundFees() {
+        return sourceOfFundFees;
+    }
 
-	public SourceOfFund getEwalletSourceOfFund() {
-		if (sourceOfFundFees != null) {
-			for (SourceOfFund sof : sourceOfFundFees) {
-				if ("EW".equals(sof.getSourceType())) {
-					return sof;
-				}
-			}
-		}
+    public void setSourceOfFundFees(SourceOfFund[] sourceOfFundFees) {
+         this.sourceOfFundFees = (sourceOfFundFees != null) ? sourceOfFundFees.clone() : null;
+    }
 
-		return null;
-	}
+    public SourceOfFund getEwalletSourceOfFund() {
+        if (sourceOfFundFees != null) {
+            for (SourceOfFund sof : sourceOfFundFees) {
+                if ("EW".equals(sof.getSourceType())) {
+                    return sof;
+                }
+            }
+        }
 
-	public String getPartialPayment() {
-		return partialPayment;
-	}
+        return null;
+    }
 
-	public void setPartialPayment(String partialPayment) {
-		this.partialPayment = partialPayment;
-	}
+    public String getPartialPayment() {
+        return partialPayment;
+    }
 
-	public String getCallCenterNumber() {
-		return callCenterNumber;
-	}
+    public void setPartialPayment(String partialPayment) {
+        this.partialPayment = partialPayment;
+    }
 
-	public void setCallCenterNumber(String callCenterNumber) {
-		this.callCenterNumber = callCenterNumber;
-	}
+    public String getCallCenterNumber() {
+        return callCenterNumber;
+    }
 
-	public BigDecimal getMinAmount() {
-		return minAmount;
-	}
+    public void setCallCenterNumber(String callCenterNumber) {
+        this.callCenterNumber = callCenterNumber;
+    }
 
-	public void setMinAmount(BigDecimal minAmount) {
-		this.minAmount = minAmount;
-	}
+    public BigDecimal getMinAmount() {
+        return minAmount;
+    }
 
-	public BigDecimal getMaxAmount() {
-		return maxAmount;
-	}
+    public void setMinAmount(BigDecimal minAmount) {
+        this.minAmount = minAmount;
+    }
 
-	public void setMaxAmount(BigDecimal maxAmount) {
-		this.maxAmount = maxAmount;
-	}
-	
-	public Date getDueDate() {
-		return dueDate;
-	}
+    public BigDecimal getMaxAmount() {
+        return maxAmount;
+    }
 
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
-	}
+    public void setMaxAmount(BigDecimal maxAmount) {
+        this.maxAmount = maxAmount;
+    }
 
-	public boolean isFavoritable() {
-		return favoritable;
-	}
+    public Date getDueDate() {
+        return dueDate;
+    }
 
-	public void setFavoritable(boolean favoritable) {
-		this.favoritable = favoritable;
-	}
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
 
-	@Override
-	public String toString() {
-		return "Bill [ID=" + ID + ", target=" + target + ", logoURL=" + logoURL
-				+ ", titleTH=" + titleTH + ", titleEN=" + titleEN
-				+ ", ref1TitleTH=" + ref1TitleTH + ", ref1TitleEN="
-				+ ref1TitleEN + ", ref1=" + ref1 + ", ref2TitleTH="
-				+ ref2TitleTH + ", ref2TitleEN=" + ref2TitleEN + ", ref2="
-				+ ref2 + ", partialPayment=" + partialPayment
-				+ ", callCenterNumber=" + callCenterNumber + ", amount="
-				+ amount + ", minAmount=" + minAmount + ", maxAmount="
-				+ maxAmount + ", serviceFee=" + serviceFee
-				+ ", sourceOfFundFees=" + Arrays.toString(sourceOfFundFees)
-				+ ", dueDate=" + dueDate + "]";
-	}
+    public boolean isFavoritable() {
+        return favoritable;
+    }
+
+    public void setFavoritable(boolean favoritable) {
+        this.favoritable = favoritable;
+    }
+
+    public String getPayWith() {
+        return payWith;
+    }
+
+    public void setPayWith(String payWith) {
+        this.payWith = payWith;
+    }
+
+    @Override
+    public String toString() {
+        return "Bill [ID=" + ID + ", target=" + target + ", logoURL=" + logoURL
+                + ", titleTH=" + titleTH + ", titleEN=" + titleEN
+                + ", ref1TitleTH=" + ref1TitleTH + ", ref1TitleEN="
+                + ref1TitleEN + ", ref1=" + ref1 + ", ref2TitleTH="
+                + ref2TitleTH + ", ref2TitleEN=" + ref2TitleEN + ", ref2="
+                + ref2 + ", partialPayment=" + partialPayment
+                + ", callCenterNumber=" + callCenterNumber + ", amount="
+                + amount + ", minAmount=" + minAmount + ", maxAmount="
+                + maxAmount + ", serviceFee=" + serviceFee
+                + ", sourceOfFundFees=" + Arrays.toString(sourceOfFundFees)
+                + ", dueDate=" + dueDate + "]";
+    }
 
 }

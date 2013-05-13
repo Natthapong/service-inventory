@@ -19,8 +19,9 @@ import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeExceptio
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.BankSystemTransactionFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.BalanceFacade.UMarketSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade.BankSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade.UMarketSystemTransactionFailException;
 
 @RunWith(Parameterized.class)
 public class TopUpFacadePerformTopUpFailTest {

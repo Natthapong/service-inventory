@@ -1,7 +1,6 @@
 mem.*
 *.class
 # Package Files #
-*.jar
 *.war
 *.ear
 .classpath
@@ -18,7 +17,6 @@ properties.index
 workingsets.xml
 .metadata/
 MANIFEST.MF
-!lib/com/oracle/ojdbc14/10.2.0/ojdbc14-10.2.0.jar
 .idea/
 *.iml
 .DS_Store

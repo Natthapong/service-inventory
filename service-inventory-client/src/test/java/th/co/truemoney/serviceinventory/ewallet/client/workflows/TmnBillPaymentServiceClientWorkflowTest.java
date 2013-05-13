@@ -54,6 +54,7 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 		String barcode = "|010554614953100 010004552 010520120200015601 85950";
 
 		Bill bill = billPaymentServiceClient.retrieveBillInformation(barcode, accessToken);
+		
 		assertNotNull(bill);
 		assertNotNull(bill.getID());
 
@@ -108,5 +109,6 @@ public class TmnBillPaymentServiceClientWorkflowTest {
 		assertNotNull(p2pTransaction.getDraftTransaction());
 		assertNotNull(p2pTransaction.getConfirmationInfo());
 		assertEquals(BillPaymentTransaction.Status.SUCCESS, p2pTransaction.getStatus());
+		
 	}
 }

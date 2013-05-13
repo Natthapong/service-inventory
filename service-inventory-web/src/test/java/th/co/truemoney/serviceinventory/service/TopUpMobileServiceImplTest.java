@@ -31,8 +31,8 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMem
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.TopUpMobileFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.TopUpMobileFacade;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;

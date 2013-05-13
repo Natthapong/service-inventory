@@ -132,8 +132,6 @@ public class TmnProfileController {
 	public @ResponseBody Favorite addFavorite(
 			@RequestBody Favorite favorite,
 			@PathVariable String accessTokenID) {
-		System.out.println("accessTokenID : "+ accessTokenID);
-		
 		Favorite favoriteResponse = favoriteService.addFavorite(favorite, accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 		

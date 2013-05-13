@@ -22,7 +22,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade;
 
 @Service
 public class BillPaymentServiceImpl implements  BillPaymentService {
@@ -71,11 +71,11 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
                                    .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
                                    .getInformation();
 
-        validateOverdue(bill.getTarget(), bill.getDueDate());
-        bill.setID(UUID.randomUUID().toString());
-        billInfoRepo.saveBill(bill, accessTokenID);
-
-        return bill;
+		validateOverdue(bill.getTarget(), bill.getDueDate());
+		bill.setID(UUID.randomUUID().toString());
+		billInfoRepo.saveBill(bill, accessTokenID);
+		
+		return bill;
 
     }
 
@@ -97,10 +97,10 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     public BillPaymentDraft verifyPaymentAbility(String billID, BigDecimal amount, String accessTokenID)
             throws ServiceInventoryException {
 
-        Bill billInfo = billInfoRepo.findBill(billID, accessTokenID);
-
-        AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-        ClientCredential appData = accessToken.getClientCredential();
+		Bill billInfo = billInfoRepo.findBill(billID, accessTokenID);
+		
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		ClientCredential appData = accessToken.getClientCredential();
 
         BigDecimal sofFee = billInfo.getEwalletSourceOfFund() != null ? billInfo.getEwalletSourceOfFund().calculateFee(amount) : BigDecimal.ZERO;
 

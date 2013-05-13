@@ -25,8 +25,8 @@ import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.ewallet.ProfileFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.ProfileFacade;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)

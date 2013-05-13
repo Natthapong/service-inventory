@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.ewallet.client.workflows;
 
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.Test;
@@ -34,15 +35,20 @@ public class FavoriteServiceWorkflowTest {
 	@Test
 	public void addFavorite() {
 		String accessTokenID = profileService.login(
-				TestData.createSuccessUserLogin(),
+				TestData.createAdamSuccessLogin(),
 				TestData.createSuccessClientLogin());
 		
 		Favorite favorite = new Favorite();
+		favorite.setAmount(new BigDecimal(2000));
+		favorite.setRef1("555");
+		favorite.setServiceCode("500");
+		favorite.setServiceType("type");
 		
 		Favorite favoriteResponse = client.addFavorite(favorite, accessTokenID);
 		assertNotNull(favoriteResponse);
 		
-		assertEquals(new Long(1000), favoriteResponse.getFavoriteID());
+		assertEquals("555", favoriteResponse.getRef1());
+		//assertEquals(new Long(2000), favoriteResponse.getFavoriteID());
 	}
 	
 	@Test
@@ -55,10 +61,11 @@ public class FavoriteServiceWorkflowTest {
 		
 		List<Favorite> favorites = client.getFavorites(accessTokenID);
 		assertNotNull(favorites);
-		assertEquals(0, favorites.size());
+		assertEquals(3, favorites.size());
 		
 		favorites = client.getFavorites(accessTokenID);
 		assertNotNull(favorites);
-		assertEquals(0, favorites.size());
+		assertEquals(3, favorites.size());
 	}
+	
 }

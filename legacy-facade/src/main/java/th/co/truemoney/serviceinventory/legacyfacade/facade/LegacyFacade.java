@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.legacyfacade.ewallet;
+package th.co.truemoney.serviceinventory.legacyfacade.facade;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -8,11 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
-import th.co.truemoney.serviceinventory.legacyfacade.builders.BillPaymentBuilder;
-import th.co.truemoney.serviceinventory.legacyfacade.builders.GetBillInfoBuilder;
-import th.co.truemoney.serviceinventory.legacyfacade.builders.TopUpMobileBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.BillPaymentBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.GetBillInfoBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.TopUpMobileBuilder;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
 
 public class LegacyFacade {
@@ -116,16 +117,25 @@ public class LegacyFacade {
 		private Integer channelID;
 		private String sessionID;
 		private String tmnID;
-
+		
+		private String serviceType;
+		private String serviceCode;
+		private String reference1;
+		
 		private BalanceFacade balanceFacade;
 		private ProfileFacade profileFacade;
 		private SourceOfFundFacade sourceOfFundFacade;
-
+		
+		private Favorite favorite;
+		
 		@Autowired(required = false)
 		public UserProfileBuilder(BalanceFacade balanceFacade, ProfileFacade profileFacade, SourceOfFundFacade sourceOfFundFacade) {
 			this.balanceFacade = balanceFacade;
 			this.profileFacade = profileFacade;
 			this.sourceOfFundFacade = sourceOfFundFacade;
+		}
+
+		public UserProfileBuilder() {
 		}
 
 		public UserProfileBuilder aUser(String sessionID, String tmnID) {
@@ -138,7 +148,27 @@ public class LegacyFacade {
 			this.channelID = channelID;
 			return this;
 		}
+		
+		public UserProfileBuilder withServiceType(String serviceType){
+			this.serviceType = serviceType;
+			return this;
+		}
+		
+		public UserProfileBuilder withServiceCode(String serviceCode){
+			this.serviceCode = serviceCode;
+			return this;
+		}
+		
+		public UserProfileBuilder withRefernce1(String reference1){
+			this.reference1 = reference1;
+			return this;
+		}
 
+		public UserProfileBuilder withFavorite(Favorite favorite) {
+			this.favorite = favorite;
+			return this;
+		}
+		
 		public TmnProfile getProfile() {
 			Validate.notNull(channelID, "from which channel");
 			Validate.notNull(sessionID, "missing sessionID");
@@ -163,6 +193,32 @@ public class LegacyFacade {
 			return sourceOfFundFacade.getAllDirectDebitSourceOfFunds(this.channelID, this.sessionID, this.tmnID);
 		}
 
+		public List<Favorite> getListFavorite(){
+			Validate.notNull(tmnID, "data missing. get direct debit list of whom?");
+			Validate.notNull(sessionID, "data missing. get direct debit list of whom?");
+			Validate.notNull(channelID, "data missing. get direct debit list from which channel?");
+			
+			return profileFacade.getListFavorite(this.channelID, this.sessionID, this.tmnID, this.serviceType);
+		}
+		
+		public Boolean isFavoritable(){
+			Validate.notNull(tmnID, "data missing. get direct debit list of whom?");
+			Validate.notNull(sessionID, "data missing. get direct debit list of whom?");
+			Validate.notNull(channelID, "data missing. get direct debit list from which channel?");
+			Validate.notNull(serviceCode, "data missing. get serviceCode?");
+			Validate.notNull(reference1, "data missing. get reference1?");
+			
+			return profileFacade.isFavorite(this.channelID, this.sessionID, this.tmnID,this.serviceType, this.serviceCode, this.reference1);
+		}
+		
+		public Favorite addFavorite(){
+			Validate.notNull(tmnID, "data missing. get direct debit list of whom?");
+			Validate.notNull(sessionID, "data missing. get direct debit list of whom?");
+			Validate.notNull(channelID, "data missing. get direct debit list from which channel?");
+			
+			return profileFacade.addFavorite(this.channelID, this.sessionID, this.tmnID, this.favorite);
+		}
+		
 		public TopUpBuilder topUp(BigDecimal amount) {
 			return new TopUpBuilder(balanceFacade)
 						.fromChannelID(channelID)
