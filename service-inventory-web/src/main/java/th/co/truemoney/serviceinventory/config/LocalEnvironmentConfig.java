@@ -7,6 +7,8 @@ import java.util.Properties;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,7 @@ import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
+import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
@@ -73,6 +76,8 @@ import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 @Configuration
 @Profile("local")
 public class LocalEnvironmentConfig {
+
+    private static Logger logger = LoggerFactory.getLogger(LocalEnvironmentConfig.class);
 
     @Bean @Qualifier("endpoint.host")
     public String host() {
@@ -145,7 +150,7 @@ public class LocalEnvironmentConfig {
             @Override
             public AddFavoriteResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
                     throws EwalletException {
-                System.out.println("TMN ID: " + addFavoriteRequest.getSecurityContext().getTmnId());
+                logger.debug("TMN ID: " + addFavoriteRequest.getSecurityContext().getTmnId());
                 if(addFavoriteRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
                     return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
                 }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
