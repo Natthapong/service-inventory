@@ -29,7 +29,11 @@ import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade;
 @Service
 public class BillPaymentServiceImpl implements  BillPaymentService {
 
-    @Autowired
+    private static final String PAYWITH_FAVORITE = "favorite";
+
+	private static final String PAYWITH_BARCODE = "barcode";
+
+	@Autowired
     private AccessTokenRepository accessTokenRepo;
 
     @Autowired
@@ -83,7 +87,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     }
     
 	@Override
-	public Bill retrieveBillInformationWithBillCode(String billCode, String ref1, BigDecimal amount, String accessTokenID) 
+	public Bill retrieveBillInformationWithBillCode(String billCode, String accessTokenID) 
 			throws ServiceInventoryException {
 		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
 		ClientCredential appData = token.getClientCredential();
@@ -96,7 +100,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		
 		validateOverdue(bill.getTarget(), bill.getDueDate());
 		bill.setID(UUID.randomUUID().toString());
-		bill.setPayWith("favorite");
+		bill.setPayWith(PAYWITH_FAVORITE);
 		bill.setRef1(ref1);
 		bill.setAmount(amount);
 		billInfoRepo.saveBill(bill, accessTokenID);
@@ -139,7 +143,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
                             .paying(amount, billInfo.getServiceFee().calculateFee(amount), sofFee)
                             .verifyPayment();
 
-        BillPaymentDraft billDraft = new BillPaymentDraft(UUID.randomUUID().toString(), billInfo, amount, verificationID, Status.CREATED);
+        DraftTransaction.Status billStatus = PAYWITH_FAVORITE.equals(billInfo.getPayWith()) ? Status.OTP_CONFIRMED : Status.CREATED;
+
+        BillPaymentDraft billDraft = new BillPaymentDraft(UUID.randomUUID().toString(), billInfo, amount, verificationID, billStatus);
         transactionRepository.saveDraftTransaction(billDraft, accessTokenID);
         return billDraft;
     }

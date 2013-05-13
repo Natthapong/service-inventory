@@ -7,6 +7,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
@@ -30,6 +33,7 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcode
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
+import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
@@ -52,6 +56,9 @@ public class BillPaymentServiceImplTest {
 
     @Autowired
     private TransactionRepositoryImpl transactionRepo;
+
+    @Autowired
+    private BillInformationRepository billInfoRepo;
 
     @Autowired
     private LegacyFacade legacyFacade;
@@ -147,6 +154,34 @@ public class BillPaymentServiceImplTest {
         //then
         assertNotNull(billInformation);
         verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
+    }
+
+    @Test
+    public void verifyingFavoriteBillShouldSkipOTP() {
+
+    	Bill billInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+    	billInfo.setPayWith("favorite");
+    	billInfoRepo.saveBill(billInfo, accessToken.getAccessTokenID());
+
+		BigDecimal amount = new BigDecimal(300);
+		BillPaymentDraft billInvoice = billPayService.verifyPaymentAbility(billInfo.getID(), amount, accessToken.getAccessTokenID());
+
+		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, billInvoice.getStatus());
+
+    }
+
+    @Test
+    public void verifyingBarcodeBillShouldNotSkipOTP() {
+
+    	Bill billInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+    	billInfo.setPayWith("barcode");
+    	billInfoRepo.saveBill(billInfo, accessToken.getAccessTokenID());
+
+		BigDecimal amount = new BigDecimal(300);
+		BillPaymentDraft billInvoice = billPayService.verifyPaymentAbility(billInfo.getID(), amount, accessToken.getAccessTokenID());
+
+		assertEquals(BillPaymentDraft.Status.CREATED, billInvoice.getStatus());
+
     }
 
 
