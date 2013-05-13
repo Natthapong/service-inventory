@@ -125,8 +125,52 @@ public class TruemoveH implements BarcodePersona {
 			@Override
 			public GetBillResponse getBillCodeInformation(GetBillRequest request)
 					throws SIEngineException {
-				// TODO Auto-generated method stub
-				return null;
+				  SIEngineResponse billResponse = new SIEngineResponse();
+	                billResponse.setResultCode("0");
+	                billResponse.setResultDesc("Success");
+	                billResponse.setReqTransactionID("4410A0318");
+	                billResponse.setTransactionID("130401012303");
+	                billResponse.setResponseMessage("Success");
+
+	                billResponse.addParameterElement("service_min_amount", "100");
+	                billResponse.addParameterElement("service_fee", "100");
+	                billResponse.addParameterElement("title_en", "Convergence Postpay");
+	                billResponse.addParameterElement("service_fee_type", "THB");
+	                billResponse.addParameterElement("title_th", "ค่าใช้บริการบริษัทในกลุ่มทรู");
+	                billResponse.addParameterElement("ref1_title_th", "โทรศัพท์พื้นฐาน");
+	                billResponse.addParameterElement("ref1_title_en", "Fix Line");
+	                billResponse.addParameterElement("ref2_title_th", "รหัสลูกค้า");
+	                billResponse.addParameterElement("ref2_title_en", "Customer ID");
+	                billResponse.addParameterElement("call_center", "1331");
+	                billResponse.addParameterElement("logo", "../img/tcg.png");
+	                billResponse.addParameterElement("target", "tcg");
+	                billResponse.addParameterElement("service_max_amount", "1000000");
+
+	                ExtraXML extraXML = new ExtraXML();
+
+	                List<SourceFee> sourceFeeList = new ArrayList<SourceFee>();
+
+	                SourceFee source1 = new SourceFee();
+	                source1.setSource("EW");
+	                source1.setSourceFee("300");
+	                source1.setSourceFeeType("THB");
+	                source1.setMinAmount("1000");
+	                source1.setMaxAmount("1000000");
+
+	                SourceFee source2 = new SourceFee();
+	                source2.setSource("MMCC");
+	                source2.setSourceFee("700");
+	                source2.setSourceFeeType("THB");
+	                source2.setMinAmount("1000");
+	                source2.setMaxAmount("1000000");
+
+	                sourceFeeList.add(source1);
+	                sourceFeeList.add(source2);
+
+	                extraXML.setSourceFeeList(sourceFeeList);
+	                billResponse.setExtraXML(extraXML);
+
+	            return new GetBillResponse(billResponse);
 			}
         };
     }
