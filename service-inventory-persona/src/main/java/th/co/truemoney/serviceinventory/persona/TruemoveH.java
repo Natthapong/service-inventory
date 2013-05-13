@@ -10,6 +10,8 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBil
 import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmTopUpAirtimeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeResponse;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeResponse;
@@ -119,6 +121,13 @@ public class TruemoveH implements BarcodePersona {
 
                 return billResponse;
             }
+
+			@Override
+			public GetBillResponse getBillCodeInformation(GetBillRequest request)
+					throws SIEngineException {
+				// TODO Auto-generated method stub
+				return null;
+			}
         };
     }
 

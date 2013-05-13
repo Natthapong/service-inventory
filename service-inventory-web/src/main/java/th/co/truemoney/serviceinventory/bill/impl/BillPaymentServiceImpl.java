@@ -57,10 +57,10 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
     public void setLegacyFacade(LegacyFacade legacyFacade) {
         this.legacyFacade = legacyFacade;
-
     }
+    
     @Override
-    public Bill retrieveBillInformation(String barcode, String accessTokenID)
+    public Bill retrieveBillInformationWithBarcode(String barcode, String accessTokenID)
             throws ServiceInventoryException {
 
         AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
@@ -68,18 +68,39 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 
         Bill bill = legacyFacade.billing()
-                                .readBillInfo(barcode)
-                                   .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
-                                   .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
-                                   .getInformation();
+                                .readBillInfoWithBarcode(barcode)
+                                .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+                                .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
+                                .getInformationWithBarcode();
 
 		validateOverdue(bill.getTarget(), bill.getDueDate());
 		bill.setID(UUID.randomUUID().toString());
+		bill.setPayWith("barcode");
 		billInfoRepo.saveBill(bill, accessTokenID);
 		
 		return bill;
 
     }
+    
+	@Override
+	public Bill retrieveBillInformationWithBillCode(String billCode, String accessTokenID) 
+			throws ServiceInventoryException {
+		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
+		ClientCredential appData = token.getClientCredential();
+		
+		Bill bill =  legacyFacade.billing()
+								 .readBillInfoWithBillCode(billCode)
+								 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+								 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
+								 .getInformationWithBillCode();
+		
+		validateOverdue(bill.getTarget(), bill.getDueDate());
+		bill.setID(UUID.randomUUID().toString());
+		bill.setPayWith("favorite");
+		billInfoRepo.saveBill(bill, accessTokenID);
+		
+		return bill;
+	}
 
     private void validateOverdue(String billerCode, Date duedate) {
         BillPaymentValidation billPaymentValidation = validationConfig.getBillValidation(billerCode);

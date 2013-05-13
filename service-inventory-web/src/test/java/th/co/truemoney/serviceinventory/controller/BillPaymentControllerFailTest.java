@@ -61,10 +61,10 @@ public class BillPaymentControllerFailTest {
 
 		//given
 		ServiceInventoryWebException exception = BillPaymentStubbed.createFailBillPaymentInfo();
-		when(billPaymentServiceMock.retrieveBillInformation(anyString(), anyString())).thenThrow(exception);
+		when(billPaymentServiceMock.retrieveBillInformationWithBarcode(anyString(), anyString())).thenThrow(exception);
 
 		//perform
-		this.mockMvc.perform(get("/bill-payment/barcode/{barcode}?accessTokenID=12345", "|010554614953100 010004552 010520120200015601 85950")
+		this.mockMvc.perform(get("/bill-payment/information/?barcode=|010554614953100 010004552 010520120200015601 85950&accessTokenID=12345")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andDo(print());

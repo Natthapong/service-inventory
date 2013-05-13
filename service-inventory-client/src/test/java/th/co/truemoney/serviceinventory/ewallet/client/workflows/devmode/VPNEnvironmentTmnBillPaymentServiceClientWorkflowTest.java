@@ -64,7 +64,7 @@ public class VPNEnvironmentTmnBillPaymentServiceClientWorkflowTest {
 
 	public void shouldSuccessBillPayWorkflow(String barcode) throws InterruptedException {
 
-		Bill bill = billPaymentServiceClient.retrieveBillInformation(barcode, accessToken);
+		Bill bill = billPaymentServiceClient.retrieveBillInformationWithBarcode(barcode, accessToken);
 		assertNotNull(bill);
 		assertNotNull(bill.getID());
 

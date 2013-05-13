@@ -35,7 +35,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	private HttpHeaders headers;
 
 	@Override
-	public Bill retrieveBillInformation(String barcode, String accessTokenID)
+	public Bill retrieveBillInformationWithBarcode(String barcode, String accessTokenID)
 			throws ServiceInventoryException {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
@@ -114,6 +114,18 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 		ResponseEntity<BillPaymentTransaction> responseEntity = restTemplate.exchange(
 				endPoints.getBillPaymentInfoURL(), HttpMethod.GET,
 				requestEntity, BillPaymentTransaction.class, billPaymentID, accessTokenID);
+
+		return responseEntity.getBody();
+	}
+
+	@Override
+	public Bill retrieveBillInformationWithBillCode(String billCode,
+			String accessTokenID) throws ServiceInventoryException {
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+
+		ResponseEntity<Bill> responseEntity = restTemplate.exchange(
+				endPoints.getBillInformationServiceURL(), HttpMethod.GET, requestEntity,
+				Bill.class, billCode, accessTokenID);
 
 		return responseEntity.getBody();
 	}
