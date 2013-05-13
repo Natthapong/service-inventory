@@ -27,6 +27,7 @@ import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
@@ -82,7 +83,7 @@ public class BillPaymentServiceImplTest {
     }
 
     @Test
-    public void getBillInformation() {
+    public void getBillInformationViaBarcodeScan() {
 
     	Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
 
@@ -95,6 +96,23 @@ public class BillPaymentServiceImplTest {
         assertNotNull(billInformation);
         verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
 
+        assertEquals("barcode", billInformation.getPayWith());
+    }
+
+    @Test
+    public void getBillInformationViaFavorite() {
+    	Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+
+        when(billPaymentFacade.getBillCodeInformation(any(GetBillRequest.class))).thenReturn(stubbedBillPaymentInfo);
+
+        //when
+        Bill billInformation = billPayService.retrieveBillInformationWithBillCode("xxxx", accessToken.getAccessTokenID());
+
+        //then
+        assertNotNull(billInformation);
+        verify(billPaymentFacade).getBillCodeInformation(any(GetBillRequest.class));
+
+        assertEquals("favorite", billInformation.getPayWith());
     }
 
     @Test
