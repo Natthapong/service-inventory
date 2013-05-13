@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class Favorite {
 	private Long favoriteID;
@@ -8,6 +9,7 @@ public class Favorite {
 	private String serviceCode;
 	private String ref1;
 	private BigDecimal amount;
+	private Date date;
 
 	public Long getFavoriteID() {
 		return favoriteID;
@@ -47,6 +49,14 @@ public class Favorite {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 }
