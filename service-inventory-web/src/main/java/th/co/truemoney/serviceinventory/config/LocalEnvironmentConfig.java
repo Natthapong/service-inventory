@@ -145,6 +145,7 @@ public class LocalEnvironmentConfig {
             @Override
             public AddFavoriteResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
                     throws EwalletException {
+                System.out.println("TMN ID: " + addFavoriteRequest.getSecurityContext().getTmnId());
                 if(addFavoriteRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
                     return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
                 }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
