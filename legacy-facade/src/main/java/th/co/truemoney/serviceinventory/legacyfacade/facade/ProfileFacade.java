@@ -112,12 +112,7 @@ public class ProfileFacade {
 		
 		StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavoritable(createIsFavoritableRequest(
 				channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
-		
-		if(!standardBizResponse.getResultCode().equals("0")){
-			return false;
-		}
-		
-		return true;
+		return "0".equals(standardBizResponse.getResultCode());
 	}
 
 	public Favorite addFavorite(Integer channelID, String sessionID,
