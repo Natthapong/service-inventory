@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.controller;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,9 +38,11 @@ public class BillPaymentController {
 	@RequestMapping(value = "/information", method = RequestMethod.GET, params="billCode")
 	public @ResponseBody Bill getBillInformation(
 			@RequestParam(value = "billCode", defaultValue = "") String billCode,
+			@RequestParam(value = "ref1", defaultValue = "") String ref1,
+			@RequestParam(value = "amount", defaultValue = "") String amount,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return billPaymentService.retrieveBillInformationWithBillCode(billCode, accessTokenID);
+		return billPaymentService.retrieveBillInformationWithBillCode(billCode, ref1, new BigDecimal(amount), accessTokenID);
 	} 
 
 	@RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.POST)

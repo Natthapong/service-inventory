@@ -87,7 +87,7 @@ public class EndPoints {
 	}
 
 	public String getBillInformationServiceURL() {
-		return host + "/service-inventory-web/v1/bill-payment/information/?billCode={billCode}&accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/bill-payment/information/?billCode={billCode}&ref1={ref1}&amount={amount}&accessTokenID={accessTokenID}";
 	}
 	
 	public String getCreateBillInvoiceURL() {

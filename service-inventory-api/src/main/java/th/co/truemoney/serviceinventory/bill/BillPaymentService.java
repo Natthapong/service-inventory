@@ -12,7 +12,7 @@ public interface BillPaymentService {
 	public Bill retrieveBillInformationWithBarcode(String barcode, String accessTokenID)
 			throws ServiceInventoryException;
 
-	public Bill retrieveBillInformationWithBillCode(String billCode, String accessTokenID)
+	public Bill retrieveBillInformationWithBillCode(String billCode, String ref1, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException;
 	
 	public BillPaymentDraft verifyPaymentAbility(String billID, BigDecimal amount, String accessTokenID)

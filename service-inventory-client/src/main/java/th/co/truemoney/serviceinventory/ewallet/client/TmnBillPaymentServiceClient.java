@@ -120,12 +120,12 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 
 	@Override
 	public Bill retrieveBillInformationWithBillCode(String billCode,
-			String accessTokenID) throws ServiceInventoryException {
+			String ref1, BigDecimal amount, String accessTokenID) throws ServiceInventoryException {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<Bill> responseEntity = restTemplate.exchange(
 				endPoints.getBillInformationServiceURL(), HttpMethod.GET, requestEntity,
-				Bill.class, billCode, accessTokenID);
+				Bill.class, billCode, ref1, amount, accessTokenID);
 
 		return responseEntity.getBody();
 	}

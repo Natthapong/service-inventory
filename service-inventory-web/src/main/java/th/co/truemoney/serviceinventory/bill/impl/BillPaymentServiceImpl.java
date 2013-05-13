@@ -83,7 +83,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     }
     
 	@Override
-	public Bill retrieveBillInformationWithBillCode(String billCode, String accessTokenID) 
+	public Bill retrieveBillInformationWithBillCode(String billCode, String ref1, BigDecimal amount, String accessTokenID) 
 			throws ServiceInventoryException {
 		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
 		ClientCredential appData = token.getClientCredential();
@@ -97,6 +97,8 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		validateOverdue(bill.getTarget(), bill.getDueDate());
 		bill.setID(UUID.randomUUID().toString());
 		bill.setPayWith("favorite");
+		bill.setRef1(ref1);
+		bill.setAmount(amount);
 		billInfoRepo.saveBill(bill, accessTokenID);
 		
 		return bill;
