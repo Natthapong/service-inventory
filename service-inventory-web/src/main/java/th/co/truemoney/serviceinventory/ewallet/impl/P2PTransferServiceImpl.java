@@ -19,7 +19,7 @@ import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction.FailStatus;
-import th.co.truemoney.serviceinventory.util.MaskUtil;
+import th.co.truemoney.serviceinventory.util.MaskingUtil;
 
 @Service
 public class P2PTransferServiceImpl implements P2PTransferService {
@@ -48,7 +48,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 						.toTargetUser(targetMobileNumber)
 						.verify();
 
-		String targetMarkedFullName = MaskUtil.markFullName(targetName);
+		String targetMarkedFullName = MaskingUtil.maskFullName(targetName);
 
 		P2PTransferDraft draft = createP2PDraft(amount, targetMobileNumber, targetMarkedFullName, accessTokenID);
 		transactionRepo.saveDraftTransaction(draft, accessToken.getAccessTokenID());

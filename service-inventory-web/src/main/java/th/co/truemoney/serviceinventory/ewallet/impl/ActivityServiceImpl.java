@@ -18,7 +18,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
 import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.util.MaskUtil;
+import th.co.truemoney.serviceinventory.util.MaskingUtil;
 
 public class ActivityServiceImpl implements ActivityService {
 
@@ -58,7 +58,7 @@ public class ActivityServiceImpl implements ActivityService {
 		if (activityDetail != null && activityDetail.getType().equals("transfer")) {
 			String targetName = activityDetail.getRef2();
 			if (targetName != null) {
-				activityDetail.setRef2(MaskUtil.markFullName(targetName));
+				activityDetail.setRef2(MaskingUtil.maskFullName(targetName));
 			}
 		}
 		
