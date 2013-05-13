@@ -170,7 +170,6 @@
                             <include>**/*.class</include>
                         </includes>
                         <testFailureIgnore>false</testFailureIgnore>
-                        <forkMode>always</forkMode>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -225,7 +224,6 @@
                             </includes>
                             <argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}</argLine>
                             <testFailureIgnore>false</testFailureIgnore>
-                            <forkMode>always</forkMode>
                         </configuration>
                     </plugin>
                     <plugin>
