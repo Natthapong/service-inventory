@@ -19,7 +19,7 @@ import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineExceptio
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 
-public class TruemoveH implements BarcodePersona {
+public class TrueConvergenceOneBillPersona implements BarcodePersona {
 
     @Override
     public BillProxy getBillPayProxy() {

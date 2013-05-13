@@ -31,7 +31,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class, LocalEnvironmentConfig.class })
 @ActiveProfiles(profiles = "local")
 @Category(IntegrationTest.class)
-public class TmnBillPaymentServiceClientWorkflowTest {
+public class TmnBillPaymentServiceClient_BarcodeScanWorkflowTest {
 
 	@Autowired
 	TmnBillPaymentServiceClient billPaymentServiceClient;

@@ -69,7 +69,7 @@ import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.firsthop.proxy.impl.SmsProxyImpl;
 import th.co.truemoney.serviceinventory.persona.Adam;
 import th.co.truemoney.serviceinventory.persona.Eve;
-import th.co.truemoney.serviceinventory.persona.TruemoveH;
+import th.co.truemoney.serviceinventory.persona.TrueConvergenceOneBillPersona;
 import th.co.truemoney.serviceinventory.sms.OTPGenerator;
 import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 
@@ -486,11 +486,11 @@ public class LocalEnvironmentConfig {
 
     @Bean
     public BillProxy billPayProxy() {
-        return new TruemoveH().getBillPayProxy();
+        return new TrueConvergenceOneBillPersona().getBillPayProxy();
     }
 
     @Bean
     public TopUpMobileProxy topUpMobileProxy() {
-        return new TruemoveH().getTopUpMobileProxy();
+        return new TrueConvergenceOneBillPersona().getTopUpMobileProxy();
     }
 }

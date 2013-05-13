@@ -28,29 +28,36 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 public class FavoriteServiceWorkflowTest {
 	@Autowired
 	FavoriteServicesClient client;
-	
+
 	@Autowired
 	TmnProfileServiceClient profileService;
-	
+
 	@Test
 	public void addFavorite() {
 		String accessTokenID = profileService.login(
 				TestData.createAdamSuccessLogin(),
 				TestData.createSuccessClientLogin());
-		
-		Favorite favorite = new Favorite();
-		favorite.setAmount(new BigDecimal(2000));
-		favorite.setRef1("555");
-		favorite.setServiceCode("500");
-		favorite.setServiceType("type");
-		
-		Favorite favoriteResponse = client.addFavorite(favorite, accessTokenID);
+
+		Favorite favoriteBill = createFavoriteBill();
+
+		Favorite favoriteResponse = client.addFavorite(favoriteBill, accessTokenID);
 		assertNotNull(favoriteResponse);
-		
+
 		assertEquals("555", favoriteResponse.getRef1());
 		//assertEquals(new Long(2000), favoriteResponse.getFavoriteID());
 	}
-	
+
+	private Favorite createFavoriteBill() {
+
+		Favorite favoriteBill = new Favorite();
+		favoriteBill.setAmount(new BigDecimal(2000));
+		favoriteBill.setRef1("555");
+		favoriteBill.setServiceCode("500");
+		favoriteBill.setServiceType("billpay");
+
+		return favoriteBill;
+	}
+
 	@Test
 	public void getFavorites() {
 		String accessTokenID = profileService.login(
@@ -58,14 +65,14 @@ public class FavoriteServiceWorkflowTest {
 				TestData.createSuccessClientLogin());
 
 		assertNotNull(accessTokenID);
-		
+
 		List<Favorite> favorites = client.getFavorites(accessTokenID);
 		assertNotNull(favorites);
 		assertEquals(3, favorites.size());
-		
+
 		favorites = client.getFavorites(accessTokenID);
 		assertNotNull(favorites);
 		assertEquals(3, favorites.size());
 	}
-	
+
 }
