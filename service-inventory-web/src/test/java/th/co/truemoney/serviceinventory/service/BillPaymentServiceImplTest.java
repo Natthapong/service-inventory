@@ -89,7 +89,7 @@ public class BillPaymentServiceImplTest {
         when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
         //when
-        Bill billInformation = billPayService.retrieveBillInformation("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
+        Bill billInformation = billPayService.retrieveBillInformationWithBarcode("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
 
         //then
         assertNotNull(billInformation);
@@ -107,7 +107,7 @@ public class BillPaymentServiceImplTest {
         try {
 	        //when
 	        @SuppressWarnings("unused")
-			Bill billInformation = billPayService.retrieveBillInformation("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
+			Bill billInformation = billPayService.retrieveBillInformationWithBarcode("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
 	        Assert.fail();
         } catch (ServiceInventoryWebException e) {
         	assertEquals("1012", e.getErrorCode());
@@ -124,7 +124,7 @@ public class BillPaymentServiceImplTest {
         when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
         //when
-        Bill billInformation = billPayService.retrieveBillInformation("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
+        Bill billInformation = billPayService.retrieveBillInformationWithBarcode("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
 
         //then
         assertNotNull(billInformation);

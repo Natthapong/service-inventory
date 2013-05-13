@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.BillPaymentFacade;
 
 public class GetBillInfoBuilder {
@@ -15,6 +16,7 @@ public class GetBillInfoBuilder {
 	private String appPassword;
 	private String appKey;
 	private String barcode;
+	private String billCode;
 
 	private BillPaymentFacade billPaymentFacade;
 
@@ -25,6 +27,11 @@ public class GetBillInfoBuilder {
 
 	public GetBillInfoBuilder withBarcode(String barcode) {
 		this.barcode = barcode;
+		return this;
+	}
+	
+	public GetBillInfoBuilder withBillCode(String billCode) {
+		this.billCode = billCode;
 		return this;
 	}
 
@@ -42,7 +49,7 @@ public class GetBillInfoBuilder {
 		return this;
 	}
 
-	public Bill getInformation() {
+	public Bill getInformationWithBarcode() {
 		Validate.notNull(channel, "data missing. get barcode information from which channel?");
 		Validate.notNull(channelDetail, "missing channel detail.");
 		Validate.notNull(appUser, "data missing. from which app user?");
@@ -62,6 +69,28 @@ public class GetBillInfoBuilder {
 		billRequest.setBarcode(barcode);
 
 		return billPaymentFacade.getBarcodeInformation(billRequest);
+	}
+	
+	public Bill getInformationWithBillCode() {
+		Validate.notNull(channel, "data missing. get barcode information from which channel?");
+		Validate.notNull(channelDetail, "missing channel detail.");
+		Validate.notNull(appUser, "data missing. from which app user?");
+		Validate.notNull(appPassword, "data missing. missing app password.");
+		Validate.notNull(appKey, "data missing. missing app key.");
+		Validate.notNull(billCode, "data missing. billCode missing?");
+
+		GetBillRequest billRequest = new GetBillRequest();
+
+		billRequest.setChannel(channel);
+		billRequest.setChannelDetail(channelDetail);
+
+		billRequest.setAppUser(appUser);
+		billRequest.setAppPassword(appPassword);
+		billRequest.setAppKey(appKey);
+
+		billRequest.setBillCode(billCode);
+
+		return billPaymentFacade.getBillCodeInformation(billRequest);
 	}
 
 }

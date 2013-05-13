@@ -83,9 +83,13 @@ public class EndPoints {
 	}
 
 	public String getScanBarcodeServiceURL() {
-		return host + "/service-inventory-web/v1/bill-payment/barcode/{barcode}?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/bill-payment/information/?barcode={barcode}&accessTokenID={accessTokenID}";
 	}
 
+	public String getBillInformationServiceURL() {
+		return host + "/service-inventory-web/v1/bill-payment/information/?billCode={billCode}&accessTokenID={accessTokenID}";
+	}
+	
 	public String getCreateBillInvoiceURL() {
 		return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}?accessTokenID={accessTokenID}";
 	}

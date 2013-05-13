@@ -62,11 +62,11 @@ public class BillPaymentControllerSuccessTest {
 
 		//given
 		Bill stubbedBill = BillPaymentStubbed.createSuccessBillPaymentInfo();
-		when(billPaymentServiceMock.retrieveBillInformation(anyString(), anyString())).thenReturn(stubbedBill);
+		when(billPaymentServiceMock.retrieveBillInformationWithBarcode(anyString(), anyString())).thenReturn(stubbedBill);
 
 		//perform
 		//String expectedString = "{\"target\":\"tcg\",\"logoURL\":\"https://secure.truemoney-dev.com/m/tmn_webview/images/logo_bill/tmvh@2x.png\",\"titleTH\":\"ค่าใช้บริการบริษัทในกลุ่มทรู\",\"titleEN\":\"Convergence Postpay\",\"ref1TitleTH\":\"โทรศัพท์พื้นฐาน\",\"ref1TitleEN\":\"Fix Line\",\"ref1\":\"010004552\",\"ref2TitleTH\":\"รหัสลูกค้า\",\"ref2TitleEN\":\"Customer ID\",\"ref2\":\"010520120200015601\",\"amount\":10000,\"serviceFee\":{\"fee\":1000,\"feeType\":\"THB\",\"totalFee\":1000,\"minFeeAmount\":100,\"maxFeeAmount\":2500},\"sourceOfFundFees\":[{\"sourceType\":\"EW\",\"fee\":1000,\"totalFee\":1000,\"feeType\":\"THB\",\"minFeeAmount\":100,\"maxFeeAmount\":2500}]}";
-		this.mockMvc.perform(get("/bill-payment/barcode/{barcode}?accessTokenID=12345", "|010554614953100 010004552 010520120200015601 85950")
+		this.mockMvc.perform(get("/bill-payment/information/?barcode=|010554614953100 010004552 010520120200015601 85950&accessTokenID=12345")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.ref1").exists())

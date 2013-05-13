@@ -431,9 +431,12 @@ public class LegacyFacade {
 			this.billPaymentFacade = billPaymentFacade;
 		}
 
-		public GetBillInfoBuilder readBillInfo(String barcode) {
-			return new GetBillInfoBuilder(billPaymentFacade)
-						.withBarcode(barcode);
+		public GetBillInfoBuilder readBillInfoWithBarcode(String barcode) {
+			return new GetBillInfoBuilder(billPaymentFacade).withBarcode(barcode);
+		}
+		
+		public GetBillInfoBuilder readBillInfoWithBillCode(String billCode) {
+			return new GetBillInfoBuilder(billPaymentFacade).withBillCode(billCode);
 		}
 
 		public BillPaymentBuilder fromBill(String ref1, String ref2, String targetAgent) {

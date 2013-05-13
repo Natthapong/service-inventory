@@ -25,13 +25,21 @@ public class BillPaymentController {
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
-	@RequestMapping(value = "/barcode/{barcode}", method = RequestMethod.GET)
+	@RequestMapping(value = "/information", method = RequestMethod.GET, params="barcode")
 	public @ResponseBody Bill scanAndCreateBillPayment(
-			@PathVariable String barcode,
+			@RequestParam(value = "barcode", defaultValue = "") String barcode,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return billPaymentService.retrieveBillInformation(barcode, accessTokenID);
+		return billPaymentService.retrieveBillInformationWithBarcode(barcode, accessTokenID);
 	}
+	
+	@RequestMapping(value = "/information", method = RequestMethod.GET, params="billCode")
+	public @ResponseBody Bill getBillInformation(
+			@RequestParam(value = "billCode", defaultValue = "") String billCode,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+		extendExpireAccessToken(accessTokenID);
+		return billPaymentService.retrieveBillInformationWithBillCode(billCode, accessTokenID);
+	} 
 
 	@RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.POST)
 	public @ResponseBody

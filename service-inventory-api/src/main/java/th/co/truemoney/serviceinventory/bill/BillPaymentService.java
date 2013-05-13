@@ -9,9 +9,12 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface BillPaymentService {
 
-	public Bill retrieveBillInformation(String barcode, String accessTokenID)
+	public Bill retrieveBillInformationWithBarcode(String barcode, String accessTokenID)
 			throws ServiceInventoryException;
 
+	public Bill retrieveBillInformationWithBillCode(String billCode, String accessTokenID)
+			throws ServiceInventoryException;
+	
 	public BillPaymentDraft verifyPaymentAbility(String billID, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException;
 
