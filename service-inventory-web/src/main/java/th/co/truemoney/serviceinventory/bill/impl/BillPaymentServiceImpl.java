@@ -62,7 +62,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     public void setLegacyFacade(LegacyFacade legacyFacade) {
         this.legacyFacade = legacyFacade;
     }
-    
+
     @Override
     public Bill retrieveBillInformationWithBarcode(String barcode, String accessTokenID)
             throws ServiceInventoryException {
@@ -81,30 +81,30 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		bill.setID(UUID.randomUUID().toString());
 		bill.setPayWith("barcode");
 		billInfoRepo.saveBill(bill, accessTokenID);
-		
+
 		return bill;
 
     }
-    
+
 	@Override
-	public Bill retrieveBillInformationWithBillCode(String billCode, String accessTokenID) 
-			throws ServiceInventoryException {
+	public Bill retrieveBillInformationWithBillCode(String billCode,
+			String ref1, BigDecimal amount, String accessTokenID) throws ServiceInventoryException {
 		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
 		ClientCredential appData = token.getClientCredential();
-		
+
 		Bill bill =  legacyFacade.billing()
 								 .readBillInfoWithBillCode(billCode)
 								 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
 								 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
 								 .getInformationWithBillCode();
-		
+
 		validateOverdue(bill.getTarget(), bill.getDueDate());
 		bill.setID(UUID.randomUUID().toString());
 		bill.setPayWith(PAYWITH_FAVORITE);
 		bill.setRef1(ref1);
 		bill.setAmount(amount);
 		billInfoRepo.saveBill(bill, accessTokenID);
-		
+
 		return bill;
 	}
 
@@ -127,7 +127,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             throws ServiceInventoryException {
 
 		Bill billInfo = billInfoRepo.findBill(billID, accessTokenID);
-		
+
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		ClientCredential appData = accessToken.getClientCredential();
 
@@ -143,7 +143,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
                             .paying(amount, billInfo.getServiceFee().calculateFee(amount), sofFee)
                             .verifyPayment();
 
-        DraftTransaction.Status billStatus = PAYWITH_FAVORITE.equals(billInfo.getPayWith()) ? Status.OTP_CONFIRMED : Status.CREATED;
+        BillPaymentDraft.Status billStatus = PAYWITH_FAVORITE.equals(billInfo.getPayWith()) ? Status.OTP_CONFIRMED : Status.CREATED;
 
         BillPaymentDraft billDraft = new BillPaymentDraft(UUID.randomUUID().toString(), billInfo, amount, verificationID, billStatus);
         transactionRepository.saveDraftTransaction(billDraft, accessTokenID);
@@ -183,7 +183,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     public BillPaymentTransaction.Status getBillPaymentStatus(String billPaymentID, String accessTokenID)
             throws ServiceInventoryException {
         BillPaymentTransaction billPayment = getBillPaymentResult(billPaymentID, accessTokenID);
-        
+
         if (Transaction.Status.FAILED == billPayment.getStatus()) {
         	FailStatus failSts = billPayment.getFailStatus();
         	if (FailStatus.PCS_FAILED == failSts) {

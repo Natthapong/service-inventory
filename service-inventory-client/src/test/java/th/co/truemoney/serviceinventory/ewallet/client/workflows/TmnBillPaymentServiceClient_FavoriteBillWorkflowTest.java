@@ -25,8 +25,6 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryCl
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
-import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,7 +57,8 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		Favorite favoriteBill = createFavoriteBill();
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
-		Bill bill = billPaymentServiceClient.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), accessToken);
+		Bill bill = billPaymentServiceClient
+					.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getAmount(), accessToken);
 
 		assertNotNull(bill);
 		assertNotNull(bill.getID());

@@ -93,7 +93,6 @@ public class BillPaymentBuilder {
 
 	public String verifyPayment() {
 		Validate.notNull(ref1, "barcode ref1 missing?");
-		Validate.notNull(ref2, "barcode ref2 missing?");
 
 		Validate.notNull(target, "data missing. verify paying to which target agent?");
 		Validate.notNull(msisdn, "data missing. verify paying from which mobile number?");
@@ -149,7 +148,6 @@ public class BillPaymentBuilder {
 	public BillPaymentConfirmationInfo performPayment(String transactionID) {
 		Validate.notNull(transactionID, "missing verification transaction ID");
 		Validate.notNull(ref1, "barcode ref1 missing?");
-		Validate.notNull(ref2, "barcode ref2 missing?");
 
 		Validate.notNull(target, "data missing. verify paying to which target agent?");
 		Validate.notNull(msisdn, "data missing. verify paying from which mobile number?");

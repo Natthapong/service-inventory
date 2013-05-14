@@ -113,7 +113,7 @@ public class BillPaymentServiceImplTest {
         when(billPaymentFacade.getBillCodeInformation(any(GetBillRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
         //when
-        Bill billInformation = billPayService.retrieveBillInformationWithBillCode("xxxx", accessToken.getAccessTokenID());
+        Bill billInformation = billPayService.retrieveBillInformationWithBillCode("xxxx", "ref1", new BigDecimal(400), accessToken.getAccessTokenID());
 
         //then
         assertNotNull(billInformation);
