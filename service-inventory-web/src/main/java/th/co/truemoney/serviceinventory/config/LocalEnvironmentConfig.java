@@ -151,10 +151,13 @@ public class LocalEnvironmentConfig {
             public AddFavoriteResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
                     throws EwalletException {
                 logger.debug("TMN ID: " + addFavoriteRequest.getSecurityContext().getTmnId());
-                if(addFavoriteRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
-                    return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
+                FavoriteContext favoriteContext = new FavoriteContext();
+                if(addFavoriteRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){                	
+                	favoriteContext.setFavoriteId("1001");
+                    return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContext);
                 }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
-                    return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
+                	favoriteContext.setFavoriteId("1002");
+                    return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContext);
                 }else{
                     throw new FailResultCodeException("500", "stub namespace.");
                 }

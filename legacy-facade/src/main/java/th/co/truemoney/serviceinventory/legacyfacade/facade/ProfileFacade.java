@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.legacyfacade.facade;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -11,6 +10,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.FavoriteContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritableRequest;
@@ -127,8 +127,9 @@ public class ProfileFacade {
 		addFavoriteRequest.setServiceType(favorite.getServiceType());
 		addFavoriteRequest.setSecurityContext(securityContext);
 		
-		StandardBizResponse standardBizResponse = this.tmnProfileProxy.addFavorite(addFavoriteRequest);
-		//will add favorite id later
+		AddFavoriteResponse addFavoriteResponse = this.tmnProfileProxy.addFavorite(addFavoriteRequest);
+		Long favoriteID = new Long(addFavoriteResponse.getFavorite().getFavoriteId());
+		favorite.setFavoriteID(favoriteID);
 		return favorite;
 	}
 	
