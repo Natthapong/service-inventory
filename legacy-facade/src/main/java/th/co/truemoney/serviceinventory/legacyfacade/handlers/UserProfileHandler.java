@@ -125,9 +125,16 @@ public class UserProfileHandler {
 			String tmnID, String serviceType, String serviceCode,
 			String reference1) {
 		
+		try {
 		StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavorited(createIsFavoritedRequest(
 				channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
-		return SUCCESS_CODE.equals(standardBizResponse.getResultCode());
+			return SUCCESS_CODE.equals(standardBizResponse.getResultCode());
+		} catch (FailResultCodeException e) {
+			if (ALREADY_ADD_FAVORITE.equals(e.getCode()) || ADD_FAVORITE_DENIED .equals(e.getCode())) {
+				return false;
+			} 
+			throw e;			
+		}		
 	}
 
 	public Favorite addFavorite(Integer channelID, String sessionID,

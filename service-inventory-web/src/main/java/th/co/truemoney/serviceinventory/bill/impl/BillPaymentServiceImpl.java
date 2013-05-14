@@ -117,7 +117,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         }
     }
     
-    private boolean isFavorited(AccessToken accessToken, Bill bill) {
+    private Boolean isFavorited(AccessToken accessToken, Bill bill) {
 	    	return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 	    	.fromChannel(accessToken.getChannelID())
 	    	.withServiceCode(bill.getTarget())
@@ -226,12 +226,13 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         Bill billInfo = billPaymentTransaction.getDraftTransaction().getBillInfo();
         
 		if(isAddFavoritable(accessToken, billInfo.getTarget(), billInfo.getRef1()) && !"favorite".equals(billInfo.getPayWith())){
-			billPaymentTransaction.getDraftTransaction().getBillInfo().setFavoritable(true);
+			if(isFavorited(accessToken, billInfo)){
+				billPaymentTransaction.getDraftTransaction().getBillInfo().setFavoritable(true);
+			}
 		}      
         
         return billPaymentTransaction;
     }
-
 
 	private Boolean isAddFavoritable(AccessToken accessToken,String serviceCode,String ref1){
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
