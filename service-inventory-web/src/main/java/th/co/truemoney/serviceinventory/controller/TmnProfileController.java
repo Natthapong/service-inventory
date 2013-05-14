@@ -53,9 +53,9 @@ public class TmnProfileController {
 	@RequestMapping(value = "/profile/{accessTokenID}", method = RequestMethod.GET)
 	public @ResponseBody TmnProfile getTruemoneyProfile(@PathVariable String accessTokenID) {
 
-		TmnProfile tmnProfile = tmnProfileService.getTruemoneyProfile(accessTokenID);
-
 		extendExpireAccessToken(accessTokenID);
+
+		TmnProfile tmnProfile = tmnProfileService.getTruemoneyProfile(accessTokenID);
 
 		return tmnProfile;
 	}
@@ -63,9 +63,10 @@ public class TmnProfileController {
 	@RequestMapping(value = "/balance/{accessTokenID}", method = RequestMethod.GET)
 	public @ResponseBody BigDecimal getBalance(@PathVariable String accessTokenID) {
 
+		extendExpireAccessToken(accessTokenID);
+
 		BigDecimal balance = tmnProfileService.getEwalletBalance(accessTokenID);
 
-		extendExpireAccessToken(accessTokenID);
 
 		return balance;
 	}
@@ -110,9 +111,9 @@ public class TmnProfileController {
 	@RequestMapping(value = "/activities/{accessTokenID}", method = RequestMethod.GET)
 	public @ResponseBody List<Activity> getActivities(@PathVariable String accessTokenID) {
 
-		List<Activity> activities = activityService.getActivities(accessTokenID);
-
 		extendExpireAccessToken(accessTokenID);
+
+		List<Activity> activities = activityService.getActivities(accessTokenID);
 		
 		return activities;
 	}
@@ -120,9 +121,9 @@ public class TmnProfileController {
 	@RequestMapping(value = "/activities/{accessTokenID}/detail/{reportID}", method = RequestMethod.GET)
 	public @ResponseBody ActivityDetail getActivityDetail(@PathVariable String accessTokenID, @PathVariable Long reportID) {
 
-		ActivityDetail activityDetail = activityService.getActivityDetail(reportID, accessTokenID);
-
 		extendExpireAccessToken(accessTokenID);
+
+		ActivityDetail activityDetail = activityService.getActivityDetail(reportID, accessTokenID);
 		
 		return activityDetail;
 	}
@@ -131,8 +132,10 @@ public class TmnProfileController {
 	public @ResponseBody Favorite addFavorite(
 			@RequestBody Favorite favorite,
 			@PathVariable String accessTokenID) {
-		Favorite favoriteResponse = favoriteService.addFavorite(favorite, accessTokenID);
+		
 		extendExpireAccessToken(accessTokenID);
+
+		Favorite favoriteResponse = favoriteService.addFavorite(favorite, accessTokenID);
 		
 		return favoriteResponse;
 	}
@@ -141,9 +144,9 @@ public class TmnProfileController {
 	public @ResponseBody List<Favorite> getFavorites(
 			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID) {
 
+		extendExpireAccessToken(accessTokenID);
 		
 		List<Favorite> favorites = favoriteService.getFavorites(accessTokenID);
-		extendExpireAccessToken(accessTokenID);
 		
 		return favorites;
 	}
