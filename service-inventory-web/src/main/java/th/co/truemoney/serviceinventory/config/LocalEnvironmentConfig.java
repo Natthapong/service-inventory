@@ -179,8 +179,7 @@ public class LocalEnvironmentConfig {
 			public StandardBizResponse isFavorited(
 					IsFavoritedRequest isFavoritedRequest)
 					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
+				 return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
 			}
 
         };
