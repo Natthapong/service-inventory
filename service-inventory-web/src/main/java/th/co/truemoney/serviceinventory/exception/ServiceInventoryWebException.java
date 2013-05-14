@@ -42,9 +42,10 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
 		public static final String BILL_NOT_FOUND = "1011";
 		public static final String BILL_OVER_DUE  = "1012";
 		public static final String OWNER_UNVERIFIED = "1013";
-		public static final String CONFIRM_TPP_FAILED = "1014";
-		public static final String CONFIRM_PCS_FAILED = "1015";
-		
+		public static final String OWNER_ALREADY_CONFIRMED = "1014";
+		public static final String CONFIRM_TPP_FAILED = "1015";
+		public static final String CONFIRM_PCS_FAILED = "1016";
+
 		//profile
 		public static final String INVALID_PROFILE_TYPE 	= "10000";
 		public static final String ACCESS_TOKEN_NOT_FOUND 	= "10001";

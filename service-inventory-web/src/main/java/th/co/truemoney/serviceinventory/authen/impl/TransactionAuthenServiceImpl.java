@@ -9,6 +9,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
+import th.co.truemoney.serviceinventory.exception.OTPAlreadyConfirmedException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
@@ -30,9 +31,14 @@ public class TransactionAuthenServiceImpl implements TransactionAuthenService {
 
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
+		DraftTransaction draftTransaction = transactionRepo.findDraftTransaction(draftID, accessTokenID, DraftTransaction.class);
+
+		if (draftTransaction.getStatus() == Status.OTP_CONFIRMED) {
+			throw new OTPAlreadyConfirmedException();
+		}
+
 		OTP otp = otpService.send(accessToken.getMobileNumber());
 
-		DraftTransaction draftTransaction = transactionRepo.findDraftTransaction(draftID, accessTokenID, DraftTransaction.class);
 		draftTransaction.setOtpReferenceCode(otp.getReferenceCode());
 		draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_SENT);
 
@@ -46,13 +52,17 @@ public class TransactionAuthenServiceImpl implements TransactionAuthenService {
 			throws ServiceInventoryException {
 
 		accessTokenRepo.findAccessToken(accessTokenID);
-		DraftTransaction topUpMobileDraft = transactionRepo.findDraftTransaction(draftID, accessTokenID, DraftTransaction.class);
+		DraftTransaction draftTransaction = transactionRepo.findDraftTransaction(draftID, accessTokenID, DraftTransaction.class);
+
+		if (draftTransaction.getStatus() == Status.OTP_CONFIRMED) {
+			throw new OTPAlreadyConfirmedException();
+		}
 
 		otpService.isValidOTP(otp);
 
-		topUpMobileDraft.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
-		transactionRepo.saveDraftTransaction(topUpMobileDraft, accessTokenID);
+		draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
+		transactionRepo.saveDraftTransaction(draftTransaction, accessTokenID);
 
-		return topUpMobileDraft.getStatus();
+		return draftTransaction.getStatus();
 	}
 }

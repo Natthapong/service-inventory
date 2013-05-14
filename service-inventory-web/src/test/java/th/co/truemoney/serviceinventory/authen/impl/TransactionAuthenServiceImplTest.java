@@ -24,10 +24,12 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
+import th.co.truemoney.serviceinventory.exception.OTPAlreadyConfirmedException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
@@ -123,6 +125,45 @@ public class TransactionAuthenServiceImplTest {
         //should never call the processor
         verify(asyncServiceMock, Mockito.never()).topUpUtibaEwallet(any(TopUpOrder.class), any(AccessToken.class));
     }
+
+    @Test
+    public void shouldFailWhenRequestingOTPOnConfirmedDraft() {
+
+    	quote.setStatus(Status.OTP_CONFIRMED);
+        transactionRepo.saveDraftTransaction(quote, accessToken.getAccessTokenID());
+
+    	Assert.assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quote.getStatus());
+
+    	try {
+            authenService.requestOTP(quote.getID(), accessToken.getAccessTokenID());
+            Assert.fail();
+        } catch (OTPAlreadyConfirmedException e) {
+
+        }
+
+        //then
+        Assert.assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quote.getStatus());
+    }
+
+    @Test
+    public void shouldFailWhenVerifyingOTPOnConfirmedDraft() {
+
+    	quote.setStatus(Status.OTP_CONFIRMED);
+        transactionRepo.saveDraftTransaction(quote, accessToken.getAccessTokenID());
+
+    	Assert.assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quote.getStatus());
+
+    	try {
+            authenService.verifyOTP(quote.getID(), new OTP(), accessToken.getAccessTokenID());
+            Assert.fail();
+        } catch (OTPAlreadyConfirmedException e) {
+
+        }
+
+        //then
+        Assert.assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quote.getStatus());
+    }
+
 
     private TopUpQuote createQuote(AccessToken accessToken, OTP otp) {
         TopUpQuote quote = new TopUpQuote();
