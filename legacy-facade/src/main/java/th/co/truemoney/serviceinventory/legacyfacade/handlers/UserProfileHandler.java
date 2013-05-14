@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
+import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.FavoriteContext;
@@ -33,6 +34,10 @@ public class UserProfileHandler {
 	private static final String SUCCESS_CODE = "0";
 
 	private static final String CUSTOMER_TYPE = "C";
+	
+	private static final String ALREADY_ADD_FAVORITE = "2012";
+	
+	private static final String ADD_FAVORITE_DENIED  = "2013";
 
 	@Autowired
 	private TmnSecurityProxy tmnSecurityProxy;
@@ -103,10 +108,17 @@ public class UserProfileHandler {
 	public Boolean isFavoritable(Integer channelID, String sessionID,
 			String tmnID, String serviceType, String serviceCode,
 			String reference1) {
-		
-		StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavoritable(createIsFavoritableRequest(
-				channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
-		return SUCCESS_CODE.equals(standardBizResponse.getResultCode());
+	
+		try {
+			StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavoritable(createIsFavoritableRequest(
+					channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
+			return SUCCESS_CODE.equals(standardBizResponse.getResultCode());
+		} catch (FailResultCodeException e) {
+			if (ALREADY_ADD_FAVORITE.equals(e.getCode()) || ADD_FAVORITE_DENIED .equals(e.getCode())) {
+				return false;
+			} 
+			throw e;			
+		}		
 	}
 	
 	public Boolean isFavorited(Integer channelID, String sessionID,

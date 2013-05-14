@@ -79,7 +79,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 		validateOverdue(bill.getTarget(), bill.getDueDate());
 		bill.setID(UUID.randomUUID().toString());
-		bill.setPayWith("barcode");
+		bill.setPayWith(PAYWITH_BARCODE);
 		billInfoRepo.saveBill(bill, accessTokenID);
 
 		return bill;
@@ -217,9 +217,30 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     @Override
     public BillPaymentTransaction getBillPaymentResult(String billPaymentID, String accessTokenID)
             throws ServiceInventoryException {
-        return transactionRepository.findTransaction(billPaymentID, accessTokenID, BillPaymentTransaction.class);
+    	
+        AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+    	
+        BillPaymentTransaction billPaymentTransaction = 
+        		transactionRepository.findTransaction(billPaymentID, accessTokenID, BillPaymentTransaction.class);
+        
+        Bill billInfo = billPaymentTransaction.getDraftTransaction().getBillInfo();
+        
+		if(isAddFavoritable(accessToken, billInfo.getTarget(), billInfo.getRef1()) && !"favorite".equals(billInfo.getPayWith())){
+			billPaymentTransaction.getDraftTransaction().getBillInfo().setFavoritable(true);
+		}      
+        
+        return billPaymentTransaction;
     }
 
+
+	private Boolean isAddFavoritable(AccessToken accessToken,String serviceCode,String ref1){
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				.fromChannel(accessToken.getChannelID())
+				.withServiceCode(serviceCode)
+				.withRefernce1(ref1)
+				.isFavoritable();
+	}
+	
     public void setAsyncBillPayProcessor(AsyncBillPayProcessor asyncBillPayProcessor) {
         this.asyncBillPayProcessor = asyncBillPayProcessor;
     }

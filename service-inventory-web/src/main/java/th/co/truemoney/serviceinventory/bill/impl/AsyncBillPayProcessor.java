@@ -59,10 +59,6 @@ public class AsyncBillPayProcessor {
 
 			billPaymentReceipt.setConfirmationInfo(confirmationInfo);
 			billPaymentReceipt.setStatus(Transaction.Status.SUCCESS);
-			
-			if(!billInfo.getPayWith().equals("favorite") && isFavoritable(accessToken,billInfo.getTarget(),billInfo.getRef1())){
-				billPaymentReceipt.getDraftTransaction().getBillInfo().setFavoritable(true);
-			}
 
 			logger.info("AsyncService.payBill.resultTransactionID: " + confirmationInfo.getTransactionID());
 		} catch (UMarketSystemTransactionFailException e) {
@@ -72,17 +68,10 @@ public class AsyncBillPayProcessor {
 			logger.error("unexpect bill payment fail: ", ex);
 			billPaymentReceipt.setFailStatus(BillPaymentTransaction.FailStatus.UNKNOWN_FAILED);
 		}
-
+		
 		transactionRepo.saveTransaction(billPaymentReceipt, accessToken.getAccessTokenID());
 
 		return new AsyncResult<BillPaymentTransaction> (billPaymentReceipt);
 	}
 
-	private Boolean isFavoritable(AccessToken accessToken,String serviceCode,String ref1){
-		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
-				.fromChannel(accessToken.getChannelID())
-				.withServiceCode(serviceCode)
-				.withRefernce1(ref1)
-				.isFavoritable();
-	}
 }
