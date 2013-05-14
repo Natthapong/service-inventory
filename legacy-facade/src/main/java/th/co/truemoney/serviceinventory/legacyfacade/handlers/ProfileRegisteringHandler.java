@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.legacyfacade.facade;
+package th.co.truemoney.serviceinventory.legacyfacade.handlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,7 +12,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfil
 import th.co.truemoney.serviceinventory.ewallet.proxy.util.HashPasswordUtil;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-public class ProfileRegisteringFacade {
+public class ProfileRegisteringHandler {
 
 	@Autowired
 	private TmnProfileAdminProxy tmnProfileAdminProxy;

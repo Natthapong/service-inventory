@@ -14,11 +14,11 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler;
 
 public class TopUpFacadePerformTopUpSuccessTest {
 
-	private BalanceFacade topUpFacade;
+	private EwalletBalanceHandler topUpFacade;
 
 	private EwalletSoapProxy ewalletProxy;
 
@@ -34,7 +34,7 @@ public class TopUpFacadePerformTopUpSuccessTest {
 
 		when(ewalletProxy.addMoney(any(AddMoneyRequest.class))).thenReturn(moneyResponse);
 
-		topUpFacade = new BalanceFacade(ewalletProxy);
+		topUpFacade = new EwalletBalanceHandler(ewalletProxy);
 	}
 
 	@Test

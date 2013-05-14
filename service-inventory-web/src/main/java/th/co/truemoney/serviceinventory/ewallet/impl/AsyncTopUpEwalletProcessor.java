@@ -17,9 +17,9 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade.BankSystemTransactionFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade.UMarketSystemTransactionFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler.BankSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler.UMarketSystemTransactionFailException;
 
 @Service
 public class AsyncTopUpEwalletProcessor {

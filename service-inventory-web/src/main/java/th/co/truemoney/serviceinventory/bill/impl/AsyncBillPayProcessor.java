@@ -18,8 +18,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade.UMarketSystemTransactionFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler.UMarketSystemTransactionFailException;
 
 @Service
 public class AsyncBillPayProcessor {

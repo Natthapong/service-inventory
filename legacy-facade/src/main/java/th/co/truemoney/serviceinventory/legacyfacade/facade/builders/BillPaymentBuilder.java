@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BillPaymentFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
 
 public class BillPaymentBuilder {
 
@@ -33,7 +33,7 @@ public class BillPaymentBuilder {
 	private BigDecimal amount;
 	private String commandAction;
 
-	private BillPaymentFacade billPaymentFacade;
+	private BillPaymentHandler billPaymentFacade;
 
 	private BigDecimal serviceFee;
 
@@ -43,7 +43,7 @@ public class BillPaymentBuilder {
 
 
 	@Autowired(required = false)
-	public BillPaymentBuilder(BillPaymentFacade billPaymentFacade) {
+	public BillPaymentBuilder(BillPaymentHandler billPaymentFacade) {
 		this.billPaymentFacade = billPaymentFacade;
 	}
 

@@ -37,8 +37,8 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepo
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BillPaymentFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
 import th.co.truemoney.serviceinventory.stub.BillPaymentStubbed;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
@@ -67,7 +67,7 @@ public class BillPaymentServiceImplTest {
 
     private AsyncBillPayProcessor asyncProcessor;
 
-    private BillPaymentFacade billPaymentFacade;
+    private BillPaymentHandler billPaymentFacade;
 
     @Before
     public void setup() {
@@ -76,7 +76,7 @@ public class BillPaymentServiceImplTest {
         accessToken.setClientCredential(new ClientCredential("appKey", "appUser", "appPassword", "channel", "channel detail"));
         accessTokenRepo.save(accessToken);
 
-        billPaymentFacade = mock(BillPaymentFacade.class);
+        billPaymentFacade = mock(BillPaymentHandler.class);
         legacyFacade.setBillPaymentFacade(billPaymentFacade);
 
         asyncProcessor = Mockito.mock(AsyncBillPayProcessor.class);

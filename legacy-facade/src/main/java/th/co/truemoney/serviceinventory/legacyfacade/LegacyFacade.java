@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.legacyfacade.facade.builders;
+package th.co.truemoney.serviceinventory.legacyfacade;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,12 +11,15 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BillPaymentFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.ProfileFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.ProfileRegisteringFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.SourceOfFundFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.TopUpMobileFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.BillPaymentBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.GetBillInfoBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.TopUpMobileBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.MobileTopUpHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.ProfileRegisteringHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.TopUpSourceOfFundHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
 
 public class LegacyFacade {
@@ -24,22 +27,22 @@ public class LegacyFacade {
 	private Integer channelID;
 
 	@Autowired(required = false)
-	private BalanceFacade balanceFacade;
+	private EwalletBalanceHandler balanceFacade;
 
 	@Autowired(required = false)
-	private ProfileFacade profileFacade;
+	private UserProfileHandler profileFacade;
 
 	@Autowired(required = false)
-	private SourceOfFundFacade sourceOfFundFacade;
+	private TopUpSourceOfFundHandler sourceOfFundFacade;
 
 	@Autowired(required = false)
-	private BillPaymentFacade billPaymentFacade;
+	private BillPaymentHandler billPaymentFacade;
 	
 	@Autowired(required = false)
-	private ProfileRegisteringFacade profileRegisteringFacade;
+	private ProfileRegisteringHandler profileRegisteringFacade;
 	
 	@Autowired(required = false)
-	private TopUpMobileFacade topUpMobileFacade;
+	private MobileTopUpHandler topUpMobileFacade;
 
 	public LegacyFacade fromChannel(Integer channelID) {
 		this.channelID = channelID;
@@ -85,32 +88,32 @@ public class LegacyFacade {
 		return new TopUpMobileBuilder(topUpMobileFacade);
 	}
 	
-	public LegacyFacade setBalanceFacade(BalanceFacade balanceFacade) {
+	public LegacyFacade setBalanceFacade(EwalletBalanceHandler balanceFacade) {
 		this.balanceFacade = balanceFacade;
 		return this;
 	}
 
-	public LegacyFacade setProfileFacade(ProfileFacade profileFacade) {
+	public LegacyFacade setProfileFacade(UserProfileHandler profileFacade) {
 		this.profileFacade = profileFacade;
 		return this;
 	}
 
-	public LegacyFacade setProfileRegisteringFacade(ProfileRegisteringFacade profileRegisteringFacade) {
+	public LegacyFacade setProfileRegisteringFacade(ProfileRegisteringHandler profileRegisteringFacade) {
 		this.profileRegisteringFacade = profileRegisteringFacade;
 		return this;
 	}
 
-	public LegacyFacade setSourceOfFundFacade(SourceOfFundFacade sourceOfFundFacade) {
+	public LegacyFacade setSourceOfFundFacade(TopUpSourceOfFundHandler sourceOfFundFacade) {
 		this.sourceOfFundFacade = sourceOfFundFacade;
 		return this;
 	}
 
-	public LegacyFacade setBillPaymentFacade(BillPaymentFacade billPaymentFacade) {
+	public LegacyFacade setBillPaymentFacade(BillPaymentHandler billPaymentFacade) {
 		this.billPaymentFacade = billPaymentFacade;
 		return this;
 	}
 	
-	public LegacyFacade setTopUpMobileFacade(TopUpMobileFacade topUpMobileFacade) {
+	public LegacyFacade setTopUpMobileFacade(MobileTopUpHandler topUpMobileFacade) {
 		this.topUpMobileFacade = topUpMobileFacade;
 		return this;
 	}
@@ -125,14 +128,14 @@ public class LegacyFacade {
 		private String serviceCode;
 		private String reference1;
 		
-		private BalanceFacade balanceFacade;
-		private ProfileFacade profileFacade;
-		private SourceOfFundFacade sourceOfFundFacade;
+		private EwalletBalanceHandler balanceFacade;
+		private UserProfileHandler profileFacade;
+		private TopUpSourceOfFundHandler sourceOfFundFacade;
 		
 		private Favorite favorite;
 		
 		@Autowired(required = false)
-		public UserProfileBuilder(BalanceFacade balanceFacade, ProfileFacade profileFacade, SourceOfFundFacade sourceOfFundFacade) {
+		public UserProfileBuilder(EwalletBalanceHandler balanceFacade, UserProfileHandler profileFacade, TopUpSourceOfFundHandler sourceOfFundFacade) {
 			this.balanceFacade = balanceFacade;
 			this.profileFacade = profileFacade;
 			this.sourceOfFundFacade = sourceOfFundFacade;
@@ -258,10 +261,10 @@ public class LegacyFacade {
 		private String sourceOfFundID;
 		private String sourceOfFundType;
 
-		private BalanceFacade balanceFacade;
+		private EwalletBalanceHandler balanceFacade;
 
 		@Autowired(required = false)
-		public TopUpBuilder(BalanceFacade balanceFacade) {
+		public TopUpBuilder(EwalletBalanceHandler balanceFacade) {
 			this.balanceFacade = balanceFacade;
 		}
 
@@ -335,10 +338,10 @@ public class LegacyFacade {
 
 		private String targetMobileNumber;
 
-		private BalanceFacade balanceFacade;
+		private EwalletBalanceHandler balanceFacade;
 
 		@Autowired(required = false)
-		public P2PTransferBuilder(BalanceFacade balanceFacade) {
+		public P2PTransferBuilder(EwalletBalanceHandler balanceFacade) {
 			this.balanceFacade = balanceFacade;
 		}
 
@@ -389,12 +392,12 @@ public class LegacyFacade {
 
 	public static class ProfileRegisteringBuilder {
 
-		private ProfileRegisteringFacade profileRegisteringFacade;
+		private ProfileRegisteringHandler profileRegisteringFacade;
 
 		private Integer channelID;
 
 		@Autowired(required = false)
-		public ProfileRegisteringBuilder(ProfileRegisteringFacade profileRegisteringFacade) {
+		public ProfileRegisteringBuilder(ProfileRegisteringHandler profileRegisteringFacade) {
 			this.profileRegisteringFacade = profileRegisteringFacade;
 		}
 
@@ -428,9 +431,9 @@ public class LegacyFacade {
 
 	public static class BillPaymentOptionsBuilder {
 
-		private BillPaymentFacade billPaymentFacade;
+		private BillPaymentHandler billPaymentFacade;
 
-		public BillPaymentOptionsBuilder(BillPaymentFacade billPaymentFacade) {
+		public BillPaymentOptionsBuilder(BillPaymentHandler billPaymentFacade) {
 			this.billPaymentFacade = billPaymentFacade;
 		}
 

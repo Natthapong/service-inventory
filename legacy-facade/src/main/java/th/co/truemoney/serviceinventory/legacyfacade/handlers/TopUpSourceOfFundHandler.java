@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.legacyfacade.facade;
+package th.co.truemoney.serviceinventory.legacyfacade.handlers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 
-public class SourceOfFundFacade {
+public class TopUpSourceOfFundHandler {
 
 	private static final String DIRECT_DEBIT_SOURCE_TYPE = "debit";
 

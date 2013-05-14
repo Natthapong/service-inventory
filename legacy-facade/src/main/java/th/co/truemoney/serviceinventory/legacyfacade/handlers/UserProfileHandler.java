@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.legacyfacade.facade;
+package th.co.truemoney.serviceinventory.legacyfacade.handlers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-public class ProfileFacade {
+public class UserProfileHandler {
 
 	private static final int VALID_CUSTOMER_STATUS = 3;
 

@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.legacyfacade.facade;
+package th.co.truemoney.serviceinventory.legacyfacade.handlers;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -21,7 +21,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyTransferResp
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
 
-public class BalanceFacade {
+public class EwalletBalanceHandler {
 
 	private SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -29,7 +29,7 @@ public class BalanceFacade {
 	private EwalletSoapProxy ewalletProxy;
 
 	@Autowired
-	public BalanceFacade(EwalletSoapProxy ewalletProxy) {
+	public EwalletBalanceHandler(EwalletSoapProxy ewalletProxy) {
 		this.ewalletProxy = ewalletProxy;
 	}
 

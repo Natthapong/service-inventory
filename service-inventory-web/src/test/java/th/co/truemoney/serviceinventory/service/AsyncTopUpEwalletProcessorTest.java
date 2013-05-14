@@ -27,9 +27,9 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade.BankSystemTransactionFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler.BankSystemTransactionFailException;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @Category(IntegrationTest.class)
@@ -52,7 +52,7 @@ public class AsyncTopUpEwalletProcessorTest {
     public void setup() {
 
         LegacyFacade legacyFacade = new LegacyFacade();
-        legacyFacade.setBalanceFacade(new BalanceFacade(mockEwalletProxy));
+        legacyFacade.setBalanceFacade(new EwalletBalanceHandler(mockEwalletProxy));
 
         asyncService.setLegacyFacade(legacyFacade);
         asyncService.setTransactionRepo(transactionRepo);

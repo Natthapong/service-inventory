@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BillPaymentFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
 
 public class GetBillInfoBuilder {
 
@@ -18,10 +18,10 @@ public class GetBillInfoBuilder {
 	private String barcode;
 	private String billCode;
 
-	private BillPaymentFacade billPaymentFacade;
+	private BillPaymentHandler billPaymentFacade;
 
 	@Autowired(required = false)
-	public GetBillInfoBuilder(BillPaymentFacade billPaymentFacade) {
+	public GetBillInfoBuilder(BillPaymentHandler billPaymentFacade) {
 		this.billPaymentFacade = billPaymentFacade;
 	}
 

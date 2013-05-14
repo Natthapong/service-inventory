@@ -29,8 +29,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.SourceOfFundFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.TopUpSourceOfFundHandler;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 
@@ -50,7 +50,7 @@ public class TopUpServiceImplVerifyAndCreateTopUpTest {
     @Autowired
     private AccessTokenRepository accessTokenRepo;
 
-    private SourceOfFundFacade sofFacadeMock;
+    private TopUpSourceOfFundHandler sofFacadeMock;
 
     private AccessToken accessToken = new AccessToken("tokenID", "sessionID", "tmnID", 41);
     private DirectDebit userDirectDebit = new DirectDebit("sofID", "debit");
@@ -59,7 +59,7 @@ public class TopUpServiceImplVerifyAndCreateTopUpTest {
     public void setup() {
 
         //given
-        sofFacadeMock = mock(SourceOfFundFacade.class);
+        sofFacadeMock = mock(TopUpSourceOfFundHandler.class);
         legacyFacade.setSourceOfFundFacade(sofFacadeMock);
 
         accessTokenRepo.save(accessToken);

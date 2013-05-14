@@ -5,13 +5,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.BillPaymentFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.ProfileFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.ProfileRegisteringFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.SourceOfFundFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.TopUpMobileFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.MobileTopUpHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.ProfileRegisteringHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.TopUpSourceOfFundHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler;
 
 @Configuration
 public class LegacyFacadeConfig {
@@ -20,23 +20,23 @@ public class LegacyFacadeConfig {
 	EwalletSoapProxy ewalletProxy;
 
 	@Bean
-	public BalanceFacade balanceFacade() {
-		return new BalanceFacade(ewalletProxy);
+	public EwalletBalanceHandler balanceFacade() {
+		return new EwalletBalanceHandler(ewalletProxy);
 	}
 
 	@Bean
-	public ProfileFacade profileFacade() {
-		return new ProfileFacade();
+	public UserProfileHandler profileFacade() {
+		return new UserProfileHandler();
 	}
 
 	@Bean
-	public ProfileRegisteringFacade registeringFacade() {
-		return new ProfileRegisteringFacade();
+	public ProfileRegisteringHandler registeringFacade() {
+		return new ProfileRegisteringHandler();
 	}
 
 	@Bean
-	public SourceOfFundFacade sourceOfFundFacade() {
-		return new SourceOfFundFacade();
+	public TopUpSourceOfFundHandler sourceOfFundFacade() {
+		return new TopUpSourceOfFundHandler();
 	}
 
 	@Bean
@@ -45,13 +45,13 @@ public class LegacyFacadeConfig {
 	}
 
 	@Bean
-	public BillPaymentFacade billPaymentFacade() {
-		return new BillPaymentFacade();
+	public BillPaymentHandler billPaymentFacade() {
+		return new BillPaymentHandler();
 	}
 	
 	@Bean
-	public TopUpMobileFacade topUpMobileFacade() {
-		return new TopUpMobileFacade();
+	public MobileTopUpHandler topUpMobileFacade() {
+		return new MobileTopUpHandler();
 	}
 	
 }

@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.legacyfacade.facade;
+package th.co.truemoney.serviceinventory.legacyfacade.handlers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,7 +23,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileConfirmationInfo;
 
-public class TopUpMobileFacade {
+public class MobileTopUpHandler {
 
 	@Autowired
 	private TopUpMobileProxy topUpMobileProxy;

@@ -31,8 +31,8 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMem
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.TopUpMobileFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.MobileTopUpHandler;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
@@ -60,7 +60,7 @@ public class TopUpMobileServiceImplTest {
     @Autowired
     private LegacyFacade legacyFacade;
 
-    private TopUpMobileFacade mockTopUpMobileFacade;
+    private MobileTopUpHandler mockTopUpMobileFacade;
 
 	private AsyncTopUpMobileProcessor asyncTopUpMobileProcessor;
 
@@ -78,7 +78,7 @@ public class TopUpMobileServiceImplTest {
         topUpMobileDraft = new TopUpMobileDraft("7788",topUpMobile);
         transactionRepo.saveDraftTransaction(topUpMobileDraft, accessToken.getAccessTokenID());
 
-        mockTopUpMobileFacade = Mockito.mock(TopUpMobileFacade.class);
+        mockTopUpMobileFacade = Mockito.mock(MobileTopUpHandler.class);
 
         topUpMobileServiceImpl.setAccessTokenRepo(accessTokenRepo);
         topUpMobileServiceImpl.setTransactionRepo(transactionRepo);

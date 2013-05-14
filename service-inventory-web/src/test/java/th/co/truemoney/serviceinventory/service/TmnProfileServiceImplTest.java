@@ -25,8 +25,8 @@ import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.ProfileFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -41,14 +41,14 @@ public class TmnProfileServiceImplTest {
     @Autowired
     private LegacyFacade legacyFacade;
 
-    private ProfileFacade mockProfileFacade;
+    private UserProfileHandler mockProfileFacade;
 
     private AccessToken accessToken = new AccessToken("tokenID", "sessionID", "tmnID", 41);
 
     @Before
     public void setup() {
 
-        mockProfileFacade = Mockito.mock(ProfileFacade.class);
+        mockProfileFacade = Mockito.mock(UserProfileHandler.class);
         legacyFacade.setProfileFacade(mockProfileFacade);
 
         profileService.setAccessTokenRepository(new AccessTokenMemoryRepository());

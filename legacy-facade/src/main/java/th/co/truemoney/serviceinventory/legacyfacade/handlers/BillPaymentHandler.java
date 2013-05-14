@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.legacyfacade.facade;
+package th.co.truemoney.serviceinventory.legacyfacade.handlers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,7 +26,7 @@ import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineExceptio
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-public class BillPaymentFacade {
+public class BillPaymentHandler {
 
     @Autowired
     private BillProxy billPayProxy;

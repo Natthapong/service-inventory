@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmTopUpAirtimeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeRequest;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.TopUpMobileFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.MobileTopUpHandler;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileConfirmationInfo;
 
 public class TopUpMobileBuilder {
 	
-	private TopUpMobileFacade topUpMobileFacade;
+	private MobileTopUpHandler topUpMobileFacade;
 	
 	private String channel;
 	private String channelDetail;
@@ -36,7 +36,7 @@ public class TopUpMobileBuilder {
 	private String sourceOfFundSourceType;
 
 	@Autowired(required = false)
-	public TopUpMobileBuilder(TopUpMobileFacade topUpMobileFacade) {
+	public TopUpMobileBuilder(MobileTopUpHandler topUpMobileFacade) {
 		this.topUpMobileFacade = topUpMobileFacade;
 	}
 	
