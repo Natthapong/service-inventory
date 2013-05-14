@@ -59,8 +59,9 @@ public class AsyncBillPayProcessor {
 
 			billPaymentReceipt.setConfirmationInfo(confirmationInfo);
 			billPaymentReceipt.setStatus(Transaction.Status.SUCCESS);
-			
-			if(!billInfo.getPayWith().equals("favorite") && isFavoritable(accessToken,billInfo.getTarget(),billInfo.getRef1())){
+
+			if(!"favorite".equals(billInfo.getPayWith())) {
+			//if(isFavoritable(accessToken,billInfo.getTarget(),billInfo.getRef1()) && !"favorite".equals(billInfo.getPayWith())){
 				billPaymentReceipt.getDraftTransaction().getBillInfo().setFavoritable(true);
 			}
 
