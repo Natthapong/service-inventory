@@ -178,6 +178,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         
         if(PAYWITH_FAVORITE.equals(bill.getPayWith()) &&
         		!isFavorited(accessToken, bill)) {
+        	System.out.println("Throw UnVerifiedOwnerTransactionException: ");
         	throw new UnVerifiedOwnerTransactionException();
         }
         

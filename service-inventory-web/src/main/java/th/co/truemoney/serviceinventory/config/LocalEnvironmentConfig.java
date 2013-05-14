@@ -179,7 +179,11 @@ public class LocalEnvironmentConfig {
 			public StandardBizResponse isFavorited(
 					IsFavoritedRequest isFavoritedRequest)
 					throws EwalletException {
-				 return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+				 if(isFavoritedRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
+					 return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+				 } else {
+					 return new StandardBizResponse("1", "2014", "namespace", new String[] { "key" }, new String[] { "value" });
+				 }
 			}
 
         };
