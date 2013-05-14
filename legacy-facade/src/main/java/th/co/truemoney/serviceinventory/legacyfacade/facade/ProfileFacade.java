@@ -92,18 +92,9 @@ public class ProfileFacade {
 		
 		ListFavoriteResponse listFavoriteResponse = this.tmnProfileProxy.listFavorite(listFavoriteRequest);
 		FavoriteContext[] favoriteContext = listFavoriteResponse.getFavoriteList();
-
-		List<Favorite> list = new ArrayList<Favorite>();
-		for(FavoriteContext context : favoriteContext){
-			Favorite favorite = new Favorite();
-			favorite.setAmount(context.getAmount());
-			favorite.setFavoriteID(new Long(context.getFavoriteId()));
-			favorite.setRef1(context.getReference1());
-			favorite.setServiceCode(context.getServiceCode());
-			favorite.setServiceType(context.getServiceType());
-			list.add(favorite);
-		}
-		return list;
+		List<Favorite> favorites = createFavorites(favoriteContext);		
+		
+		return favorites;
 	}
 
 	public Boolean isFavorite(Integer channelID, String sessionID,
@@ -169,6 +160,24 @@ public class ProfileFacade {
 		signonRequest.setChannelId(channelID);
 
 		return signonRequest;
+	}
+	
+	private List<Favorite> createFavorites(FavoriteContext[] favoriteContext) {
+		List<Favorite> list = new ArrayList<Favorite>();
+		
+		if(favoriteContext!=null) {
+			for(FavoriteContext context : favoriteContext){
+				Favorite favorite = new Favorite();
+				favorite.setAmount(context.getAmount());
+				favorite.setFavoriteID(new Long(context.getFavoriteId()));
+				favorite.setRef1(context.getReference1());
+				favorite.setServiceCode(context.getServiceCode());
+				favorite.setServiceType(context.getServiceType());
+				list.add(favorite);
+			}
+		}
+		
+		return list;
 	}
 
 	public static class ProfileNotFoundException extends ServiceInventoryException {
