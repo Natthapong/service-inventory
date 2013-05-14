@@ -1,4 +1,4 @@
-package th.co.truemoney.serviceinventory.legacyfacade.facade;
+package th.co.truemoney.serviceinventory.legacyfacade.facade.builders;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,9 +11,12 @@ import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.BillPaymentBuilder;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.GetBillInfoBuilder;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.TopUpMobileBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.BillPaymentFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.ProfileFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.ProfileRegisteringFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.SourceOfFundFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.TopUpMobileFacade;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
 
 public class LegacyFacade {

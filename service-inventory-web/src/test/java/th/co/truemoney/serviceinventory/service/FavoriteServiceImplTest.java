@@ -33,9 +33,9 @@ import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeExceptio
 import th.co.truemoney.serviceinventory.ewallet.impl.FavoriteServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.ProfileFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade.UserProfileBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade.UserProfileBuilder;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)

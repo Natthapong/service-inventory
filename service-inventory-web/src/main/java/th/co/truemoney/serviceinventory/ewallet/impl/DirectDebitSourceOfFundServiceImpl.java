@@ -14,7 +14,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.DirectDebitPre
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.SourceOfFundPreference;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade;
 
 @Service
 public class DirectDebitSourceOfFundServiceImpl implements EnhancedDirectDebitSourceOfFundService {

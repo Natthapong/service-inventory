@@ -28,8 +28,8 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardMoneyRespo
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.BalanceFacade.BankSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.LegacyFacade;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @Category(IntegrationTest.class)
