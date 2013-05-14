@@ -97,7 +97,7 @@ public class ProfileFacade {
 		return favorites;
 	}
 
-	public Boolean isFavorite(Integer channelID, String sessionID,
+	public Boolean isFavoritable(Integer channelID, String sessionID,
 			String tmnID, String serviceType, String serviceCode,
 			String reference1) {
 		

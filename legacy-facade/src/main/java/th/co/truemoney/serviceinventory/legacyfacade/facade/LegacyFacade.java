@@ -208,7 +208,7 @@ public class LegacyFacade {
 			Validate.notNull(serviceCode, "data missing. get serviceCode?");
 			Validate.notNull(reference1, "data missing. get reference1?");
 			
-			return profileFacade.isFavorite(this.channelID, this.sessionID, this.tmnID,this.serviceType, this.serviceCode, this.reference1);
+			return profileFacade.isFavoritable(this.channelID, this.sessionID, this.tmnID,this.serviceType, this.serviceCode, this.reference1);
 		}
 		
 		public Favorite addFavorite(){
