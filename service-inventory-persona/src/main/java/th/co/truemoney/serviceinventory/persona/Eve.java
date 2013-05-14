@@ -14,6 +14,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRe
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.FavoriteContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritableRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritedRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
@@ -90,6 +91,14 @@ public class Eve implements Persona {
 				favoriteContexts[0] = new FavoriteContext("3", "", "", "", new BigDecimal("1.00"), "");
 
 				return new ListFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContexts);
+			}
+
+			@Override
+			public StandardBizResponse isFavorited(
+					IsFavoritedRequest isFavoritedRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
 			}
 			
 		};

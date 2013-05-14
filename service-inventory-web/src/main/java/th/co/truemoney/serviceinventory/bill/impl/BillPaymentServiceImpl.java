@@ -116,6 +116,14 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             }
         }
     }
+    
+    private boolean isFavorited(AccessToken accessToken, Bill bill) {
+	    	return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+	    	.fromChannel(accessToken.getChannelID())
+	    	.withServiceCode(bill.getTarget())
+	    	.withRefernce1(bill.getRef1())
+	    	.isFavorited();
+    }
 
     public boolean isOverdue(Date duedate) {
         DateTime dateTime = new DateTime(duedate);
@@ -165,7 +173,14 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         if (BillPaymentDraft.Status.OTP_CONFIRMED != invoiceDetails.getStatus()) {
             throw new UnVerifiedOwnerTransactionException();
         }
-
+        
+        Bill bill = invoiceDetails.getBillInfo();
+        
+        if(PAYWITH_FAVORITE.equals(bill.getPayWith()) &&
+        		!isFavorited(accessToken, bill)) {
+        	throw new UnVerifiedOwnerTransactionException();
+        }
+        
         BillPaymentTransaction billPaymentReceipt = new BillPaymentTransaction(invoiceDetails);
         billPaymentReceipt.setStatus(BillPaymentTransaction.Status.VERIFIED);
         transactionRepository.saveTransaction(billPaymentReceipt, accessTokenID);

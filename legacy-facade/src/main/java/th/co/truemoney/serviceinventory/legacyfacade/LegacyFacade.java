@@ -217,6 +217,16 @@ public class LegacyFacade {
 			return profileFacade.isFavoritable(this.channelID, this.sessionID, this.tmnID,this.serviceType, this.serviceCode, this.reference1);
 		}
 		
+		public Boolean isFavorited(){
+			Validate.notNull(tmnID, "data missing. get direct debit list of whom?");
+			Validate.notNull(sessionID, "data missing. get direct debit list of whom?");
+			Validate.notNull(channelID, "data missing. get direct debit list from which channel?");
+			Validate.notNull(serviceCode, "data missing. get serviceCode?");
+			Validate.notNull(reference1, "data missing. get reference1?");
+			
+			return profileFacade.isFavorited(this.channelID, this.sessionID, this.tmnID,this.serviceType, this.serviceCode, this.reference1);
+		}
+		
 		public Favorite addFavorite(){
 			Validate.notNull(tmnID, "data missing. get direct debit list of whom?");
 			Validate.notNull(sessionID, "data missing. get direct debit list of whom?");
