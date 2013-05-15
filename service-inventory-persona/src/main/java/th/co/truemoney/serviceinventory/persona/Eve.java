@@ -73,8 +73,9 @@ public class Eve implements Persona {
 			@Override
 			public StandardBizResponse isFavoritable(IsFavoritableRequest isIsFavoritableRequest)
 					throws EwalletException {
-				return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
-			}
+				//return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+				throw new FailResultCodeException("2013", "stub ewallet client");
+			}				
 
 			@Override
 			public AddFavoriteResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
@@ -85,10 +86,8 @@ public class Eve implements Persona {
 			@Override
 			public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
 					throws EwalletException {
-				FavoriteContext[] favoriteContexts = new FavoriteContext[3];
-				favoriteContexts[0] = new FavoriteContext("1", "", "", "", new BigDecimal("1.00"), "");
-				favoriteContexts[0] = new FavoriteContext("2", "", "", "", new BigDecimal("1.00"), "");
-				favoriteContexts[0] = new FavoriteContext("3", "", "", "", new BigDecimal("1.00"), "");
+				FavoriteContext[] favoriteContexts = new FavoriteContext[1];
+				favoriteContexts[0] = new FavoriteContext("1", "billpay", "d.trmv", "", new BigDecimal("13.00"), "20000211101010");                
 
 				return new ListFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContexts);
 			}
@@ -97,8 +96,7 @@ public class Eve implements Persona {
 			public StandardBizResponse isFavorited(
 					IsFavoritedRequest isFavoritedRequest)
 					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
+				throw new FailResultCodeException("2014", "stub ewallet client");
 			}
 			
 		};
