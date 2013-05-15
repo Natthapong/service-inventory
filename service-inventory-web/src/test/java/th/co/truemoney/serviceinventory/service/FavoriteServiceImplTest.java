@@ -61,7 +61,8 @@ public class FavoriteServiceImplTest {
 		accessTokenRepo = new AccessTokenMemoryRepository();
 		accessToken = new AccessToken("12345", "5555", "AdamTmnMoneyId", "0868185055", "adam@tmn.com", 41);
 		accessTokenRepo.save(accessToken);
-		accessTokenRepo.save(new AccessToken("0000", "5555", "Not", "0868185055", "adam@tmn.com", 41));
+		accessTokenRepo.save(new AccessToken("0000", "5555", "EveTmnMoneyId", "0868185055", "eve@tmn.com", 41));
+		accessTokenRepo.save(new AccessToken("0001", "5555", "failUser", "0868185055", "fail@tmn.com", 41));
 		favoriteServiceImpl.setAccessTokenRepository(accessTokenRepo);
 		favorite = new Favorite(2000L,"serviceType","101","102",new BigDecimal(2000));
 	}
@@ -76,7 +77,7 @@ public class FavoriteServiceImplTest {
 	@Test
 	public void addFavoriteFail(){
 		try{
-			Favorite favoriteResult = favoriteServiceImpl.addFavorite(favorite, "0000");
+			Favorite favoriteResult = favoriteServiceImpl.addFavorite(favorite, "0001");
 			fail("Add Favorite Fail");
 		}catch(FailResultCodeException e){
 			assertEquals("500", e.getCode());
@@ -89,7 +90,7 @@ public class FavoriteServiceImplTest {
 		assertNotNull(isFavorite);
 		assertEquals(true, isFavorite);
 		
-		isFavorite = favoriteServiceImpl.isFavoritable("serviceType", "serviceCode", "ref1","0000");
+		isFavorite = favoriteServiceImpl.isFavoritable("serviceType", "serviceCode", "ref1", "0000");
 		assertNotNull(isFavorite);
 		assertEquals(false, isFavorite);
 	}
