@@ -2,6 +2,9 @@ package th.co.truemoney.serviceinventory.config;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Session;
@@ -101,6 +104,11 @@ public class LocalEnvironmentConfig {
                     return adam.getTmnProfile().getBasicProfile(standardBizRequest);
                 }else if(standardBizRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
                     return eve.getTmnProfile().getBasicProfile(standardBizRequest);
+                }else if(standardBizRequest.getSecurityContext().getTmnId().equals("SimpsonsTmnMoneyId")){
+                	return new GetBasicProfileResponse("1", "0", "namespace",
+                            new String[] { "key" }, new String[] { "value" },
+                            "SimpsonsTmnMoneyId", "simpsons@tmn.com", "0891231234",
+                            new BigDecimal(50.0d), "C", 3);
                 }else{
                     return new GetBasicProfileResponse("1", "0", "namespace",
                             new String[] { "key" }, new String[] { "value" },
@@ -139,10 +147,16 @@ public class LocalEnvironmentConfig {
             @Override
             public StandardBizResponse isFavoritable(IsFavoritableRequest isIsFavoritableRequest)
                     throws EwalletException {
+            	List<String> serviceCodes = Arrays.asList("tr", "trmv", "tmvh", "tlp", "tic", "ti", "tcg");
+            	if(!serviceCodes.contains(isIsFavoritableRequest.getServiceCode())) {
+            		throw new FailResultCodeException("2013", "stub ADD_FAVORITE_DENIED");
+            	}            
                 if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
                     return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
                 }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
                 	throw new FailResultCodeException("2013", "stub ewallet client");
+                }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("SimpsonsTmnMoneyId")){
+                    return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
                 }else {
                 	return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
                 }
@@ -158,6 +172,9 @@ public class LocalEnvironmentConfig {
                     return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContext);
                 }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
                 	favoriteContext.setFavoriteId("1002");
+                    return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContext);
+                }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals("SimpsonsTmnMoneyId")){
+                	favoriteContext.setFavoriteId("1003");
                     return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContext);
                 }else{
                     throw new FailResultCodeException("500", "stub namespace.");
@@ -183,7 +200,9 @@ public class LocalEnvironmentConfig {
 					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
 				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")) {
 					throw new FailResultCodeException("2014", "stub ewallet client");
-				} else {
+				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals("SimpsonsTmnMoneyId")) {
+					throw new FailResultCodeException("2014", "stub ewallet client");
+				}else {
 					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
 				}
 				
@@ -219,6 +238,12 @@ public class LocalEnvironmentConfig {
                 }else if("eve@tmn.com".equals(initiator)
                         && "password".equals(password)){
                     return eve.getTmnSecurity().signon(signOnRequest);
+
+                }else if("simpson@tmn.com".equals(initiator)
+                        && "password".equals(password)){
+                    return new SignonResponse("1", "0", "namespace",
+                            new String[] { "key" }, new String[] { "value" },
+                            "sessionId", "SimpsonsTmnMoneyId");
 
                 }else if("local@tmn.com".equals(initiator)
                         && "password".equals(password)){
