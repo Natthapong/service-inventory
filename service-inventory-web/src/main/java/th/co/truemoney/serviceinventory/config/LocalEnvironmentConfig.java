@@ -142,9 +142,10 @@ public class LocalEnvironmentConfig {
                 if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
                     return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
                 }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
-                    return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+                	throw new FailResultCodeException("2013", "stub ewallet client");
+                }else {
+                	return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
                 }
-                return new StandardBizResponse("1", "001", "namespace", new String[] { "key" }, new String[] { "value" });
             }
 
             @Override

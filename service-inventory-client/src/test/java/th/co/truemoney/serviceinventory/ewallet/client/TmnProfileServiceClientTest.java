@@ -16,7 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
-import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfigTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
@@ -123,25 +122,4 @@ public class TmnProfileServiceClientTest {
 		assertEquals(new BigDecimal("2000.00"), balance);
 	}
 
-//	@Test
-//	public void checkUserProfileUrl() {
-//		String url = "http://localhost:8585/service-inventory-web/v1/ewallet/profile/{accesstokenID}/{checksum}";
-//		String checkSum = EncryptUtil.buildHmacSignature("12345", "12345"
-//				+ SALT);
-//
-//			RestTemplate restTemplate = mock(RestTemplate.class);
-//
-//			ResponseEntity<TmnProfile> responseEntity = new ResponseEntity<TmnProfile>(new TmnProfile(), HttpStatus.OK);
-//
-//			when(
-//					restTemplate.exchange(eq(url), eq(HttpMethod.GET),
-//							any(HttpEntity.class), eq(TmnProfile.class), eq("12345"),
-//							eq(checkSum))).thenReturn(responseEntity);
-//
-//			this.client.restTemplate = restTemplate;
-//
-//			TmnProfile tmnProfile = client.getTruemoneyProfile("12345");
-//			assertNotNull(tmnProfile);
-//
-//	}
 }

@@ -227,9 +227,8 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         Bill billInfo = billPaymentTransaction.getDraftTransaction().getBillInfo();
         
 		if(isAddFavoritable(accessToken, billInfo.getTarget(), billInfo.getRef1()) && !"favorite".equals(billInfo.getPayWith())){
-			if(isFavorited(accessToken, billInfo)){
-				billPaymentTransaction.getDraftTransaction().getBillInfo().setFavoritable(true);
-			}
+			billPaymentTransaction.getDraftTransaction().getBillInfo().setFavoritable(true);
+			billPaymentTransaction.getDraftTransaction().getBillInfo().setFavorited(isFavorited(accessToken, billInfo));			
 		}      
         
         return billPaymentTransaction;
