@@ -6,7 +6,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.After;
@@ -67,8 +66,7 @@ public class TransactionAuthenControllerSuccessTest {
 
 		this.mockMvc.perform(post("/authen/draft/{quoteID}/otp?accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "12345")
 			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andDo(print());
+			.andExpect(status().isOk());
 
 	}
 
@@ -82,8 +80,7 @@ public class TransactionAuthenControllerSuccessTest {
 		this.mockMvc.perform(put("/authen/draft/{quoteID}/otp/refCode?accessTokenID=12345", "1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(otp)))
-			.andExpect(status().isOk())
-			.andDo(print());
+			.andExpect(status().isOk());
 
 	}
 

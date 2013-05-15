@@ -4,7 +4,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -83,8 +82,7 @@ public class TmnProfileControllerLoginFailTest {
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.errorCode").value("1"))
 			.andExpect(jsonPath("$.errorDescription").value("error description"))
-			.andExpect(jsonPath("$.errorNamespace").value("TMN-SERVICE-INVENTORY"))
-			.andDo(print());
+			.andExpect(jsonPath("$.errorNamespace").value("TMN-SERVICE-INVENTORY"));
 
 	}
 

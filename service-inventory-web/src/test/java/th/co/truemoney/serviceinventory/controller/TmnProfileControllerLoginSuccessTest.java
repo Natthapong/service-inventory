@@ -2,12 +2,10 @@ package th.co.truemoney.serviceinventory.controller;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -96,8 +94,7 @@ public class TmnProfileControllerLoginSuccessTest {
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(loginRequest)))
 			.andExpect(status().isOk())
-			.andExpect(content().string("8e48e03be057319f40621fe9bcd123f750f6df1d"))
-			.andDo(print());
+			.andExpect(content().string("8e48e03be057319f40621fe9bcd123f750f6df1d"));
 	}
 	
 	@Test
@@ -110,8 +107,7 @@ public class TmnProfileControllerLoginSuccessTest {
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(mapper.writeValueAsBytes(favorite)))
 		.andExpect(status().isOk())
-		.andExpect(jsonPath("$.favoriteID").value(1000))
-		.andDo(print());
+		.andExpect(jsonPath("$.favoriteID").value(1000));
 	}
 	
 	@Test
@@ -126,8 +122,7 @@ public class TmnProfileControllerLoginSuccessTest {
 		this.mockMvc.perform(get("/ewallet/favorites?accessTokenID={accessTokenID}", "12345")
 		.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())	
-		.andExpect(jsonPath("$.[0].favoriteID").value(1000))
-		.andDo(print());
+		.andExpect(jsonPath("$.[0].favoriteID").value(1000));
 	}
 
 }
