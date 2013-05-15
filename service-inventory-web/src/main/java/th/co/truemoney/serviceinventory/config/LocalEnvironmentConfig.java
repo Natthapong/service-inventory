@@ -42,6 +42,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBalanceResponse
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsCreatableRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritableRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritedRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
@@ -173,6 +174,13 @@ public class LocalEnvironmentConfig {
 
                 return new ListFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContexts);
             }
+
+			@Override
+			public StandardBizResponse isFavorited(
+					IsFavoritedRequest isFavoritedRequest)
+					throws EwalletException {
+				 return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+			}
 
         };
     }

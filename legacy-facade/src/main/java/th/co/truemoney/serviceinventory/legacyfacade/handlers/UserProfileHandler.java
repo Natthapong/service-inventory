@@ -17,6 +17,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRespons
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.FavoriteContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritableRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritedRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
@@ -31,6 +32,8 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class UserProfileHandler {
 
 	private static final int VALID_CUSTOMER_STATUS = 3;
+	
+	private static final String SUCCESS_CODE = "0";
 
 	private static final String CUSTOMER_TYPE = "C";
 	
@@ -108,10 +111,27 @@ public class UserProfileHandler {
 	public Boolean isFavoritable(Integer channelID, String sessionID,
 			String tmnID, String serviceType, String serviceCode,
 			String reference1) {
+	
 		try {
 			StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavoritable(createIsFavoritableRequest(
 					channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
-			return "0".equals(standardBizResponse.getResultCode());
+			return SUCCESS_CODE.equals(standardBizResponse.getResultCode());
+		} catch (FailResultCodeException e) {
+			if (ALREADY_ADD_FAVORITE.equals(e.getCode()) || ADD_FAVORITE_DENIED .equals(e.getCode())) {
+				return false;
+			} 
+			throw e;			
+		}		
+	}
+	
+	public Boolean isFavorited(Integer channelID, String sessionID,
+			String tmnID, String serviceType, String serviceCode,
+			String reference1) {
+		
+		try {
+		StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavorited(createIsFavoritedRequest(
+				channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
+			return SUCCESS_CODE.equals(standardBizResponse.getResultCode());
 		} catch (FailResultCodeException e) {
 			if (ALREADY_ADD_FAVORITE.equals(e.getCode()) || ADD_FAVORITE_DENIED .equals(e.getCode())) {
 				return false;
@@ -155,6 +175,21 @@ public class UserProfileHandler {
 		favoritableRequest.setSecurityContext(securityContext);
 		
 		return favoritableRequest;
+	}
+	
+	private IsFavoritedRequest createIsFavoritedRequest(Integer channelID, String sessionID,
+			String tmnID, String serviceType, String serviceCode,
+			String reference1){
+		SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
+		
+		IsFavoritedRequest favoritedRequest = new IsFavoritedRequest();
+		favoritedRequest.setChannelId(channelID);
+		favoritedRequest.setServiceType(serviceType);
+		favoritedRequest.setServiceCode(serviceCode);
+		favoritedRequest.setReference1(reference1);
+		favoritedRequest.setSecurityContext(securityContext);
+		
+		return favoritedRequest;
 	}
 	
 	private StandardBizRequest createAccessRequest(Integer channelID, String sessionID, String truemoneyID) {
