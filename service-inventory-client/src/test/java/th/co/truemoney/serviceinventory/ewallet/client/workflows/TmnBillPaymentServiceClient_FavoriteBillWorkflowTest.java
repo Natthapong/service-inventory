@@ -130,7 +130,8 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		}		
 	}
 	
-	public void shouldFailBillPayWorkflowAtaddFavorite() throws InterruptedException {
+	@Test
+	public void shouldFailBillPayWorkflowAtAddFavorite() throws InterruptedException {
 		// login
 		String accessToken = profileService.login(
 				TestData.createAdamSuccessLogin(),
@@ -143,8 +144,9 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		
 		try {
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
+		fail("invalid service code");
 		} catch (ServiceInventoryException se) {
-			assertEquals("1017", se.getErrorCode());
+			assertEquals("1018", se.getErrorCode());
 		}
 	}
 }
