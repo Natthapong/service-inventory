@@ -226,10 +226,13 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         
         Bill billInfo = billPaymentTransaction.getDraftTransaction().getBillInfo();
         
-		if(isAddFavoritable(accessToken, billInfo.getTarget(), billInfo.getRef1()) && !"favorite".equals(billInfo.getPayWith())){
-			billPaymentTransaction.getDraftTransaction().getBillInfo().setFavoritable(true);
-			billPaymentTransaction.getDraftTransaction().getBillInfo().setFavorited(isFavorited(accessToken, billInfo));			
-		}      
+		
+		Boolean isFavoritable = isAddFavoritable(accessToken, billInfo.getTarget(), billInfo.getRef1());
+		Boolean isFavorited = isFavorited(accessToken, billInfo);
+		
+		billPaymentTransaction.getDraftTransaction().getBillInfo().setFavoritable(isFavoritable);
+		billPaymentTransaction.getDraftTransaction().getBillInfo().setFavorited(isFavorited);			
+		      
         
         return billPaymentTransaction;
     }
