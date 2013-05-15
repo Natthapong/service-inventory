@@ -98,5 +98,6 @@ public class FavoriteServiceImplTest {
 	public void getListFavorite(){
 		List<Favorite> favorites = favoriteServiceImpl.getFavorites("12345");
 		assertNotNull(favorites);
+		assertEquals(3, favorites.size());
 	}
 }

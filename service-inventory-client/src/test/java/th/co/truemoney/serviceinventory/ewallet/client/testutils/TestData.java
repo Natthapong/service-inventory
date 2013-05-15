@@ -17,5 +17,7 @@ public class TestData {
 		return new EWalletOwnerCredential("adam@tmn.com","password", 40);
 	}
 
-
+	public static EWalletOwnerCredential createEveSuccessLogin(){
+		return new EWalletOwnerCredential("eve@tmn.com","password", 40);
+	}
 }

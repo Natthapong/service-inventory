@@ -22,6 +22,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepo
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.UnVerifiedFavoritePaymentException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
@@ -178,7 +179,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         
         if(PAYWITH_FAVORITE.equals(bill.getPayWith()) &&
         		!isFavorited(accessToken, bill)) {
-        	throw new UnVerifiedOwnerTransactionException();
+        	throw new UnVerifiedFavoritePaymentException();        	
         }
         
         BillPaymentTransaction billPaymentReceipt = new BillPaymentTransaction(invoiceDetails);
