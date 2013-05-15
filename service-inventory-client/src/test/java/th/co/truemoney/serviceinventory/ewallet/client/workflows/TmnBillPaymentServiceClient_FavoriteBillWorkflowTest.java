@@ -54,7 +54,7 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 
 		assertNotNull(accessToken);
 
-		Favorite favoriteBill = createFavoriteBill();
+		Favorite favoriteBill = TestData.createFavoriteBill();
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
 		Bill bill = billPaymentServiceClient
@@ -100,12 +100,13 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 	public void shouldFailBillPayWorkflowAtPerformPayment() throws InterruptedException {
 		// login
 		String accessToken = profileService.login(
-				TestData.createEveSuccessLogin(),
+				TestData.createSimpsonsSuccessLogin(),
 				TestData.createSuccessClientLogin());
 
 		assertNotNull(accessToken);
 
-		Favorite favoriteBill = createFavoriteBill();
+		Favorite favoriteBill = TestData.createFavoriteBill();
+		
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
 		Bill bill = billPaymentServiceClient
@@ -126,18 +127,24 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 			fail("invalid favorite");
 		} catch (ServiceInventoryException se) {
 			assertEquals("1017", se.getErrorCode());
-		}
-		
+		}		
 	}
+	
+	public void shouldFailBillPayWorkflowAtaddFavorite() throws InterruptedException {
+		// login
+		String accessToken = profileService.login(
+				TestData.createAdamSuccessLogin(),
+				TestData.createSuccessClientLogin());
 
-	private Favorite createFavoriteBill() {
+		assertNotNull(accessToken);
 
-		Favorite favoriteBill = new Favorite();
-		favoriteBill.setAmount(new BigDecimal(2000));
-		favoriteBill.setRef1("555");
-		favoriteBill.setServiceCode("500");
-		favoriteBill.setServiceType("billpay");
-
-		return favoriteBill;
+		Favorite favoriteBill = TestData.createFavoriteBill();
+		favoriteBill.setServiceCode("tx");
+		
+		try {
+		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
+		} catch (ServiceInventoryException se) {
+			assertEquals("1017", se.getErrorCode());
+		}
 	}
 }
