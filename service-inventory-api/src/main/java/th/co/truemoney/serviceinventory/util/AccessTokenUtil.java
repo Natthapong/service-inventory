@@ -25,7 +25,6 @@ public class AccessTokenUtil {
 		String otp = "379864";
 		String data = id+otp+accessTokenID;
 		String result = EncryptUtil.buildHmacSignature(accessTokenID, data+SALT);
-		System.out.println(result);
 	}
 
 }

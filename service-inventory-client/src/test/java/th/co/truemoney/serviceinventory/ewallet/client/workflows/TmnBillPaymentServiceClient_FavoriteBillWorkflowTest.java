@@ -81,7 +81,6 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		// retry while processing
 		while (transactionStatus == BillPaymentTransaction.Status.PROCESSING) {
 			transactionStatus = billPaymentServiceClient.getBillPaymentStatus(billDraft.getID(), accessToken);
-			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
 

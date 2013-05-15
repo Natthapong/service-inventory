@@ -97,7 +97,6 @@ public class TopUpServiceClientWorkflowTest {
 		// retry while processing
 		while (topUpOrderStatus == Transaction.Status.PROCESSING) {
 			topUpOrderStatus = topUpService.getTopUpProcessingStatus(quote.getID(), accessToken);
-			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
 

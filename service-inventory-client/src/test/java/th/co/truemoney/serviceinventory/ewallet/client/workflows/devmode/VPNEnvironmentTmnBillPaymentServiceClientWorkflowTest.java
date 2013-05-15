@@ -54,10 +54,7 @@ public class VPNEnvironmentTmnBillPaymentServiceClientWorkflowTest {
 		try {
 			shouldSuccessBillPayWorkflow("|303235768500 010003357 010220120100006170 217297");
 		} catch (ServiceInventoryException ex) {
-			System.out.println(ex.getErrorCode());
-			System.out.println(ex.getErrorDescription());
-			System.out.println(ex.getDeveloperMessage());
-			
+			ex.printStackTrace();
 		}
 		
 	}

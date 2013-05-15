@@ -412,9 +412,7 @@ public class LocalEnvironmentConfig {
             public void send(SimpleMailMessage simpleMessage)
                     throws MailException {
                 try {
-                    System.out.println("stubJavaMailSender.send start");
                     Thread.sleep(3000);
-                    System.out.println("stubJavaMailSender.send stop");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -441,9 +439,7 @@ public class LocalEnvironmentConfig {
             @Override
             public void send(MimeMessage mimeMessage) throws MailException {
                 try {
-                    System.out.println("stubJavaMailSender.send start");
                     Thread.sleep(3000);
-                    System.out.println("stubJavaMailSender.send stop");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
