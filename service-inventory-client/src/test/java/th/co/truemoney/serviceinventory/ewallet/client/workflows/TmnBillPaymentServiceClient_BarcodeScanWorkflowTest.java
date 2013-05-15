@@ -108,6 +108,77 @@ public class TmnBillPaymentServiceClient_BarcodeScanWorkflowTest {
 		assertNotNull(p2pTransaction.getDraftTransaction());
 		assertNotNull(p2pTransaction.getConfirmationInfo());
 		assertEquals(BillPaymentTransaction.Status.SUCCESS, p2pTransaction.getStatus());
+		assertEquals(true, p2pTransaction.getDraftTransaction().getBillInfo().isFavoritable());
+		assertEquals(true, p2pTransaction.getDraftTransaction().getBillInfo().isFavorited());
+	}
+	
+	@Test
+	public void shouldSuccessBillPayWorkflowAndFalseFavoritable() throws InterruptedException {
+		// login
+		String accessToken = profileService.login(
+				TestData.createEveSuccessLogin(),
+				TestData.createSuccessClientLogin());
+
+		assertNotNull(accessToken);
+
+		String barcode = "|010554614953100 010004552 010520120200015601 85950";
+
+		Bill bill = billPaymentServiceClient.retrieveBillInformationWithBarcode(barcode, accessToken);
 		
+		assertNotNull(bill);
+		assertNotNull(bill.getID());
+
+		BigDecimal amount = new BigDecimal(50);
+		BillPaymentDraft billDraft = billPaymentServiceClient.verifyPaymentAbility(bill.getID(), amount, accessToken);
+		assertEquals(BillPaymentDraft.Status.CREATED, billDraft.getStatus());
+
+		// get transfer draft
+		billDraft = billPaymentServiceClient.getBillPaymentDraftDetail(billDraft.getID(), accessToken);
+		assertEquals(BillPaymentDraft.Status.CREATED, billDraft.getStatus());
+
+		// send otp and waiting confirm
+		OTP otp = authenClient.requestOTP(billDraft.getID(), accessToken);
+		assertNotNull(otp);
+		assertNotNull(otp.getReferenceCode());
+
+		// get transfer draft and check draft status
+		billDraft = billPaymentServiceClient.getBillPaymentDraftDetail(billDraft.getID(), accessToken);
+		assertEquals(BillPaymentDraft.Status.OTP_SENT, billDraft.getStatus());
+
+		// confirm otp
+		otp.setOtpString("111111");
+		BillPaymentDraft.Status draftStatus = authenClient.verifyOTP(billDraft.getID(), otp, accessToken);
+		assertNotNull(draftStatus);
+		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, draftStatus);
+		assertNotNull(billDraft.getTransactionID());
+
+		// get transfer draft and check draft status
+		billDraft = billPaymentServiceClient.getBillPaymentDraftDetail(billDraft.getID(), accessToken);
+		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, billDraft.getStatus());
+
+		BillPaymentTransaction.Status transactionStatus = billPaymentServiceClient.performPayment(billDraft.getID(), accessToken);
+		assertEquals(BillPaymentTransaction.Status.VERIFIED, transactionStatus);
+		// get order status
+		Thread.sleep(100);
+		transactionStatus = billPaymentServiceClient.getBillPaymentStatus(billDraft.getID(), accessToken);
+		assertNotNull(transactionStatus);
+
+		// retry while processing
+		while (transactionStatus == BillPaymentTransaction.Status.PROCESSING) {
+			transactionStatus = billPaymentServiceClient.getBillPaymentStatus(billDraft.getID(), accessToken);
+			Thread.sleep(1000);
+		}
+
+		// retry until success
+		assertEquals(BillPaymentTransaction.Status.SUCCESS, transactionStatus);
+
+		BillPaymentTransaction p2pTransaction = billPaymentServiceClient.getBillPaymentResult(billDraft.getID(), accessToken);
+
+		assertNotNull(p2pTransaction);
+		assertNotNull(p2pTransaction.getDraftTransaction());
+		assertNotNull(p2pTransaction.getConfirmationInfo());
+		assertEquals(BillPaymentTransaction.Status.SUCCESS, p2pTransaction.getStatus());
+		assertEquals(false, p2pTransaction.getDraftTransaction().getBillInfo().isFavoritable());
+		assertEquals(false, p2pTransaction.getDraftTransaction().getBillInfo().isFavorited());
 	}
 }
