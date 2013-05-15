@@ -38,6 +38,8 @@ public class UserProfileHandler {
 	private static final String ALREADY_ADD_FAVORITE = "2012";
 	
 	private static final String ADD_FAVORITE_DENIED  = "2013";
+	
+	private static final String FAVORITE_NOT_FOUND = "2014";
 
 	@Autowired
 	private TmnSecurityProxy tmnSecurityProxy;
@@ -126,11 +128,11 @@ public class UserProfileHandler {
 			String reference1) {
 		
 		try {
-		StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavorited(createIsFavoritedRequest(
+			StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavorited(createIsFavoritedRequest(
 				channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
 			return SUCCESS_CODE.equals(standardBizResponse.getResultCode());
 		} catch (FailResultCodeException e) {
-			if (ALREADY_ADD_FAVORITE.equals(e.getCode()) || ADD_FAVORITE_DENIED .equals(e.getCode())) {
+			if (FAVORITE_NOT_FOUND.equals(e.getCode())) {
 				return false;
 			} 
 			throw e;			
