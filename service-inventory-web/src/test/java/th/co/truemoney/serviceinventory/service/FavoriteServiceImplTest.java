@@ -86,13 +86,13 @@ public class FavoriteServiceImplTest {
 	}
 	
 	@Test
-	public void addFavoriteFailWithWrongFavorite(){
+	public void addFavoriteFailWithWrongFavoriteServiceCode(){
 		try{
 			Favorite wrongFavorite = new Favorite(2000L,"billpay","tx","0811234567",new BigDecimal(2000));
 			Favorite favoriteResult = favoriteServiceImpl.addFavorite(wrongFavorite, "12345");
 			fail("Add Favorite Fail with wrong service code");
 		} catch(ServiceInventoryException se) {
-			assertEquals("1017", se.getErrorCode());
+			assertEquals("1018", se.getErrorCode());
 		}
 	}
 	
