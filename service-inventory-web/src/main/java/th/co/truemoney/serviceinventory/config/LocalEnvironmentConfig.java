@@ -24,7 +24,6 @@ import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
-import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
@@ -179,7 +178,14 @@ public class LocalEnvironmentConfig {
 			public StandardBizResponse isFavorited(
 					IsFavoritedRequest isFavoritedRequest)
 					throws EwalletException {
-				 return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+				if(isFavoritedRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")) {
+					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")) {
+					throw new FailResultCodeException("2014", "stub ewallet client");
+				} else {
+					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+				}
+				
 			}
 
         };
