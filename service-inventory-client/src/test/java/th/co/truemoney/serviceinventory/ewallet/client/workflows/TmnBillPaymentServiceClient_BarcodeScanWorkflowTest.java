@@ -96,7 +96,6 @@ public class TmnBillPaymentServiceClient_BarcodeScanWorkflowTest {
 		// retry while processing
 		while (transactionStatus == BillPaymentTransaction.Status.PROCESSING) {
 			transactionStatus = billPaymentServiceClient.getBillPaymentStatus(billDraft.getID(), accessToken);
-			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
 

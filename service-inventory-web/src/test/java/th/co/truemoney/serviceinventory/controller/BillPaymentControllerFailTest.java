@@ -4,7 +4,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.After;
@@ -66,8 +65,6 @@ public class BillPaymentControllerFailTest {
 		//perform
 		this.mockMvc.perform(get("/bill-payment/information/?barcode=|010554614953100 010004552 010520120200015601 85950&accessTokenID=12345")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isBadRequest())
-				.andDo(print());
-
+				.andExpect(status().isBadRequest());
 	}
 }

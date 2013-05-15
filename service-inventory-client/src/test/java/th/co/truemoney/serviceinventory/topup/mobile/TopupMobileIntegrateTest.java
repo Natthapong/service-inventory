@@ -65,7 +65,6 @@ public class TopupMobileIntegrateTest {
 
 		while (status == TopUpMobileTransaction.Status.PROCESSING) {
 			status = client.getTopUpMobileStatus(topUpMobileDraft.getID(), accessToken);
-			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
 

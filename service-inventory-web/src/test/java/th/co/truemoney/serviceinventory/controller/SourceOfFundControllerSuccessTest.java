@@ -4,7 +4,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
@@ -65,9 +64,7 @@ public class SourceOfFundControllerSuccessTest {
 
 		this.mockMvc.perform(get("/ewallet/profile/source-of-fund/direct-debits?channelID=41&accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "local@tmn.com")
 			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andDo(print());
-
+			.andExpect(status().isOk());
 	}
 
 }

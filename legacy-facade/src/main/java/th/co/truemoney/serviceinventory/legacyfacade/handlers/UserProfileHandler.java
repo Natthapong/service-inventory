@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.legacyfacade.handlers;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -102,6 +104,7 @@ public class UserProfileHandler {
 		
 		ListFavoriteResponse listFavoriteResponse = this.tmnProfileProxy.listFavorite(listFavoriteRequest);
 		FavoriteContext[] favoriteContext = listFavoriteResponse.getFavoriteList();
+		
 		List<Favorite> favorites = createFavorites(favoriteContext);		
 		
 		return favorites;
@@ -211,18 +214,25 @@ public class UserProfileHandler {
 	}
 	
 	private List<Favorite> createFavorites(FavoriteContext[] favoriteContext) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+
 		List<Favorite> list = new ArrayList<Favorite>();
 		
-		if(favoriteContext!=null) {
-			for(FavoriteContext context : favoriteContext){
-				Favorite favorite = new Favorite();
-				favorite.setAmount(context.getAmount());
-				favorite.setFavoriteID(new Long(context.getFavoriteId()));
-				favorite.setRef1(context.getReference1());
-				favorite.setServiceCode(context.getServiceCode());
-				favorite.setServiceType(context.getServiceType());
-				list.add(favorite);
+		try {
+			if(favoriteContext!=null) {
+				for(FavoriteContext context : favoriteContext){
+					Favorite favorite = new Favorite();
+					favorite.setAmount(context.getAmount());
+					favorite.setFavoriteID(new Long(context.getFavoriteId()));
+					favorite.setRef1(context.getReference1());
+					favorite.setServiceCode(context.getServiceCode());
+					favorite.setServiceType(context.getServiceType());
+					favorite.setDate(df.parse(context.getCreatedDate()));
+					list.add(favorite);
+				}
 			}
+		} catch (ParseException e) {
+			throw new ServiceInventoryException(500, "2001", "Invalid favorite date", "TMN-SERVICE-INVENTORY");
 		}
 		
 		return list;

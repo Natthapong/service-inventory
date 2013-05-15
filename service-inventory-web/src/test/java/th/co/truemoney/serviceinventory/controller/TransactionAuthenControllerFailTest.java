@@ -5,7 +5,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.After;
@@ -68,9 +67,7 @@ public class TransactionAuthenControllerFailTest {
 		this.mockMvc.perform(put("/authen/draft/myQuoteID/otp/myRefCode?accessTokenID=1234567", "1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(otp)))
-			.andExpect(status().isOk())
-			.andDo(print());
-
+			.andExpect(status().isOk());
 	}
 
 }

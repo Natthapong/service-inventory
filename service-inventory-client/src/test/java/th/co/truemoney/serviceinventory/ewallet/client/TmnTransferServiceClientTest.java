@@ -145,7 +145,6 @@ public class TmnTransferServiceClientTest {
 		// retry while processing
 		while (p2pTransactionStatus != P2PTransferTransaction.Status.SUCCESS) {
 			p2pTransactionStatus = p2pTransferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessToken);
-			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
 
