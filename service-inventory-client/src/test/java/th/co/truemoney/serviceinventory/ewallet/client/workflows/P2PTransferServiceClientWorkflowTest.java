@@ -91,7 +91,6 @@ public class P2PTransferServiceClientWorkflowTest {
 		// retry while processing
 		while (transactionStatus == Transaction.Status.PROCESSING) {
 			transactionStatus = transferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessTokenID);
-			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
 
@@ -163,7 +162,6 @@ public class P2PTransferServiceClientWorkflowTest {
 				// retry while processing
 				while (transactionStatus == Transaction.Status.PROCESSING) {
 					transactionStatus = transferServiceClient.getTransferringStatus(p2pTransferDraft.getID(), accessTokenID);
-					System.out.println("processing top up ...");
 					Thread.sleep(1000);
 				}
 

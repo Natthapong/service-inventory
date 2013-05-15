@@ -24,7 +24,6 @@ import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
-import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
@@ -168,9 +167,9 @@ public class LocalEnvironmentConfig {
             public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
                     throws EwalletException {
                 FavoriteContext[] favoriteContexts = new FavoriteContext[3];
-                favoriteContexts[0] = new FavoriteContext("1", "", "", "", new BigDecimal("1.00"), "");
-                favoriteContexts[1] = new FavoriteContext("2", "", "", "", new BigDecimal("1.00"), "");
-                favoriteContexts[2] = new FavoriteContext("3", "", "", "", new BigDecimal("1.00"), "");
+                favoriteContexts[0] = new FavoriteContext("1", "billpay", "d.trmv", "", new BigDecimal("13.00"), "20000211101010");
+                favoriteContexts[1] = new FavoriteContext("2", "billpay", "d.tmvh", "", new BigDecimal("19.00"), "20000212101010");
+                favoriteContexts[2] = new FavoriteContext("3", "billpay", "d.tlp", "", new BigDecimal("18.00"), "20000210101010");
 
                 return new ListFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContexts);
             }
@@ -179,11 +178,13 @@ public class LocalEnvironmentConfig {
 			public StandardBizResponse isFavorited(
 					IsFavoritedRequest isFavoritedRequest)
 					throws EwalletException {
-				 if(isFavoritedRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
-					 return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
-				 } else {
-					 return new StandardBizResponse("1", "2014", "namespace", new String[] { "key" }, new String[] { "value" });
-				 }
+				if(isFavoritedRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")) {
+					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")) {
+					throw new FailResultCodeException("2014", "stub ewallet client");
+				} else {
+					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+				}
 			}
 
         };
@@ -417,9 +418,7 @@ public class LocalEnvironmentConfig {
             public void send(SimpleMailMessage simpleMessage)
                     throws MailException {
                 try {
-                    System.out.println("stubJavaMailSender.send start");
                     Thread.sleep(3000);
-                    System.out.println("stubJavaMailSender.send stop");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -446,9 +445,7 @@ public class LocalEnvironmentConfig {
             @Override
             public void send(MimeMessage mimeMessage) throws MailException {
                 try {
-                    System.out.println("stubJavaMailSender.send start");
                     Thread.sleep(3000);
-                    System.out.println("stubJavaMailSender.send stop");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

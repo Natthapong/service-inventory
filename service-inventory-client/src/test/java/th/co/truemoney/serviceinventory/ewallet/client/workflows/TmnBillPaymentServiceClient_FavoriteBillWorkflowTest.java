@@ -1,7 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.client.workflows;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 
@@ -25,6 +24,7 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryCl
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -81,7 +81,6 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		// retry while processing
 		while (transactionStatus == BillPaymentTransaction.Status.PROCESSING) {
 			transactionStatus = billPaymentServiceClient.getBillPaymentStatus(billDraft.getID(), accessToken);
-			System.out.println("processing top up ...");
 			Thread.sleep(1000);
 		}
 
@@ -95,6 +94,40 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		assertNotNull(p2pTransaction.getConfirmationInfo());
 		assertEquals(BillPaymentTransaction.Status.SUCCESS, p2pTransaction.getStatus());
 
+	}
+	
+	@Test
+	public void shouldFailBillPayWorkflowAtPerformPayment() throws InterruptedException {
+		// login
+		String accessToken = profileService.login(
+				TestData.createEveSuccessLogin(),
+				TestData.createSuccessClientLogin());
+
+		assertNotNull(accessToken);
+
+		Favorite favoriteBill = createFavoriteBill();
+		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
+
+		Bill bill = billPaymentServiceClient
+					.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getAmount(), accessToken);
+
+		assertNotNull(bill);
+		assertNotNull(bill.getID());
+
+		BigDecimal amount = new BigDecimal(50);
+		BillPaymentDraft billDraft = billPaymentServiceClient.verifyPaymentAbility(bill.getID(), amount, accessToken);
+		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, billDraft.getStatus());
+
+		// get transfer draft
+		billDraft = billPaymentServiceClient.getBillPaymentDraftDetail(billDraft.getID(), accessToken);
+		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, billDraft.getStatus());
+		try{
+			billPaymentServiceClient.performPayment(billDraft.getID(), accessToken);
+			fail("invalid favorite");
+		} catch (ServiceInventoryException se) {
+			assertEquals("1017", se.getErrorCode());
+		}
+		
 	}
 
 	private Favorite createFavoriteBill() {

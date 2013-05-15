@@ -45,6 +45,7 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
 		public static final String OWNER_ALREADY_CONFIRMED = "1014";
 		public static final String CONFIRM_TPP_FAILED = "1015";
 		public static final String CONFIRM_PCS_FAILED = "1016";
+		public static final String FAVORITE_PAYMENT_UNVERIFIED = "1017";
 
 		//profile
 		public static final String INVALID_PROFILE_TYPE 	= "10000";

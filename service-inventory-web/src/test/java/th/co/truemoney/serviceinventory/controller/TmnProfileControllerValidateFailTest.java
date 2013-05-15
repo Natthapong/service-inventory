@@ -4,7 +4,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.After;
@@ -75,9 +74,7 @@ public class TmnProfileControllerValidateFailTest {
 		this.mockMvc.perform(post("/ewallet/login")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(loginRequest)))
-			.andExpect(status().isPreconditionFailed())
-			.andDo(print());
-
+			.andExpect(status().isPreconditionFailed());
 	}
 
 	@Test
@@ -97,9 +94,7 @@ public class TmnProfileControllerValidateFailTest {
 		this.mockMvc.perform(post("/ewallet/login")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsBytes(loginRequest)))
-			.andExpect(status().isPreconditionFailed())
-			.andDo(print());
-
+			.andExpect(status().isPreconditionFailed());
 	}
 
 }
