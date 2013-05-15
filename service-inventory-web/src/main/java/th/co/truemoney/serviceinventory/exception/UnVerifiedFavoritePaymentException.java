@@ -6,4 +6,8 @@ public class UnVerifiedFavoritePaymentException extends ServiceInventoryWebExcep
 	public UnVerifiedFavoritePaymentException() {
 		super(400, Code.FAVORITE_PAYMENT_UNVERIFIED, "unverify with truemoneyID and favorite", ServiceInventoryWebException.NAMESPACE);
 	}
+	
+	public UnVerifiedFavoritePaymentException(String code, String description) {
+		super(400, code, description, ServiceInventoryWebException.NAMESPACE);
+	}
 }
