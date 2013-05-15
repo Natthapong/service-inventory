@@ -17,7 +17,7 @@
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{dd/MM/yyyy - HH:mm:ss:SSS} [%t] %c{1} - %m%n" />
 		</layout>
-    <appender>
+    </appender>
 	
 	<!-- 
 	<logger name="org.springframework.samples">
