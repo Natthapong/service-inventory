@@ -23,6 +23,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
+
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
@@ -72,6 +73,7 @@ import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.firsthop.proxy.impl.SmsProxyImpl;
 import th.co.truemoney.serviceinventory.persona.Adam;
 import th.co.truemoney.serviceinventory.persona.Eve;
+import th.co.truemoney.serviceinventory.persona.Simpsons;
 import th.co.truemoney.serviceinventory.persona.TrueConvergenceOneBillPersona;
 import th.co.truemoney.serviceinventory.sms.OTPGenerator;
 import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
@@ -89,6 +91,7 @@ public class LocalEnvironmentConfig {
 
     private Adam adam = new Adam();
     private Eve eve = new Eve();
+    private Simpsons simpsons = new Simpsons();
 
     @Bean
     @Primary
@@ -105,10 +108,7 @@ public class LocalEnvironmentConfig {
                 }else if(standardBizRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
                     return eve.getTmnProfile().getBasicProfile(standardBizRequest);
                 }else if(standardBizRequest.getSecurityContext().getTmnId().equals("SimpsonsTmnMoneyId")){
-                	return new GetBasicProfileResponse("1", "0", "namespace",
-                            new String[] { "key" }, new String[] { "value" },
-                            "SimpsonsTmnMoneyId", "simpsons@tmn.com", "0891231234",
-                            new BigDecimal(50.0d), "C", 3);
+                	return simpsons.getTmnProfile().getBasicProfile(standardBizRequest);
                 }else{
                     return new GetBasicProfileResponse("1", "0", "namespace",
                             new String[] { "key" }, new String[] { "value" },
@@ -152,11 +152,11 @@ public class LocalEnvironmentConfig {
             		throw new FailResultCodeException("2013", "stub ADD_FAVORITE_DENIED");
             	}            
                 if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
-                    return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+                    return adam.getTmnProfile().isFavoritable(isIsFavoritableRequest);
                 }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
-                	throw new FailResultCodeException("2013", "stub ewallet client");
+                	return eve.getTmnProfile().isFavoritable(isIsFavoritableRequest);                	
                 }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("SimpsonsTmnMoneyId")){
-                    return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+                    return simpsons.getTmnProfile().isFavoritable(isIsFavoritableRequest);
                 }else {
                 	return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
                 }
@@ -184,6 +184,7 @@ public class LocalEnvironmentConfig {
             @Override
             public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
                     throws EwalletException {
+            	
                 FavoriteContext[] favoriteContexts = new FavoriteContext[3];
                 favoriteContexts[0] = new FavoriteContext("1", "billpay", "d.trmv", "", new BigDecimal("13.00"), "20000211101010");
                 favoriteContexts[1] = new FavoriteContext("2", "billpay", "d.tmvh", "", new BigDecimal("19.00"), "20000212101010");
@@ -197,11 +198,11 @@ public class LocalEnvironmentConfig {
 					IsFavoritedRequest isFavoritedRequest)
 					throws EwalletException {
 				if(isFavoritedRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")) {
-					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+					return adam.getTmnProfile().isFavorited(isFavoritedRequest);
 				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")) {
-					throw new FailResultCodeException("2014", "stub ewallet client");
+					return eve.getTmnProfile().isFavorited(isFavoritedRequest);
 				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals("SimpsonsTmnMoneyId")) {
-					throw new FailResultCodeException("2014", "stub ewallet client");
+					return simpsons.getTmnProfile().isFavorited(isFavoritedRequest);
 				}else {
 					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
 				}
