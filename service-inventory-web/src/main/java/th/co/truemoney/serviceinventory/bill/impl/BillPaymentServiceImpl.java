@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.bill.impl;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
@@ -252,12 +253,17 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     }
     
 	private void validateMinMaxAmount(BigDecimal amount, BigDecimal minAmount, BigDecimal maxAmount) {
+		HashMap<String, BigDecimal> mapData = new HashMap<String, BigDecimal>();
+		mapData.put("minAmount", minAmount);
+		mapData.put("maxAmount", maxAmount);
 		if (minAmount != null && amount.compareTo(minAmount) < 0) {
-			ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_AMOUNT_LESS, "amount less than min amount.");
+			ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_BILL_PAYMENT_AMOUNT, "amount less than min amount.");
+			se.marshallToData(mapData);
 			throw se;
 		}
 		if (maxAmount != null && amount.compareTo(maxAmount) > 0) {
-			ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_AMOUNT_MORE, "amount more than max amount.");
+			ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_BILL_PAYMENT_AMOUNT, "amount more than max amount.");
+			se.marshallToData(mapData);
 			throw se;
 		}
 	}
