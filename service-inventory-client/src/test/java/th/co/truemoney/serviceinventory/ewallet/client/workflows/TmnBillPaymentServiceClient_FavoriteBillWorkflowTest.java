@@ -149,4 +149,61 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 			assertEquals("1018", se.getErrorCode());
 		}
 	}
+	
+	@Test
+	public void shouldFailedValidateMinAmountBillPayWorkflow() throws InterruptedException {
+		// login
+		String accessToken = profileService.login(
+				TestData.createAdamSuccessLogin(),
+				TestData.createSuccessClientLogin());
+
+		assertNotNull(accessToken);
+
+		Favorite favoriteBill = TestData.createFavoriteBill();
+		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
+
+		Bill bill = billPaymentServiceClient
+					.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getAmount(), accessToken);
+
+		assertNotNull(bill);
+		assertNotNull(bill.getID());
+
+		try {
+			BigDecimal amount = new BigDecimal(0);
+			billPaymentServiceClient.verifyPaymentAbility(bill.getID(), amount, accessToken);
+			fail("invalid min amount");
+		} catch (ServiceInventoryException e) {
+			assertEquals("20001", e.getErrorCode());
+		}
+		
+	}
+	
+	@Test
+	public void shouldFailedValidateMaxAmountBillPayWorkflow() throws InterruptedException {
+		// login
+		String accessToken = profileService.login(
+				TestData.createAdamSuccessLogin(),
+				TestData.createSuccessClientLogin());
+
+		assertNotNull(accessToken);
+
+		Favorite favoriteBill = TestData.createFavoriteBill();
+		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
+
+		Bill bill = billPaymentServiceClient
+					.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getAmount(), accessToken);
+
+		assertNotNull(bill);
+		assertNotNull(bill.getID());
+
+		try {
+			BigDecimal amount = new BigDecimal("200000000");
+			billPaymentServiceClient.verifyPaymentAbility(bill.getID(), amount, accessToken);
+			fail("invalid max amount");
+		} catch (ServiceInventoryException e) {
+			assertEquals("20002", e.getErrorCode());
+		}
+		
+	}
+	
 }
