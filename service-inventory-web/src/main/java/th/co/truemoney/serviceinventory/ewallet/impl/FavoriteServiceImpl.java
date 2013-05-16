@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.exception.UnVerifiedFavoritePaymentException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 
 public class FavoriteServiceImpl implements FavoriteService {
@@ -24,6 +25,11 @@ public class FavoriteServiceImpl implements FavoriteService {
 	public Favorite addFavorite(Favorite favorite, String accessTokenID)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
+		
+		if(!isFavoritable(favorite.getServiceType() , favorite.getServiceCode(), favorite.getRef1(), accessToken.getAccessTokenID())) {
+			throw new UnVerifiedFavoritePaymentException(Code.FAVORITE_SERVICE_CODE_NOT_INLIST, "service code not in list");
+		}
+		
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 				.fromChannel(accessToken.getChannelID())
 				.withFavorite(favorite)
@@ -33,7 +39,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 	@Override
 	public List<Favorite> getFavorites(String accessTokenID)
 			throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
+		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);		
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 				.fromChannel(accessToken.getChannelID())
 				.getListFavorite();

@@ -46,6 +46,7 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
 		public static final String CONFIRM_TPP_FAILED = "1015";
 		public static final String CONFIRM_PCS_FAILED = "1016";
 		public static final String FAVORITE_PAYMENT_UNVERIFIED = "1017";
+		public static final String FAVORITE_SERVICE_CODE_NOT_INLIST = "1018";
 
 		//profile
 		public static final String INVALID_PROFILE_TYPE 	= "10000";

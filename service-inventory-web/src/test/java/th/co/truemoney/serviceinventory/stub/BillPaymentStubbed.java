@@ -30,6 +30,8 @@ public class BillPaymentStubbed {
 		billPaymentInfo.setRef2("010520120200015601");
 
 		billPaymentInfo.setAmount(new BigDecimal("10000"));
+		billPaymentInfo.setMinAmount(new BigDecimal("100"));
+		billPaymentInfo.setMaxAmount(new BigDecimal("300000"));
 
 		ServiceFeeInfo serviceFee = new ServiceFeeInfo();
 		serviceFee.setFeeRate(new BigDecimal("1000"));
@@ -42,7 +44,7 @@ public class BillPaymentStubbed {
 		sourceOfFundFee.setFeeRate(new BigDecimal("1000"));
 		sourceOfFundFee.setFeeRateType("THB");
 		sourceOfFundFee.setMinFeeAmount(new BigDecimal("100"));
-		sourceOfFundFee.setMaxFeeAmount(new BigDecimal("2500"));
+		sourceOfFundFee.setMaxFeeAmount(new BigDecimal("300000"));
 		sourceOfFundFees[0] = sourceOfFundFee;
 		billPaymentInfo.setSourceOfFundFees(sourceOfFundFees);
 

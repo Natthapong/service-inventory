@@ -86,9 +86,9 @@ public class Adam implements Persona {
 			public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
 					throws EwalletException {
 				FavoriteContext[] favoriteContexts = new FavoriteContext[3];
-				favoriteContexts[0] = new FavoriteContext("1", "", "", "", new BigDecimal("1.00"), "");
-				favoriteContexts[0] = new FavoriteContext("2", "", "", "", new BigDecimal("1.00"), "");
-				favoriteContexts[0] = new FavoriteContext("3", "", "", "", new BigDecimal("1.00"), "");
+				favoriteContexts[0] = new FavoriteContext("1", "billpay", "d.trmv", "", new BigDecimal("13.00"), "20000211101010");
+                favoriteContexts[1] = new FavoriteContext("2", "billpay", "d.tmvh", "", new BigDecimal("19.00"), "20000212101010");
+                favoriteContexts[2] = new FavoriteContext("3", "billpay", "d.tlp", "", new BigDecimal("18.00"), "20000210101010");
 
 				return new ListFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContexts);
 			}
@@ -97,8 +97,7 @@ public class Adam implements Persona {
 			public StandardBizResponse isFavorited(
 					IsFavoritedRequest isFavoritedRequest)
 					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
+				return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
 			}
 		};
 	}

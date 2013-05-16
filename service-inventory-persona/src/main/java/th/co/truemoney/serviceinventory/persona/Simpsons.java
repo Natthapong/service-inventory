@@ -27,8 +27,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRespons
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 
-public class Eve implements Persona {
-
+public class Simpsons  implements Persona {
 	@Override
 	public TmnProfileProxy getTmnProfile() {
 		return new TmnProfileProxy() {
@@ -38,9 +37,9 @@ public class Eve implements Persona {
 					StandardBizRequest standardBizRequest)
 					throws EwalletException {
 				return new GetBasicProfileResponse("1", "0", "namespace",
-						new String[] { "key" }, new String[] { "value" },
-						"eve", "eve@tmn.com", "0892222222",
-						new BigDecimal(50.0d), "C", 3);
+                        new String[] { "key" }, new String[] { "value" },
+                        "SimpsonsTmnMoneyId", "simpsons@tmn.com", "0891231234",
+                        new BigDecimal(50.0d), "C", 3);
 			}
 
 			@Override
@@ -59,11 +58,11 @@ public class Eve implements Persona {
 
 				SourceContext[] sourceContext = new SourceContext[3];
 				sourceContext[0] = new SourceContext("1", "type", new String[] {
-						"SCB", "xxxx1234" });
+						"SCB", "xxxx1233" });
 				sourceContext[1] = new SourceContext("2", "type", new String[] {
-						"KTB", "xxxx5678" });
+						"KTB", "xxx5673" });
 				sourceContext[2] = new SourceContext("3", "type", new String[] {
-						"BBL", "xxxx9101" });
+						"BBL", "xxxx9103" });
 
 				return new ListSourceResponse("1", "2", "namespace",
 						new String[] { "key" }, new String[] { "value" },
@@ -73,9 +72,8 @@ public class Eve implements Persona {
 			@Override
 			public StandardBizResponse isFavoritable(IsFavoritableRequest isIsFavoritableRequest)
 					throws EwalletException {
-				//return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
-				throw new FailResultCodeException("2013", "stub ewallet client");
-			}				
+				return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+			}
 
 			@Override
 			public AddFavoriteResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
@@ -86,8 +84,9 @@ public class Eve implements Persona {
 			@Override
 			public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
 					throws EwalletException {
-				FavoriteContext[] favoriteContexts = new FavoriteContext[1];
-				favoriteContexts[0] = new FavoriteContext("1", "billpay", "d.trmv", "", new BigDecimal("13.00"), "20000211101010");                
+				FavoriteContext[] favoriteContexts = new FavoriteContext[2];
+				favoriteContexts[0] = new FavoriteContext("1", "billpay", "d.trmv", "", new BigDecimal("15.00"), "20000211101010");
+                favoriteContexts[1] = new FavoriteContext("2", "billpay", "d.tlp", "", new BigDecimal("17.00"), "20000210101010");
 
 				return new ListFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContexts);
 			}
@@ -98,7 +97,6 @@ public class Eve implements Persona {
 					throws EwalletException {
 				throw new FailResultCodeException("2014", "stub ewallet client");
 			}
-			
 		};
 	}
 
@@ -113,12 +111,12 @@ public class Eve implements Persona {
 				String initiator = signOnRequest.getInitiator();
 				String password = signOnRequest.getPin();
 
-				if ("eve@tmn.com".equals(initiator)
+				if ("simpson@tmn.com".equals(initiator)
 						&& "password".equals(password)) {
 
 					return new SignonResponse("1", "0", "namespace",
 							new String[] { "key" }, new String[] { "value" },
-							"sessionId", "EveTmnMoneyId");
+							"sessionId", "SimpsonsTmnMoneyId");
 				}
 
 				throw new FailResultCodeException("4", "");
@@ -157,5 +155,4 @@ public class Eve implements Persona {
 
 		};
 	}
-
 }

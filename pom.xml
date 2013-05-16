@@ -265,13 +265,13 @@
         <repository>
             <id>jenkins-nexus</id>
             <name>Internal Truemoney package releases</name>
-            <url>http://nexus.dev.truemoney.co.th:8888/nexus/content/repositories/releases</url>
+            <url>http://nexus.dev.truemoney.co.th/nexus/content/repositories/releases</url>
         </repository>
 
         <snapshotRepository>
             <id>jenkins-nexus</id>
             <name>Internal Truemoney package snapshots</name>
-            <url>http://nexus.dev.truemoney.co.th:8888/nexus/content/repositories/snapshots</url>
+            <url>http://nexus.dev.truemoney.co.th/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 

@@ -38,25 +38,14 @@ public class FavoriteServiceWorkflowTest {
 				TestData.createAdamSuccessLogin(),
 				TestData.createSuccessClientLogin());
 
-		Favorite favoriteBill = createFavoriteBill();
+		Favorite favoriteBill = TestData.createFavoriteBill();
 
 		Favorite favoriteResponse = client.addFavorite(favoriteBill, accessTokenID);
 		assertNotNull(favoriteResponse);
 
 		assertEquals("555", favoriteResponse.getRef1());
 		//assertEquals(new Long(2000), favoriteResponse.getFavoriteID());
-	}
-
-	private Favorite createFavoriteBill() {
-
-		Favorite favoriteBill = new Favorite();
-		favoriteBill.setAmount(new BigDecimal(2000));
-		favoriteBill.setRef1("555");
-		favoriteBill.setServiceCode("500");
-		favoriteBill.setServiceType("billpay");
-
-		return favoriteBill;
-	}
+	}	
 
 	@Test
 	public void getFavorites() {

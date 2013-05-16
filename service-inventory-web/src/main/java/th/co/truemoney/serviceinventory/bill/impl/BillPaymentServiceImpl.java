@@ -22,8 +22,8 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepo
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.exception.UnVerifiedFavoritePaymentException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.exception.UnVerifiedFavoritePaymentException;
 import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 
@@ -137,6 +137,8 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
 		Bill billInfo = billInfoRepo.findBill(billID, accessTokenID);
 
+		validateMinMaxAmount(amount, billInfo.getMinAmount(), billInfo.getMaxAmount());
+		
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		ClientCredential appData = accessToken.getClientCredential();
 
@@ -226,10 +228,13 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         
         Bill billInfo = billPaymentTransaction.getDraftTransaction().getBillInfo();
         
-		if(isAddFavoritable(accessToken, billInfo.getTarget(), billInfo.getRef1()) && !"favorite".equals(billInfo.getPayWith())){
-			billPaymentTransaction.getDraftTransaction().getBillInfo().setFavoritable(true);
-			billPaymentTransaction.getDraftTransaction().getBillInfo().setFavorited(isFavorited(accessToken, billInfo));			
-		}      
+		
+		Boolean isFavoritable = isAddFavoritable(accessToken, billInfo.getTarget(), billInfo.getRef1());
+		Boolean isFavorited = isFavorited(accessToken, billInfo);
+		
+		billPaymentTransaction.getDraftTransaction().getBillInfo().setFavoritable(isFavoritable);
+		billPaymentTransaction.getDraftTransaction().getBillInfo().setFavorited(isFavorited);			
+		      
         
         return billPaymentTransaction;
     }
@@ -245,5 +250,16 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     public void setAsyncBillPayProcessor(AsyncBillPayProcessor asyncBillPayProcessor) {
         this.asyncBillPayProcessor = asyncBillPayProcessor;
     }
+    
+	private void validateMinMaxAmount(BigDecimal amount, BigDecimal minAmount, BigDecimal maxAmount) {
+		if (minAmount != null && amount.compareTo(minAmount) < 0) {
+			ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_AMOUNT_LESS, "amount less than min amount.");
+			throw se;
+		}
+		if (maxAmount != null && amount.compareTo(maxAmount) > 0) {
+			ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_AMOUNT_MORE, "amount more than max amount.");
+			throw se;
+		}
+	}
 
 }

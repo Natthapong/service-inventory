@@ -64,7 +64,8 @@ public class FavoriteServiceImplTest {
 		accessTokenRepo.save(new AccessToken("0000", "5555", "EveTmnMoneyId", "0868185055", "eve@tmn.com", 41));
 		accessTokenRepo.save(new AccessToken("0001", "5555", "failUser", "0868185055", "fail@tmn.com", 41));
 		favoriteServiceImpl.setAccessTokenRepository(accessTokenRepo);
-		favorite = new Favorite(2000L,"serviceType","101","102",new BigDecimal(2000));
+		favorite = new Favorite(2000L,"billpay","tr","0811234567",new BigDecimal(2000));
+		// tr, trmv, tmvh, tlp, tic, ti, tcg
 	}
 	
 	
@@ -75,22 +76,35 @@ public class FavoriteServiceImplTest {
 	}
 	
 	@Test
-	public void addFavoriteFail(){
+	public void addFavoriteFailWithWrongTmnIDUser(){
 		try{
 			Favorite favoriteResult = favoriteServiceImpl.addFavorite(favorite, "0001");
-			fail("Add Favorite Fail");
+			fail("Add Favorite Fail with wrong tmnID user");
 		}catch(FailResultCodeException e){
 			assertEquals("500", e.getCode());
 		}
 	}
 	
 	@Test
-	public void isFavorite(){
-		Boolean isFavorite = favoriteServiceImpl.isFavoritable("serviceType", "serviceCode", "ref1","12345");
+	public void addFavoriteFailWithWrongFavoriteServiceCode(){
+		try{
+			Favorite wrongFavorite = new Favorite(2000L,"billpay","tx","0811234567",new BigDecimal(2000));
+			Favorite favoriteResult = favoriteServiceImpl.addFavorite(wrongFavorite, "12345");
+			fail("Add Favorite Fail with wrong service code");
+		} catch(ServiceInventoryException se) {
+			assertEquals("1018", se.getErrorCode());
+		}
+	}
+	
+	
+	
+	@Test
+	public void isFavoritable(){
+		Boolean isFavorite = favoriteServiceImpl.isFavoritable("serviceType", "trmv", "ref1","12345");
 		assertNotNull(isFavorite);
 		assertEquals(true, isFavorite);
 		
-		isFavorite = favoriteServiceImpl.isFavoritable("serviceType", "serviceCode", "ref1", "0000");
+		isFavorite = favoriteServiceImpl.isFavoritable("serviceType", "tcg", "ref1", "0000");
 		assertNotNull(isFavorite);
 		assertEquals(false, isFavorite);
 	}
