@@ -13,12 +13,15 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction.FailStatus;
 
 @Service
 public class TopUpMobileServiceImpl implements TopUpMobileService {
@@ -102,8 +105,20 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	@Override
 	public TopUpMobileTransaction.Status getTopUpMobileStatus(String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
-		TopUpMobileTransaction topUpMobileTransaction = getTopUpMobileResult(transactionID, accessTokenID);
-		return topUpMobileTransaction.getStatus();
+		TopUpMobileTransaction transaction = getTopUpMobileResult(transactionID, accessTokenID);
+		if (transaction.getStatus() == TopUpMobileTransaction.Status.FAILED) {
+			FailStatus failSts = transaction.getFailStatus();
+			if (FailStatus.PCS_FAILED == failSts) {
+        		throw new ServiceInventoryWebException(Code.CONFIRM_PCS_FAILED, "pcs confirmation processing fail.");
+        	} else if (FailStatus.TPP_FAILED == failSts) {
+        		throw new ServiceInventoryWebException(Code.CONFIRM_TPP_FAILED, "tpp confirmation processing fail.");
+        	} else if (FailStatus.UMARKET_FAILED == failSts) {
+        		throw new ServiceInventoryWebException(Code.CONFIRM_UMARKET_FAILED, "u-market confirmation processing fail.");
+        	} else { //UNKNOWN FAIL
+        		throw new ServiceInventoryWebException(Code.CONFIRM_FAILED, "confirmation processing fail.");
+        	}
+		}
+		return transaction.getStatus();
 	}
 
 	@Override
