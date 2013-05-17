@@ -173,7 +173,7 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 			billPaymentServiceClient.verifyPaymentAbility(bill.getID(), amount, accessToken);
 			fail("invalid min amount");
 		} catch (ServiceInventoryException e) {
-			assertEquals("20001", e.getErrorCode());
+			assertEquals("20003", e.getErrorCode());
 		}
 		
 	}
@@ -201,7 +201,7 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 			billPaymentServiceClient.verifyPaymentAbility(bill.getID(), amount, accessToken);
 			fail("invalid max amount");
 		} catch (ServiceInventoryException e) {
-			assertEquals("20002", e.getErrorCode());
+			assertEquals("20003", e.getErrorCode());
 		}
 		
 	}

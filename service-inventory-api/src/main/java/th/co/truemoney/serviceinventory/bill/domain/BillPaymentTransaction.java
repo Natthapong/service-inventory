@@ -25,12 +25,12 @@ public class BillPaymentTransaction extends Transaction {
 
 	}
 
-	public BillPaymentTransaction(BillPaymentDraft bill) {
-		if (bill == null || bill.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
-			throw new IllegalArgumentException("passing in bad quote data");
+	public BillPaymentTransaction(BillPaymentDraft draft) {
+		if (draft == null || draft.getStatus() != DraftTransaction.Status.OTP_CONFIRMED) {
+			throw new IllegalArgumentException("passing in bad draft data");
 		}
-		this.ID = bill.getID();
-		this.draftTransaction = bill;
+		this.ID = draft.getID(); // Transaction ID == Draft ID
+		this.draftTransaction = draft;
 		this.status = Transaction.Status.VERIFIED;
 	}
 
