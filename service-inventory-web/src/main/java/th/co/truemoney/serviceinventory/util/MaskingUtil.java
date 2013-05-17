@@ -6,9 +6,6 @@ public class MaskingUtil {
 	
 	private static final String MASKSTR = "***";
 	
-	private MaskingUtil() {
-	}
-	
 	private static String maskShortWord(String word) {
 		return (word.length() < 3 ? word.substring(0, 1) : word.substring(0, 3)) + MASKSTR;
 	} 
