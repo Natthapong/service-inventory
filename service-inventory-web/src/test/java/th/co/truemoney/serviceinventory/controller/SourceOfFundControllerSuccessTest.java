@@ -23,12 +23,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
-import th.co.truemoney.serviceinventory.config.SmsConfig;
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.DirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
