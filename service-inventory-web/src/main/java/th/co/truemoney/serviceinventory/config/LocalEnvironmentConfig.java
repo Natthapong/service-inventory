@@ -1,14 +1,8 @@
 package th.co.truemoney.serviceinventory.config;
 
-import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
-
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessagePreparator;
-import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
-
 
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
@@ -84,7 +72,7 @@ public class LocalEnvironmentConfig {
 
     private static Logger logger = LoggerFactory.getLogger(LocalEnvironmentConfig.class);
 
-    @Bean @Qualifier("endpoint.host")
+    @Bean @Qualifier("endpoint.host") @Primary
     public String host() {
         return "http://127.0.0.1:8585";
     }
@@ -436,92 +424,6 @@ public class LocalEnvironmentConfig {
     @Bean
     public OTPGenerator otpGenerator() {
         return new UnSecureOTPGenerator();
-    }
-
-    @Bean
-    public JavaMailSender stubJavaMailSender() {
-        return new JavaMailSender() {
-
-            @Override
-            public void send(SimpleMailMessage simpleMessage)
-                    throws MailException {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void send(SimpleMailMessage[] simpleMessages)
-                    throws MailException {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public MimeMessage createMimeMessage() {
-                return new MimeMessage(Session.getInstance(new Properties()));
-            }
-
-            @Override
-            public MimeMessage createMimeMessage(InputStream contentStream)
-                    throws MailException {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public void send(MimeMessage mimeMessage) throws MailException {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void send(MimeMessage[] mimeMessages) throws MailException {
-            }
-
-            @Override
-            public void send(MimeMessagePreparator mimeMessagePreparator)
-                    throws MailException {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void send(MimeMessagePreparator[] mimeMessagePreparators)
-                    throws MailException {
-                // TODO Auto-generated method stub
-            }
-        };
-    }
-
-    @Bean
-    public FreeMarkerConfigurationFactory stubFreeMarkerConfigurationFactory() {
-        FreeMarkerConfigurationFactory freeMarkerConfigurationFactory = new FreeMarkerConfigurationFactory();
-        freeMarkerConfigurationFactory.setTemplateLoaderPath("email-template");
-        return freeMarkerConfigurationFactory;
-    }
-
-    @Bean @Qualifier("emailEncoding")
-    public String getEmailEncoding() {
-        return "utf-8";
-    }
-
-    @Bean @Qualifier("emailSender")
-    public String getEmailSender() {
-        return "emailSender";
-    }
-
-    @Bean @Qualifier("welcomeSubject")
-    public String getWelcomeSubject() {
-        return "welcomeSubject";
-    }
-
-    @Bean @Qualifier("welcomeTemplate")
-    public String getWelcomeTemplate() {
-        return "welcome-email.ftl";
     }
 
     @Bean
