@@ -290,4 +290,11 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		return bill;
 	}
 
+	@Override
+	public Bill updateBillInformation(String ref1, BigDecimal amount,
+			String accessTokenID) throws ServiceInventoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

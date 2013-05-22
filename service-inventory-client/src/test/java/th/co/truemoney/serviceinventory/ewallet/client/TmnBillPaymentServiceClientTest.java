@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,5 +69,21 @@ public class TmnBillPaymentServiceClientTest {
 				, eq(Bill.class) , eq("1"), eq("accessToken"));
 		
 	}
-
+	
+	@Test
+	public void updateBillInformation() {
+		
+		Bill bill = new Bill();
+		
+		ResponseEntity<Bill> responseEntity = new ResponseEntity<Bill>(bill,HttpStatus.OK);
+		
+		when(restTemplate.exchange(eq(endPoints.getUpdateBillInformationURL()), eq(HttpMethod.POST), any(HttpEntity.class)
+				, eq(Bill.class), anyString(), any(), anyString()) ).thenReturn(responseEntity);
+		
+		tmnBillPaymentServiceClient.updateBillInformation("1", new BigDecimal(100),"accessToken");
+		
+		verify(restTemplate).exchange(eq(endPoints.getUpdateBillInformationURL()), eq(HttpMethod.POST), any(HttpEntity.class)
+				, eq(Bill.class) , eq("1"), any(), eq("accessToken"));
+	}
+	
 }

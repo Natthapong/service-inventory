@@ -137,7 +137,19 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 		
 		return responseEntity.getBody();
 	}
-	
+
+	@Override
+	public Bill updateBillInformation(String ref1, BigDecimal amount, String accessTokenID)
+			throws ServiceInventoryException {
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		
+		ResponseEntity<Bill> responseEntity = restTemplate.exchange(
+				endPoints.getUpdateBillInformationURL(), HttpMethod.POST, requestEntity,
+				Bill.class, ref1, amount, accessTokenID);
+		
+		return responseEntity.getBody();
+	}
+
 	public void setEndPoints(EndPoints endPoints) {
 		this.endPoints = endPoints;
 	}
