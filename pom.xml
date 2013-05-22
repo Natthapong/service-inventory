@@ -31,6 +31,12 @@
         <module>service-inventory-web</module>
         <module>service-inventory-client</module>
     </modules>
+    
+    <scm>
+	<connection>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</connection>
+	<url>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</url>
+	<developerConnection>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</developerConnection>
+    </scm>
 
     <dependencyManagement>
         <dependencies>
@@ -198,6 +204,15 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+	    	   <groupId>org.apache.maven.plugins</groupId>
+		   <artifactId>maven-release-plugin</artifactId>
+		   <version>2.4.1</version>
+		   <configuration>
+			<localCheckout>true</localCheckout>
+			<pushChanges>false</pushChanges>
+	  	   </configuration>
+    	       </plugin>
             </plugins>
         </pluginManagement>
     </build>
