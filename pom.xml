@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>th.co.truemoney.serviceinventory</groupId>
     <artifactId>service-inventory</artifactId>
@@ -14,8 +13,8 @@
         <slf4j.version>1.7.3</slf4j.version>
         <servlet.version>2.5</servlet.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ewallet.client.version>1.0-SNAPSHOT</ewallet.client.version>
-        <siengine.client.version>1.0-SNAPSHOT</siengine.client.version>
+        <ewallet.client.version>0.9-SNAPSHOT</ewallet.client.version>
+        <siengine.client.version>0.9-SNAPSHOT</siengine.client.version>
         <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
         <coverage.reports.dir>${basedir}/target/coverage-reports</coverage.reports.dir>
         <sonar.jacoco.reportPath>${coverage.reports.dir}/jacoco-unit.exec</sonar.jacoco.reportPath>
@@ -31,6 +30,13 @@
         <module>service-inventory-web</module>
         <module>service-inventory-client</module>
     </modules>
+    
+    <scm>
+	<connection>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</connection>
+	<url>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</url>
+	<developerConnection>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</developerConnection>
+      <tag>HEAD</tag>
+  </scm>
 
     <dependencyManagement>
         <dependencies>
@@ -42,12 +48,12 @@
             <dependency>
                 <groupId>th.co.truemoney.serviceinventory</groupId>
                 <artifactId>ewallet-client</artifactId>
-                <version>${ewallet.client.version}</version>
+                <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>th.co.truemoney.serviceinventory</groupId>
                 <artifactId>siengine-client</artifactId>
-                <version>${siengine.client.version}</version>
+                <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>mysql</groupId>
@@ -198,6 +204,15 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+	    	   <groupId>org.apache.maven.plugins</groupId>
+		   <artifactId>maven-release-plugin</artifactId>
+		   <version>2.4.1</version>
+		   <configuration>
+			<localCheckout>true</localCheckout>
+			<pushChanges>false</pushChanges>
+	  	   </configuration>
+    	       </plugin>
             </plugins>
         </pluginManagement>
     </build>

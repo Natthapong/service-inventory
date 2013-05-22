@@ -28,6 +28,8 @@ import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundS
 import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
+import th.co.truemoney.serviceinventory.ewallet.config.EwalletConfig;
+import th.co.truemoney.serviceinventory.ewallet.config.TmnProfileConfig;
 import th.co.truemoney.serviceinventory.ewallet.impl.ActivityServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncP2PTransferProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
@@ -41,6 +43,7 @@ import th.co.truemoney.serviceinventory.ewallet.impl.TopUpMobileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.SourceOfFundPreference;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.SourceOfFundPreferenceImpl;
+import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
@@ -49,10 +52,10 @@ import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 @EnableAsync(proxyTargetClass = true)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop"})
-@Import({SmsConfig.class, TmnProfileConfig.class, SIEngineConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, DevEnvironmentConfig.class })
+@Import({EwalletConfig.class, SmsConfig.class, TmnProfileConfig.class, SIEngineConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, ProdEnvironmentConfig.class, DevEnvironmentConfig.class })
 public class ServiceInventoryConfig {
-
-    @Bean
+	
+	@Bean
     public TmnProfileService getTmnProfileService() {
         return new TmnProfileServiceImpl();
     }

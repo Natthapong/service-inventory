@@ -1,14 +1,8 @@
 package th.co.truemoney.serviceinventory.config;
 
-import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
-
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessagePreparator;
-import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
-
 
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
@@ -84,7 +72,7 @@ public class LocalEnvironmentConfig {
 
     private static Logger logger = LoggerFactory.getLogger(LocalEnvironmentConfig.class);
 
-    @Bean @Qualifier("endpoint.host")
+    @Bean @Qualifier("endpoint.host") @Primary
     public String host() {
         return "http://127.0.0.1:8585";
     }
@@ -92,6 +80,10 @@ public class LocalEnvironmentConfig {
     private Adam adam = new Adam();
     private Eve eve = new Eve();
     private Simpsons simpsons = new Simpsons();
+    
+    private String AdamTmnMoneyID = "AdamTmnMoneyId";
+    private String EveTmnMoneyID = "EveTmnMoneyId";
+    private String SimpsonsTmnMoneyID = "SimpsonsTmnMoneyId";
 
     @Bean
     @Primary
@@ -103,11 +95,11 @@ public class LocalEnvironmentConfig {
             public GetBasicProfileResponse getBasicProfile(
                     StandardBizRequest standardBizRequest)
                     throws EwalletException {
-                if(standardBizRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
+                if(standardBizRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)){
                     return adam.getTmnProfile().getBasicProfile(standardBizRequest);
-                }else if(standardBizRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
+                }else if(standardBizRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)){
                     return eve.getTmnProfile().getBasicProfile(standardBizRequest);
-                }else if(standardBizRequest.getSecurityContext().getTmnId().equals("SimpsonsTmnMoneyId")){
+                }else if(standardBizRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)){
                 	return simpsons.getTmnProfile().getBasicProfile(standardBizRequest);
                 }else{
                     return new GetBasicProfileResponse("1", "0", "namespace",
@@ -151,11 +143,11 @@ public class LocalEnvironmentConfig {
             	if(!serviceCodes.contains(isIsFavoritableRequest.getServiceCode())) {
             		throw new FailResultCodeException("2013", "stub ADD_FAVORITE_DENIED");
             	}            
-                if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){
+                if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)){
                     return adam.getTmnProfile().isFavoritable(isIsFavoritableRequest);
-                }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
+                }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)){
                 	return eve.getTmnProfile().isFavoritable(isIsFavoritableRequest);                	
-                }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals("SimpsonsTmnMoneyId")){
+                }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)){
                     return simpsons.getTmnProfile().isFavoritable(isIsFavoritableRequest);
                 }else {
                 	return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
@@ -167,13 +159,13 @@ public class LocalEnvironmentConfig {
                     throws EwalletException {
                 logger.debug("TMN ID: " + addFavoriteRequest.getSecurityContext().getTmnId());
                 FavoriteContext favoriteContext = new FavoriteContext();
-                if(addFavoriteRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")){                	
+                if(addFavoriteRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)){                	
                 	favoriteContext.setFavoriteId("1001");
                     return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContext);
-                }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")){
+                }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)){
                 	favoriteContext.setFavoriteId("1002");
                     return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContext);
-                }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals("SimpsonsTmnMoneyId")){
+                }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)){
                 	favoriteContext.setFavoriteId("1003");
                     return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContext);
                 }else{
@@ -197,11 +189,11 @@ public class LocalEnvironmentConfig {
 			public StandardBizResponse isFavorited(
 					IsFavoritedRequest isFavoritedRequest)
 					throws EwalletException {
-				if(isFavoritedRequest.getSecurityContext().getTmnId().equals("AdamTmnMoneyId")) {
+				if(isFavoritedRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)) {
 					return adam.getTmnProfile().isFavorited(isFavoritedRequest);
-				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals("EveTmnMoneyId")) {
+				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)) {
 					return eve.getTmnProfile().isFavorited(isFavoritedRequest);
-				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals("SimpsonsTmnMoneyId")) {
+				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)) {
 					return simpsons.getTmnProfile().isFavorited(isFavoritedRequest);
 				}else {
 					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
@@ -243,7 +235,7 @@ public class LocalEnvironmentConfig {
                         && "password".equals(password)){
                     return new SignonResponse("1", "0", "namespace",
                             new String[] { "key" }, new String[] { "value" },
-                            "sessionId", "SimpsonsTmnMoneyId");
+                            "sessionId", SimpsonsTmnMoneyID);
 
                 }else if("local@tmn.com".equals(initiator)
                         && "password".equals(password)){
@@ -435,92 +427,6 @@ public class LocalEnvironmentConfig {
     @Bean
     public OTPGenerator otpGenerator() {
         return new UnSecureOTPGenerator();
-    }
-
-    @Bean
-    public JavaMailSender stubJavaMailSender() {
-        return new JavaMailSender() {
-
-            @Override
-            public void send(SimpleMailMessage simpleMessage)
-                    throws MailException {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void send(SimpleMailMessage[] simpleMessages)
-                    throws MailException {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public MimeMessage createMimeMessage() {
-                return new MimeMessage(Session.getInstance(new Properties()));
-            }
-
-            @Override
-            public MimeMessage createMimeMessage(InputStream contentStream)
-                    throws MailException {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public void send(MimeMessage mimeMessage) throws MailException {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void send(MimeMessage[] mimeMessages) throws MailException {
-            }
-
-            @Override
-            public void send(MimeMessagePreparator mimeMessagePreparator)
-                    throws MailException {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void send(MimeMessagePreparator[] mimeMessagePreparators)
-                    throws MailException {
-                // TODO Auto-generated method stub
-            }
-        };
-    }
-
-    @Bean
-    public FreeMarkerConfigurationFactory stubFreeMarkerConfigurationFactory() {
-        FreeMarkerConfigurationFactory freeMarkerConfigurationFactory = new FreeMarkerConfigurationFactory();
-        freeMarkerConfigurationFactory.setTemplateLoaderPath("email-template");
-        return freeMarkerConfigurationFactory;
-    }
-
-    @Bean @Qualifier("emailEncoding")
-    public String getEmailEncoding() {
-        return "utf-8";
-    }
-
-    @Bean @Qualifier("emailSender")
-    public String getEmailSender() {
-        return "emailSender";
-    }
-
-    @Bean @Qualifier("welcomeSubject")
-    public String getWelcomeSubject() {
-        return "welcomeSubject";
-    }
-
-    @Bean @Qualifier("welcomeTemplate")
-    public String getWelcomeTemplate() {
-        return "welcome-email.ftl";
     }
 
     @Bean

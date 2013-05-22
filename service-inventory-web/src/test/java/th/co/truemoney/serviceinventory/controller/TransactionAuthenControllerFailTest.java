@@ -23,12 +23,12 @@ import org.springframework.web.context.WebApplicationContext;
 
 import th.co.truemoney.serviceinventory.authen.TransactionAuthenService;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
-import th.co.truemoney.serviceinventory.config.SmsConfig;
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
+import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

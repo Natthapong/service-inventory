@@ -11,12 +11,12 @@ import th.co.truemoney.serviceinventory.sms.RandomOTPGeneraor;
 
 @Configuration
 @ComponentScan("th.co.truemoney.serviceinventory.ewallet.proxy")
-@Profile("dev")
-public class DevEnvironmentConfig {
+@Profile("prod")
+public class ProdEnvironmentConfig {
 	
 	@Bean @Qualifier("endpoint.host")
 	public String host() {
-		return "https://127.0.0.1:9443";
+		return "https://www.truemoney.co.th";
 	}
 
 	@Bean
