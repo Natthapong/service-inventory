@@ -1,7 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileRepository;
@@ -10,7 +10,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.C
 
 public class ProfileMemoryRepository implements RegisteringProfileRepository {
 
-	public HashMap<String, TmnProfile> profilesMap = new LinkedHashMap<String, TmnProfile>();
+	public Map<String, TmnProfile> profilesMap = new LinkedHashMap<String, TmnProfile>();
 
 	@Override
 	public void saveRegisteringProfile(TmnProfile tmnProfile) {

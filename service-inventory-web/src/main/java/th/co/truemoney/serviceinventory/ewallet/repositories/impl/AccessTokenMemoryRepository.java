@@ -1,9 +1,9 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ public class AccessTokenMemoryRepository implements AccessTokenRepository {
 
 	private static Logger logger = LoggerFactory.getLogger(AccessTokenMemoryRepository.class);
 
-	public HashMap<String, AccessToken> map = new LinkedHashMap<String, AccessToken>();
+	public Map<String, AccessToken> map = new LinkedHashMap<String, AccessToken>();
 
 	@Override
 	public void save(AccessToken token) {

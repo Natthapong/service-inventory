@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.exception;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -48,7 +47,7 @@ public class ServiceInventoryException extends RuntimeException {
 			@JsonProperty("errorDescription") String errorDescription,
 			@JsonProperty("errorNamespace") String errorNamespace,
 			@JsonProperty("developerMessage") String developerMessage,
-			@JsonProperty("data") HashMap<String, Object> data) {
+			@JsonProperty("data") Map<String, Object> data) {
 		super(errorDescription);
 		this.httpStatus = httpStatus;
 		this.errorCode = errorCode;
