@@ -22,7 +22,7 @@
 
   	<context-param>
 	   <param-name>spring.profiles.default</param-name>
-	   <param-value>prod,redis</param-value>
+	   <param-value>${tmn.environment},${tmn.repo}</param-value>
 	</context-param>
 
   	<listener>
