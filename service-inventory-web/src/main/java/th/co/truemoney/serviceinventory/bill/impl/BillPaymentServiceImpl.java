@@ -269,8 +269,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public Bill retrieveBillInformationWithKeyin(String ref1, String ref2,
-			BigDecimal amount, String accessTokenID)
+	public Bill retrieveBillInformationWithKeyin(String billCode, String accessTokenID)
 			throws ServiceInventoryException {
 		// TODO Auto-generated method stub
 		return null;
