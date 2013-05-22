@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>th.co.truemoney.serviceinventory</groupId>
     <artifactId>service-inventory</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9-RELEASE</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -36,7 +35,8 @@
 	<connection>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</connection>
 	<url>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</url>
 	<developerConnection>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</developerConnection>
-    </scm>
+      <tag>service-inventory-0.9-RELEASE</tag>
+  </scm>
 
     <dependencyManagement>
         <dependencies>
@@ -48,12 +48,12 @@
             <dependency>
                 <groupId>th.co.truemoney.serviceinventory</groupId>
                 <artifactId>ewallet-client</artifactId>
-                <version>${ewallet.client.version}</version>
+                <version>0.9-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>th.co.truemoney.serviceinventory</groupId>
                 <artifactId>siengine-client</artifactId>
-                <version>${siengine.client.version}</version>
+                <version>0.9-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>mysql</groupId>
