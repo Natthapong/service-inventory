@@ -47,7 +47,7 @@ public class BillPaymentController {
 	
 	@RequestMapping(value = "/information/{billCode}", method = RequestMethod.GET)
 	public @ResponseBody Bill getBillInformation(
-			@RequestParam(value = "billCode", defaultValue = "") String billCode,
+			@PathVariable String billCode,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
 		return billPaymentService.retrieveBillInformationWithKeyin(billCode, accessTokenID);

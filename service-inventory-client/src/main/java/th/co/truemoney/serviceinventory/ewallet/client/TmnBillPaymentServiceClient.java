@@ -24,10 +24,6 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	public void setRestTemplate(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
-	}
-
 	@Autowired
 	private EndPoints endPoints;
 
@@ -136,12 +132,22 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 		
 		ResponseEntity<Bill> responseEntity = restTemplate.exchange(
-				endPoints.getBillInformationServiceURL(), HttpMethod.GET, requestEntity,
+				endPoints.getBillInformationServiceWithBillCodeURL(), HttpMethod.GET, requestEntity,
 				Bill.class, billCode, accessTokenID);
 		
-		
-		
-		return null;
+		return responseEntity.getBody();
+	}
+	
+	public void setEndPoints(EndPoints endPoints) {
+		this.endPoints = endPoints;
+	}
+
+	public void setHeaders(HttpHeaders headers) {
+		this.headers = headers;
+	}
+	
+	public void setRestTemplate(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
 	}
 
 }
