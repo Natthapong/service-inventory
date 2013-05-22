@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import th.co.truemoney.serviceinventory.config.LegacyFacadeConfig;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
@@ -39,7 +41,7 @@ import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class })
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, LegacyFacadeConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
 @Category(IntegrationTest.class)
 public class FavoriteServiceImplTest {
@@ -54,10 +56,14 @@ public class FavoriteServiceImplTest {
 	@Autowired
 	private FavoriteServiceImpl favoriteServiceImpl;
 	
+	@Autowired
+	private UserProfileHandler profileHandler;
+	
 	private Favorite favorite;
 	
 	@Before
 	public void setup() {
+		
 		accessTokenRepo = new AccessTokenMemoryRepository();
 		accessToken = new AccessToken("12345", "5555", "AdamTmnMoneyId", "0868185055", "adam@tmn.com", 41);
 		accessTokenRepo.save(accessToken);
@@ -68,6 +74,10 @@ public class FavoriteServiceImplTest {
 		// tr, trmv, tmvh, tlp, tic, ti, tcg
 	}
 	
+	@After
+	public void tearDown() {
+		
+	}
 	
 	@Test
 	public void addFavorite(){

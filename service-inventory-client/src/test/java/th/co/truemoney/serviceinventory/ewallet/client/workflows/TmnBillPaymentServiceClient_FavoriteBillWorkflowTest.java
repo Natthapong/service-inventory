@@ -49,7 +49,7 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 	public void shouldSuccessBillPayWorkflow() throws InterruptedException {
 		// login
 		String accessToken = profileService.login(
-				TestData.createSuccessUserLogin(),
+				TestData.createAdamSuccessLogin(),
 				TestData.createSuccessClientLogin());
 
 		assertNotNull(accessToken);
