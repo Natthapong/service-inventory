@@ -131,10 +131,16 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	}
 
 	@Override
-	public Bill retrieveBillInformationWithKeyin(String ref1, String ref2,
-			BigDecimal amount, String accessTokenID)
+	public Bill retrieveBillInformationWithKeyin(String billCode, String accessTokenID)
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		
+		ResponseEntity<Bill> responseEntity = restTemplate.exchange(
+				endPoints.getBillInformationServiceURL(), HttpMethod.GET, requestEntity,
+				Bill.class, billCode, accessTokenID);
+		
+		
+		
 		return null;
 	}
 
