@@ -34,6 +34,8 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     private static final String PAYWITH_FAVORITE = "favorite";
 
 	private static final String PAYWITH_BARCODE = "barcode";
+	
+	private static final String PAYWITH_KEYIN = "keyin";
 
 	@Autowired
     private AccessTokenRepository accessTokenRepo;
@@ -271,8 +273,21 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	@Override
 	public Bill retrieveBillInformationWithKeyin(String billCode, String accessTokenID)
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
+		ClientCredential appData = token.getClientCredential();
+
+		Bill bill =  legacyFacade.billing()
+								 .readBillInfoWithBillCode(billCode)
+								 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+								 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
+								 .getInformationWithBillCode();
+
+		validateOverdue(bill.getTarget(), bill.getDueDate());
+		bill.setID(UUID.randomUUID().toString());
+		bill.setPayWith(PAYWITH_KEYIN);
+		billInfoRepo.saveBill(bill, accessTokenID);
+
+		return bill;
 	}
 
 }

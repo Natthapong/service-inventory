@@ -69,6 +69,20 @@ public class BillPaymentControllerSuccessTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.ref1").exists());
+	}
+	
+	@Test
+	public void getBillInformationWithKeyinSuccess() throws Exception {
+
+		//given
+		Bill stubbedBill = BillPaymentStubbed.createSuccessBillPaymentInfo();
+		when(billPaymentServiceMock.retrieveBillInformationWithKeyin(anyString(), anyString())).thenReturn(stubbedBill);
+
+		//perform
+		this.mockMvc.perform(get("/bill-payment/information/tcg/?accessTokenID=12345")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.target").exists());
 
 	}
 }

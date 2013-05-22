@@ -50,7 +50,7 @@ public class BillPaymentController {
 			@RequestParam(value = "billCode", defaultValue = "") String billCode,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return null;//billPaymentService.retrieveBillInformationWithBillCode(billCode, ref1, new BigDecimal(amount), accessTokenID);
+		return billPaymentService.retrieveBillInformationWithKeyin(billCode, accessTokenID);
 	} 
 
 	@RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.POST)
