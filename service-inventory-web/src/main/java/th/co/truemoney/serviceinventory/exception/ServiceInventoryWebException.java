@@ -67,7 +67,7 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
 	@SuppressWarnings("unchecked")
 	public void marshallToData(Object object) {
 		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> hashMap = mapper.convertValue(object, HashMap.class);
+		Map<String, Object> hashMap = mapper.convertValue(object, Map.class);
 		this.setData(hashMap);
 	}
 }

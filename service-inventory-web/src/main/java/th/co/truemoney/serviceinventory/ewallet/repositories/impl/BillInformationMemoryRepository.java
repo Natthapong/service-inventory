@@ -1,7 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
@@ -10,7 +10,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.C
 
 public class BillInformationMemoryRepository implements BillInformationRepository {
 
-	public HashMap<String, Bill> map = new LinkedHashMap<String, Bill>();
+	public Map<String, Bill> map = new LinkedHashMap<String, Bill>();
 
 	@Override
 	public Bill findBill(String billID, String accessTokenID) {

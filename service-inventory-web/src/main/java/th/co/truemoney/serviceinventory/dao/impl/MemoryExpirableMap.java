@@ -1,13 +1,13 @@
 package th.co.truemoney.serviceinventory.dao.impl;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import th.co.truemoney.serviceinventory.dao.ExpirableMap;
 
 public class MemoryExpirableMap  implements ExpirableMap {
 
-	private HashMap<String, String> data = new LinkedHashMap<String, String>();
+	private Map<String, String> data = new LinkedHashMap<String, String>();
 
 	@Override
 	public void addData(String key, String value, Long expired) {
