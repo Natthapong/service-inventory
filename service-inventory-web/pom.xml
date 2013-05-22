@@ -187,9 +187,27 @@
             </properties>
         </profile>
         <profile>
+            <id>dev</id>
+            <properties>
+                <tmn.environment>dev</tmn.environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <tmn.environment>prod</tmn.environment>
+            </properties>
+        </profile>
+        <profile>
             <id>mem</id>
             <properties>
                 <tmn.repo>mem</tmn.repo>
+            </properties>
+        </profile>
+        <profile>
+            <id>redis</id>
+            <properties>
+                <tmn.repo>redis</tmn.repo>
             </properties>
         </profile>
     </profiles>
