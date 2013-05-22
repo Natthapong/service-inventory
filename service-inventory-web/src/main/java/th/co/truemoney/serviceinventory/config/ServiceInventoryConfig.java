@@ -54,8 +54,8 @@ import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 @ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop"})
 @Import({EwalletConfig.class, SmsConfig.class, TmnProfileConfig.class, SIEngineConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, ProdEnvironmentConfig.class, DevEnvironmentConfig.class })
 public class ServiceInventoryConfig {
-	
-	@Bean
+
+    @Bean
     public TmnProfileService getTmnProfileService() {
         return new TmnProfileServiceImpl();
     }
@@ -77,7 +77,7 @@ public class ServiceInventoryConfig {
 
     @Bean
     public TransactionAuthenService getTransactionAuthenService() {
-    	return new TransactionAuthenServiceImpl();
+        return new TransactionAuthenServiceImpl();
     }
 
     @Bean
@@ -93,10 +93,10 @@ public class ServiceInventoryConfig {
     @Bean ActivityService getActivityService() {
         return new ActivityServiceImpl();
     }
-    
+
     @Bean
     public FavoriteService getFavoriteService() {
-    	return new FavoriteServiceImpl();
+        return new FavoriteServiceImpl();
     }
 
     @Bean
