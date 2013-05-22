@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>th.co.truemoney.serviceinventory</groupId>
     <artifactId>service-inventory</artifactId>
-    <version>0.9-RELEASE</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -35,7 +35,7 @@
 	<connection>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</connection>
 	<url>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</url>
 	<developerConnection>scm:git:git@bitbucket.org:tmnkaizen/service-inventory.git</developerConnection>
-      <tag>service-inventory-0.9-RELEASE</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <dependencyManagement>
@@ -48,12 +48,12 @@
             <dependency>
                 <groupId>th.co.truemoney.serviceinventory</groupId>
                 <artifactId>ewallet-client</artifactId>
-                <version>0.9-RELEASE</version>
+                <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>th.co.truemoney.serviceinventory</groupId>
                 <artifactId>siengine-client</artifactId>
-                <version>0.9-RELEASE</version>
+                <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>mysql</groupId>
