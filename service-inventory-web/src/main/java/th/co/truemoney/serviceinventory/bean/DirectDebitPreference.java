@@ -17,7 +17,7 @@ public class DirectDebitPreference implements Serializable {
     private BigDecimal minTotalFee;
     private BigDecimal maxTotalFee;
 
-    private FeeUtil feeUtil = new FeeUtil();
+    private transient FeeUtil feeUtil = new FeeUtil();
 
 	public String getBankNameEn() {
 		return bankNameEn;
