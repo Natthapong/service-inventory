@@ -15,6 +15,9 @@ public interface BillPaymentService {
 	public Bill retrieveBillInformationWithBillCode(String billCode, String ref1, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException;
 	
+	public Bill retrieveBillInformationWithKeyin(String ref1, String ref2, BigDecimal amount, String accessTokenID)
+			throws ServiceInventoryException;
+	
 	public BillPaymentDraft verifyPaymentAbility(String billID, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException;
 

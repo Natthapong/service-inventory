@@ -130,4 +130,12 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 		return responseEntity.getBody();
 	}
 
+	@Override
+	public Bill retrieveBillInformationWithKeyin(String ref1, String ref2,
+			BigDecimal amount, String accessTokenID)
+			throws ServiceInventoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
