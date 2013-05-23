@@ -294,7 +294,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	public Bill updateBillInformation(String billID, String ref1, BigDecimal amount,
 			String accessTokenID) throws ServiceInventoryException {
 		
-		Bill bill = billInfoRepo.findBill(billID, accessTokenID);
+		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
+		
+		Bill bill = billInfoRepo.findBill(billID, token.getAccessTokenID());
 		
 		bill.setRef1(ref1);
 		bill.setAmount(amount);
