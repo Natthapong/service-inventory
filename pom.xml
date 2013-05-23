@@ -276,7 +276,13 @@
         </profile>
     </profiles>
 
-
+	<repositories>
+    	<repository>
+      		<id>nexus</id>
+      		<url>http://nexus.dev.truemoney.co.th/nexus/content/repositories/releases/</url>
+    	</repository>
+ 	</repositories>
+ 
     <distributionManagement>
         <repository>
             <id>jenkins-nexus</id>
