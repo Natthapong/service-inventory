@@ -17,7 +17,7 @@ import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler
 public class LegacyFacadeConfig {
 
 	@Autowired
-	EwalletSoapProxy ewalletProxy;
+	private EwalletSoapProxy ewalletProxy;
 
 	@Bean
 	public EwalletBalanceHandler balanceFacade() {

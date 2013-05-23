@@ -41,7 +41,7 @@ public class EmailService {
 	private String welcomeSubject;
 	
 	@Autowired
-	FreeMarkerConfigurationFactory freeMarkerConfigurationFactory;	
+	private FreeMarkerConfigurationFactory freeMarkerConfigurationFactory;	
 	
 	@Async
 	public void sendWelcomeEmail(String receiverEmail, Map<String, String> map) {

@@ -18,7 +18,7 @@ public class AccessTokenMemoryRepository implements AccessTokenRepository {
 
 	private static Logger logger = LoggerFactory.getLogger(AccessTokenMemoryRepository.class);
 
-	public Map<String, AccessToken> map = new LinkedHashMap<String, AccessToken>();
+	private Map<String, AccessToken> map = new LinkedHashMap<String, AccessToken>();
 
 	@Override
 	public void save(AccessToken token) {

@@ -50,7 +50,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     private LegacyFacade legacyFacade;
 
     @Autowired
-    AsyncBillPayProcessor asyncBillPayProcessor;
+    private AsyncBillPayProcessor asyncBillPayProcessor;
 
     @Autowired
     private BillPaymentValidationConfig validationConfig;

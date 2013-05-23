@@ -11,7 +11,7 @@ import th.co.truemoney.serviceinventory.util.BasicEncryptUtil;
 public class RedisExpirableMap implements ExpirableMap {
 
     @Autowired
-    RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public void addData(String key, String value, Long expired) {

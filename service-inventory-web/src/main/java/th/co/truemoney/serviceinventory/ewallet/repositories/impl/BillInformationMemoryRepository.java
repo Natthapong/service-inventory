@@ -10,7 +10,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.C
 
 public class BillInformationMemoryRepository implements BillInformationRepository {
 
-	public Map<String, Bill> map = new LinkedHashMap<String, Bill>();
+	private Map<String, Bill> map = new LinkedHashMap<String, Bill>();
 
 	@Override
 	public Bill findBill(String billID, String accessTokenID) {

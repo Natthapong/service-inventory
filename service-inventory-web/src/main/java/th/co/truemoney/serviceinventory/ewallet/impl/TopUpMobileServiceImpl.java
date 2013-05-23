@@ -36,7 +36,7 @@ public class TopUpMobileServiceImpl implements TopUpMobileService {
 	private TransactionRepository transactionRepo;
 
 	@Autowired
-	AsyncTopUpMobileProcessor asyncTopUpMobileProcessor;
+	private AsyncTopUpMobileProcessor asyncTopUpMobileProcessor;
 
 	public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
 		this.accessTokenRepo = accessTokenRepo;

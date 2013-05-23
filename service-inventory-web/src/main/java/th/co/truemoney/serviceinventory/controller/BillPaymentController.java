@@ -22,7 +22,7 @@ import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynServic
 public class BillPaymentController {
 
 	@Autowired
-	BillPaymentService billPaymentService;
+	private BillPaymentService billPaymentService;
 
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;

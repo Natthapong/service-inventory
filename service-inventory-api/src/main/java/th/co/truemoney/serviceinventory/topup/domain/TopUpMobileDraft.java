@@ -18,7 +18,7 @@ public class TopUpMobileDraft extends DraftTransaction {
 
 	private static final String DRAFT_TYPE = "mobileTopUp";
 
-	TopUpMobile topUpMobileInfo;
+	private TopUpMobile topUpMobileInfo;
 
 	public TopUpMobile getTopUpMobileInfo() {
 		return topUpMobileInfo;
