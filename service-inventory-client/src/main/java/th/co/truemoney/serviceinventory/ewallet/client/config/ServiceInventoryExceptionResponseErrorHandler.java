@@ -22,8 +22,13 @@ public class ServiceInventoryExceptionResponseErrorHandler extends DefaultRespon
 
 	public static final ServiceInventoryException SERVICE_NOT_AVAILABLE = new ServiceInventoryException(503, "503", "Service Not Available", "TMN-PRODUCT");
 
-	public void handleError(ClientHttpResponse response) throws IOException {
-		HttpStatus statusCode = getHttpStatusCode(response);
+	public void handleError(ClientHttpResponse response) {
+		HttpStatus statusCode;
+		try {
+			statusCode = getHttpStatusCode(response);
+		} catch (IOException e) {
+			throw SERVICE_NOT_AVAILABLE;
+		}
 
 		if (statusCode.series() == Series.CLIENT_ERROR || statusCode.series() == Series.SERVER_ERROR) {
 
