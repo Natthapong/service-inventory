@@ -291,7 +291,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public Bill updateBillInformation(String billID, String ref1, BigDecimal amount,
+	public Bill updateBillInformation(String billID, String ref1, String ref2, BigDecimal amount,
 			String accessTokenID) throws ServiceInventoryException {
 		
 		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
@@ -299,6 +299,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		Bill bill = billInfoRepo.findBill(billID, token.getAccessTokenID());
 		
 		bill.setRef1(ref1);
+		bill.setRef2(ref2);
 		bill.setAmount(amount);
 		
 		billInfoRepo.saveBill(bill, accessTokenID);

@@ -57,10 +57,11 @@ public class BillPaymentController {
 	public @ResponseBody Bill updateBillInformation(
 			@RequestParam(value = "billID", defaultValue = "") String billID,
 			@RequestParam(value = "ref1", defaultValue = "") String ref1,
-			@RequestParam(value = "amount", defaultValue = "") BigDecimal amount,
+			@RequestParam(value = "ref2", defaultValue = "") String ref2,
+			@RequestParam(value = "amount", defaultValue = "") String amount,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return billPaymentService.updateBillInformation(billID, ref1, amount, accessTokenID);
+		return billPaymentService.updateBillInformation(billID, ref1, ref2, new BigDecimal(amount), accessTokenID);
 	} 
 
 	@RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.POST)

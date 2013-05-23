@@ -1,7 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.client.workflows;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
@@ -58,6 +57,13 @@ public class TmnBillPaymentServiceClient_KeyinWorkflowTest {
 
 		assertNotNull(bill);
 		assertEquals("tcg",bill.getTarget());
+		bill.setRef1("TestRef1");
+		bill.setRef2("TestRef2");
+		
+		Bill billUpdated = billPaymentServiceClient.updateBillInformation(bill.getID(), bill.getRef1(), bill.getRef2(), bill.getAmount(), accessToken);
+		assertNotNull(billUpdated);
+		assertEquals("TestRef1",bill.getRef1());
+		assertEquals("TestRef2",bill.getRef2());
 	}
 
 }
