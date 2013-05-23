@@ -1,14 +1,14 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 
 public class OTPMemoryRepository implements OTPRepository {
 
-	public HashMap<String, OTP> otpsMap = new LinkedHashMap<String, OTP>();
+	public Map<String, OTP> otpsMap = new LinkedHashMap<String, OTP>();
 
 	@Override
 	public void save(OTP otp) {

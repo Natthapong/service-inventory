@@ -54,7 +54,7 @@ public class ActivityServiceImplTest {
 
         MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
 
-        mockServer.expect(requestTo("http://127.0.0.1:8585/core-report-web/transaction/history/54321/detail/9999"))
+        mockServer.expect(requestTo("http://127.0.0.1:8787/core-report-web/transaction/history/54321/detail/9999"))
           .andExpect(method(HttpMethod.GET))
          .andRespond(withSuccess(new ClassPathResource("json/stub_specific_activities.json"), MediaType.APPLICATION_JSON));
 
@@ -83,7 +83,7 @@ public class ActivityServiceImplTest {
 
         MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
 
-        mockServer.expect(requestTo("http://127.0.0.1:8585/core-report-web/transaction/history/54321"))
+        mockServer.expect(requestTo("http://127.0.0.1:8787/core-report-web/transaction/history/54321"))
           .andExpect(method(HttpMethod.GET))
          .andRespond(withSuccess(new ClassPathResource("json/stub_all_activities.json"), MediaType.APPLICATION_JSON));
 

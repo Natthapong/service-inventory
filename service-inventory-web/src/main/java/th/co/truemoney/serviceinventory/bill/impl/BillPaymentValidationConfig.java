@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.bill.impl;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ public class BillPaymentValidationConfig {
 	
 	private static Logger logger = LoggerFactory.getLogger(BillPaymentValidationConfig.class);
 	
-	private HashMap<String, BillPaymentValidation> validation;
+	private Map<String, BillPaymentValidation> validation;
 	
 	public BillPaymentValidationConfig() {
 		JsonFactory factory = new JsonFactory();

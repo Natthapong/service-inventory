@@ -74,13 +74,13 @@ public class LocalEnvironmentConfig {
 
     @Bean @Qualifier("endpoint.host") @Primary
     public String host() {
-        return "http://127.0.0.1:8585";
+        return "http://127.0.0.1:8787";
     }
 
     private Adam adam = new Adam();
     private Eve eve = new Eve();
     private Simpsons simpsons = new Simpsons();
-    
+
     private String AdamTmnMoneyID = "AdamTmnMoneyId";
     private String EveTmnMoneyID = "EveTmnMoneyId";
     private String SimpsonsTmnMoneyID = "SimpsonsTmnMoneyId";
@@ -100,7 +100,7 @@ public class LocalEnvironmentConfig {
                 }else if(standardBizRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)){
                     return eve.getTmnProfile().getBasicProfile(standardBizRequest);
                 }else if(standardBizRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)){
-                	return simpsons.getTmnProfile().getBasicProfile(standardBizRequest);
+                    return simpsons.getTmnProfile().getBasicProfile(standardBizRequest);
                 }else{
                     return new GetBasicProfileResponse("1", "0", "namespace",
                             new String[] { "key" }, new String[] { "value" },
@@ -139,18 +139,18 @@ public class LocalEnvironmentConfig {
             @Override
             public StandardBizResponse isFavoritable(IsFavoritableRequest isIsFavoritableRequest)
                     throws EwalletException {
-            	List<String> serviceCodes = Arrays.asList("tr", "trmv", "tmvh", "tlp", "tic", "ti", "tcg");
-            	if(!serviceCodes.contains(isIsFavoritableRequest.getServiceCode())) {
-            		throw new FailResultCodeException("2013", "stub ADD_FAVORITE_DENIED");
-            	}            
+                List<String> serviceCodes = Arrays.asList("tr", "trmv", "tmvh", "tlp", "tic", "ti", "tcg");
+                if(!serviceCodes.contains(isIsFavoritableRequest.getServiceCode())) {
+                    throw new FailResultCodeException("2013", "stub ADD_FAVORITE_DENIED");
+                }
                 if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)){
                     return adam.getTmnProfile().isFavoritable(isIsFavoritableRequest);
                 }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)){
-                	return eve.getTmnProfile().isFavoritable(isIsFavoritableRequest);                	
+                    return eve.getTmnProfile().isFavoritable(isIsFavoritableRequest);
                 }else if(isIsFavoritableRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)){
                     return simpsons.getTmnProfile().isFavoritable(isIsFavoritableRequest);
                 }else {
-                	return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+                    return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
                 }
             }
 
@@ -159,14 +159,14 @@ public class LocalEnvironmentConfig {
                     throws EwalletException {
                 logger.debug("TMN ID: " + addFavoriteRequest.getSecurityContext().getTmnId());
                 FavoriteContext favoriteContext = new FavoriteContext();
-                if(addFavoriteRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)){                	
-                	favoriteContext.setFavoriteId("1001");
+                if(addFavoriteRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)){
+                    favoriteContext.setFavoriteId("1001");
                     return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContext);
                 }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)){
-                	favoriteContext.setFavoriteId("1002");
+                    favoriteContext.setFavoriteId("1002");
                     return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContext);
                 }else if(addFavoriteRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)){
-                	favoriteContext.setFavoriteId("1003");
+                    favoriteContext.setFavoriteId("1003");
                     return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContext);
                 }else{
                     throw new FailResultCodeException("500", "stub namespace.");
@@ -176,7 +176,7 @@ public class LocalEnvironmentConfig {
             @Override
             public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
                     throws EwalletException {
-            	
+
                 FavoriteContext[] favoriteContexts = new FavoriteContext[3];
                 favoriteContexts[0] = new FavoriteContext("1", "billpay", "d.trmv", "", new BigDecimal("13.00"), "20000211101010");
                 favoriteContexts[1] = new FavoriteContext("2", "billpay", "d.tmvh", "", new BigDecimal("19.00"), "20000212101010");
@@ -185,20 +185,20 @@ public class LocalEnvironmentConfig {
                 return new ListFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContexts);
             }
 
-			@Override
-			public StandardBizResponse isFavorited(
-					IsFavoritedRequest isFavoritedRequest)
-					throws EwalletException {
-				if(isFavoritedRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)) {
-					return adam.getTmnProfile().isFavorited(isFavoritedRequest);
-				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)) {
-					return eve.getTmnProfile().isFavorited(isFavoritedRequest);
-				} else if(isFavoritedRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)) {
-					return simpsons.getTmnProfile().isFavorited(isFavoritedRequest);
-				}else {
-					return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
-				}
-			}
+            @Override
+            public StandardBizResponse isFavorited(
+                    IsFavoritedRequest isFavoritedRequest)
+                    throws EwalletException {
+                if(isFavoritedRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)) {
+                    return adam.getTmnProfile().isFavorited(isFavoritedRequest);
+                } else if(isFavoritedRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)) {
+                    return eve.getTmnProfile().isFavorited(isFavoritedRequest);
+                } else if(isFavoritedRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)) {
+                    return simpsons.getTmnProfile().isFavorited(isFavoritedRequest);
+                }else {
+                    return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+                }
+            }
 
         };
     }

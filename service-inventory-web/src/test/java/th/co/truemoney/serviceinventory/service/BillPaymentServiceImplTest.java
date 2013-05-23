@@ -121,6 +121,22 @@ public class BillPaymentServiceImplTest {
 
         assertEquals("favorite", billInformation.getPayWith());
     }
+    
+    @Test
+    public void getBillInformationViaKeyin() {
+    	Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+
+        when(billPaymentFacade.getBillCodeInformation(any(GetBillRequest.class))).thenReturn(stubbedBillPaymentInfo);
+
+        //when
+        Bill billInformation = billPayService.retrieveBillInformationWithKeyin("xxxx", accessToken.getAccessTokenID());
+
+        //then
+        assertNotNull(billInformation);
+        verify(billPaymentFacade).getBillCodeInformation(any(GetBillRequest.class));
+
+        assertEquals("keyin", billInformation.getPayWith());
+    }
 
     @Test
     public void getBillOverDuedate() throws Exception {

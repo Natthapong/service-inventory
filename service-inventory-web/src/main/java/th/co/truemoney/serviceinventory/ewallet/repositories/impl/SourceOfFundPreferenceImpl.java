@@ -1,6 +1,7 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ public class SourceOfFundPreferenceImpl implements SourceOfFundPreference {
 
 	private static Logger logger = LoggerFactory.getLogger(SourceOfFundPreferenceImpl.class);
 
-	private HashMap<String, DirectDebitPreference> bankConfigList;
+	private Map<String, DirectDebitPreference> bankConfigList;
 
 	public SourceOfFundPreferenceImpl() {
 		try {
