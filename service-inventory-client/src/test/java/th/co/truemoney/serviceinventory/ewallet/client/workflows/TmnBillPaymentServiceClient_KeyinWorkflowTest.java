@@ -62,8 +62,9 @@ public class TmnBillPaymentServiceClient_KeyinWorkflowTest {
 		
 		Bill billUpdated = billPaymentServiceClient.updateBillInformation(bill.getID(), bill.getRef1(), bill.getRef2(), bill.getAmount(), accessToken);
 		assertNotNull(billUpdated);
-		assertEquals("TestRef1",bill.getRef1());
-		assertEquals("TestRef2",bill.getRef2());
+		assertEquals("TestRef1",billUpdated.getRef1());
+		assertEquals("TestRef2",billUpdated.getRef2());
+		
 	}
 
 }
