@@ -291,10 +291,17 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public Bill updateBillInformation(String ref1, BigDecimal amount,
+	public Bill updateBillInformation(String billID, String ref1, BigDecimal amount,
 			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Bill bill = billInfoRepo.findBill(billID, accessTokenID);
+		
+		bill.setRef1(ref1);
+		bill.setAmount(amount);
+		
+		billInfoRepo.saveBill(bill, accessTokenID);
+		
+		return bill;
 	}
 
 }

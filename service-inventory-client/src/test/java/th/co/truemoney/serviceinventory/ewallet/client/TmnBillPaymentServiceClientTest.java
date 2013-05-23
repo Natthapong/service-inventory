@@ -78,12 +78,12 @@ public class TmnBillPaymentServiceClientTest {
 		ResponseEntity<Bill> responseEntity = new ResponseEntity<Bill>(bill,HttpStatus.OK);
 		
 		when(restTemplate.exchange(eq(endPoints.getUpdateBillInformationURL()), eq(HttpMethod.POST), any(HttpEntity.class)
-				, eq(Bill.class), anyString(), any(), anyString()) ).thenReturn(responseEntity);
+				, eq(Bill.class), anyString(), anyString(), any(BigDecimal.class), anyString()) ).thenReturn(responseEntity);
 		
-		tmnBillPaymentServiceClient.updateBillInformation("1", new BigDecimal(100),"accessToken");
+		tmnBillPaymentServiceClient.updateBillInformation("1", "1", new BigDecimal(100),"accessToken");
 		
 		verify(restTemplate).exchange(eq(endPoints.getUpdateBillInformationURL()), eq(HttpMethod.POST), any(HttpEntity.class)
-				, eq(Bill.class) , eq("1"), any(), eq("accessToken"));
+				, eq(Bill.class) , eq("1"), eq("1"), any(BigDecimal.class), eq("accessToken"));
 	}
 	
 }

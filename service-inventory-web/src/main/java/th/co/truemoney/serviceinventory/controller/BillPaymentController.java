@@ -52,6 +52,16 @@ public class BillPaymentController {
 		extendExpireAccessToken(accessTokenID);
 		return billPaymentService.retrieveBillInformationWithKeyin(billCode, accessTokenID);
 	} 
+	
+	@RequestMapping(value = "/information", method = RequestMethod.POST)
+	public @ResponseBody Bill updateBillInformation(
+			@RequestParam(value = "billID", defaultValue = "") String billID,
+			@RequestParam(value = "ref1", defaultValue = "") String ref1,
+			@RequestParam(value = "amount", defaultValue = "") BigDecimal amount,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+		extendExpireAccessToken(accessTokenID);
+		return billPaymentService.updateBillInformation(billID, ref1, amount, accessTokenID);
+	} 
 
 	@RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.POST)
 	public @ResponseBody
