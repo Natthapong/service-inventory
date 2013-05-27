@@ -54,16 +54,18 @@ public class TmnBillPaymentServiceClient_KeyinWorkflowTest {
 				TestData.createSuccessClientLogin());
 
 		Bill bill = billPaymentServiceClient.retrieveBillInformationWithKeyin("1", accessToken);
-
 		assertNotNull(bill);
 		assertEquals("tcg",bill.getTarget());
-		bill.setRef1("TestRef1");
-		bill.setRef2("TestRef2");
+		assertNotNull(bill.getRef1());
+		assertNotNull(bill.getRef2());
+		
+		bill.setRef1("Test Data Ref1");
+		bill.setRef2("Test Data Ref2");
 		
 		Bill billUpdated = billPaymentServiceClient.updateBillInformation(bill.getID(), bill.getRef1(), bill.getRef2(), bill.getAmount(), accessToken);
 		assertNotNull(billUpdated);
-		assertEquals("TestRef1",billUpdated.getRef1());
-		assertEquals("TestRef2",billUpdated.getRef2());
+		assertEquals("Test Data Ref1",billUpdated.getRef1());
+		assertEquals("Test Data Ref2",billUpdated.getRef2());
 		
 	}
 
