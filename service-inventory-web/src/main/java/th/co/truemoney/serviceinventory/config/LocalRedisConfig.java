@@ -8,14 +8,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 @Configuration
-@Profile("dev")
-public class DevRedisConfig {
+@Profile("local")
+public class LocalRedisConfig {
 	
 	@Bean
 	public static PropertyPlaceholderConfigurer redisProperties(){
 	  PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
 	  Resource[] resources = new ClassPathResource[ ]
-	    { new ClassPathResource( "redis_dev.properties" ) };
+	    { new ClassPathResource( "redis.properties" ) };
 	  ppc.setLocations( resources );
 	  ppc.setIgnoreUnresolvablePlaceholders( true );
 	  return ppc;
