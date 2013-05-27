@@ -21,7 +21,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class ActivityServicesClient implements ActivityService{
 
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 	
 	@Autowired
 	private EndPoints endPoints;

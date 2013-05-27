@@ -20,7 +20,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class TmnDirectDebitSourceOfFundServiceClient implements DirectDebitSourceOfFundService {
 
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private EndPoints environmentConfig;

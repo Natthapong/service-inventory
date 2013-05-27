@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 public class FavoriteServicesClient implements FavoriteService {
 	
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 	
 	@Autowired
 	private EndPoints endPoints;

@@ -24,7 +24,7 @@ import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 public class TopupMobileServicesClient implements TopUpMobileService {
 
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
 	public RestTemplate getRestTemplate() {
 		return restTemplate;

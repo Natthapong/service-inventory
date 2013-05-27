@@ -18,14 +18,13 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class TransactionAuthenServiceClient implements TransactionAuthenService {
 
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private EndPoints endPoints;
 
 	@Autowired
 	private HttpHeaders headers;
-
 
 	@Override
 	public OTP requestOTP(String quoteID, String accessTokenID) {

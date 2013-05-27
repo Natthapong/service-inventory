@@ -21,7 +21,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class TmnTopUpServiceClient implements TopUpService {
 
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private EndPoints endPoints;
