@@ -12,6 +12,6 @@ public class ProdEnvironmentConfig {
 
 	@Bean @Qualifier("endpoint.host")
 	public String host() {
-		return "https://PBISVC0102";
+		return "https://PBISVCVIP";
 	}
 }
