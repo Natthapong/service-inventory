@@ -139,7 +139,7 @@ public class TmnProfileController {
 		return favoriteResponse;
 	}
 	
-	@RequestMapping(value = "/favorites/delete" , method = RequestMethod.POST)
+	@RequestMapping(value = "/favorites/delete" , method = RequestMethod.DELETE)
 	public @ResponseBody void removeFavorite(
 			@RequestParam(value = "billCode", defaultValue="") String billCode,
 			@RequestParam(value = "ref1", defaultValue="") String ref1,
