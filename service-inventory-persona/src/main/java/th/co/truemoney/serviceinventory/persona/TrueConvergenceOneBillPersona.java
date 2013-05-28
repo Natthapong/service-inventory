@@ -138,6 +138,7 @@ public class TrueConvergenceOneBillPersona implements BarcodePersona {
 	                billResponse.addParameterElement("service_fee_type", "THB");
 	                billResponse.addParameterElement("title_th", "ค่าใช้บริการบริษัทในกลุ่มทรู");
 	                billResponse.addParameterElement("ref1", "010004552");
+	                billResponse.addParameterElement("amount", "85950");
 	                billResponse.addParameterElement("ref2", "010520120200015601");
 	                billResponse.addParameterElement("ref1_title_th", "โทรศัพท์พื้นฐาน");
 	                billResponse.addParameterElement("ref1_title_en", "Fix Line");

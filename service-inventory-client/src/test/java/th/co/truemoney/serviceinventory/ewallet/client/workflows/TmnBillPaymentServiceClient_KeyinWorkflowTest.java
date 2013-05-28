@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
+import java.math.BigDecimal;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,14 +60,17 @@ public class TmnBillPaymentServiceClient_KeyinWorkflowTest {
 		assertEquals("tcg",bill.getTarget());
 		assertNotNull(bill.getRef1());
 		assertNotNull(bill.getRef2());
+		assertNotNull(bill.getAmount());
 		
 		bill.setRef1("Test Data Ref1");
 		bill.setRef2("Test Data Ref2");
+		bill.setAmount(new BigDecimal(1234.55));
 		
 		Bill billUpdated = billPaymentServiceClient.updateBillInformation(bill.getID(), bill.getRef1(), bill.getRef2(), bill.getAmount(), accessToken);
 		assertNotNull(billUpdated);
 		assertEquals("Test Data Ref1",billUpdated.getRef1());
 		assertEquals("Test Data Ref2",billUpdated.getRef2());
+		assertEquals("1234.55",billUpdated.getAmount().toString());
 		
 	}
 
