@@ -37,6 +37,19 @@ public class FavoriteServiceImpl implements FavoriteService {
 	}
 
 	@Override
+	public void deleteFavorite(String serviceCode, String ref1,
+			String accessTokenID) throws ServiceInventoryException {
+		
+		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
+		
+		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				.fromChannel(accessToken.getChannelID())
+				.withServiceCode(serviceCode)
+				.withRefernce1(ref1)
+				.removeFavorite();
+	}
+	
+	@Override
 	public List<Favorite> getFavorites(String accessTokenID)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);		
@@ -62,4 +75,5 @@ public class FavoriteServiceImpl implements FavoriteService {
 	public void setLegacyFacade(LegacyFacade legacyFacade) {
 		this.legacyFacade = legacyFacade;
 	}
+
 }

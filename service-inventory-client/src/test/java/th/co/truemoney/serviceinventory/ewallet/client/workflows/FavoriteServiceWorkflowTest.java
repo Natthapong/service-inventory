@@ -46,7 +46,21 @@ public class FavoriteServiceWorkflowTest {
 		assertEquals("555", favoriteResponse.getRef1());
 		//assertEquals(new Long(2000), favoriteResponse.getFavoriteID());
 	}	
+	
+	@Test
+	public void removeFavorite(){
+		String accessTokenID = profileService.login(
+				TestData.createAdamSuccessLogin(),
+				TestData.createSuccessClientLogin());
 
+		Favorite favoriteBill = TestData.createFavoriteBill();
+		
+		Favorite favoriteResponse = client.addFavorite(favoriteBill, accessTokenID);
+		assertNotNull(favoriteResponse);
+		
+		client.deleteFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), accessTokenID);
+	}
+	
 	@Test
 	public void getFavorites() {
 		String accessTokenID = profileService.login(

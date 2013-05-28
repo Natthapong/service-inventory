@@ -19,6 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteReques
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.RemoveFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
@@ -97,6 +98,14 @@ public class Eve implements Persona {
 					IsFavoritedRequest isFavoritedRequest)
 					throws EwalletException {
 				throw new FailResultCodeException("2014", "stub ewallet client");
+			}
+
+			@Override
+			public void removeFavorite(
+					RemoveFavoriteRequest removeFavoriteRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				
 			}
 			
 		};

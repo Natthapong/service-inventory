@@ -150,6 +150,10 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/ewallet/favorites/{accessTokenID}";
 	}
 	
+	public String getDeleteFavoriteURL(){
+		return host + "/service-inventory-web/v1/ewallet/favorites/delete/?billCode={billCode}&ref1={ref1}&accessTokenID={accessTokenID}";
+	}
+	
 	public String getFavoritesURL() {
 		return host + "/service-inventory-web/v1/ewallet/favorites?accessTokenID={accessTokenID}";
 	}

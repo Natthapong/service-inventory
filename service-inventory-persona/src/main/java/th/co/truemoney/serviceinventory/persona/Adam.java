@@ -19,6 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteReques
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.RemoveFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
@@ -98,6 +99,14 @@ public class Adam implements Persona {
 					IsFavoritedRequest isFavoritedRequest)
 					throws EwalletException {
 				return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+			}
+
+			@Override
+			public void removeFavorite(
+					RemoveFavoriteRequest removeFavoriteRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				
 			}
 		};
 	}
