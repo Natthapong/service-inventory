@@ -1,26 +1,26 @@
 package th.co.truemoney.serviceinventory.util;
 
+import java.util.Random;
+
 public class RandomUtil {
 	
+	static String chars  = "BCDFGHIJKLMNPQRSTVWXYZ";
+	static String digits = "0123456789";
+	
 	public static String genRandomString(int length) {
-		StringBuffer buffer = new StringBuffer();
-		java.util.Random random = new java.util.Random();
-		char[] chars = new char[] { 'A', 'B',
-				  'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-				  'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
-				  'Z'};
-		for ( int i = 0; i < length; i++ ) {
-			buffer.append(chars[random.nextInt(chars.length)]);
-		}
-		return buffer.toString().toLowerCase();
+		return random(length, chars);
 	}
 	
 	public static String genRandomNumber(int length) {
+		return random(length, digits);
+	}
+	
+	private static String random(int length, String charSet) {
+		int maxNum = charSet.length();
+		Random random = new Random();
 		StringBuffer buffer = new StringBuffer();
-		java.util.Random random = new java.util.Random();
-		char[] chars = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
 		for ( int i = 0; i < length; i++ ) {
-			buffer.append(chars[random.nextInt(chars.length)]);
+			buffer.append(charSet.charAt(random.nextInt(maxNum)));
 		}
 		return buffer.toString();
 	}
