@@ -27,10 +27,6 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	public void setRestTemplate(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
-	}
-
 	@Autowired
 	private EndPoints endPoints;
 

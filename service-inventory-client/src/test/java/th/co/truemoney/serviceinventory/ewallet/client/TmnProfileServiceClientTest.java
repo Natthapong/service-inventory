@@ -121,5 +121,13 @@ public class TmnProfileServiceClientTest {
 		BigDecimal balance = client.getEwalletBalance(accessToken);
 		assertEquals(new BigDecimal("2000.00"), balance);
 	}
-
+	
+	@Test
+	public void logout(){
+		String accessToken = client.login(
+				TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin());
+		
+		client.logout(accessToken);
+	}
 }
