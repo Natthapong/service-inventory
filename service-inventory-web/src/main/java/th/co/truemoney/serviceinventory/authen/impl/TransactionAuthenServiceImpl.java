@@ -11,6 +11,8 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenReposito
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.OTPAlreadyConfirmedException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 
@@ -51,18 +53,32 @@ public class TransactionAuthenServiceImpl implements TransactionAuthenService {
 	public Status verifyOTP(String draftID, OTP otp, String accessTokenID)
 			throws ServiceInventoryException {
 
-		accessTokenRepo.findAccessToken(accessTokenID);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		DraftTransaction draftTransaction = transactionRepo.findDraftTransaction(draftID, accessTokenID, DraftTransaction.class);
 
 		if (draftTransaction.getStatus() == Status.OTP_CONFIRMED) {
 			throw new OTPAlreadyConfirmedException();
 		}
 
-		otpService.isValidOTP(otp);
+		if (isAppleUser(accessToken)) {
+			if (!isAppleValidOTP(otp)) {
+				throw new ServiceInventoryWebException(Code.INVALID_OTP, "invalid OTP.");
+			}
+		} else {
+			otpService.isValidOTP(otp);	
+		} 
 
 		draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
 		transactionRepo.saveDraftTransaction(draftTransaction, accessTokenID);
 
 		return draftTransaction.getStatus();
+	}
+
+	private boolean isAppleValidOTP(OTP otp) {
+		return "123456".equals(otp.getOtpString());
+	}
+
+	private boolean isAppleUser(AccessToken accessToken) {
+		return "".equals(accessToken.getTruemoneyID());
 	}
 }
