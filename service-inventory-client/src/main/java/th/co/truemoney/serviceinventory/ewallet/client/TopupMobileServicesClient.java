@@ -26,24 +26,8 @@ public class TopupMobileServicesClient implements TopUpMobileService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	public RestTemplate getRestTemplate() {
-		return restTemplate;
-	}
-
-	public void setRestTemplate(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
-	}
-
 	@Autowired
 	private EndPoints endPoints;
-
-	public EndPoints getEndPoints() {
-		return endPoints;
-	}
-
-	public void setEndPoints(EndPoints endPoints) {
-		this.endPoints = endPoints;
-	}
 
 	@Autowired
 	private HttpHeaders headers;
@@ -122,4 +106,11 @@ public class TopupMobileServicesClient implements TopUpMobileService {
 		return responseEntity.getBody();
 	}
 
+	public void setRestTemplate(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
+	
+	public void setEndPoints(EndPoints endPoints) {
+		this.endPoints = endPoints;
+	}
 }

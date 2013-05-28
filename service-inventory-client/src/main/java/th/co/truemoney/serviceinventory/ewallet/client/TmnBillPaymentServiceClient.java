@@ -153,10 +153,6 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	public void setEndPoints(EndPoints endPoints) {
 		this.endPoints = endPoints;
 	}
-
-	public void setHeaders(HttpHeaders headers) {
-		this.headers = headers;
-	}
 	
 	public void setRestTemplate(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;

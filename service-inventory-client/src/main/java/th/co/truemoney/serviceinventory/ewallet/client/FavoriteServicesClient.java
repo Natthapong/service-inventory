@@ -70,8 +70,4 @@ public class FavoriteServicesClient implements FavoriteService {
 		this.endPoints = endPoints;
 	}
 
-	public void setHeaders(HttpHeaders headers) {
-		this.headers = headers;
-	}
-
 }

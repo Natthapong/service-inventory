@@ -53,14 +53,6 @@ public class ActivityServicesClient implements ActivityService{
 		return responseEntity.getBody();
 	}
 
-	public RestTemplate getRestTemplate() {
-		return restTemplate;
-	}
-
-	public EndPoints getEndPoints() {
-		return endPoints;
-	}
-
 	public void setEndPoints(EndPoints endPoints) {
 		this.endPoints = endPoints;
 	}
