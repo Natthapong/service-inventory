@@ -40,7 +40,18 @@ public class FavoriteServicesClient implements FavoriteService {
 
 		return responseEntity.getBody();
 	}
-
+	
+	@Override
+	public void deleteFavorite(String billCode,String ref1, String accessTokenID)
+			throws ServiceInventoryException {
+		
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		
+		restTemplate.exchange(endPoints.getDeleteFavoriteURL(), HttpMethod.DELETE,
+				requestEntity, Boolean.class, billCode, ref1, accessTokenID);
+		
+	}
+	
     @Override
     public List<Favorite> getFavorites(String accessTokenID) throws ServiceInventoryException {
     	HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
@@ -62,6 +73,5 @@ public class FavoriteServicesClient implements FavoriteService {
 	public void setHeaders(HttpHeaders headers) {
 		this.headers = headers;
 	}
-
 
 }

@@ -4,6 +4,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
+import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 
 
@@ -62,6 +64,19 @@ public class FavoriteServicesClientTest {
 		
 		Favorite favoriteResult = client.addFavorite(favorite, "12345");
 		Assert.assertNotNull(favoriteResult);
+	}
+	
+	@Test
+	public void deleteFavorite(){
+		ResponseEntity<Boolean> responseEntity = new ResponseEntity<Boolean>(HttpStatus.OK);
+		
+		when(restTemplate.exchange(eq(endPoints.getDeleteFavoriteURL()), eq(HttpMethod.DELETE), any(HttpEntity.class)
+				, eq(Boolean.class), anyString(), anyString(), anyString()) ).thenReturn(responseEntity);
+		
+		client.deleteFavorite("TMV", "123", "12345");
+		
+		verify(restTemplate).exchange(eq(endPoints.getDeleteFavoriteURL()), eq(HttpMethod.DELETE), any(HttpEntity.class)
+				, eq(Boolean.class) , anyString(), anyString(), anyString());
 	}
 	
 	@Test
