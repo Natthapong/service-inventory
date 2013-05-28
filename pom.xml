@@ -238,6 +238,9 @@
                             <includes>
                                 <include>**/*.class</include>
                             </includes>
+                            <excludes>
+                            	<exclude>th.co.truemoney.serviceinventory.persona/*.class</exclude>
+                            </excludes>
                             <argLine>-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}</argLine>
                             <testFailureIgnore>false</testFailureIgnore>
                         </configuration>
@@ -260,6 +263,9 @@
                             <includes>
                                 <include>**/*.class</include>
                             </includes>
+                            <excludes>
+                            	<exclude>th.co.truemoney.serviceinventory.persona/*.class</exclude>
+                            </excludes>
                             <testFailureIgnore>false</testFailureIgnore>
                         </configuration>
                         <executions>
