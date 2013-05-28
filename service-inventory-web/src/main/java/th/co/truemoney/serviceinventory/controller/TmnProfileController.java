@@ -67,7 +67,6 @@ public class TmnProfileController {
 
 		BigDecimal balance = tmnProfileService.getEwalletBalance(accessTokenID);
 
-
 		return balance;
 	}
 
@@ -138,6 +137,17 @@ public class TmnProfileController {
 		Favorite favoriteResponse = favoriteService.addFavorite(favorite, accessTokenID);
 		
 		return favoriteResponse;
+	}
+	
+	@RequestMapping(value = "/favorites/delete" , method = RequestMethod.POST)
+	public @ResponseBody void removeFavorite(
+			@RequestParam(value = "billCode", defaultValue="") String billCode,
+			@RequestParam(value = "ref1", defaultValue="") String ref1,
+			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID) {
+		
+		extendExpireAccessToken(accessTokenID);
+
+		favoriteService.deleteFavorite(billCode, ref1, accessTokenID);
 	}
 	
 	@RequestMapping(value = "/favorites" , method = RequestMethod.GET)
