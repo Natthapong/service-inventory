@@ -105,7 +105,7 @@ public class Eve implements Persona {
 					DeleteFavoriteRequest removeFavoriteRequest)
 					throws EwalletException {
 				
-				throw new FailResultCodeException("2013", "stub ewallet client");
+				throw new FailResultCodeException("xxx", "Favorite delete fail.");
 				
 			}
 			

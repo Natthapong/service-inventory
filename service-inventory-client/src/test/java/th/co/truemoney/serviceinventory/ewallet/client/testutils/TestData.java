@@ -38,4 +38,14 @@ public class TestData {
 
 		return favoriteBill;
 	}
+	public static Favorite createNotFavoriteBill() {
+
+		Favorite favoriteBill = new Favorite();
+		favoriteBill.setAmount(new BigDecimal(2000));
+		favoriteBill.setRef1("555");
+		favoriteBill.setServiceCode("mart");
+		favoriteBill.setServiceType("billpay");
+
+		return favoriteBill;
+	}
 }
