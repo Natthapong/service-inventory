@@ -49,7 +49,23 @@ public class FavoriteServiceWorkflowTest {
 	}	
 	
 	@Test
-	public void removeFavorite(){
+	public void shouldSuccessRemoveFavorite(){
+		String accessTokenID = profileService.login(
+				TestData.createAdamSuccessLogin(),
+				TestData.createSuccessClientLogin());
+
+		Favorite favoriteBill = TestData.createFavoriteBill();
+
+		Favorite favoriteResponse = client.addFavorite(favoriteBill, accessTokenID);
+		assertNotNull(favoriteResponse);
+
+		assertEquals("555", favoriteResponse.getRef1());
+		
+		client.deleteFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), accessTokenID);
+	}
+	
+	@Test
+	public void ShouldFailRemoveFavorite(){
 		String accessTokenID = profileService.login(
 				TestData.createEveSuccessLogin(),
 				TestData.createSuccessClientLogin());
