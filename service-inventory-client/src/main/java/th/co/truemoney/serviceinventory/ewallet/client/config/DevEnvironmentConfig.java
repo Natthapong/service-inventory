@@ -14,6 +14,6 @@ public class DevEnvironmentConfig {
 
 	@Bean @Qualifier("endpoint.host")
 	public String host() {
-		return "https://dev.truemoney.co.th";
+		return "https://10.221.6.239";
 	}
 }

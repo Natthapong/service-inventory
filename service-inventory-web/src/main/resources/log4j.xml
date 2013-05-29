@@ -10,15 +10,6 @@
 		</layout>
 	</appender>
 	
-	<!-- File Appenders
-    <appender name="fileBillPay" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="file" value="/home/wasadmin/data/logs/billpay.log" />
-        <param name="DatePattern" value="'.'yyyy-MM-dd" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{dd/MM/yyyy - HH:mm:ss:SSS} [%t] %c{1} - %m%n" />
-		</layout>
-    </appender>
-	-->
 	<!-- 
 	<logger name="org.springframework.samples">
 		<level value="debug" />
@@ -44,21 +35,10 @@
 		<level value="debug" />
 	</logger>
 	-->
+	
 	<logger name="th.co.truemoney.serviceinventory">
 		<level value="debug" />
 		<appender-ref ref="console" />
 	</logger>
-	
-	<!--
-	<category name="fileBillPay">
-		<level value="debug" />
-		<appender-ref ref="fileBillPay" />
-	</category>
-	-->
-	
-	<root>
-		<priority value="warn" />
-		<appender-ref ref="console" />
-	</root>	
-	
+
 </log4j:configuration>
