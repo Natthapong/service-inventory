@@ -7,6 +7,9 @@ import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.params.CoreConnectionPNames;
+import org.springframework.cache.Cache;
+import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +27,7 @@ public class ServiceInventoryClientConfig {
 	private static final int MAX_CONNECTION = 100;
 	private static final int MAX_PER_ROUTE = 5;
 	private static final int DEFAULT_READ_TIMEOUT_MILLISECONDS = 60 * 1000;
-
+	
 	@Bean
 	public RestTemplate restTemplate() {
 		RestTemplate restTemplate = new RestTemplate();
@@ -32,7 +35,7 @@ public class ServiceInventoryClientConfig {
 		restTemplate.setRequestFactory(requestFactory());
 		return restTemplate;
 	}
-
+	
 	@Bean
 	public ClientHttpRequestFactory requestFactory() {
 		DefaultHttpClient defaultHttpClient = new DefaultHttpClient(connectionPoolConnectionManager());
@@ -65,4 +68,22 @@ public class ServiceInventoryClientConfig {
 	public EndPoints endPoints() {
 		return new EndPoints();
 	}
+	
+	@Bean
+	public SimpleCacheManager cacheManager() {
+		SimpleCacheManager cacheManager = new SimpleCacheManager();
+		List<Cache> caches = new ArrayList<Cache>();
+		caches.add(cacheBean().getObject());
+		cacheManager.setCaches(caches);
+		return cacheManager;
+	}
+
+	@Bean
+	public ConcurrentMapCacheFactoryBean cacheBean() {
+		ConcurrentMapCacheFactoryBean cacheFactoryBean = new ConcurrentMapCacheFactoryBean();
+		cacheFactoryBean.setName("billInfo");
+		return cacheFactoryBean;
+	}
+
+	
 }

@@ -3,6 +3,7 @@ package th.co.truemoney.serviceinventory.ewallet.client;
 import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -127,6 +128,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	}
 
 	@Override
+	@Cacheable(value="billInfo", key="#p0")
 	public Bill retrieveBillInformationWithKeyin(String billCode, String accessTokenID)
 			throws ServiceInventoryException {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
@@ -156,6 +158,10 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	
 	public void setRestTemplate(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
+	}
+
+	public void setHeaders(HttpHeaders headers) {
+		this.headers = headers;
 	}
 
 }
