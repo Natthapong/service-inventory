@@ -122,6 +122,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         		mapData.put("target", billerCode);
         		ServiceInventoryWebException se = new ServiceInventoryWebException(Code.BILL_OVER_DUE, "bill over due date.");
         		se.setData(mapData);
+        		throw se;
             }
         }
     }
