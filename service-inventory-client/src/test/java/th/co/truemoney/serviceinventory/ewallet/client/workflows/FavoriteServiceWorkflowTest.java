@@ -2,7 +2,6 @@ package th.co.truemoney.serviceinventory.ewallet.client.workflows;
 
 import static org.junit.Assert.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.Test;

@@ -11,6 +11,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRespon
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.DeleteFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.FavoriteContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritableRequest;
@@ -19,7 +20,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteReques
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.RemoveFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
@@ -100,11 +100,11 @@ public class Simpsons  implements Persona {
 			}
 
 			@Override
-			public void removeFavorite(
-					RemoveFavoriteRequest removeFavoriteRequest)
+			public StandardBizResponse removeFavorite(
+					DeleteFavoriteRequest removeFavoriteRequest)
 					throws EwalletException {
 				// TODO Auto-generated method stub
-				
+				return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
 			}
 		};
 	}
