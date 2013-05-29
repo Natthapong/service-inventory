@@ -79,6 +79,7 @@ public class TransactionAuthenServiceImpl implements TransactionAuthenService {
 	}
 
 	private boolean isAppleUser(AccessToken accessToken) {
-		return "".equals(accessToken.getTruemoneyID());
+		return "tmn.10000000020".equals(accessToken.getTruemoneyID());
 	}
+	
 }
