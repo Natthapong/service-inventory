@@ -2,9 +2,9 @@ package th.co.truemoney.serviceinventory.ewallet.client.workflows;
 
 import static org.junit.Assert.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -20,6 +20,7 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryCl
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class, LocalEnvironmentConfig.class })
@@ -48,17 +49,34 @@ public class FavoriteServiceWorkflowTest {
 	}	
 	
 	@Test
-	public void removeFavorite(){
+	public void shouldSuccessRemoveFavorite(){
 		String accessTokenID = profileService.login(
 				TestData.createAdamSuccessLogin(),
 				TestData.createSuccessClientLogin());
 
 		Favorite favoriteBill = TestData.createFavoriteBill();
-		
+
 		Favorite favoriteResponse = client.addFavorite(favoriteBill, accessTokenID);
 		assertNotNull(favoriteResponse);
+
+		assertEquals("555", favoriteResponse.getRef1());
 		
 		client.deleteFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), accessTokenID);
+	}
+	
+	@Test
+	public void ShouldFailRemoveFavorite(){
+		String accessTokenID = profileService.login(
+				TestData.createEveSuccessLogin(),
+				TestData.createSuccessClientLogin());
+
+		Favorite favoriteBill = TestData.createNotFavoriteBill();
+		try{
+			client.deleteFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), accessTokenID);
+			Assert.fail();
+		}catch(ServiceInventoryException e){
+			assertEquals("xxx", e.getErrorCode());
+		}
 	}
 	
 	@Test

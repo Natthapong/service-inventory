@@ -81,7 +81,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
                                 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
                                 .getInformationWithBarcode();
 
-		validateOverdue(bill.getTarget(), bill.getDueDate());
+		validateOverdue(bill.getTarget(), bill.getDueDate(), bill.getAmount());
 		bill.setID(UUID.randomUUID().toString());
 		bill.setPayWith(PAYWITH_BARCODE);
 		billInfoRepo.saveBill(bill, accessTokenID);
@@ -102,7 +102,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 								 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
 								 .getInformationWithBillCode();
 
-		validateOverdue(bill.getTarget(), bill.getDueDate());
+		validateOverdue(bill.getTarget(), bill.getDueDate(), bill.getAmount());
 		bill.setID(UUID.randomUUID().toString());
 		bill.setPayWith(PAYWITH_FAVORITE);
 		bill.setRef1(ref1);
@@ -112,11 +112,17 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		return bill;
 	}
 
-    private void validateOverdue(String billerCode, Date duedate) {
+    private void validateOverdue(String billerCode, Date duedate, BigDecimal amount) {
         BillPaymentValidation billPaymentValidation = validationConfig.getBillValidation(billerCode);
         if (billPaymentValidation != null && "TRUE".equals(billPaymentValidation.getValidateDuedate())) {
             if (isOverdue(duedate)) {
-                throw new ServiceInventoryWebException(Code.BILL_OVER_DUE, "bill over due date.");
+        		HashMap<String, Object> mapData = new HashMap<String, Object>();
+        		mapData.put("dueDate", duedate);
+        		mapData.put("amount", amount);
+        		mapData.put("target", billerCode);
+        		ServiceInventoryWebException se = new ServiceInventoryWebException(Code.BILL_OVER_DUE, "bill over due date.");
+        		se.setData(mapData);
+        		throw se;
             }
         }
     }
@@ -282,7 +288,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 								 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
 								 .getInformationWithBillCode();
 
-		validateOverdue(bill.getTarget(), bill.getDueDate());
+		validateOverdue(bill.getTarget(), bill.getDueDate(), bill.getAmount());
 		bill.setID(UUID.randomUUID().toString());
 		bill.setPayWith(PAYWITH_KEYIN);
 		billInfoRepo.saveBill(bill, accessTokenID);

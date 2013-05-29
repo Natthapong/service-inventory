@@ -14,13 +14,13 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.DeleteFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.FavoriteContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritableRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritedRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.RemoveFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
@@ -154,12 +154,15 @@ public class UserProfileHandler {
         }
         
 		public void removeFavorite(Integer channelID, String sessionID,
-				String tmnID, String serviceType, String serviceCode,
+				String tmnID, String serviceCode,
 				String reference1) {
+			DeleteFavoriteRequest deleteFavoriteRequest = createRemoveFavoriteRequest(
+					channelID, sessionID, tmnID, serviceCode, reference1);
 			
-			
+            this.tmnProfileProxy.removeFavorite(deleteFavoriteRequest);
+            
 		}
-		
+
         public void logout(Integer channelID, String sessionID, String truemoneyID) {
                 this.tmnSecurityProxy.terminateSession(createAccessRequest(channelID, sessionID, truemoneyID));
         }
@@ -227,6 +230,19 @@ public class UserProfileHandler {
 
                 return signonRequest;
         }
+        
+		private DeleteFavoriteRequest createRemoveFavoriteRequest(
+				Integer channelID, String sessionID, String tmnID,
+				String serviceCode, String reference1) {
+			SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
+			
+			DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest();
+			deleteFavoriteRequest.setChannelId(channelID);
+			deleteFavoriteRequest.setServiceCode(serviceCode);
+			deleteFavoriteRequest.setReference1(reference1);
+			deleteFavoriteRequest.setSecurityContext(securityContext);
+			return deleteFavoriteRequest;
+		}
         
         private List<Favorite> createFavorites(FavoriteContext[] favoriteContext) {
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
