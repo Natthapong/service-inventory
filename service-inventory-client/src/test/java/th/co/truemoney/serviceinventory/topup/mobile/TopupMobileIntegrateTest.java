@@ -49,7 +49,10 @@ public class TopupMobileIntegrateTest {
 
 		TopUpMobileDraft topUpMobileDraft = client.verifyAndCreateTopUpMobileDraft("0868185055", new BigDecimal(500), accessToken);
 		assertNotNull(topUpMobileDraft);
-
+		
+		TopUpMobileDraft topMobileDraftResponse = client.getTopUpMobileDraftDetail(topUpMobileDraft.getID(), accessToken);
+		assertNotNull(topMobileDraftResponse);
+		
 		OTP otp = authenClient.requestOTP(topUpMobileDraft.getID() , accessToken);
 		assertNotNull(otp);
 
