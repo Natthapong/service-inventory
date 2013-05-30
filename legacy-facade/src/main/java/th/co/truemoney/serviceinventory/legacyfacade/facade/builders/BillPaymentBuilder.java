@@ -127,7 +127,7 @@ public class BillPaymentBuilder {
 		verifyRequest.setTmnID(tmnID);
 
 		verifyRequest.setRef1(ref1);
-		verifyRequest.setRef2(convertNull(ref2));
+		verifyRequest.setRef2(ref2);
 		verifyRequest.setTarget(target);
 		verifyRequest.setTransType(transType);
 
@@ -184,7 +184,7 @@ public class BillPaymentBuilder {
 		confirmRequest.setTmnID(tmnID);
 
 		confirmRequest.setRef1(ref1);
-		confirmRequest.setRef2(convertNull(ref2));
+		confirmRequest.setRef2(ref2);
 		confirmRequest.setTarget(target);
 		confirmRequest.setTransType(transType);
 
@@ -210,11 +210,4 @@ public class BillPaymentBuilder {
 		return formatedString.substring(0, lastIndex) + formatedString.substring(lastIndex + 1);
 	}
 	
-	private String convertNull(String value) {
-		if (value == null || value.equals("")) {
-			return "-";
-		}
-		return value;
-	}
-
 }
