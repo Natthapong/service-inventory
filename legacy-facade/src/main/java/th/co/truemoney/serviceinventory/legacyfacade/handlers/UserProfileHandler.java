@@ -153,14 +153,20 @@ public class UserProfileHandler {
                 return favorite;
         }
         
-		public void removeFavorite(Integer channelID, String sessionID,
+		public Boolean removeFavorite(Integer channelID, String sessionID,
 				String tmnID, String serviceCode,
 				String reference1) {
+			
 			DeleteFavoriteRequest deleteFavoriteRequest = createRemoveFavoriteRequest(
 					channelID, sessionID, tmnID, serviceCode, reference1);
 			
-            this.tmnProfileProxy.removeFavorite(deleteFavoriteRequest);
+			StandardBizResponse standardBizResponse = this.tmnProfileProxy.removeFavorite(deleteFavoriteRequest);
             
+			if(standardBizResponse.isSuccess()) {
+				return Boolean.TRUE;
+			} else {
+				return Boolean.FALSE;
+			}
 		}
 
         public void logout(Integer channelID, String sessionID, String truemoneyID) {

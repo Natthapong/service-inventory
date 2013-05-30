@@ -139,15 +139,15 @@ public class TmnProfileController {
 		return favoriteResponse;
 	}
 	
-	@RequestMapping(value = "/favorites/delete" , method = RequestMethod.DELETE)
-	public @ResponseBody void removeFavorite(
+	@RequestMapping(value = "/favorites" , method = RequestMethod.DELETE)
+	public @ResponseBody Boolean removeFavorite(
 			@RequestParam(value = "billCode", defaultValue="") String billCode,
 			@RequestParam(value = "ref1", defaultValue="") String ref1,
 			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID) {
 		
 		extendExpireAccessToken(accessTokenID);
 
-		favoriteService.deleteFavorite(billCode, ref1, accessTokenID);
+		return favoriteService.deleteFavorite(billCode, ref1, accessTokenID);
 	}
 	
 	@RequestMapping(value = "/favorites" , method = RequestMethod.GET)

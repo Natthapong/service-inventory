@@ -257,14 +257,14 @@ public class LegacyFacade {
 			profileFacade.logout(channelID, sessionID, tmnID);
 		}
 
-		public void removeFavorite() {
+		public Boolean removeFavorite() {
 			Validate.notNull(tmnID, "data missing. get direct debit list of whom?");
 			Validate.notNull(sessionID, "data missing. get direct debit list of whom?");
 			Validate.notNull(channelID, "data missing. get direct debit list from which channel?");
 			Validate.notNull(serviceCode, "data missing. get serviceCode?");
 			Validate.notNull(reference1, "data missing. get reference1?");
 			
-		    profileFacade.removeFavorite(this.channelID, this.sessionID, this.tmnID, this.serviceCode, this.reference1);
+		    return profileFacade.removeFavorite(this.channelID, this.sessionID, this.tmnID, this.serviceCode, this.reference1);
 		}
 
 	}

@@ -1,10 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
-import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
-import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
-import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,6 +10,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
+import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
+import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
 public class FavoriteServicesClient implements FavoriteService {
@@ -42,13 +42,15 @@ public class FavoriteServicesClient implements FavoriteService {
 	}
 	
 	@Override
-	public void deleteFavorite(String billCode,String ref1, String accessTokenID)
+	public Boolean deleteFavorite(String billCode, String ref1, String accessTokenID)
 			throws ServiceInventoryException {
 		
-		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		HttpEntity<Boolean> requestEntity = new HttpEntity<Boolean>(headers);
 		
-		restTemplate.exchange(endPoints.getDeleteFavoriteURL(), HttpMethod.DELETE,
+		ResponseEntity<Boolean> responseEntity = restTemplate.exchange(endPoints.getDeleteFavoriteURL(), HttpMethod.DELETE,
 				requestEntity, Boolean.class, billCode, ref1, accessTokenID);
+		
+		return responseEntity.getBody();
 		
 	}
 	

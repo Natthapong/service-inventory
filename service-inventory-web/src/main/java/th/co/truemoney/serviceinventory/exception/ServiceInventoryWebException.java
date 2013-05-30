@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.exception;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -61,7 +61,9 @@ public class FavoriteServiceWorkflowTest {
 
 		assertEquals("555", favoriteResponse.getRef1());
 		
-		client.deleteFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), accessTokenID);
+		Boolean result = client.deleteFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), accessTokenID);
+		
+		assertEquals(true, result);
 	}
 	
 	@Test
