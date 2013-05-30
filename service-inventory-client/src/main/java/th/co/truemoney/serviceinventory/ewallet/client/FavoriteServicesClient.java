@@ -42,13 +42,13 @@ public class FavoriteServicesClient implements FavoriteService {
 	}
 	
 	@Override
-	public Boolean deleteFavorite(String billCode, String ref1, String accessTokenID)
+	public Boolean deleteFavorite(String serviceCode, String ref1, String accessTokenID)
 			throws ServiceInventoryException {
 		
 		HttpEntity<Boolean> requestEntity = new HttpEntity<Boolean>(headers);
 		
 		ResponseEntity<Boolean> responseEntity = restTemplate.exchange(endPoints.getDeleteFavoriteURL(), HttpMethod.DELETE,
-				requestEntity, Boolean.class, billCode, ref1, accessTokenID);
+				requestEntity, Boolean.class, serviceCode, ref1, accessTokenID);
 		
 		return responseEntity.getBody();
 		
