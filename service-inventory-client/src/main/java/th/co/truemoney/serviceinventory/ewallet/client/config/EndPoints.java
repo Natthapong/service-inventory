@@ -83,11 +83,11 @@ public class EndPoints {
 	}
 
 	public String getScanBarcodeServiceURL() {
-		return host + "/service-inventory-web/v1/bill-payment/information/?barcode={barcode}&accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/bill-payment/information?barcode={barcode}&accessTokenID={accessTokenID}";
 	}
 
 	public String getBillInformationServiceURL() {
-		return host + "/service-inventory-web/v1/bill-payment/information/?billCode={billCode}&ref1={ref1}&amount={amount}&accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/bill-payment/information?billCode={billCode}&ref1={ref1}&amount={amount}&accessTokenID={accessTokenID}";
 	}
 	
 	public String getBillInformationServiceWithBillCodeURL() {
@@ -95,7 +95,7 @@ public class EndPoints {
 	}
 	
 	public String getUpdateBillInformationURL() {
-		return host + "/service-inventory-web/v1/bill-payment/information/?billID={billID}&ref1={ref1}&ref2={ref2}&amount={amount}&accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/bill-payment/information?billID={billID}&ref1={ref1}&ref2={ref2}&amount={amount}&accessTokenID={accessTokenID}";
 	}
 	
 	public String getCreateBillInvoiceURL() {
