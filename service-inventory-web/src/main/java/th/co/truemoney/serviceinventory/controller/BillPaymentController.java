@@ -2,6 +2,8 @@ package th.co.truemoney.serviceinventory.controller;
 
 import java.math.BigDecimal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +23,8 @@ import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynServic
 @RequestMapping(value = "/bill-payment")
 public class BillPaymentController {
 
+	private static final Logger logger = LoggerFactory.getLogger(BillPaymentController.class);
+	
 	@Autowired
 	private BillPaymentService billPaymentService;
 
@@ -60,6 +64,11 @@ public class BillPaymentController {
 			@RequestParam(value = "ref2", defaultValue = "") String ref2,
 			@RequestParam(value = "amount", defaultValue = "") String amount,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+		logger.debug("billID : "+billID);
+		logger.debug("ref1 : "+ref1);
+		logger.debug("ref2 : "+ref2);
+		logger.debug("amount : "+amount);
+		logger.debug("accessTokenID : "+accessTokenID);
 		extendExpireAccessToken(accessTokenID);
 		return billPaymentService.updateBillInformation(billID, ref1, ref2, new BigDecimal(amount), accessTokenID);
 	} 

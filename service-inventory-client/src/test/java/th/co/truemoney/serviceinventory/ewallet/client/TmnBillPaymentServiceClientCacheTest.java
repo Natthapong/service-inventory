@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import java.math.BigDecimal;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryCl
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryClientConfigTest.class })
 @ActiveProfiles(profiles="dev")
+@Ignore
 public class TmnBillPaymentServiceClientCacheTest {
 	
 	@Autowired

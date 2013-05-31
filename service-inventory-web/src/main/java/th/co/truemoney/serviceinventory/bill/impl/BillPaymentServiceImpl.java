@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction.FailStatus;
+import th.co.truemoney.serviceinventory.controller.BillPaymentController;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
@@ -30,6 +33,8 @@ import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 
 @Service
 public class BillPaymentServiceImpl implements  BillPaymentService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(BillPaymentServiceImpl.class);
 
     private static final String PAYWITH_FAVORITE = "favorite";
 
@@ -300,9 +305,19 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	public Bill updateBillInformation(String billID, String ref1, String ref2, BigDecimal amount,
 			String accessTokenID) throws ServiceInventoryException {
 		
+		logger.debug("billID : "+billID);
+		logger.debug("ref1 : "+ref1);
+		logger.debug("ref2 : "+ref2);
+		logger.debug("amount : "+amount);
+		logger.debug("accessTokenID : "+accessTokenID);
+		
 		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
 		
+		logger.debug("token.getAccessTokenID() : "+token.getAccessTokenID());
+		
 		Bill bill = billInfoRepo.findBill(billID, token.getAccessTokenID());
+		
+		logger.debug("bill target : "+bill.getTarget());
 		
 		bill.setRef1(ref1);
 		bill.setRef2(ref2);
