@@ -128,7 +128,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 	}
 
 	@Override
-	@Cacheable(value="billInfo", key="#p0")
+	//@Cacheable(value="billInfo", key="#p0")
 	public Bill retrieveBillInformationWithKeyin(String billCode, String accessTokenID)
 			throws ServiceInventoryException {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
