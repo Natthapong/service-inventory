@@ -14,6 +14,8 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcode
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillResponse;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOutstandingBillRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOutstandingBillResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeRequest;
@@ -29,7 +31,7 @@ public class TrueConvergenceOneBillPersona implements BarcodePersona {
 
         return new BillProxy() {
 
-            @Override
+			@Override
             public GetBarcodeResponse getBarcodeInformation(GetBarcodeRequest barcodeRequest) throws SIEngineException {
                 SIEngineResponse billResponse = new SIEngineResponse();
                 billResponse.setResultCode("0");
@@ -177,6 +179,29 @@ public class TrueConvergenceOneBillPersona implements BarcodePersona {
 	                billResponse.setExtraXML(extraXML);
 
 	            return new GetBillResponse(billResponse);
+			}
+            
+			@Override
+			public InquiryOutstandingBillResponse inquiryOutstandingBill(InquiryOutstandingBillRequest inquiryOutstandingBillRequest)
+					throws SIEngineException {
+				 SIEngineResponse billResponse = new SIEngineResponse();
+	                billResponse.setResultCode("0");
+	                billResponse.setResultDesc("Success");
+	                billResponse.setReqTransactionID("4410A0318");
+	                billResponse.setTransactionID("130401012303");
+	                billResponse.setResponseMessage("Success");
+
+	                billResponse.addParameterElement("customer_name", "Mr.Jeerapun");
+	                billResponse.addParameterElement("address", "บางกะปิ");
+	                billResponse.addParameterElement("reference1", "123456789");
+	                billResponse.addParameterElement("reference2", "13311188899");
+	                billResponse.addParameterElement("due_date", "20130618");
+	                billResponse.addParameterElement("status", "0");
+	                billResponse.addParameterElement("amount", "1500");
+	                billResponse.addParameterElement("invoice_date", "20130603");
+	                billResponse.addParameterElement("discount_amount", "1000");
+	                
+	            return new InquiryOutstandingBillResponse(billResponse);	                
 			}
         };
     }
