@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
-import th.co.truemoney.serviceinventory.engine.client.domain.SIEngineResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.SourceFee;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmTopUpAirtimeRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmTopUpAirtimeResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
@@ -60,7 +60,7 @@ public class MobileTopUpHandler {
 	public TopUpMobileConfirmationInfo topUpMobile(ConfirmTopUpAirtimeRequest confirmRequest) {
 		try {
 			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			SIEngineResponse topUpResponse = topUpMobileProxy.confirmTopUpAirtime(confirmRequest);
+			ConfirmTopUpAirtimeResponse topUpResponse = topUpMobileProxy.confirmTopUpAirtime(confirmRequest);
 			TopUpMobileConfirmationInfo confirmationInfo = new TopUpMobileConfirmationInfo();
 			confirmationInfo.setTransactionID(topUpResponse.getApproveCode());
 			confirmationInfo.setTransactionDate(df.format(new Date()));

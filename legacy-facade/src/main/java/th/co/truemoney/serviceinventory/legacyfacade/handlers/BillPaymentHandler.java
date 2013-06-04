@@ -13,14 +13,15 @@ import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
-import th.co.truemoney.serviceinventory.engine.client.domain.SIEngineResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.SourceFee;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
@@ -33,7 +34,7 @@ public class BillPaymentHandler {
 
     public String verify(VerifyBillPayRequest billPayRequest){
         try {
-            SIEngineResponse verifyResponse = billPayProxy.verifyBillPay(billPayRequest);
+        	VerifyBillPayResponse verifyResponse = billPayProxy.verifyBillPay(billPayRequest);
             return verifyResponse.getTransactionID();
         } catch(FailResultCodeException ex) {
             throw new VerifyBillPayFailException(ex);
@@ -43,7 +44,7 @@ public class BillPaymentHandler {
     public BillPaymentConfirmationInfo payBill(ConfirmBillPayRequest billRequest) {
         try {
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            SIEngineResponse billPayResponse = billPayProxy.confirmBillPay(billRequest);
+            ConfirmBillPayResponse billPayResponse = billPayProxy.confirmBillPay(billRequest);
             BillPaymentConfirmationInfo confirmationInfo = new BillPaymentConfirmationInfo();
             confirmationInfo.setTransactionID(billPayResponse.getApproveCode());
             confirmationInfo.setTransactionDate(df.format(new Date()));

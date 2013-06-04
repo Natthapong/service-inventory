@@ -7,12 +7,15 @@ import th.co.truemoney.serviceinventory.engine.client.domain.ExtraXML;
 import th.co.truemoney.serviceinventory.engine.client.domain.SIEngineResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.SourceFee;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmTopUpAirtimeRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmTopUpAirtimeResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
@@ -81,7 +84,7 @@ public class TrueConvergenceOneBillPersona implements BarcodePersona {
             }
 
             @Override
-            public SIEngineResponse verifyBillPay(VerifyBillPayRequest billPayRequest)
+            public VerifyBillPayResponse verifyBillPay(VerifyBillPayRequest billPayRequest)
                     throws SIEngineException {
 
                 SIEngineResponse billResponse = new SIEngineResponse();
@@ -98,11 +101,11 @@ public class TrueConvergenceOneBillPersona implements BarcodePersona {
                 billResponse.addParameterElement("amount", "100");
                 billResponse.addParameterElement("source", "EW");
 
-                return billResponse;
+                return new VerifyBillPayResponse(billResponse);
             }
 
             @Override
-            public SIEngineResponse confirmBillPay(ConfirmBillPayRequest billPayRequest)
+            public ConfirmBillPayResponse confirmBillPay(ConfirmBillPayRequest billPayRequest)
                     throws SIEngineException {
 
                 SIEngineResponse billResponse = new SIEngineResponse();
@@ -119,7 +122,7 @@ public class TrueConvergenceOneBillPersona implements BarcodePersona {
                 billResponse.addParameterElement("amount", "100");
                 billResponse.addParameterElement("msisdn", "0891267357");
 
-                return billResponse;
+                return new ConfirmBillPayResponse(billResponse);
             }
 
 			@Override
@@ -228,7 +231,7 @@ public class TrueConvergenceOneBillPersona implements BarcodePersona {
             }
 
             @Override
-            public SIEngineResponse confirmTopUpAirtime(ConfirmTopUpAirtimeRequest request) throws SIEngineException {
+            public ConfirmTopUpAirtimeResponse confirmTopUpAirtime(ConfirmTopUpAirtimeRequest request) throws SIEngineException {
                 SIEngineResponse response = new SIEngineResponse();
                 response.setResultNamespace("ENGINE");
                 response.setResultCode("0");
@@ -243,7 +246,7 @@ public class TrueConvergenceOneBillPersona implements BarcodePersona {
                 response.addParameterElement("msisdn", "0864041515");
                 response.addParameterElement("approve_code", "35138505");
 
-                return response;
+                return new ConfirmTopUpAirtimeResponse(response);
             }
         };
     }
