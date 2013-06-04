@@ -328,4 +328,15 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		return bill;
 	}
 
+	/*@Override
+	public BigDecimal retrieveBillOutStandingOnline(String billCode,
+			String ref1, String ref2, String accessTokenID)
+			throws ServiceInventoryException {
+		logger.debug("billCode : "+billCode);
+		logger.debug("ref1 : "+ref1);
+		logger.debug("ref2 : "+ref2);
+		logger.debug("accessTokenID : "+accessTokenID);
+		return null;
+	}*/
+
 }

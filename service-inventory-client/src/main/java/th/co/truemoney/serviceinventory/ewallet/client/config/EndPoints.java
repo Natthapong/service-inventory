@@ -94,6 +94,10 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/bill-payment/information/{billCode}?accessTokenID={accessTokenID}";
 	}
 	
+	public String getBillOutStandingOnlineURL() {
+		return host + "/service-inventory-web/v1/bill-payment/information/{billCode}?accessTokenID={accessTokenID}";
+	}
+	
 	public String getUpdateBillInformationURL() {
 		return host + "/service-inventory-web/v1/bill-payment/information?billID={billID}&ref1={ref1}&ref2={ref2}&amount={amount}&accessTokenID={accessTokenID}";
 	}

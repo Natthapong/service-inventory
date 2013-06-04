@@ -35,5 +35,8 @@ public interface BillPaymentService {
 
 	public BillPaymentTransaction getBillPaymentResult(String billPaymentID, String accessTokenID)
 			throws ServiceInventoryException;
+	
+//	public BigDecimal retrieveBillOutStandingOnline(String billCode, String ref1, String ref2, String accessTokenID)
+//			throws ServiceInventoryException;
 
 }
