@@ -61,7 +61,11 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
 
 		//transfer
 		public static final String INVALID_TARGET_MOBILE_NUMBER = "30000";
-		
+
+		//core report 
+		public static final String GET_ACTIVITY_FAILED = "40000";
+		public static final String GET_ACTIVITY_DETAIL_FAILED = "40001";
+
 	}
 
 	@SuppressWarnings("unchecked")

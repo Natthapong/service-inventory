@@ -36,8 +36,6 @@ public class GlobalExceptionsHandler {
 		return new ErrorBean(503, "503", "Internal server error", exception.getNamespace(), exception.getMessage());
 	}
 
-
-
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.PRECONDITION_FAILED)
 	public @ResponseBody ErrorBean handleBeanValidationExceptions(MethodArgumentNotValidException exception) {
@@ -67,7 +65,6 @@ public class GlobalExceptionsHandler {
 		return new ErrorBean(exception);
 	}
 
-
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public @ResponseBody ErrorBean handleAllExceptions(Exception exception) {
@@ -75,8 +72,12 @@ public class GlobalExceptionsHandler {
 		logger.debug("=========================");
 		logger.error("SI:WEB "+exception.getMessage(), exception);
 		logger.debug("=========================");
-
-		return new ErrorBean(Integer.toString(HttpServletResponse.SC_INTERNAL_SERVER_ERROR), "INTERNAL_SERVER_ERROR");
+		
+		return new ErrorBean(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
+				Integer.toString(HttpServletResponse.SC_INTERNAL_SERVER_ERROR),
+				ServiceInventoryWebException.NAMESPACE,
+				"handleAllExceptions");	
+		
 	}
 
 }

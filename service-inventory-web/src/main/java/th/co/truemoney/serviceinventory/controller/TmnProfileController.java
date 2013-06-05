@@ -24,6 +24,9 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.exception.ValidationException;
 
 @Controller
@@ -109,22 +112,24 @@ public class TmnProfileController {
 
 	@RequestMapping(value = "/activities/{accessTokenID}", method = RequestMethod.GET)
 	public @ResponseBody List<Activity> getActivities(@PathVariable String accessTokenID) {
-
 		extendExpireAccessToken(accessTokenID);
-
-		List<Activity> activities = activityService.getActivities(accessTokenID);
-		
-		return activities;
+		try {
+			List<Activity> activities = activityService.getActivities(accessTokenID);
+			return activities;
+		} catch (ServiceInventoryException e) {
+			throw new ServiceInventoryWebException(Code.GET_ACTIVITY_FAILED, e.getErrorDescription());
+		}
 	}
 	
 	@RequestMapping(value = "/activities/{accessTokenID}/detail/{reportID}", method = RequestMethod.GET)
 	public @ResponseBody ActivityDetail getActivityDetail(@PathVariable String accessTokenID, @PathVariable Long reportID) {
-
 		extendExpireAccessToken(accessTokenID);
-
-		ActivityDetail activityDetail = activityService.getActivityDetail(reportID, accessTokenID);
-		
-		return activityDetail;
+		try {	
+			ActivityDetail activityDetail = activityService.getActivityDetail(reportID, accessTokenID);
+			return activityDetail;
+		} catch (ServiceInventoryException e) {
+			throw new ServiceInventoryWebException(Code.GET_ACTIVITY_DETAIL_FAILED, e.getErrorDescription());
+		}
 	}
 	
 	@RequestMapping(value = "/favorites/{accessTokenID}" , method = RequestMethod.POST)
