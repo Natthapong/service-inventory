@@ -21,6 +21,8 @@ public class P2PTransferDraft extends DraftTransaction {
 	private BigDecimal amount;
 
 	private String fullname;
+	
+	private String message;
 
 	public P2PTransferDraft() {
 		type = DRAFT_TYPE;
@@ -81,6 +83,14 @@ public class P2PTransferDraft extends DraftTransaction {
 
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	@Override
