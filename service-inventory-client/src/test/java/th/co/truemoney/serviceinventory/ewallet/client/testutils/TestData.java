@@ -38,6 +38,18 @@ public class TestData {
 
 		return favoriteBill;
 	}
+	
+	public static Favorite createFavoriteBillOnline() {
+
+		Favorite favoriteBill = new Favorite();
+		favoriteBill.setAmount(new BigDecimal(1520));
+		favoriteBill.setRef1("123456789");
+		favoriteBill.setServiceCode("mea");
+		favoriteBill.setServiceType("billpay");
+
+		return favoriteBill;
+	}
+	
 	public static Favorite createNotFavoriteBill() {
 
 		Favorite favoriteBill = new Favorite();

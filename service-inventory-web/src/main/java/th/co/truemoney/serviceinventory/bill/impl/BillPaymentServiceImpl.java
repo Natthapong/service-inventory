@@ -16,7 +16,7 @@ import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction.FailStatus;
-import th.co.truemoney.serviceinventory.controller.BillPaymentController;
+import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
@@ -125,6 +125,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         		mapData.put("dueDate", duedate);
         		mapData.put("amount", amount);
         		mapData.put("target", billerCode);
+        		
         		ServiceInventoryWebException se = new ServiceInventoryWebException(Code.BILL_OVER_DUE, "bill over due date.");
         		se.setData(mapData);
         		throw se;
@@ -328,15 +329,23 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		return bill;
 	}
 
-	/*@Override
-	public BigDecimal retrieveBillOutStandingOnline(String billCode,
+	@Override
+	public OutStandingBill retrieveBillOutStandingOnline(String billCode,
 			String ref1, String ref2, String accessTokenID)
 			throws ServiceInventoryException {
-		logger.debug("billCode : "+billCode);
-		logger.debug("ref1 : "+ref1);
-		logger.debug("ref2 : "+ref2);
-		logger.debug("accessTokenID : "+accessTokenID);
-		return null;
-	}*/
+		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
+		ClientCredential appData = token.getClientCredential();
+
+		OutStandingBill outStandingBill =  legacyFacade.billing()
+								 .readBillOutStandingOnlineWithBillCode(billCode)
+								 .fromRef1(ref1)
+								 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+								 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
+								 .getBillOutStandingOnline();
+		
+		validateOverdue(outStandingBill.getBillCode(), outStandingBill.getDueDate(), outStandingBill.getOutStandingBalance());
+
+		return outStandingBill;
+	}
 
 }

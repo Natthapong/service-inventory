@@ -4,8 +4,10 @@ import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOutstandingBillRequest;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
 
 public class GetBillInfoBuilder {
@@ -17,6 +19,7 @@ public class GetBillInfoBuilder {
 	private String appKey;
 	private String barcode;
 	private String billCode;
+	private String ref1;
 
 	private BillPaymentHandler billPaymentFacade;
 
@@ -45,6 +48,12 @@ public class GetBillInfoBuilder {
 		this.appUser = appUser;
 		this.appPassword = appPassword;
 		this.appKey = appKey;
+
+		return this;
+	}
+	
+	public GetBillInfoBuilder fromRef1(String ref1) {
+		this.ref1 = ref1;
 
 		return this;
 	}
@@ -91,6 +100,31 @@ public class GetBillInfoBuilder {
 		billRequest.setBillCode(billCode);
 
 		return billPaymentFacade.getBillCodeInformation(billRequest);
+	}
+
+	public OutStandingBill getBillOutStandingOnline() {
+		Validate.notNull(channel, "data missing. get barcode information from which channel?");
+		Validate.notNull(channelDetail, "missing channel detail.");
+		Validate.notNull(appUser, "data missing. from which app user?");
+		Validate.notNull(appPassword, "data missing. missing app password.");
+		Validate.notNull(appKey, "data missing. missing app key.");
+		Validate.notNull(billCode, "data missing. billCode missing?");
+		Validate.notNull(ref1, "data missing. ref1 missing?");
+		
+		InquiryOutstandingBillRequest inquiryOutstandingBillRequest = new InquiryOutstandingBillRequest();
+		
+		inquiryOutstandingBillRequest.setChannel(channel);
+		inquiryOutstandingBillRequest.setChannelDetail(channelDetail);
+
+		inquiryOutstandingBillRequest.setAppUser(appUser);
+		inquiryOutstandingBillRequest.setAppPassword(appPassword);
+		inquiryOutstandingBillRequest.setAppKey(appKey);
+
+		inquiryOutstandingBillRequest.setBillCode(billCode);
+		
+		inquiryOutstandingBillRequest.setRef1(ref1);
+		
+		return billPaymentFacade.getBillOutStandingOnline(inquiryOutstandingBillRequest);
 	}
 
 }

@@ -1,6 +1,8 @@
 package th.co.truemoney.serviceinventory.ewallet.client.workflows;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 
@@ -127,7 +129,8 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 			fail("invalid favorite");
 		} catch (ServiceInventoryException se) {
 			assertEquals("1017", se.getErrorCode());
-		}		
+		}	
+		
 	}
 	
 	@Test

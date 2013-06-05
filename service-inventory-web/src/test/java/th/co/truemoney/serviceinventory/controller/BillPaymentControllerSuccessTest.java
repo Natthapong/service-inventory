@@ -23,6 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
@@ -83,6 +84,21 @@ public class BillPaymentControllerSuccessTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.target").exists());
+
+	}
+	
+	@Test
+	public void getBillOutStandingOnlineSuccess() throws Exception {
+
+		//given
+		OutStandingBill stubbedSuccessOutStandingBill = BillPaymentStubbed.createSuccessOutStandingBill();
+		when(billPaymentServiceMock.retrieveBillOutStandingOnline(anyString(), anyString(), anyString(), anyString())).thenReturn(stubbedSuccessOutStandingBill);
+
+		//perform
+		this.mockMvc.perform(get("/bill-payment/information/outstanding/mea/123456789/?ref2=987654321&accessTokenID=12345")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.outStandingBalance").exists());
 
 	}
 }

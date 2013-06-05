@@ -74,6 +74,7 @@ public class Adam implements Persona {
 			@Override
 			public StandardBizResponse isFavoritable(IsFavoritableRequest isIsFavoritableRequest)
 					throws EwalletException {
+				System.out.println("Hello");
 				return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
 			}
 

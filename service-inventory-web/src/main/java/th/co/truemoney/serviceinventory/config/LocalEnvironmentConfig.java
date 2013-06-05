@@ -140,7 +140,7 @@ public class LocalEnvironmentConfig {
             @Override
             public StandardBizResponse isFavoritable(IsFavoritableRequest isIsFavoritableRequest)
                     throws EwalletException {
-                List<String> serviceCodes = Arrays.asList("tr", "trmv", "tmvh", "tlp", "tic", "ti", "tcg");
+                List<String> serviceCodes = Arrays.asList("tr", "trmv", "tmvh", "tlp", "tic", "ti", "tcg", "mea");
                 if(!serviceCodes.contains(isIsFavoritableRequest.getServiceCode())) {
                     throw new FailResultCodeException("2013", "stub ADD_FAVORITE_DENIED");
                 }

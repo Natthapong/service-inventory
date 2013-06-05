@@ -464,6 +464,10 @@ public class LegacyFacade {
 		public GetBillInfoBuilder readBillInfoWithBillCode(String billCode) {
 			return new GetBillInfoBuilder(billPaymentFacade).withBillCode(billCode);
 		}
+		
+		public GetBillInfoBuilder readBillOutStandingOnlineWithBillCode(String billCode) {
+			return new GetBillInfoBuilder(billPaymentFacade).withBillCode(billCode);
+		}
 
 		public BillPaymentBuilder fromBill(String ref1, String ref2, String targetAgent) {
 			return new BillPaymentBuilder(billPaymentFacade)

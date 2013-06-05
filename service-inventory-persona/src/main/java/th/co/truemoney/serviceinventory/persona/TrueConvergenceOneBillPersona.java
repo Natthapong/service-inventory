@@ -195,10 +195,10 @@ public class TrueConvergenceOneBillPersona implements BarcodePersona {
 	                billResponse.addParameterElement("address", "บางกะปิ");
 	                billResponse.addParameterElement("reference1", "123456789");
 	                billResponse.addParameterElement("reference2", "13311188899");
-	                billResponse.addParameterElement("due_date", "20130618");
+	                billResponse.addParameterElement("due_date", "20140618");
 	                billResponse.addParameterElement("status", "0");
 	                billResponse.addParameterElement("amount", "1500");
-	                billResponse.addParameterElement("invoice_date", "20130603");
+	                billResponse.addParameterElement("invoice_date", "20140603");
 	                billResponse.addParameterElement("discount_amount", "1000");
 	                
 	            return new InquiryOutstandingBillResponse(billResponse);	                

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
+import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface BillPaymentService {
@@ -36,7 +37,7 @@ public interface BillPaymentService {
 	public BillPaymentTransaction getBillPaymentResult(String billPaymentID, String accessTokenID)
 			throws ServiceInventoryException;
 	
-//	public BigDecimal retrieveBillOutStandingOnline(String billCode, String ref1, String ref2, String accessTokenID)
-//			throws ServiceInventoryException;
+	public OutStandingBill retrieveBillOutStandingOnline(String billCode, String ref1, String ref2, String accessTokenID)
+			throws ServiceInventoryException;
 
 }

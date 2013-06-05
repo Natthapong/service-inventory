@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
@@ -131,6 +132,19 @@ public class BillPaymentStubbed {
 		billPaymentInfo.setDueDate(new Date());
 
 		return billPaymentInfo;
+	}
+	
+	public static OutStandingBill createSuccessOutStandingBill() {
+		
+		OutStandingBill successOutStandingBill = new OutStandingBill();
+		successOutStandingBill.setBillCode("mea");
+		successOutStandingBill.setRef1("123456789");
+		successOutStandingBill.setRef2("987654321");
+		successOutStandingBill.setInvoiceDate(new Date());
+		successOutStandingBill.setDueDate(new Date());
+		successOutStandingBill.setOutStandingBalance(new BigDecimal("1520").setScale(2));
+		
+		return successOutStandingBill;
 	}
 
 }

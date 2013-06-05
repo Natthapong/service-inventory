@@ -17,6 +17,7 @@ import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
+import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 
 @Controller
@@ -55,6 +56,16 @@ public class BillPaymentController {
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
 		return billPaymentService.retrieveBillInformationWithKeyin(billCode, accessTokenID);
+	} 
+	
+	@RequestMapping(value = "/information/outstanding/{billCode}/{ref1}", method = RequestMethod.GET)
+	public @ResponseBody OutStandingBill getBillOutStandingOnline(
+			@PathVariable String billCode,
+			@PathVariable String ref1,
+			@RequestParam(value = "ref2", defaultValue = "") String ref2,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+		extendExpireAccessToken(accessTokenID);
+		return billPaymentService.retrieveBillOutStandingOnline(billCode, ref1, ref2, accessTokenID);
 	} 
 	
 	@RequestMapping(value = "/information", method = RequestMethod.POST)

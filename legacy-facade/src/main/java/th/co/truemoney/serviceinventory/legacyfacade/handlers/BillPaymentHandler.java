@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.legacyfacade.handlers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
+import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.engine.client.domain.SourceFee;
@@ -20,10 +22,13 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcode
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillResponse;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOutstandingBillRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOutstandingBillResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
+import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineUnExpectedException;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
@@ -132,8 +137,42 @@ public class BillPaymentHandler {
             billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new SourceOfFund[sourceOfFundFees.size()]));
 
             billInfo.setDueDate(billResponse.getDueDate());
-
+           // billResponse.getResultCode()
             return billInfo;
+
+        } catch (FailResultCodeException ex) {
+            String errorNamespace = ex.getNamespace();
+            if ("SIENGINE".equals(errorNamespace)) {
+                throw new SIEngineTransactionFailException(ex);
+            } else if ("UMARKET".equalsIgnoreCase(errorNamespace)) {
+                throw new UMarketSystemTransactionFailException(ex);
+            } else {
+                throw new UnknownSystemTransactionFailException(ex);
+            }
+        }
+    }
+    
+    public OutStandingBill getBillOutStandingOnline(InquiryOutstandingBillRequest inquiryOutstandingBillRequest) {
+    	try {
+    		InquiryOutstandingBillResponse inquiryOutstandingBillResponse = billPayProxy.inquiryOutstandingBill(inquiryOutstandingBillRequest);
+
+            OutStandingBill outStandingBill = new OutStandingBill();
+            outStandingBill.setBillCode(inquiryOutstandingBillRequest.getBillCode());
+            outStandingBill.setRef1(inquiryOutstandingBillResponse.getReference1());
+            outStandingBill.setRef2(inquiryOutstandingBillResponse.getReference2());
+            outStandingBill.setOutStandingBalance(inquiryOutstandingBillResponse.getAmount());
+            try {
+				outStandingBill.setInvoiceDate(new SimpleDateFormat("yyyymmdd").parse(inquiryOutstandingBillResponse.getInvoiceDate()));
+			} catch (ParseException e) {
+				throw new SIEngineUnExpectedException(e);
+			}
+            try {
+				outStandingBill.setDueDate(new SimpleDateFormat("yyyymmdd").parse(inquiryOutstandingBillResponse.getDueDate()));
+			} catch (ParseException e) {
+				throw new SIEngineUnExpectedException(e);
+			}
+            
+            return outStandingBill;
 
         } catch (FailResultCodeException ex) {
             String errorNamespace = ex.getNamespace();

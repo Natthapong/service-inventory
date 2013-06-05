@@ -3,7 +3,6 @@ package th.co.truemoney.serviceinventory.ewallet.client;
 import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,6 +14,7 @@ import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
+import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -152,20 +152,18 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 		return responseEntity.getBody();
 	}
 	
-/*	@Override
-	public BigDecimal retrieveBillOutStandingOnline(String billCode,
+	@Override
+	public OutStandingBill retrieveBillOutStandingOnline(String billCode,
 			String ref1, String ref2, String accessTokenID)
 			throws ServiceInventoryException {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 		
-		ResponseEntity<Bill> responseEntity = restTemplate.exchange(
-				endPoints.getBillInformationServiceWithBillCodeURL(), HttpMethod.GET, requestEntity,
-				Bill.class, billCode, accessTokenID);
+		ResponseEntity<OutStandingBill> responseEntity = restTemplate.exchange(
+				endPoints.getBillOutStandingOnlineURL(), HttpMethod.GET, requestEntity,
+				OutStandingBill.class, billCode, ref1, ref2, accessTokenID);
 		
 		return responseEntity.getBody();
-		
-		return null;
-	}*/
+	}
 
 	public void setEndPoints(EndPoints endPoints) {
 		this.endPoints = endPoints;

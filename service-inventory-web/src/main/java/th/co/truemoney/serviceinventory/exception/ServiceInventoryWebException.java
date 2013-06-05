@@ -61,6 +61,7 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
 
 		//transfer
 		public static final String INVALID_TARGET_MOBILE_NUMBER = "30000";
+		
 	}
 
 	@SuppressWarnings("unchecked")
