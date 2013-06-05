@@ -59,7 +59,7 @@ public class TmnProfileServiceClientTest {
 			fail();
 		}catch(ServiceInventoryException e){
 			assertEquals("500", e.getErrorCode());
-			assertEquals("INTERNAL_SERVER_ERROR", e.getErrorDescription());
+			assertEquals("TMN-SERVICE-INVENTORY", e.getErrorDescription());
 		}
 	}
 
