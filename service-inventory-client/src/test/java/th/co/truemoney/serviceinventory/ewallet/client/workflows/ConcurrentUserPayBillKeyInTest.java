@@ -71,12 +71,6 @@ public class ConcurrentUserPayBillKeyInTest {
 		billSimpsons.setRef2("");
 		billSimpsons.setAmount(new BigDecimal(1000.00));	
 		
-		Bill billAdamUpdated = billPaymentServiceClient.updateBillInformation(billAdam.getID(), billAdam.getRef1(), billAdam.getRef2(), billAdam.getAmount(), adamTokenID);
-		assertNotNull(billAdamUpdated);
-		
-		Bill billSimsonUpdated = billPaymentServiceClient.updateBillInformation(billSimpsons.getID(), billSimpsons.getRef1(), billSimpsons.getRef2(), billSimpsons.getAmount(), simsonTokenID);
-		assertNotNull(billSimsonUpdated);	
-		
 	}
 	
 }

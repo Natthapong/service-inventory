@@ -1,13 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +15,13 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class TmnBillPaymentServiceClientTest {
 	
@@ -67,22 +66,6 @@ public class TmnBillPaymentServiceClientTest {
 		verify(restTemplate).exchange(eq(endPoints.getBillInformationServiceWithBillCodeURL()), eq(HttpMethod.GET), any(HttpEntity.class)
 				, eq(Bill.class) , eq("1"), eq("accessToken"));
 		
-	}
-	
-	@Test
-	public void updateBillInformation() {
-		
-		Bill bill = new Bill();
-		
-		ResponseEntity<Bill> responseEntity = new ResponseEntity<Bill>(bill,HttpStatus.OK);
-		
-		when(restTemplate.exchange(eq(endPoints.getUpdateBillInformationURL()), eq(HttpMethod.POST), any(HttpEntity.class)
-				, eq(Bill.class), anyString(), anyString(), anyString(), any(BigDecimal.class), anyString()) ).thenReturn(responseEntity);
-		
-		tmnBillPaymentServiceClient.updateBillInformation("1","2", "1", new BigDecimal(100),"accessToken");
-		
-		verify(restTemplate).exchange(eq(endPoints.getUpdateBillInformationURL()), eq(HttpMethod.POST), any(HttpEntity.class)
-				, eq(Bill.class) , eq("1"), eq("2"), eq("1"), any(BigDecimal.class), eq("accessToken"));
 	}
 	
 }

@@ -68,22 +68,6 @@ public class BillPaymentController {
 		return billPaymentService.retrieveBillOutStandingOnline(billCode, ref1, ref2, accessTokenID);
 	} 
 	
-	@RequestMapping(value = "/information", method = RequestMethod.POST)
-	public @ResponseBody Bill updateBillInformation(
-			@RequestParam(value = "billID", defaultValue = "") String billID,
-			@RequestParam(value = "ref1", defaultValue = "") String ref1,
-			@RequestParam(value = "ref2", defaultValue = "") String ref2,
-			@RequestParam(value = "amount", defaultValue = "") String amount,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-		logger.debug("billID : "+billID);
-		logger.debug("ref1 : "+ref1);
-		logger.debug("ref2 : "+ref2);
-		logger.debug("amount : "+amount);
-		logger.debug("accessTokenID : "+accessTokenID);
-		extendExpireAccessToken(accessTokenID);
-		return billPaymentService.updateBillInformation(billID, ref1, ref2, new BigDecimal(amount), accessTokenID);
-	} 
-
 	@RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.POST)
 	public @ResponseBody
 	BillPaymentDraft verifyPaymentAbility(

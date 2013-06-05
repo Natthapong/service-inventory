@@ -303,33 +303,6 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 	}
 
 	@Override
-	public Bill updateBillInformation(String billID, String ref1, String ref2, BigDecimal amount,
-			String accessTokenID) throws ServiceInventoryException {
-		
-		logger.debug("billID : "+billID);
-		logger.debug("ref1 : "+ref1);
-		logger.debug("ref2 : "+ref2);
-		logger.debug("amount : "+amount);
-		logger.debug("accessTokenID : "+accessTokenID);
-		
-		AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
-		
-		logger.debug("token.getAccessTokenID() : "+token.getAccessTokenID());
-		
-		Bill bill = billInfoRepo.findBill(billID, token.getAccessTokenID());
-		
-		logger.debug("bill target : "+bill.getTarget());
-		
-		bill.setRef1(ref1);
-		bill.setRef2(ref2);
-		bill.setAmount(amount);
-		
-		billInfoRepo.saveBill(bill, accessTokenID);
-		
-		return bill;
-	}
-
-	@Override
 	public OutStandingBill retrieveBillOutStandingOnline(String billCode,
 			String ref1, String ref2, String accessTokenID)
 			throws ServiceInventoryException {
