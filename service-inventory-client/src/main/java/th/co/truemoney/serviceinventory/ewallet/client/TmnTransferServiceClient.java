@@ -45,6 +45,20 @@ public class TmnTransferServiceClient implements P2PTransferService {
 	}
 
 	@Override
+	public void setPersonalMessage(String draftTransactionID,
+			String personalMessage, String accessToken)
+			throws ServiceInventoryException {
+		
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		
+		restTemplate.exchange(
+				endPoints.getPersonalMessageURL(), HttpMethod.PUT,
+				requestEntity, Boolean.class,
+				draftTransactionID, personalMessage, accessToken);
+		
+	}
+	
+	@Override
 	public P2PTransferDraft getTransferDraftDetails(String transferDraftID, String accessTokenID)  throws ServiceInventoryException {
 
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);

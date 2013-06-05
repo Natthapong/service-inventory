@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
@@ -55,17 +56,29 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 
 		return draft;
 	}
-
-	@Override
-	public P2PTransferDraft getTransferDraftDetails(String transferDraftID, String accessTokenID)
-			throws ServiceInventoryException {
+	
+	public void setPersonalMessage(String transferDraftID, String personalMessage, String accessTokenID){
+		
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
 		P2PTransferDraft p2pTransferDraft = transactionRepo.findDraftTransaction(transferDraftID, accessToken.getAccessTokenID(), P2PTransferDraft.class);
+		p2pTransferDraft.setMessage(personalMessage);
+		
+		transactionRepo.saveDraftTransaction(p2pTransferDraft, accessTokenID);
+		
+	}
+	
+	@Override
+	public P2PTransferDraft getTransferDraftDetails(String transferDraftID,
+			String accessTokenID) throws ServiceInventoryException {
+		
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
+		P2PTransferDraft p2pTransferDraft = transactionRepo.findDraftTransaction(transferDraftID, accessToken.getAccessTokenID(), P2PTransferDraft.class);
+		
 		return p2pTransferDraft;
 	}
-
+	
 	@Override
 	public Status performTransfer(String transferDraftID, String accessTokenID)
 			throws ServiceInventoryException {
@@ -147,4 +160,5 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 			AsyncP2PTransferProcessor asyncP2PTransferProcessor) {
 		this.asyncP2PTransferProcessor = asyncP2PTransferProcessor;
 	}
+
 }

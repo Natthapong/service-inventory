@@ -65,7 +65,11 @@ public class EndPoints {
 	public String getP2PCreateTransferDraftURL() {
 		return host + "/service-inventory-web/v1/transfer/draft?accessTokenID={accessTokenID}";
 	}
-
+	
+	public String getPersonalMessageURL() {
+		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}/update?personalMessage={personalMessage}&accessTokenID={accessTokenID}";
+	}
+	
 	public String getP2PTransferDraftDetailsURL() {
 		return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}?accessTokenID={accessTokenID}";
 	}

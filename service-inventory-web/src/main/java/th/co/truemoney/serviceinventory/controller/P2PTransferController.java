@@ -31,7 +31,16 @@ public class P2PTransferController {
 		extendExpireAccessToken(accessTokenID);
 		return p2pTransferService.createAndVerifyTransferDraft(draft.getMobileNumber(), draft.getAmount(), accessTokenID);
 	}
-
+	
+	@RequestMapping(value = "/draft/{transferDraftID}/update", method = RequestMethod.PUT)
+	public @ResponseBody void setPersonalMessage(
+			@PathVariable String transferDraftID,
+			@RequestParam(value = "personalMessage", defaultValue = "") String personalMessage,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+		extendExpireAccessToken(accessTokenID);
+		p2pTransferService.setPersonalMessage(transferDraftID, personalMessage, accessTokenID);
+	}
+	
 	@RequestMapping(value = "/draft/{transferDraftID}", method = RequestMethod.GET)
 	public @ResponseBody P2PTransferDraft getTransferDraftInfo(
 			@PathVariable String transferDraftID,

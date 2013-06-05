@@ -23,4 +23,7 @@ public interface P2PTransferService {
 	public P2PTransferTransaction getTransactionResult(String transactionID, String accessTokenID)
 			throws ServiceInventoryException;
 
+	public void setPersonalMessage(String draftTransactionID,String personalMessage, String accessToken)
+		throws ServiceInventoryException;
+
 }
