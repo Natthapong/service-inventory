@@ -75,8 +75,8 @@ public class GlobalExceptionsHandler {
 		
 		return new ErrorBean(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
 				Integer.toString(HttpServletResponse.SC_INTERNAL_SERVER_ERROR),
-				ServiceInventoryWebException.NAMESPACE,
-				"handleAllExceptions");	
+				"INTERNAL_SERVER_ERROR",
+				ServiceInventoryWebException.NAMESPACE);	
 		
 	}
 
