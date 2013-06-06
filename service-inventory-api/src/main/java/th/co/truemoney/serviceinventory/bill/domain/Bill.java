@@ -234,16 +234,16 @@ public class Bill implements Serializable {
     public void setFavoritable(boolean favoritable) {
         this.favoritable = favoritable;
     }
-    
+
     public boolean isFavorited() {
-		return favorited;
-	}
+        return favorited;
+    }
 
-	public void setFavorited(boolean favorited) {
-		this.favorited = favorited;
-	}
+    public void setFavorited(boolean favorited) {
+        this.favorited = favorited;
+    }
 
-	public String getPayWith() {
+    public String getPayWith() {
         return payWith;
     }
 
@@ -254,25 +254,26 @@ public class Bill implements Serializable {
     @JsonIgnore
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-        	.append("ID", this.getID())
-        	.append("target", this.getTarget())
-        	.append("logoURL", this.getLogoURL())
-        	.append("titleTH", this.getTitleTH())
-        	.append("titleEN", this.getTitleEN())
-        	.append("ref1TitleTH", this.getRef1TitleTH())
-        	.append("ref1TitleEN", this.getRef1TitleEN())
-        	.append("ref2TitleTH", this.getRef2TitleTH())
-        	.append("ref2TitleEN", this.getRef2TitleEN())
-        	.append("ref2", this.getRef2())
-        	.append("partialPayment", this.getPartialPayment())
-        	.append("callCenterNumber", this.getCallCenterNumber())
-        	.append("amount", this.getAmount())
-        	.append("minAmount", this.getMinAmount())
-        	.append("maxAmount", this.getMaxAmount())
-        	.append("serviceFee", this.getServiceFee())
-        	.append("sourceOfFundFees", this.getSourceOfFundFees())
-        	.append("dueDate", this.getDueDate())
-        	.toString();
+            .append("ID", this.getID())
+            .append("target", this.getTarget())
+            .append("ref1", this.getRef1())
+            .append("ref2", this.getRef2())
+            .append("amount", this.getAmount())
+            .append("titleTH", this.getTitleTH())
+            .append("titleEN", this.getTitleEN())
+            .append("ref1TitleTH", this.getRef1TitleTH())
+            .append("ref1TitleEN", this.getRef1TitleEN())
+            .append("ref2TitleTH", this.getRef2TitleTH())
+            .append("ref2TitleEN", this.getRef2TitleEN())
+            .append("logoURL", this.getLogoURL())
+            .append("minAmount", this.getMinAmount())
+            .append("maxAmount", this.getMaxAmount())
+            .append("partialPayment", this.getPartialPayment())
+            .append("serviceFee", this.getServiceFee())
+            .append("sourceOfFundFees", this.getSourceOfFundFees())
+            .append("dueDate", this.getDueDate())
+            .append("callCenterNumber", this.getCallCenterNumber())
+            .toString();
     }
 
 }
