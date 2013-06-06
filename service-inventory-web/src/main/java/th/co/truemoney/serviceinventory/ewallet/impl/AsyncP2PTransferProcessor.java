@@ -45,7 +45,8 @@ public class AsyncP2PTransferProcessor {
 
 			String sourceMobileNumber = accessToken.getMobileNumber();
 			String targetMobileNumber = p2pTransferDraft.getMobileNumber();
-
+			String personalMessage = p2pTransferDraft.getMessage();
+			
 			BigDecimal amount = p2pTransferDraft.getAmount();
 
 			if (sourceMobileNumber != null && sourceMobileNumber.equals(targetMobileNumber)) {
@@ -60,6 +61,7 @@ public class AsyncP2PTransferProcessor {
 					.transfer(amount)
 					.fromUser(sessionID, truemoneyID)
 					.toTargetUser(targetMobileNumber)
+					.setPersonalMessage(personalMessage)
 					.performTransfer();
 
 			p2pTransaction.setConfirmationInfo(confirmationInfo);
