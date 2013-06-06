@@ -3,8 +3,12 @@ package th.co.truemoney.serviceinventory.bill.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -14,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class SourceOfFund implements Serializable {
 
 	private static final long serialVersionUID = -7741609765959925215L;
+	
 	private String sourceType;
 	private BigDecimal feeRate;
 	private String feeRateType;
@@ -77,14 +82,16 @@ public class SourceOfFund implements Serializable {
 
 		throw new ServiceInventoryException(500, "500", "unknown fee rate type: " + feeRateType, "SIENGINE");
 	}
-
-	@Override
-	public String toString() {
-		return "BillPaySourceOfFund [sourceType=" + sourceType + ", fee=" + feeRate
-				+ ", feeType=" + feeRateType
-				+ ", minFeeAmount=" + minFeeAmount + ", maxFeeAmount="
-				+ maxFeeAmount + "]";
-	}
-
+	
+	@JsonIgnore
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+        	.append("sourceType", this.getSourceType())
+        	.append("feeRate", this.getFeeRate())
+        	.append("feeRateType", this.getFeeRateType())
+        	.append("minFeeAmount", this.getMinFeeAmount())
+        	.append("maxFeeAmount", this.getMaxFeeAmount())
+        	.toString();
+    }
 
 }

@@ -1,10 +1,18 @@
 package th.co.truemoney.serviceinventory.bill.domain;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class OutStandingBill {
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public class OutStandingBill implements Serializable {
+	
+	private static final long serialVersionUID = -5171110220491668594L;
+	
 	private String billCode;
 	private String ref1;
 	private String ref2;
@@ -48,4 +56,16 @@ public class OutStandingBill {
 	public void setOutStandingBalance(BigDecimal outStandingBalance) {
 		this.outStandingBalance = outStandingBalance;
 	}
+	
+	@JsonIgnore
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+        	.append("billCode", this.getBillCode())
+        	.append("ref1", this.getRef1())
+        	.append("ref2", this.getRef2())
+        	.append("invoiceDate", this.getInvoiceDate())
+        	.append("dueDate", this.getDueDate())
+        	.append("outStandingBalance", this.getOutStandingBalance())
+        	.toString();
+    }
 }

@@ -3,8 +3,12 @@ package th.co.truemoney.serviceinventory.bill.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -52,4 +56,13 @@ public class ServiceFeeInfo implements Serializable {
 
 		throw new ServiceInventoryException(500, "500", "unknown fee rate type: " + feeRateType, "SIENGINE");
 	}
+	
+	@JsonIgnore
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+        	.append("feeRate", this.getFeeRate())
+        	.append("feeRateType", this.getFeeRateType())
+        	.toString();
+    }
+	
 }

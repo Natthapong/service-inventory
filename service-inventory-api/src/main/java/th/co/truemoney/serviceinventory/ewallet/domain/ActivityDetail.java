@@ -10,8 +10,9 @@ public class ActivityDetail extends Activity {
 
 	private static final long serialVersionUID = -7169633329969307484L;
 
-	protected String ref2;
 	protected String transactionID;
+	protected String ref2;
+	protected String personalMessage;
 	
 	public ActivityDetail() {
 		super();
@@ -31,6 +32,14 @@ public class ActivityDetail extends Activity {
 
 	public void setTransactionID(String transactionID) {
 		this.transactionID = transactionID;
+	}
+	
+	public String getPersonalMessage() {
+		return personalMessage;
+	}
+
+	public void setPersonalMessage(String personalMessage) {
+		this.personalMessage = personalMessage;
 	}
 		
 }

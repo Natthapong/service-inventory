@@ -3,9 +3,12 @@ package th.co.truemoney.serviceinventory.bill.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.Date;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -248,19 +251,28 @@ public class Bill implements Serializable {
         this.payWith = payWith;
     }
 
-    @Override
+    @JsonIgnore
     public String toString() {
-        return "Bill [ID=" + ID + ", target=" + target + ", logoURL=" + logoURL
-                + ", titleTH=" + titleTH + ", titleEN=" + titleEN
-                + ", ref1TitleTH=" + ref1TitleTH + ", ref1TitleEN="
-                + ref1TitleEN + ", ref1=" + ref1 + ", ref2TitleTH="
-                + ref2TitleTH + ", ref2TitleEN=" + ref2TitleEN + ", ref2="
-                + ref2 + ", partialPayment=" + partialPayment
-                + ", callCenterNumber=" + callCenterNumber + ", amount="
-                + amount + ", minAmount=" + minAmount + ", maxAmount="
-                + maxAmount + ", serviceFee=" + serviceFee
-                + ", sourceOfFundFees=" + Arrays.toString(sourceOfFundFees)
-                + ", dueDate=" + dueDate + "]";
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+        	.append("ID", this.getID())
+        	.append("target", this.getTarget())
+        	.append("logoURL", this.getLogoURL())
+        	.append("titleTH", this.getTitleTH())
+        	.append("titleEN", this.getTitleEN())
+        	.append("ref1TitleTH", this.getRef1TitleTH())
+        	.append("ref1TitleEN", this.getRef1TitleEN())
+        	.append("ref2TitleTH", this.getRef2TitleTH())
+        	.append("ref2TitleEN", this.getRef2TitleEN())
+        	.append("ref2", this.getRef2())
+        	.append("partialPayment", this.getPartialPayment())
+        	.append("callCenterNumber", this.getCallCenterNumber())
+        	.append("amount", this.getAmount())
+        	.append("minAmount", this.getMinAmount())
+        	.append("maxAmount", this.getMaxAmount())
+        	.append("serviceFee", this.getServiceFee())
+        	.append("sourceOfFundFees", this.getSourceOfFundFees())
+        	.append("dueDate", this.getDueDate())
+        	.toString();
     }
 
 }

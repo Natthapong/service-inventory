@@ -2,6 +2,9 @@ package th.co.truemoney.serviceinventory.bill.domain;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -99,4 +102,15 @@ public class BillPaymentDraft extends DraftTransaction {
 
 		return null;
 	}
+	
+	@JsonIgnore
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+        	.appendSuper(super.toString())
+        	.append("billInfo", this.getBillInfo())
+        	.append("amount", this.getAmount())
+        	.append("selectedSourceOfFundType", this.getSelectedSourceOfFundType())
+        	.append("transactionID", this.getTransactionID())
+        	.toString();
+    }
 }
