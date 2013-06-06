@@ -3,6 +3,7 @@ package th.co.truemoney.serviceinventory.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -10,6 +11,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import th.co.truemoney.serviceinventory.interceptor.ActivityInterceptor;
 
 @EnableWebMvc
 @Configuration
@@ -39,7 +42,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public RequestMappingHandlerMapping requestMappingHandlerMapping() {
         RequestMappingHandlerMapping result = new RequestMappingHandlerMapping();
         result.setUseSuffixPatternMatch(false);
+        result.setInterceptors(createInterceptors());
         return result;
     }
+    
+    @Bean
+	public HandlerInterceptor[] createInterceptors() {
+    	HandlerInterceptor[]  handlerInterceptor = {new ActivityInterceptor()}; 
+    	return handlerInterceptor;
+	}
 
 }
