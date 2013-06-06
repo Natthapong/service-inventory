@@ -20,6 +20,7 @@ public class GetBillInfoBuilder {
 	private String barcode;
 	private String billCode;
 	private String ref1;
+	private String operateByStaff;
 
 	private BillPaymentHandler billPaymentFacade;
 
@@ -54,6 +55,12 @@ public class GetBillInfoBuilder {
 	
 	public GetBillInfoBuilder fromRef1(String ref1) {
 		this.ref1 = ref1;
+
+		return this;
+	}
+	
+	public GetBillInfoBuilder fromOperateByStaff(String operateByStaff) {
+		this.operateByStaff = operateByStaff;
 
 		return this;
 	}
@@ -123,6 +130,7 @@ public class GetBillInfoBuilder {
 		inquiryOutstandingBillRequest.setBillCode(billCode);
 		
 		inquiryOutstandingBillRequest.setRef1(ref1);
+		inquiryOutstandingBillRequest.setOperateByStaff(operateByStaff);
 		
 		return billPaymentFacade.getBillOutStandingOnline(inquiryOutstandingBillRequest);
 	}
