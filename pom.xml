@@ -284,8 +284,12 @@
 
 	<repositories>
     	<repository>
-      		<id>nexus</id>
+      		<id>nexus-release</id>
       		<url>http://nexus.dev.truemoney.co.th/nexus/content/repositories/releases/</url>
+    	</repository>
+    	<repository>
+    		<id>nexus-snapshot</id>
+    		<url>http://nexus.dev.truemoney.co.th/nexus/content/repositories/snapshots</url>
     	</repository>
  	</repositories>
  
@@ -302,5 +306,4 @@
             <url>http://nexus.dev.truemoney.co.th/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-
 </project>
