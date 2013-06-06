@@ -3,6 +3,9 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class AccessToken implements Serializable {
 
@@ -99,9 +102,9 @@ public class AccessToken implements Serializable {
 		this.email = email;
 	}
 
-	@Override
+	@JsonIgnore
 	public String toString() {
-		return new ToStringBuilder(this)
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
 			.append("accessTokenID: ", this.accessTokenID)
 			.append("sessionID: ", this.sessionID)
 			.append("truemoneyID: ", this.truemoneyID)

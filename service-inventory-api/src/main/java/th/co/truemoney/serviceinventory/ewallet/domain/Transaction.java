@@ -2,10 +2,14 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -78,5 +82,15 @@ public abstract class Transaction implements Serializable {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-
+	
+	@JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.append("ID: ", this.getID())
+				.append("type: ", this.getType())
+				.append("draftTransaction: ", this.getDraftTransaction())
+				.append("status: ", this.getStatus())
+				.toString();
+	}
+	
 }

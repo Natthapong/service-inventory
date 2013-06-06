@@ -1,5 +1,9 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -41,5 +45,14 @@ public class ActivityDetail extends Activity {
 	public void setPersonalMessage(String personalMessage) {
 		this.personalMessage = personalMessage;
 	}
-		
+	
+	@JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+			.appendSuper(super.toString())
+			.append("transactionID: ", this.getTransactionID())
+			.append("ref2: ", this.getRef2())
+			.append("personalMessage: ", this.getPersonalMessage())
+			.toString();
+	}
 }

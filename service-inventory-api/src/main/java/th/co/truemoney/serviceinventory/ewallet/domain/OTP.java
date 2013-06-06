@@ -5,7 +5,9 @@ import java.io.Serializable;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -58,14 +60,13 @@ public class OTP implements Serializable {
         this.mobileNumber = mobileNumber;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-            .append("ref code: ", this.referenceCode)
-            .append("otpString: ", this.otpString)
-            .append("mobileNumber: ", this.mobileNumber)
-            .toString();
-    }
+    @JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.append("mobileNumber: ", this.getMobileNumber())
+				.append("referenceCode: ", this.getReferenceCode())
+				.toString();
+	}
 
     @Override
     public boolean equals(Object obj) {

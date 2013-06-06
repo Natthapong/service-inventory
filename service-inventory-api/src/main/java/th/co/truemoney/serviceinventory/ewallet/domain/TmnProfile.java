@@ -3,6 +3,11 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class TmnProfile implements Serializable {
 	
 	private static final long serialVersionUID = 8341135419244797163L;
@@ -100,6 +105,17 @@ public class TmnProfile implements Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	
+	@JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.append("email: ", this.getEmail())
+				.append("mobileNumber: ", this.getMobileNumber())
+				.append("balance: ", this.getBalance())
+				.append("type: ", this.getType())
+				.append("status: ", this.getStatus())
+				.toString();
 	}
 	
 }

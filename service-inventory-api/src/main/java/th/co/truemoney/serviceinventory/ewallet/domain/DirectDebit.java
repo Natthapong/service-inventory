@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -85,17 +87,17 @@ public class DirectDebit extends SourceOfFund implements Serializable {
 		this.maxAmount = maxAmount;
 	}
 
-	@Override
+	@JsonIgnore
 	public String toString() {
-		return new ToStringBuilder(this)
-		.append("sourceID : ", this.getSourceOfFundID())
-		.append("bankCode: ", this.bankCode)
-		.append("bankNameEn: ", this.bankNameEn)
-		.append("bankNameTh: ", this.bankNameTh)
-		.append("bankAccountNumber: ", this.bankAccountNumber)
-		.append("minAmount: ", this.minAmount)
-		.append("maxAmount: ", this.maxAmount)
-		.toString();
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.appendSuper(super.toString())
+				.append("bankCode: ", this.bankCode)
+				.append("bankNameEn: ", this.bankNameEn)
+				.append("bankNameTh: ", this.bankNameTh)
+				.append("bankAccountNumber: ", this.bankAccountNumber)
+				.append("minAmount: ", this.minAmount)
+				.append("maxAmount: ", this.maxAmount)
+				.toString();
 	}
 
 }

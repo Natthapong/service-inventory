@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -114,6 +118,20 @@ public class Activity implements Serializable {
 	public BigDecimal getTotalAmount() {
 		BigDecimal totalFeeAmount = getTotalFeeAmount();
 		return totalFeeAmount.add(this.amount);
+	}
+	
+	@JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+			.append("reportID: ", this.getReportID())
+			.append("type: ", this.getType())
+			.append("action: ", this.getAction())
+			.append("ref1: ", this.getRef1())
+			.append("amount: ", this.getAmount())
+			.append("serviceFee: ", this.getServiceFee())
+			.append("sourceOfFundFee: ", this.getSourceOfFundFee())
+			.append("transactionDate: ", this.getTransactionDate())
+			.toString();
 	}
 	
 }

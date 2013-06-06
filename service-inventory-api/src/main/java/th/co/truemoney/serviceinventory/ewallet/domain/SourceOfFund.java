@@ -2,6 +2,10 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -34,5 +38,13 @@ public abstract class SourceOfFund implements Serializable {
 
 	public void setSourceOfFundType(String sourceOfFundType) {
 		this.sourceOfFundType = sourceOfFundType;
+	}
+	
+	@JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.append("sourceOfFundID: ", this.getSourceOfFundID())
+				.append("sourceOfFundType: ", this.getSourceOfFundType())
+				.toString();
 	}
 }

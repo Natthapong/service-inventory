@@ -3,9 +3,13 @@ package th.co.truemoney.serviceinventory.topup.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -143,4 +147,22 @@ public class TopUpMobile implements Serializable {
         return null;
     }
 
+    @JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.append("ID: ", this.getID())
+				.append("logo: ", this.getLogo())
+				.append("titleTH: ", this.getTitleTH())
+				.append("titleEN: ", this.getTitleEN())
+				.append("target: ", this.getTarget())
+				.append("mobileNumber: ", this.getMobileNumber())
+				.append("remainBalance: ", this.getRemainBalance())
+				.append("amount: ", this.getAmount())
+				.append("minAmount: ", this.getMinAmount())
+				.append("maxAmount: ", this.getMaxAmount())
+				.append("ServiceFeeInfo: ", this.getServiceFee())
+				.append("sourceOfFundFees.length: ", this.getSourceOfFundFees()==null?0:this.getSourceOfFundFees().length)
+				.toString();
+	}
+    
 }

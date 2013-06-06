@@ -1,5 +1,9 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -63,10 +67,13 @@ public class TopUpOrder extends Transaction {
 		this.failStatus = failStatus;
 	}
 
-	@Override
+	@JsonIgnore
 	public String toString() {
-		return "TopUpOrder [ID=" + ID + ", qoute=" + draftTransaction
-				+ ", status=" + status + ", confirmationInfo=" + confirmationInfo + "]";
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.appendSuper(super.toString())
+				.append("failStatus: ", this.getFailStatus())
+				.append("confirmationInfo: ", this.getConfirmationInfo())
+				.toString();
 	}
 
 }

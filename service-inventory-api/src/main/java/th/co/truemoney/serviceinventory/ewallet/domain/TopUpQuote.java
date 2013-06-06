@@ -2,6 +2,10 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -82,13 +86,14 @@ public class TopUpQuote extends DraftTransaction {
 		this.amount = amount;
 	}
 
-	@Override
+	@JsonIgnore
 	public String toString() {
-		return "TopUpQuote [ID=" + ID + ", sourceOfFund=" + sourceOfFund
-				+ ", accessTokenID=" + accessTokenID
-				+ ", amount=" + amount + ", topUpFee=" + topUpFee
-				+ ", status=" + status + "]";
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.appendSuper(super.toString())
+				.append("sourceOfFund: ", this.getSourceOfFund())
+				.append("amount: ", this.getAmount())
+				.append("topUpFee: ", this.getTopUpFee())
+				.toString();
 	}
-
 
 }

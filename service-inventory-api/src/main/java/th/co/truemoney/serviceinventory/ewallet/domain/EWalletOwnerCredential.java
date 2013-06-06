@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -54,4 +58,13 @@ public class EWalletOwnerCredential implements Serializable {
 		this.channelId = channelId;
 	}
 
+	@JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.append("loginKey: ", this.getLoginKey())
+				.append("loginSecret: ", this.getLoginSecret())
+				.append("channelId: ", this.getChannelId())
+				.toString();
+	}
+	
 }

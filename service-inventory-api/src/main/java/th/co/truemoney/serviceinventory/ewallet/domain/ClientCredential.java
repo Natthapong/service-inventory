@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -80,6 +84,15 @@ public class ClientCredential implements Serializable {
 
 	public void setChannelDetail(String channelDetail) {
 		this.channelDetail = channelDetail;
+	}
+	
+	@JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+			.append("appUser: ", this.getAppUser())
+			.append("channel: ", this.getChannel())
+			.append("channelDetail: ", this.getChannelDetail())
+			.toString();
 	}
 
 }

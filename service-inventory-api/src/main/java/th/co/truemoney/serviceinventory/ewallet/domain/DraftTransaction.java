@@ -2,10 +2,14 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -84,6 +88,17 @@ public abstract class DraftTransaction implements Serializable {
 
 	public void setOtpReferenceCode(String otpReferenceCode) {
 		this.otpReferenceCode = otpReferenceCode;
+	}
+	
+	@JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.append("ID: ", this.getID())
+				.append("accessTokenID: ", this.getAccessTokenID())
+				.append("type: ", this.getType())
+				.append("status: ", this.getStatus())
+				.append("otpReferenceCode: ", this.getOtpReferenceCode())
+				.toString();
 	}
 
 }

@@ -2,8 +2,12 @@ package th.co.truemoney.serviceinventory.transfer.domain;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -93,13 +97,13 @@ public class P2PTransferDraft extends DraftTransaction {
 		this.message = message;
 	}
 
-	@Override
+	@JsonIgnore
 	public String toString() {
-		return "P2PTransferDraft [mobileNumber=" + mobileNumber
-				+ ", amount=" + amount + ", fullname=" + fullname
-				+ ", otpReferenceCode=" + otpReferenceCode + ", ID=" + ID
-				+ ", accessTokenID=" + accessTokenID + ", type=" + type
-				+ ", status=" + status + "]";
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.appendSuper(super.toString())
+				.append("mobileNumber: ", this.getMobileNumber())
+				.append("amount: ", this.getAmount())
+				.toString();
 	}
-
+	
 }

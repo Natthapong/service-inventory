@@ -1,9 +1,18 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Favorite {
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public class Favorite implements Serializable {
+	
+	private static final long serialVersionUID = 6081844741612178872L;
+	
 	private Long favoriteID;
 	private String serviceType;
 	private String serviceCode;
@@ -70,6 +79,18 @@ public class Favorite {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	
+	@JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.append("favoriteID: ", this.getFavoriteID())
+				.append("serviceType: ", this.getServiceType())
+				.append("serviceCode: ", this.getServiceCode())
+				.append("ref1: ", this.getRef1())
+				.append("amount: ", this.getAmount())
+				.append("date: ", this.getDate())
+				.toString();
 	}
 
 }
