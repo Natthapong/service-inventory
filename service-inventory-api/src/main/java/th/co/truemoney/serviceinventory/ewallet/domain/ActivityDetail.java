@@ -33,7 +33,6 @@ public class ActivityDetail extends Activity {
 	public void setTransactionID(String transactionID) {
 		this.transactionID = transactionID;
 	}
-	
 	public String getPersonalMessage() {
 		return personalMessage;
 	}
@@ -41,5 +40,4 @@ public class ActivityDetail extends Activity {
 	public void setPersonalMessage(String personalMessage) {
 		this.personalMessage = personalMessage;
 	}
-		
 }
