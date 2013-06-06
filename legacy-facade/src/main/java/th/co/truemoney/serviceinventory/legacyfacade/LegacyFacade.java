@@ -359,7 +359,9 @@ public class LegacyFacade {
 		private String targetMobileNumber;
 
 		private EwalletBalanceHandler balanceFacade;
-
+		
+		private String personalMessage;
+		
 		@Autowired(required = false)
 		public P2PTransferBuilder(EwalletBalanceHandler balanceFacade) {
 			this.balanceFacade = balanceFacade;
@@ -385,8 +387,17 @@ public class LegacyFacade {
 			this.amount = amount;
 			return this;
 		}
-
-
+		
+		/**
+		 * set personal message that user want to send to receiver
+		 * 
+		 */
+		public P2PTransferBuilder setPersonalMessage(String message) {
+			this.personalMessage = message;
+			return this;
+		}
+		
+		
 		public String verify() {
 
 			Validate.notNull(tmnID, "data missing. transfer money from whom?");
@@ -406,7 +417,7 @@ public class LegacyFacade {
 			Validate.notNull(amount, "data missing. how much to transfer?");
 			Validate.notNull(targetMobileNumber, "data missing. whom to transfer money to?");
 
-			return balanceFacade.transferEwallet(amount, targetMobileNumber, channelID, sessionID, tmnID);
+			return balanceFacade.transferEwallet(amount, targetMobileNumber, channelID, sessionID, tmnID, personalMessage);
 		}
 	}
 

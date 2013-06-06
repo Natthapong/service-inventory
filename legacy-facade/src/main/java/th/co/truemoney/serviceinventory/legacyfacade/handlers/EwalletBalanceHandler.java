@@ -112,7 +112,14 @@ public class EwalletBalanceHandler {
 		return verifyResponse.getTargetFullname();
 	}
 
-	public P2PTransactionConfirmationInfo transferEwallet(BigDecimal amount, String targetMobileNumber, Integer channelID, String sessionID, String tmnID) {
+	public P2PTransactionConfirmationInfo transferEwallet(
+			BigDecimal amount, 
+			String targetMobileNumber, 
+			Integer channelID, 
+			String sessionID, 
+			String tmnID, 
+			String personalMessage) 
+	{
 		try {
 
 			TransferRequest transferRequest = new TransferRequest();
@@ -120,7 +127,7 @@ public class EwalletBalanceHandler {
 			transferRequest.setChannelId(channelID);
 			transferRequest.setSecurityContext(new SecurityContext(sessionID, tmnID));
 			transferRequest.setTarget(targetMobileNumber);
-
+			transferRequest.setPersonalMessage(personalMessage);
 
 			StandardMoneyResponse standardMoneyResponse = ewalletProxy.transfer(transferRequest);
 
