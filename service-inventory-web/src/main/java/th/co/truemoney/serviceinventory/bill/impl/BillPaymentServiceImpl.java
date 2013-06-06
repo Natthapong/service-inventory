@@ -312,6 +312,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 		OutStandingBill outStandingBill =  legacyFacade.billing()
 								 .readBillOutStandingOnlineWithBillCode(billCode)
 								 .fromRef1(ref1)
+								 .fromOperateByStaff(token.getMobileNumber())
 								 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
 								 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
 								 .getBillOutStandingOnline();

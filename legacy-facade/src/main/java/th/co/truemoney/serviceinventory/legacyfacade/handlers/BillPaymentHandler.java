@@ -2,7 +2,6 @@ package th.co.truemoney.serviceinventory.legacyfacade.handlers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +27,6 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBill
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
-import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineUnExpectedException;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
@@ -158,19 +156,11 @@ public class BillPaymentHandler {
 
             OutStandingBill outStandingBill = new OutStandingBill();
             outStandingBill.setBillCode(inquiryOutstandingBillRequest.getBillCode());
-            outStandingBill.setRef1(inquiryOutstandingBillResponse.getReference1());
-            outStandingBill.setRef2(inquiryOutstandingBillResponse.getReference2());
             outStandingBill.setOutStandingBalance(inquiryOutstandingBillResponse.getAmount());
-            try {
-				outStandingBill.setInvoiceDate(new SimpleDateFormat("yyyymmdd").parse(inquiryOutstandingBillResponse.getInvoiceDate()));
-			} catch (ParseException e) {
-				throw new SIEngineUnExpectedException(e);
-			}
-            try {
-				outStandingBill.setDueDate(new SimpleDateFormat("yyyymmdd").parse(inquiryOutstandingBillResponse.getDueDate()));
-			} catch (ParseException e) {
-				throw new SIEngineUnExpectedException(e);
-			}
+           	outStandingBill.setRef1(inquiryOutstandingBillResponse.getReference1());
+            outStandingBill.setRef2(inquiryOutstandingBillResponse.getReference2());
+            outStandingBill.setDueDate(inquiryOutstandingBillResponse.getDueDate());
+            outStandingBill.setInvoiceDate(inquiryOutstandingBillResponse.getInvoiceDate());
             
             return outStandingBill;
 
