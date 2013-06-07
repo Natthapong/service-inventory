@@ -73,7 +73,6 @@ public class AsyncP2PTransferProcessor {
 			p2pTransaction.setFailStatus(FailStatus.UMARKET_FAILED);
 		} catch (Exception ex) {
 			logger.error("unexpect p2p transfer fail: ", ex);
-			ex.printStackTrace();
 			p2pTransaction.setFailStatus(FailStatus.UNKNOWN_FAILED);
 		}
 

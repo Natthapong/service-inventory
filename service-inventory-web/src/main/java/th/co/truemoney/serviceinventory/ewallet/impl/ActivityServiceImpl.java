@@ -50,8 +50,6 @@ public class ActivityServiceImpl implements ActivityService {
 
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		
-		System.out.println("*********************************************" + endPoints.getReportDetail());
-		
 		ResponseEntity<ActivityDetail> response = restTemplate.exchange(endPoints.getReportDetail(), 
 				HttpMethod.GET, new HttpEntity<String>(headers), ActivityDetail.class, accessToken.getTruemoneyID(), reportID );
 		
