@@ -54,10 +54,10 @@ import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 @Configuration
 @EnableAsync(proxyTargetClass = true)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-@ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop"})
+@ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop","th.co.truemoney.serviceinventory.log"})
 @Import({EwalletConfig.class, SmsConfig.class, TmnProfileConfig.class, SIEngineConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, ProdEnvironmentConfig.class, DevEnvironmentConfig.class })
 public class ServiceInventoryConfig {
-
+	
     @Bean
     public TmnProfileService getTmnProfileService() {
         return new TmnProfileServiceImpl();

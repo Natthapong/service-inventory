@@ -1,12 +1,16 @@
 package th.co.truemoney.serviceinventory.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
@@ -29,8 +33,6 @@ import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 @Configuration
 @Profile("local")
 public class LocalEnvironmentConfig {
-
-    private static Logger logger = LoggerFactory.getLogger(LocalEnvironmentConfig.class);
 
     @Bean @Qualifier("endpoint.host") @Primary
     public String host() {
@@ -112,4 +114,13 @@ public class LocalEnvironmentConfig {
     public TopUpMobileProxy topUpMobileProxy() {
         return new TrueConvergenceOneBillPersona().getTopUpMobileProxy();
     }
+    
+    @Bean
+	public DataSource dataSource() {
+		EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+		EmbeddedDatabase database = (EmbeddedDatabase)builder.setType(EmbeddedDatabaseType.H2)
+				.addScript("dataset/schema.sql")
+				.build();
+		return database;
+	}
 }
