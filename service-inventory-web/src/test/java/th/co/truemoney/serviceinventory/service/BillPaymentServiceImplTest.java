@@ -23,6 +23,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+import th.co.truemoney.serviceinventory.bill.domain.InquiryOutstandingBillType;
+import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
@@ -31,6 +33,7 @@ import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOutstandingBillRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
@@ -92,7 +95,7 @@ public class BillPaymentServiceImplTest {
     @Test
     public void getBillInformationViaBarcodeScan() {
 
-    	Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
 
         when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
@@ -107,8 +110,8 @@ public class BillPaymentServiceImplTest {
     }
 
     @Test
-    public void getBillInformationViaFavorite() {
-    	Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+    public void getBillInformationViaFavoriteOffline() {
+        Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
 
         when(billPaymentFacade.getBillCodeInformation(any(GetBillRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
@@ -121,10 +124,32 @@ public class BillPaymentServiceImplTest {
 
         assertEquals("favorite", billInformation.getPayWith());
     }
-    
+
+    @Test
+    public void getBillInformationViaFavoriteOnline() {
+        Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        OutStandingBill stubOutstandingBill = BillPaymentStubbed.createSuccessOutStandingBill();
+
+        //given
+        when(billPaymentFacade.getBillCodeInformation(any(GetBillRequest.class))).thenReturn(stubbedBillPaymentInfo);
+        when(billPaymentFacade.getBillOutStandingOnline(any(InquiryOutstandingBillRequest.class))).thenReturn(stubOutstandingBill);
+
+        //when
+        Bill billInformation = billPayService.retrieveBillInformationWithBillCode("xxxx", "ref1", "ref2", InquiryOutstandingBillType.ONLINE, accessToken.getAccessTokenID());
+
+        //then
+        assertNotNull(billInformation);
+        verify(billPaymentFacade).getBillCodeInformation(any(GetBillRequest.class));
+
+        assertEquals("favorite", billInformation.getPayWith());
+        assertEquals(billInformation.getRef1(), stubOutstandingBill.getRef1());
+        assertEquals(billInformation.getRef2(), stubOutstandingBill.getRef2());
+        assertEquals(billInformation.getAmount(), stubOutstandingBill.getOutStandingBalance());
+    }
+
     @Test
     public void getBillInformationViaKeyin() {
-    	Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
 
         when(billPaymentFacade.getBillCodeInformation(any(GetBillRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
@@ -146,12 +171,12 @@ public class BillPaymentServiceImplTest {
         when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
         try {
-	        //when
-	        @SuppressWarnings("unused")
-			Bill billInformation = billPayService.retrieveBillInformationWithBarcode("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
-	        Assert.fail();
+            //when
+            @SuppressWarnings("unused")
+            Bill billInformation = billPayService.retrieveBillInformationWithBarcode("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
+            Assert.fail();
         } catch (ServiceInventoryWebException e) {
-        	assertEquals("1012", e.getErrorCode());
+            assertEquals("1012", e.getErrorCode());
         }
         verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
 
@@ -175,28 +200,28 @@ public class BillPaymentServiceImplTest {
     @Test
     public void verifyingFavoriteBillShouldSkipOTP() {
 
-    	Bill billInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
-    	billInfo.setPayWith("favorite");
-    	billInfoRepo.saveBill(billInfo, accessToken.getAccessTokenID());
+        Bill billInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        billInfo.setPayWith("favorite");
+        billInfoRepo.saveBill(billInfo, accessToken.getAccessTokenID());
 
-		BigDecimal amount = new BigDecimal(300);
-		BillPaymentDraft billInvoice = billPayService.verifyPaymentAbility(billInfo.getID(), amount, accessToken.getAccessTokenID());
+        BigDecimal amount = new BigDecimal(300);
+        BillPaymentDraft billInvoice = billPayService.verifyPaymentAbility(billInfo.getID(), amount, accessToken.getAccessTokenID());
 
-		assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, billInvoice.getStatus());
+        assertEquals(BillPaymentDraft.Status.OTP_CONFIRMED, billInvoice.getStatus());
 
     }
 
     @Test
     public void verifyingBarcodeBillShouldNotSkipOTP() {
 
-    	Bill billInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
-    	billInfo.setPayWith("barcode");
-    	billInfoRepo.saveBill(billInfo, accessToken.getAccessTokenID());
+        Bill billInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        billInfo.setPayWith("barcode");
+        billInfoRepo.saveBill(billInfo, accessToken.getAccessTokenID());
 
-		BigDecimal amount = new BigDecimal(300);
-		BillPaymentDraft billInvoice = billPayService.verifyPaymentAbility(billInfo.getID(), amount, accessToken.getAccessTokenID());
+        BigDecimal amount = new BigDecimal(300);
+        BillPaymentDraft billInvoice = billPayService.verifyPaymentAbility(billInfo.getID(), amount, accessToken.getAccessTokenID());
 
-		assertEquals(BillPaymentDraft.Status.CREATED, billInvoice.getStatus());
+        assertEquals(BillPaymentDraft.Status.CREATED, billInvoice.getStatus());
 
     }
 
