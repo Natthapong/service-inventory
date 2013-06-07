@@ -14,6 +14,7 @@ public class EndPoints {
 	}
 
 	public String getReportDetail() {
+		System.out.println("**********************getReportDetail URL !!!!!*****************");
 		return host + "/core-report-web/transaction/history/{trueMoneyID}/detail/{reportID}";
 	}
 
