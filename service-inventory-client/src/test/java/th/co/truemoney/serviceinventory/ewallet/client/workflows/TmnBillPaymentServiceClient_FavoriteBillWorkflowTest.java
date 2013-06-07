@@ -60,7 +60,7 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
 		Bill bill = billPaymentServiceClient
-					.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
+					.retrieveBillInformationWithFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
 
 		assertNotNull(bill);
 		assertNotNull(bill.getID());
@@ -112,7 +112,7 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
 		Bill bill = billPaymentServiceClient
-					.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
+					.retrieveBillInformationWithFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
 
 		assertNotNull(bill);
 		assertNotNull(bill.getID());
@@ -166,7 +166,7 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
 		Bill bill = billPaymentServiceClient
-					.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
+					.retrieveBillInformationWithFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
 
 		assertNotNull(bill);
 		assertNotNull(bill.getID());
@@ -194,7 +194,7 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
 		Bill bill = billPaymentServiceClient
-					.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
+					.retrieveBillInformationWithFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
 
 		assertNotNull(bill);
 		assertNotNull(bill.getID());

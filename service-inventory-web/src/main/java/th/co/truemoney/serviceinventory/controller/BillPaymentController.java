@@ -44,7 +44,7 @@ public class BillPaymentController {
 			@RequestParam(value = "amount", defaultValue = "") String amount,
 			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 		extendExpireAccessToken(accessTokenID);
-		return billPaymentService.retrieveBillInformationWithBillCode(billCode, ref1, ref2, new BigDecimal(amount), accessTokenID);
+		return billPaymentService.retrieveBillInformationWithFavorite(billCode, ref1, ref2, new BigDecimal(amount), accessTokenID);
 	} 
 	
 	@RequestMapping(value = "/information/{billCode}", method = RequestMethod.GET)
