@@ -3,23 +3,15 @@ package th.co.truemoney.serviceinventory.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.hibernate.validator.constraints.Length;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -36,7 +28,6 @@ import th.co.truemoney.serviceinventory.ewallet.impl.FavoriteServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade.UserProfileBuilder;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
@@ -70,7 +61,7 @@ public class FavoriteServiceImplTest {
 		accessTokenRepo.save(new AccessToken("0000", "5555", "EveTmnMoneyId", "0868185055", "eve@tmn.com", 41));
 		accessTokenRepo.save(new AccessToken("0001", "5555", "failUser", "0868185055", "fail@tmn.com", 41));
 		favoriteServiceImpl.setAccessTokenRepository(accessTokenRepo);
-		favorite = new Favorite(2000L,"billpay","tr","0811234567",new BigDecimal(2000));
+		favorite = new Favorite(2000L,"billpay","tr","0811234567", "", new BigDecimal(2000));
 		// tr, trmv, tmvh, tlp, tic, ti, tcg
 	}
 	
@@ -98,7 +89,7 @@ public class FavoriteServiceImplTest {
 	@Test
 	public void addFavoriteFailWithWrongFavoriteServiceCode(){
 		try{
-			Favorite wrongFavorite = new Favorite(2000L,"billpay","tx","0811234567",new BigDecimal(2000));
+			Favorite wrongFavorite = new Favorite(2000L,"billpay","tx","0811234567", "", new BigDecimal(2000));
 			Favorite favoriteResult = favoriteServiceImpl.addFavorite(wrongFavorite, "12345");
 			fail("Add Favorite Fail with wrong service code");
 		} catch(ServiceInventoryException se) {

@@ -91,7 +91,7 @@ public class EndPoints {
 	}
 
 	public String getBillInformationServiceURL() {
-		return host + "/service-inventory-web/v1/bill-payment/information?billCode={billCode}&ref1={ref1}&amount={amount}&accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/bill-payment/information?billCode={billCode}&ref1={ref1}&ref2={ref2}&amount={amount}&accessTokenID={accessTokenID}";
 	}
 	
 	public String getBillInformationServiceWithBillCodeURL() {

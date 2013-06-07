@@ -17,6 +17,7 @@ public class Favorite implements Serializable {
 	private String serviceType;
 	private String serviceCode;
 	private String ref1;
+	private String ref2;
 	private BigDecimal amount;
 	private Date date;
 
@@ -24,12 +25,13 @@ public class Favorite implements Serializable {
 	}
 	
 	public Favorite(Long favoriteID, String serviceType, String serviceCode,
-			String ref1, BigDecimal amount) {
+			String ref1, String ref2, BigDecimal amount) {
 		super();
 		this.favoriteID = favoriteID;
 		this.serviceType = serviceType;
 		this.serviceCode = serviceCode;
 		this.ref1 = ref1;
+		this.ref2 = ref2;
 		this.amount = amount;
 	}
 	
@@ -64,6 +66,14 @@ public class Favorite implements Serializable {
 	public void setRef1(String ref1) {
 		this.ref1 = ref1;
 	}
+	
+	public String getRef2() {
+		return ref2;
+	}
+
+	public void setRef2(String ref2) {
+		this.ref2 = ref2;
+	}
 
 	public BigDecimal getAmount() {
 		return amount;
@@ -88,6 +98,7 @@ public class Favorite implements Serializable {
 				.append("serviceType: ", this.getServiceType())
 				.append("serviceCode: ", this.getServiceCode())
 				.append("ref1: ", this.getRef1())
+				.append("ref2: ", this.getRef2())
 				.append("amount: ", this.getAmount())
 				.append("date: ", this.getDate())
 				.toString();
