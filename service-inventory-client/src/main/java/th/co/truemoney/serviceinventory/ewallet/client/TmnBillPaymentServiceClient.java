@@ -170,7 +170,16 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
     public Bill retrieveBillInformationWithBillCode(String billCode,
             String ref1, String ref2, InquiryOutstandingBillType inquiryType,
             String accessTokenID) throws ServiceInventoryException {
-        return null;
+
+        HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+
+        String inquiry = InquiryOutstandingBillType.ONLINE == inquiryType ? "online": "offline" ;
+        ResponseEntity<Bill> responseEntity = restTemplate.exchange(
+                endPoints.getFavoriteBillOnlineURL(), HttpMethod.GET, requestEntity,
+                Bill.class, billCode, ref1, ref2, inquiry, accessTokenID);
+
+        return responseEntity.getBody();
+
     }
 
 }
