@@ -55,12 +55,12 @@ public class BillPaymentController {
         return billPaymentService.retrieveBillInformationWithBillCode(billCode, ref1, ref2, InquiryOutstandingBillType.ONLINE, accessTokenID);
     }
 
-    @RequestMapping(value = "/information", method = RequestMethod.GET, params={"billCode", "!inquiry"})
+    @RequestMapping(value = "/information", method = RequestMethod.GET, params={"billCode", "inquiry=offline"})
     public @ResponseBody Bill getFavouriteBillInfoOffline(
             @RequestParam(value = "billCode", defaultValue = "") String billCode,
             @RequestParam(value = "ref1", defaultValue = "") String ref1,
             @RequestParam(value = "ref2", defaultValue = "") String ref2,
-            @RequestParam(value = "amount", defaultValue = "") String amount,
+            @RequestParam(value = "amount", defaultValue = "0") String amount,
             @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
         extendExpireAccessToken(accessTokenID);
         return billPaymentService.retrieveBillInformationWithFavorite(billCode, ref1, ref2, new BigDecimal(amount), accessTokenID);
