@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
+import th.co.truemoney.serviceinventory.bill.domain.InquiryOutstandingBillType;
 import th.co.truemoney.serviceinventory.ewallet.client.FavoriteServicesClient;
 import th.co.truemoney.serviceinventory.ewallet.client.TmnBillPaymentServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.TmnProfileServiceClient;
@@ -59,8 +60,8 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		Favorite favoriteBill = TestData.createFavoriteBill();
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
-		Bill bill = billPaymentServiceClient
-					.retrieveBillInformationWithFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
+        Bill bill = billPaymentServiceClient.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(),
+                favoriteBill.getAmount(), InquiryOutstandingBillType.OFFLINE, accessToken);
 
 		assertNotNull(bill);
 		assertNotNull(bill.getID());
@@ -111,8 +112,8 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
-		Bill bill = billPaymentServiceClient
-					.retrieveBillInformationWithFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
+        Bill bill = billPaymentServiceClient.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(),
+                favoriteBill.getAmount(), InquiryOutstandingBillType.OFFLINE, accessToken);
 
 		assertNotNull(bill);
 		assertNotNull(bill.getID());
@@ -165,8 +166,8 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		Favorite favoriteBill = TestData.createFavoriteBill();
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
-		Bill bill = billPaymentServiceClient
-					.retrieveBillInformationWithFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
+        Bill bill = billPaymentServiceClient.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(),
+                favoriteBill.getAmount(), InquiryOutstandingBillType.OFFLINE, accessToken);
 
 		assertNotNull(bill);
 		assertNotNull(bill.getID());
@@ -193,8 +194,8 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		Favorite favoriteBill = TestData.createFavoriteBill();
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
-		Bill bill = billPaymentServiceClient
-					.retrieveBillInformationWithFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(), favoriteBill.getAmount(), accessToken);
+        Bill bill = billPaymentServiceClient.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(),
+                favoriteBill.getAmount(), InquiryOutstandingBillType.OFFLINE, accessToken);
 
 		assertNotNull(bill);
 		assertNotNull(bill.getID());
