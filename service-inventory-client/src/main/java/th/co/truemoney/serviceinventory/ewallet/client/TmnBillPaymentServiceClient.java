@@ -168,7 +168,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 
     @Override
     public Bill retrieveBillInformationWithBillCode(String billCode,
-            String ref1, String ref2, InquiryOutstandingBillType inquiryType,
+            String ref1, String ref2, BigDecimal amount, InquiryOutstandingBillType inquiryType,
             String accessTokenID) throws ServiceInventoryException {
 
         HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
@@ -176,7 +176,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
         String inquiry = InquiryOutstandingBillType.ONLINE == inquiryType ? "online": "offline" ;
         ResponseEntity<Bill> responseEntity = restTemplate.exchange(
                 endPoints.getFavoriteBillOnlineURL(), HttpMethod.GET, requestEntity,
-                Bill.class, billCode, ref1, ref2, inquiry, accessTokenID);
+                Bill.class, billCode, ref1, ref2, amount, inquiry, accessTokenID);
 
         return responseEntity.getBody();
 

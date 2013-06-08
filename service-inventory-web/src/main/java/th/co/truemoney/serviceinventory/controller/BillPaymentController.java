@@ -52,7 +52,7 @@ public class BillPaymentController {
             @RequestParam(value = "ref2", defaultValue = "") String ref2,
             @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
         extendExpireAccessToken(accessTokenID);
-        return billPaymentService.retrieveBillInformationWithBillCode(billCode, ref1, ref2, InquiryOutstandingBillType.ONLINE, accessTokenID);
+        return billPaymentService.retrieveBillInformationWithBillCode(billCode, ref1, ref2, BigDecimal.ZERO, InquiryOutstandingBillType.ONLINE, accessTokenID);
     }
 
     @RequestMapping(value = "/information", method = RequestMethod.GET, params={"billCode", "inquiry=offline"})

@@ -59,7 +59,7 @@ public class TmnBillPaymentServiceClient_FavoriteBillOnlineWorkflowTest {
         favoriteBillOnline = favoriteClient.addFavorite(favoriteBillOnline, accessToken);
 
         Bill bill = billPaymentServiceClient.retrieveBillInformationWithBillCode(favoriteBillOnline.getServiceCode(), favoriteBillOnline.getRef1(), favoriteBillOnline.getRef2(),
-                InquiryOutstandingBillType.ONLINE, accessToken);
+                BigDecimal.ZERO, InquiryOutstandingBillType.ONLINE, accessToken);
 
         assertNotNull(bill);
         assertNotNull(bill.getID());

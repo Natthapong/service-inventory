@@ -328,11 +328,11 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
     @Override
     public Bill retrieveBillInformationWithBillCode(String billCode,
-            String ref1, String ref2, InquiryOutstandingBillType inquiryType,
+            String ref1, String ref2, BigDecimal amount, InquiryOutstandingBillType inquiryType,
             String accessTokenID)
             throws ServiceInventoryException {
 
-        Bill billInfo = this.retrieveBillInformationWithFavorite(billCode, ref1, ref2, BigDecimal.ZERO, accessTokenID);
+        Bill billInfo = this.retrieveBillInformationWithFavorite(billCode, ref1, ref2, amount, accessTokenID);
 
         if (inquiryType == InquiryOutstandingBillType.ONLINE) {
             OutStandingBill outstanding = retrieveBillOutStandingOnline(billCode, ref1, ref2, accessTokenID);

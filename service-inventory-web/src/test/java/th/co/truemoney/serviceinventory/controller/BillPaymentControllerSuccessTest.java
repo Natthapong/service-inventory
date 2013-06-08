@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,7 +95,7 @@ public class BillPaymentControllerSuccessTest {
 
         //given
         Bill stubbedBill = BillPaymentStubbed.createSuccessBillPaymentInfo();
-        when(billPaymentServiceMock.retrieveBillInformationWithBillCode(stubbedBill.getTarget(), stubbedBill.getRef1(), stubbedBill.getRef2(), InquiryOutstandingBillType.ONLINE, "12345"))
+        when(billPaymentServiceMock.retrieveBillInformationWithBillCode(stubbedBill.getTarget(), stubbedBill.getRef1(), stubbedBill.getRef2(), BigDecimal.ZERO, InquiryOutstandingBillType.ONLINE, "12345"))
         .thenReturn(stubbedBill);
 
         //perform

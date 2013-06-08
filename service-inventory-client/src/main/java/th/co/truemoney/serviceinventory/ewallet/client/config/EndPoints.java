@@ -95,7 +95,7 @@ public class EndPoints {
     }
 
     public String getFavoriteBillOnlineURL() {
-        return host + "/service-inventory-web/v1/bill-payment/information?billCode={billCode}&ref1={ref1}&ref2={ref2}&inquiry={inquiry}&accessTokenID={accessTokenID}";
+        return host + "/service-inventory-web/v1/bill-payment/information?billCode={billCode}&ref1={ref1}&ref2={ref2}&amount={amount}&inquiry={inquiry}&accessTokenID={accessTokenID}";
     }
 
     public String getBillInformationServiceWithBillCodeURL() {
