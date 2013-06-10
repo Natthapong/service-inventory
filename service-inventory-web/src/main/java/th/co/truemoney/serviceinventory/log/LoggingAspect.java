@@ -19,6 +19,8 @@ import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.EwalletRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.EwalletResponse;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
+import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
 
 @Aspect
 @Component
@@ -68,7 +70,7 @@ public class LoggingAspect {
     }
 
     @Around("execution(* th.co.truemoney.serviceinventory.engine.client.proxy.impl.*.*(..))")
-    public Object asyncLogSiEngine(ProceedingJoinPoint joinPoint) throws Throwable  {
+    public Object logSiEngine(ProceedingJoinPoint joinPoint) throws Throwable  {
 
         Long startTime = System.currentTimeMillis();
         Object[] args = joinPoint.getArgs();
@@ -99,7 +101,7 @@ public class LoggingAspect {
             "execution(* th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.*.*(..)) || " +
             "execution(* th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.*.*(..)) || " +
             "execution(* th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.*.*(..))")
-    public Object asyncLogEwalletProxies(ProceedingJoinPoint joinPoint) throws Throwable  {
+    public Object logEwalletProxies(ProceedingJoinPoint joinPoint) throws Throwable  {
 
                 Long startTime = System.currentTimeMillis();
                 Object[] args = joinPoint.getArgs();
@@ -118,6 +120,32 @@ public class LoggingAspect {
             } finally {
                 Long stopTime = System.currentTimeMillis();
                 asyncJdbcLoggingProcessor.writeLogEwalletProxies(joinPoint.getTarget().getClass().getSimpleName(), joinPoint.getSignature().getName(), ewalletRequest, ewalletResponse, errorException, startTime, stopTime);
+            }
+
+        }
+        return joinPoint.proceed();
+    }
+    
+    /*@Around("execution(* th.co.truemoney.serviceinventory.firsthop.proxy.*.*(..))")
+    public Object logSmsProxies(ProceedingJoinPoint joinPoint) throws Throwable  {
+
+                Long startTime = System.currentTimeMillis();
+                Object[] args = joinPoint.getArgs();
+
+        if (args.length > 0 && args[0] instanceof EwalletRequest) {
+
+        	SmsRequest smsRequest = (SmsRequest) args[0];
+        	Exception errorException = null;
+        	SmsResponse smsResponse = null;
+            try {
+            	smsResponse = (SmsResponse) joinPoint.proceed();
+                return smsResponse;
+            } catch (Exception ex) {
+            	errorException = ex;
+                throw ex;
+            } finally {
+                Long stopTime = System.currentTimeMillis();
+                asyncJdbcLoggingProcessor.writeLogSmsProxies(joinPoint.getTarget().getClass().getSimpleName(), joinPoint.getSignature().getName(), smsRequest, smsResponse, errorException, startTime, stopTime);
             }
 
         }
@@ -152,6 +180,6 @@ public class LoggingAspect {
 
         }
         return joinPoint.proceed();
-    }
+    }*/
 
 }

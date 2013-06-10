@@ -10,6 +10,4 @@ public interface ActivityDAO {
 	
 	public void createActivityLog(ActivityLog activityLog) throws DataAccessException;
 	
-//	public void getActivityLog(Long logID) throws DataAccessException;
-	
 }

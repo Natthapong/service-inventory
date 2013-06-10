@@ -10,7 +10,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import th.co.truemoney.serviceinventory.log.dao.ActivityDAO;
 import th.co.truemoney.serviceinventory.log.domain.ActivityLog;
@@ -37,13 +36,13 @@ public class ActivityDAOImpl implements ActivityDAO {
 			});
 	}
 
-    @Transactional
+	@Override
     public void createActivityLog(ActivityLog activityLog) throws DataAccessException {
-        String sql1 = "insert into SI_ACTIVITY_LOG (LOG_ID, TRACKING_ID, WORKER_TYPE_ID, " +
+        String sql1 = "INSERT INTO SI_ACTIVITY_LOG (LOG_ID, TRACKING_ID, WORKER_TYPE_ID, " +
         		"ACCESS_ID, TMNID, LOGIN_ID, WORKER_NAME, ACTIVITY_NAME, HTTP_STATUS, " +
         		"RESULT_CODE, RESULT_NAMESPACE, TRANS_ID, PROCESS_STATE, REF_TRANS_ID, CREATED_DATE, " +
         		"RESPONSE_DATE, DURATION_TIME, DETAIL_INPUT, DETAIL_OUTPUT) " +
-        				"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql1, new Object[] { activityLog.getLogID(), activityLog.getTrackingID(), activityLog.getWorkerTypeID(), activityLog.getAccessID(), 
         		activityLog.getTruemoneyID(), activityLog.getLoginID(),activityLog.getWorkerName(), activityLog.getActivityName(), activityLog.getHttpStatus(), 
         		activityLog.getResultCode(), activityLog.getResultNamespace(), activityLog.getTransactionID(), activityLog.getProcessState(), activityLog.getRefTransID(), activityLog.getCreatedDate(), 

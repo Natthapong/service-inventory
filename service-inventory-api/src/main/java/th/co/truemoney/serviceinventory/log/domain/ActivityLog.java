@@ -3,6 +3,10 @@ package th.co.truemoney.serviceinventory.log.domain;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -214,4 +218,29 @@ public class ActivityLog implements Serializable {
 		this.detailOutput = detailOutput;
 	}
 
+	@JsonIgnore
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+            .append("logID", this.getLogID())
+            .append("trackingID", this.getTrackingID())
+            .append("workerTypeID", this.getWorkerTypeID())
+            .append("accessID", this.getAccessID())
+            .append("truemoneyID", this.getTruemoneyID())
+            .append("loginID", this.getLoginID())
+            .append("workerName", this.getWorkerName())
+            .append("activityName", this.getActivityName())
+            .append("httpStatus", this.getHttpStatus())
+            .append("resultCode", this.getResultCode())
+            .append("resultNamespace", this.getResultNamespace())
+            .append("transactionID", this.getTransactionID())
+            .append("processState", this.getProcessState())
+            .append("refTransID", this.getRefTransID())
+            .append("createdDate", this.getCreatedDate())
+            .append("responseDate", this.getResponseDate())
+            .append("durationTime", this.getDurationTime())
+            .append("detailInput", this.getDetailInput())
+            .append("detailOutput", this.getDetailOutput())
+            .toString();
+    }
+	
 }
