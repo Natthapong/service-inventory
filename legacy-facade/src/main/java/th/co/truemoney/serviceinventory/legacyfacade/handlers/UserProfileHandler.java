@@ -33,15 +33,15 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 public class UserProfileHandler {
 
         private static final int VALID_CUSTOMER_STATUS = 3;
-        
+
         private static final String SUCCESS_CODE = "0";
 
         private static final String CUSTOMER_TYPE = "C";
-        
+
         private static final String ALREADY_ADD_FAVORITE = "2012";
-        
+
         private static final String ADD_FAVORITE_DENIED  = "2013";
-        
+
         private static final String FAVORITE_NOT_FOUND = "2014";
 
         @Autowired
@@ -51,7 +51,6 @@ public class UserProfileHandler {
         private TmnProfileProxy tmnProfileProxy;
 
         public AccessToken login(Integer channelID, String credentialUsername,String credentialSecret) {
-
 
                 SignonResponse signon = this.tmnSecurityProxy.signon(createGetSignOnRequest(channelID, credentialUsername, credentialSecret));
 
@@ -93,28 +92,28 @@ public class UserProfileHandler {
 
                 return tmnProfile;
         }
-        
+
         public List<Favorite> getListFavorite(Integer channelID, String sessionID,
                         String tmnID, String serviceType) {
                 SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
-                
+
                 ListFavoriteRequest listFavoriteRequest = new ListFavoriteRequest();
                 listFavoriteRequest.setChannelId(channelID);
                 listFavoriteRequest.setServiceType(serviceType);
                 listFavoriteRequest.setSecurityContext(securityContext);
-                
+
                 ListFavoriteResponse listFavoriteResponse = this.tmnProfileProxy.listFavorite(listFavoriteRequest);
                 FavoriteContext[] favoriteContext = listFavoriteResponse.getFavoriteList();
-                
-                List<Favorite> favorites = createFavorites(favoriteContext);            
-                
+
+                List<Favorite> favorites = createFavorites(favoriteContext);
+
                 return favorites;
         }
 
         public Boolean isFavoritable(Integer channelID, String sessionID,
                         String tmnID, String serviceType, String serviceCode,
                         String reference1) {
-        
+
                 try {
                         StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavoritable(createIsFavoritableRequest(
                                         channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
@@ -122,15 +121,15 @@ public class UserProfileHandler {
                 } catch (FailResultCodeException e) {
                         if (ALREADY_ADD_FAVORITE.equals(e.getCode()) || ADD_FAVORITE_DENIED .equals(e.getCode())) {
                                 return false;
-                        } 
-                        throw e;                        
-                }               
+                        }
+                        throw e;
+                }
         }
-        
+
         public Boolean isFavorited(Integer channelID, String sessionID,
                         String tmnID, String serviceType, String serviceCode,
                         String reference1) {
-                
+
                 try {
                         StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavorited(createIsFavoritedRequest(
                                 channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
@@ -138,86 +137,86 @@ public class UserProfileHandler {
                 } catch (FailResultCodeException e) {
                         if (FAVORITE_NOT_FOUND.equals(e.getCode())) {
                                 return false;
-                        } 
-                        throw e;                        
-                }               
+                        }
+                        throw e;
+                }
         }
 
         public Favorite addFavorite(Integer channelID, String sessionID,
                         String tmnID, Favorite favorite) {
                 AddFavoriteRequest addFavoriteRequest = createAddFavoriteRequest(channelID, sessionID, tmnID, favorite);
-                
+
                 AddFavoriteResponse addFavoriteResponse = this.tmnProfileProxy.addFavorite(addFavoriteRequest);
                 Long favoriteID = new Long(addFavoriteResponse.getFavorite().getFavoriteId());
                 favorite.setFavoriteID(favoriteID);
                 return favorite;
         }
-        
-		public Boolean removeFavorite(Integer channelID, String sessionID,
-				String tmnID, String serviceCode,
-				String reference1) {
-			
-			DeleteFavoriteRequest deleteFavoriteRequest = createRemoveFavoriteRequest(
-					channelID, sessionID, tmnID, serviceCode, reference1);
-			
-			StandardBizResponse standardBizResponse = this.tmnProfileProxy.removeFavorite(deleteFavoriteRequest);
-            
-			if(standardBizResponse.isSuccess()) {
-				return Boolean.TRUE;
-			} else {
-				return Boolean.FALSE;
-			}
-		}
+
+        public Boolean removeFavorite(Integer channelID, String sessionID,
+                String tmnID, String serviceCode,
+                String reference1) {
+
+            DeleteFavoriteRequest deleteFavoriteRequest = createRemoveFavoriteRequest(
+                    channelID, sessionID, tmnID, serviceCode, reference1);
+
+            StandardBizResponse standardBizResponse = this.tmnProfileProxy.removeFavorite(deleteFavoriteRequest);
+
+            if(standardBizResponse.isSuccess()) {
+                return Boolean.TRUE;
+            } else {
+                return Boolean.FALSE;
+            }
+        }
 
         public void logout(Integer channelID, String sessionID, String truemoneyID) {
                 this.tmnSecurityProxy.terminateSession(createAccessRequest(channelID, sessionID, truemoneyID));
         }
-        
-        
-		private AddFavoriteRequest createAddFavoriteRequest(Integer channelID,
-				String sessionID, String tmnID, Favorite favorite) {
-			SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
-			
-			AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest();
-			addFavoriteRequest.setAmount(favorite.getAmount());
-			addFavoriteRequest.setChannelId(channelID);
-			addFavoriteRequest.setReference1(favorite.getRef1());
-			addFavoriteRequest.setServiceCode(favorite.getServiceCode());
-			addFavoriteRequest.setServiceType(favorite.getServiceType());
-			addFavoriteRequest.setSecurityContext(securityContext);
-			return addFavoriteRequest;
-		}
-		
+
+
+        private AddFavoriteRequest createAddFavoriteRequest(Integer channelID,
+                String sessionID, String tmnID, Favorite favorite) {
+            SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
+
+            AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest();
+            addFavoriteRequest.setAmount(favorite.getAmount());
+            addFavoriteRequest.setChannelId(channelID);
+            addFavoriteRequest.setReference1(favorite.getRef1());
+            addFavoriteRequest.setServiceCode(favorite.getServiceCode());
+            addFavoriteRequest.setServiceType(favorite.getServiceType());
+            addFavoriteRequest.setSecurityContext(securityContext);
+            return addFavoriteRequest;
+        }
+
         private IsFavoritableRequest createIsFavoritableRequest(Integer channelID, String sessionID,
                         String tmnID, String serviceType, String serviceCode,
                         String reference1){
                 SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
-                
+
                 IsFavoritableRequest favoritableRequest = new IsFavoritableRequest();
                 favoritableRequest.setChannelId(channelID);
                 favoritableRequest.setServiceType(serviceType);
                 favoritableRequest.setServiceCode(serviceCode);
                 favoritableRequest.setReference1(reference1);
                 favoritableRequest.setSecurityContext(securityContext);
-                
+
                 return favoritableRequest;
         }
-        
+
         private IsFavoritedRequest createIsFavoritedRequest(Integer channelID, String sessionID,
                         String tmnID, String serviceType, String serviceCode,
                         String reference1){
                 SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
-                
+
                 IsFavoritedRequest favoritedRequest = new IsFavoritedRequest();
                 favoritedRequest.setChannelId(channelID);
                 favoritedRequest.setServiceType(serviceType);
                 favoritedRequest.setServiceCode(serviceCode);
                 favoritedRequest.setReference1(reference1);
                 favoritedRequest.setSecurityContext(securityContext);
-                
+
                 return favoritedRequest;
         }
-        
+
         private StandardBizRequest createAccessRequest(Integer channelID, String sessionID, String truemoneyID) {
                 SecurityContext securityContext = new SecurityContext(sessionID, truemoneyID);
 
@@ -236,25 +235,25 @@ public class UserProfileHandler {
 
                 return signonRequest;
         }
-        
-		private DeleteFavoriteRequest createRemoveFavoriteRequest(
-				Integer channelID, String sessionID, String tmnID,
-				String serviceCode, String reference1) {
-			SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
-			
-			DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest();
-			deleteFavoriteRequest.setChannelId(channelID);
-			deleteFavoriteRequest.setServiceCode(serviceCode);
-			deleteFavoriteRequest.setReference1(reference1);
-			deleteFavoriteRequest.setSecurityContext(securityContext);
-			return deleteFavoriteRequest;
-		}
-        
+
+        private DeleteFavoriteRequest createRemoveFavoriteRequest(
+                Integer channelID, String sessionID, String tmnID,
+                String serviceCode, String reference1) {
+            SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
+
+            DeleteFavoriteRequest deleteFavoriteRequest = new DeleteFavoriteRequest();
+            deleteFavoriteRequest.setChannelId(channelID);
+            deleteFavoriteRequest.setServiceCode(serviceCode);
+            deleteFavoriteRequest.setReference1(reference1);
+            deleteFavoriteRequest.setSecurityContext(securityContext);
+            return deleteFavoriteRequest;
+        }
+
         private List<Favorite> createFavorites(FavoriteContext[] favoriteContext) {
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 
                 List<Favorite> list = new ArrayList<Favorite>();
-                
+
                 try {
                         if(favoriteContext!=null) {
                                 for(FavoriteContext context : favoriteContext){
@@ -271,7 +270,7 @@ public class UserProfileHandler {
                 } catch (ParseException e) {
                         throw new ServiceInventoryException(500, "2001", "Invalid favorite date", "TMN-SERVICE-INVENTORY");
                 }
-                
+
                 return list;
         }
 

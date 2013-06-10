@@ -90,12 +90,12 @@ public class TmnBillPaymentServiceClient_FavoriteBillWorkflowTest {
 		// retry until success
 		assertEquals(BillPaymentTransaction.Status.SUCCESS, transactionStatus);
 
-		BillPaymentTransaction p2pTransaction = billPaymentServiceClient.getBillPaymentResult(billDraft.getID(), accessToken);
+		BillPaymentTransaction transaction = billPaymentServiceClient.getBillPaymentResult(billDraft.getID(), accessToken);
 
-		assertNotNull(p2pTransaction);
-		assertNotNull(p2pTransaction.getDraftTransaction());
-		assertNotNull(p2pTransaction.getConfirmationInfo());
-		assertEquals(BillPaymentTransaction.Status.SUCCESS, p2pTransaction.getStatus());
+		assertNotNull(transaction);
+		assertNotNull(transaction.getDraftTransaction());
+		assertNotNull(transaction.getConfirmationInfo());
+		assertEquals(BillPaymentTransaction.Status.SUCCESS, transaction.getStatus());
 
 	}
 	

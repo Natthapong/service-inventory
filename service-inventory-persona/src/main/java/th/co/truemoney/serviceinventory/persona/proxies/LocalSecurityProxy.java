@@ -51,15 +51,13 @@ public class LocalSecurityProxy implements TmnSecurityProxy {
                     new String[] { "key" }, new String[] { "value" },
                     "sessionId", SimpsonsTmnMoneyID);
 
-        }else if("local@tmn.com".equals(initiator)
-                && "password".equals(password)){
+        }else {
             return new SignonResponse("1", "0", "namespace",
                     new String[] { "key" }, new String[] { "value" },
                     "sessionId", "1000");
-
         }
 
-        throw new ServiceInventoryException(400, "4", "", "TMN-SERVICE-INVENTORY");
+        //throw new ServiceInventoryException(400, "4", "", "TMN-SERVICE-INVENTORY");
     }
 
     @Override

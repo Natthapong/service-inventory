@@ -117,26 +117,18 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
     }
 
     @Override
-    public Bill retrieveBillInformationWithFavorite(String billCode,
-            String ref1, String ref2, BigDecimal amount, String accessTokenID) throws ServiceInventoryException {
-        HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
-
-        ResponseEntity<Bill> responseEntity = restTemplate.exchange(
-                endPoints.getBillInformationServiceURL(), HttpMethod.GET, requestEntity,
-                Bill.class, billCode, ref1, ref2, amount, accessTokenID);
-
-        return responseEntity.getBody();
-    }
-
-    @Override
-    //@Cacheable(value="billInfo", key="#p0")
-    public Bill retrieveBillInformationWithKeyin(String billCode, String accessTokenID)
+    public Bill retrieveBillInformationWithKeyin(String billCode,
+            String ref1, String ref2, BigDecimal amount, InquiryOutstandingBillType inquiryType,
+            String accessTokenID)
             throws ServiceInventoryException {
         HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
+        String inquiry = (InquiryOutstandingBillType.ONLINE == inquiryType) ? "online" : "offline";
+        String isFavorite = "false";
+
         ResponseEntity<Bill> responseEntity = restTemplate.exchange(
-                endPoints.getBillInformationServiceWithBillCodeURL(), HttpMethod.GET, requestEntity,
-                Bill.class, billCode, accessTokenID);
+                endPoints.getKeyInBillURL(), HttpMethod.GET, requestEntity,
+                Bill.class, billCode, ref1, ref2, amount, inquiry, isFavorite, accessTokenID);
 
         return responseEntity.getBody();
     }
@@ -173,10 +165,12 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
 
         HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
-        String inquiry = InquiryOutstandingBillType.ONLINE == inquiryType ? "online": "offline" ;
+        String inquiry = InquiryOutstandingBillType.ONLINE == inquiryType ? "online": "offline";
+        String isFavorite = "true";
+
         ResponseEntity<Bill> responseEntity = restTemplate.exchange(
-                endPoints.getFavoriteBillOnlineURL(), HttpMethod.GET, requestEntity,
-                Bill.class, billCode, ref1, ref2, amount, inquiry, accessTokenID);
+                endPoints.getKeyInBillURL(), HttpMethod.GET, requestEntity,
+                Bill.class, billCode, ref1, ref2, amount, inquiry, isFavorite, accessTokenID);
 
         return responseEntity.getBody();
 

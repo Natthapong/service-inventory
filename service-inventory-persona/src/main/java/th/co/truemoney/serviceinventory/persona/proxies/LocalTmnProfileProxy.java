@@ -139,13 +139,16 @@ public class LocalTmnProfileProxy implements TmnProfileProxy {
     public ListFavoriteResponse listFavorite(
             ListFavoriteRequest listFavoriteRequest) throws EwalletException {
 
-        FavoriteContext[] favoriteContexts = new FavoriteContext[3];
-        favoriteContexts[0] = new FavoriteContext("1", "billpay", "d.trmv", "",
+        FavoriteContext[] favoriteContexts = new FavoriteContext[4];
+        favoriteContexts[0] = new FavoriteContext("1", "billpay", "trmv", "Truemove",
                 new BigDecimal("13.00"), "20000211101010");
-        favoriteContexts[1] = new FavoriteContext("2", "billpay", "d.tmvh", "",
+        favoriteContexts[1] = new FavoriteContext("2", "billpay", "tmvh", "Truemove H",
                 new BigDecimal("19.00"), "20000212101010");
-        favoriteContexts[2] = new FavoriteContext("3", "billpay", "d.tlp", "",
+        favoriteContexts[2] = new FavoriteContext("3", "billpay", "tlp", "Truelife plus",
                 new BigDecimal("18.00"), "20000210101010");
+        favoriteContexts[3] = new FavoriteContext("3", "billpay", "mea", "Metro Electric",
+                new BigDecimal("20.00"), "20000210101010");
+
 
         return new ListFavoriteResponse("1", "0", "namespace",
                 new String[] { "key" }, new String[] { "value" },

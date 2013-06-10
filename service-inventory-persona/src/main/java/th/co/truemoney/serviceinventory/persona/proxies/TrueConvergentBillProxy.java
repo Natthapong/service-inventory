@@ -47,6 +47,7 @@ public class TrueConvergentBillProxy implements BillProxy {
         billResponse.addParameterElement("logo", "../img/tcg.png");
         billResponse.addParameterElement("target", "tcg");
         billResponse.addParameterElement("amount", "85950");
+        billResponse.addParameterElement("partial_payment", "Y");
         billResponse.addParameterElement("service_max_amount", "1000000");
         billResponse.addParameterElement("duedate_bill", "310153");
 
@@ -144,6 +145,7 @@ public class TrueConvergentBillProxy implements BillProxy {
         billResponse.addParameterElement("ref2_title_en", "Customer ID");
         billResponse.addParameterElement("call_center", "1331");
         billResponse.addParameterElement("logo", "../img/tcg.png");
+        billResponse.addParameterElement("partial_payment", "Y");
         billResponse.addParameterElement("target", "tcg");
         billResponse.addParameterElement("service_max_amount", "1000000");
 

@@ -90,16 +90,8 @@ public class EndPoints {
         return host + "/service-inventory-web/v1/bill-payment/information?barcode={barcode}&accessTokenID={accessTokenID}";
     }
 
-    public String getBillInformationServiceURL() {
-        return host + "/service-inventory-web/v1/bill-payment/information?billCode={billCode}&ref1={ref1}&ref2={ref2}&amount={amount}&accessTokenID={accessTokenID}";
-    }
-
-    public String getFavoriteBillOnlineURL() {
-        return host + "/service-inventory-web/v1/bill-payment/information?billCode={billCode}&ref1={ref1}&ref2={ref2}&amount={amount}&inquiry={inquiry}&accessTokenID={accessTokenID}";
-    }
-
-    public String getBillInformationServiceWithBillCodeURL() {
-        return host + "/service-inventory-web/v1/bill-payment/information/{billCode}?accessTokenID={accessTokenID}";
+    public String getKeyInBillURL() {
+        return host + "/service-inventory-web/v1/bill-payment/information?billCode={billCode}&ref1={ref1}&ref2={ref2}&amount={amount}&inquiry={inquiry}&favorite={isFavorited}&accessTokenID={accessTokenID}";
     }
 
     public String getBillOutStandingOnlineURL() {

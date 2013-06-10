@@ -80,10 +80,10 @@ public class BillPaymentControllerSuccessTest {
 
         //given
         Bill stubbedBill = BillPaymentStubbed.createSuccessBillPaymentInfo();
-        when(billPaymentServiceMock.retrieveBillInformationWithKeyin(anyString(), anyString())).thenReturn(stubbedBill);
+        when(billPaymentServiceMock.retrieveBillInformationWithKeyin(stubbedBill.getTarget(), stubbedBill.getRef1(), stubbedBill.getRef2(), BigDecimal.ZERO, InquiryOutstandingBillType.ONLINE, "12345")).thenReturn(stubbedBill);
 
         //perform
-        this.mockMvc.perform(get("/bill-payment/information/tcg/?accessTokenID=12345")
+        this.mockMvc.perform(get("/bill-payment/information/?billCode=tcg&ref1=010004552&ref2=010520120200015601&inquiry=online&accessTokenID=12345")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.target").exists());
@@ -99,7 +99,7 @@ public class BillPaymentControllerSuccessTest {
         .thenReturn(stubbedBill);
 
         //perform
-        this.mockMvc.perform(get("/bill-payment/information?billCode=tcg&ref1=010004552&ref2=010520120200015601&inquiry=online&accessTokenID=12345")
+        this.mockMvc.perform(get("/bill-payment/information?billCode=tcg&ref1=010004552&ref2=010520120200015601&inquiry=online&favorite=true&accessTokenID=12345")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.target").exists());

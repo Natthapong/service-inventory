@@ -116,7 +116,7 @@ public class BillPaymentServiceImplTest {
         when(billPaymentFacade.getBillCodeInformation(any(GetBillRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
         //when
-        Bill billInformation = billPayService.retrieveBillInformationWithFavorite("xxxx", "ref1", "ref2", new BigDecimal(400), accessToken.getAccessTokenID());
+        Bill billInformation = billPayService.retrieveBillInformationWithUserFavorite("xxxx", "ref1", "ref2", new BigDecimal(400), InquiryOutstandingBillType.OFFLINE, accessToken.getAccessTokenID());
 
         //then
         assertNotNull(billInformation);
@@ -154,7 +154,7 @@ public class BillPaymentServiceImplTest {
         when(billPaymentFacade.getBillCodeInformation(any(GetBillRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
         //when
-        Bill billInformation = billPayService.retrieveBillInformationWithKeyin("xxxx", accessToken.getAccessTokenID());
+        Bill billInformation = billPayService.retrieveBillInformationWithKeyin("xxxx", "ref1", "ref2", BigDecimal.ZERO, InquiryOutstandingBillType.OFFLINE, accessToken.getAccessTokenID());
 
         //then
         assertNotNull(billInformation);
