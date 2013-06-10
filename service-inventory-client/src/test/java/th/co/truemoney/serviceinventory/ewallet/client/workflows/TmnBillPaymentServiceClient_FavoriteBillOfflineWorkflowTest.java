@@ -58,7 +58,7 @@ public class TmnBillPaymentServiceClient_FavoriteBillOfflineWorkflowTest {
 		Favorite favoriteBill = TestData.createFavoriteBill();
 		favoriteBill = favoriteClient.addFavorite(favoriteBill, accessToken);
 
-        Bill bill = billPaymentServiceClient.retrieveBillInformationWithBillCode(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(),
+        Bill bill = billPaymentServiceClient.retrieveBillInformationWithUserFavorite(favoriteBill.getServiceCode(), favoriteBill.getRef1(), favoriteBill.getRef2(),
                 favoriteBill.getAmount(), InquiryOutstandingBillType.OFFLINE, accessToken);
 
         assertNotNull(bill);

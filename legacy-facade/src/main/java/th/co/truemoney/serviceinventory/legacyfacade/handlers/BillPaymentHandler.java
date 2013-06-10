@@ -37,7 +37,7 @@ public class BillPaymentHandler {
 
     public String verify(VerifyBillPayRequest billPayRequest){
         try {
-        	VerifyBillPayResponse verifyResponse = billPayProxy.verifyBillPay(billPayRequest);
+            VerifyBillPayResponse verifyResponse = billPayProxy.verifyBillPay(billPayRequest);
             return verifyResponse.getTransactionID();
         } catch(FailResultCodeException ex) {
             throw new VerifyBillPayFailException(ex);
@@ -149,19 +149,19 @@ public class BillPaymentHandler {
             }
         }
     }
-    
+
     public OutStandingBill getBillOutStandingOnline(InquiryOutstandingBillRequest inquiryOutstandingBillRequest) {
-    	try {
-    		InquiryOutstandingBillResponse inquiryOutstandingBillResponse = billPayProxy.inquiryOutstandingBill(inquiryOutstandingBillRequest);
+        try {
+            InquiryOutstandingBillResponse inquiryOutstandingBillResponse = billPayProxy.inquiryOutstandingBill(inquiryOutstandingBillRequest);
 
             OutStandingBill outStandingBill = new OutStandingBill();
             outStandingBill.setBillCode(inquiryOutstandingBillRequest.getBillCode());
             outStandingBill.setOutStandingBalance(inquiryOutstandingBillResponse.getAmount());
-           	outStandingBill.setRef1(inquiryOutstandingBillResponse.getReference1());
+            outStandingBill.setRef1(inquiryOutstandingBillResponse.getReference1());
             outStandingBill.setRef2(inquiryOutstandingBillResponse.getReference2());
             outStandingBill.setDueDate(inquiryOutstandingBillResponse.getDueDate());
             outStandingBill.setInvoiceDate(inquiryOutstandingBillResponse.getInvoiceDate());
-            
+
             return outStandingBill;
 
         } catch (FailResultCodeException ex) {
@@ -175,7 +175,7 @@ public class BillPaymentHandler {
             }
         }
     }
-    
+
     private List<SourceOfFund> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {
         List<SourceFee> sourceOfFundList = barcodeResponse.getExtraXML().getSourceFeeList();
         List<SourceOfFund> sourceOfFundFees = new ArrayList<SourceOfFund>();
@@ -210,7 +210,7 @@ public class BillPaymentHandler {
         serviceFee.setFeeRate(decimalServiceFee.setScale(2, RoundingMode.HALF_UP));
         return serviceFee;
     }
-    
+
     private List<SourceOfFund> createSourceOfFundFeeList(GetBillResponse barcodeResponse) {
         List<SourceFee> sourceOfFundList = barcodeResponse.getExtraXML().getSourceFeeList();
         List<SourceOfFund> sourceOfFundFees = new ArrayList<SourceOfFund>();
@@ -300,7 +300,7 @@ public class BillPaymentHandler {
     public static class UnknownServiceFeeType extends ServiceInventoryException {
 
         private static final long serialVersionUID = 5313680069554085972L;
-        private static final String UNKNOWN_SERVICE_FEE_TYPE = "xxxx";
+        private static final String UNKNOWN_SERVICE_FEE_TYPE = "20004";
 
         public UnknownServiceFeeType(String feeType) {
             super(500, UNKNOWN_SERVICE_FEE_TYPE,  "unknown fee type code: " + feeType, "BILL-PROXY", null);

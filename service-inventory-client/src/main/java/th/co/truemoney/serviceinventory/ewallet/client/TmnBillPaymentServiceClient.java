@@ -167,7 +167,7 @@ public class TmnBillPaymentServiceClient implements BillPaymentService {
     }
 
     @Override
-    public Bill retrieveBillInformationWithBillCode(String billCode,
+    public Bill retrieveBillInformationWithUserFavorite(String billCode,
             String ref1, String ref2, BigDecimal amount, InquiryOutstandingBillType inquiryType,
             String accessTokenID) throws ServiceInventoryException {
 

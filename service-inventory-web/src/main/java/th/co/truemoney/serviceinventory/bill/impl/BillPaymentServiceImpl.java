@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -19,6 +17,7 @@ import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction.FailStatus;
 import th.co.truemoney.serviceinventory.bill.domain.InquiryOutstandingBillType;
 import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
+import th.co.truemoney.serviceinventory.bill.validation.BillOverDueValidator;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
@@ -35,8 +34,6 @@ import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 
 @Service
 public class BillPaymentServiceImpl implements  BillPaymentService {
-
-    private static final Logger logger = LoggerFactory.getLogger(BillPaymentServiceImpl.class);
 
     private static final String PAYWITH_FAVORITE = "favorite";
 
@@ -60,7 +57,8 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     private AsyncBillPayProcessor asyncBillPayProcessor;
 
     @Autowired
-    private BillPaymentValidationConfig validationConfig;
+    private BillOverDueValidator overDueValidator;
+
 
     public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
         this.accessTokenRepo = accessTokenRepo;
@@ -72,82 +70,6 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
     public void setLegacyFacade(LegacyFacade legacyFacade) {
         this.legacyFacade = legacyFacade;
-    }
-
-    @Override
-    public Bill retrieveBillInformationWithBarcode(String barcode, String accessTokenID)
-            throws ServiceInventoryException {
-
-        AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
-        ClientCredential appData = token.getClientCredential();
-
-
-        Bill bill = legacyFacade.billing()
-                                .readBillInfoWithBarcode(barcode)
-                                .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
-                                .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
-                                .getInformationWithBarcode();
-
-        validateOverdue(bill.getTarget(), bill.getDueDate(), bill.getAmount());
-        bill.setID(UUID.randomUUID().toString());
-        bill.setPayWith(PAYWITH_BARCODE);
-        billInfoRepo.saveBill(bill, accessTokenID);
-
-        return bill;
-
-    }
-
-    @Override
-    public Bill retrieveBillInformationWithFavorite(String billCode,
-            String ref1, String ref2, BigDecimal amount, String accessTokenID) throws ServiceInventoryException {
-
-        AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
-        ClientCredential appData = token.getClientCredential();
-
-        Bill bill =  legacyFacade.billing()
-                                 .readBillInfoWithBillCode(billCode)
-                                 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
-                                 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
-                                 .getInformationWithBillCode();
-
-        validateOverdue(bill.getTarget(), bill.getDueDate(), bill.getAmount());
-        bill.setID(UUID.randomUUID().toString());
-        bill.setPayWith(PAYWITH_FAVORITE);
-        bill.setRef1(ref1);
-        bill.setRef2(ref2);
-        bill.setAmount(amount);
-        billInfoRepo.saveBill(bill, accessTokenID);
-
-        return bill;
-    }
-
-    private void validateOverdue(String billerCode, Date duedate, BigDecimal amount) {
-        BillPaymentValidation billPaymentValidation = validationConfig.getBillValidation(billerCode);
-        if (billPaymentValidation != null && "TRUE".equals(billPaymentValidation.getValidateDuedate())) {
-            if (isOverdue(duedate)) {
-                HashMap<String, Object> mapData = new HashMap<String, Object>();
-                mapData.put("dueDate", duedate);
-                mapData.put("amount", amount);
-                mapData.put("target", billerCode);
-
-                ServiceInventoryWebException se = new ServiceInventoryWebException(Code.BILL_OVER_DUE, "bill over due date.");
-                se.setData(mapData);
-                throw se;
-            }
-        }
-    }
-
-    private Boolean isFavorited(AccessToken accessToken, Bill bill) {
-            return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
-            .fromChannel(accessToken.getChannelID())
-            .withServiceCode(bill.getTarget())
-            .withRefernce1(bill.getRef1())
-            .isFavorited();
-    }
-
-    public boolean isOverdue(Date duedate) {
-        DateTime dateTime = new DateTime(duedate);
-        return dateTime.plusDays(1).isBeforeNow();
     }
 
     @Override
@@ -270,20 +192,26 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         this.asyncBillPayProcessor = asyncBillPayProcessor;
     }
 
-    private void validateMinMaxAmount(BigDecimal amount, BigDecimal minAmount, BigDecimal maxAmount) {
-        HashMap<String, BigDecimal> mapData = new HashMap<String, BigDecimal>();
-        mapData.put("minAmount", minAmount);
-        mapData.put("maxAmount", maxAmount);
-        if (minAmount != null && amount.compareTo(minAmount) < 0) {
-            ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_BILL_PAYMENT_AMOUNT, "amount less than min amount.");
-            se.marshallToData(mapData);
-            throw se;
-        }
-        if (maxAmount != null && amount.compareTo(maxAmount) > 0) {
-            ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_BILL_PAYMENT_AMOUNT, "amount more than max amount.");
-            se.marshallToData(mapData);
-            throw se;
-        }
+    @Override
+    public Bill retrieveBillInformationWithBarcode(String barcode, String accessTokenID)
+            throws ServiceInventoryException {
+
+        AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
+        ClientCredential appData = token.getClientCredential();
+
+
+        Bill bill = legacyFacade.billing()
+                                .readBillInfoWithBarcode(barcode)
+                                .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+                                .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
+                                .read();
+
+        overDueValidator.validate(bill);
+        bill.setID(UUID.randomUUID().toString());
+        bill.setPayWith(PAYWITH_BARCODE);
+        billInfoRepo.saveBill(bill, accessTokenID);
+
+        return bill;
     }
 
     @Override
@@ -296,9 +224,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
                                  .readBillInfoWithBillCode(billCode)
                                  .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
                                  .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
-                                 .getInformationWithBillCode();
+                                 .read();
 
-        validateOverdue(bill.getTarget(), bill.getDueDate(), bill.getAmount());
+        overDueValidator.validate(bill);
         bill.setID(UUID.randomUUID().toString());
         bill.setPayWith(PAYWITH_KEYIN);
         billInfoRepo.saveBill(bill, accessTokenID);
@@ -307,27 +235,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     }
 
     @Override
-    public OutStandingBill retrieveBillOutStandingOnline(String billCode,
-            String ref1, String ref2, String accessTokenID)
-            throws ServiceInventoryException {
-        AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
-        ClientCredential appData = token.getClientCredential();
-
-        OutStandingBill outStandingBill =  legacyFacade.billing()
-                                 .readBillOutStandingOnlineWithBillCode(billCode)
-                                 .fromRef1(ref1)
-                                 .fromOperateByStaff(token.getMobileNumber())
-                                 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
-                                 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
-                                 .getBillOutStandingOnline();
-
-        validateOverdue(outStandingBill.getBillCode(), outStandingBill.getDueDate(), outStandingBill.getOutStandingBalance());
-
-        return outStandingBill;
-    }
-
-    @Override
-    public Bill retrieveBillInformationWithBillCode(String billCode,
+    public Bill retrieveBillInformationWithUserFavorite(String billCode,
             String ref1, String ref2, BigDecimal amount, InquiryOutstandingBillType inquiryType,
             String accessTokenID)
             throws ServiceInventoryException {
@@ -345,10 +253,82 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             billInfo.setAmount(outstanding.getOutStandingBalance());
             billInfo.setDueDate(outstanding.getDueDate());
 
+            overDueValidator.validate(billInfo);
+
             billInfoRepo.saveBill(billInfo, accessTokenID);
         }
 
         return billInfo;
+    }
+
+    @Override
+    public OutStandingBill retrieveBillOutStandingOnline(String billCode,
+            String ref1, String ref2, String accessTokenID)
+            throws ServiceInventoryException {
+        AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
+        ClientCredential appData = token.getClientCredential();
+
+        OutStandingBill outStandingBill =  legacyFacade.billing()
+                                 .readBillOutStandingOnlineWithBillCode(billCode)
+                                 .fromRef1(ref1)
+                                 .fromOperateByStaff(token.getMobileNumber())
+                                 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+                                 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
+                                 .getBillOutStandingOnline();
+
+        return outStandingBill;
+    }
+
+    private Bill retrieveBillInformationWithFavorite(String billCode,
+            String ref1, String ref2, BigDecimal amount, String accessTokenID) throws ServiceInventoryException {
+
+        AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
+        ClientCredential appData = token.getClientCredential();
+
+        Bill bill =  legacyFacade.billing()
+                                 .readBillInfoWithBillCode(billCode)
+                                 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+                                 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
+                                 .read();
+
+        overDueValidator.validate(bill);
+        bill.setID(UUID.randomUUID().toString());
+        bill.setPayWith(PAYWITH_FAVORITE);
+        bill.setRef1(ref1);
+        bill.setRef2(ref2);
+        bill.setAmount(amount);
+        billInfoRepo.saveBill(bill, accessTokenID);
+
+        return bill;
+    }
+
+    private void validateMinMaxAmount(BigDecimal amount, BigDecimal minAmount, BigDecimal maxAmount) {
+        HashMap<String, BigDecimal> mapData = new HashMap<String, BigDecimal>();
+        mapData.put("minAmount", minAmount);
+        mapData.put("maxAmount", maxAmount);
+        if (minAmount != null && amount.compareTo(minAmount) < 0) {
+            ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_BILL_PAYMENT_AMOUNT, "amount less than min amount.");
+            se.marshallToData(mapData);
+            throw se;
+        }
+        if (maxAmount != null && amount.compareTo(maxAmount) > 0) {
+            ServiceInventoryWebException se = new ServiceInventoryWebException(Code.INVALID_BILL_PAYMENT_AMOUNT, "amount more than max amount.");
+            se.marshallToData(mapData);
+            throw se;
+        }
+    }
+
+    private Boolean isFavorited(AccessToken accessToken, Bill bill) {
+        return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+        .fromChannel(accessToken.getChannelID())
+        .withServiceCode(bill.getTarget())
+        .withRefernce1(bill.getRef1())
+        .isFavorited();
+    }
+
+    public boolean isOverdue(Date duedate) {
+        DateTime dateTime = new DateTime(duedate);
+        return dateTime.plusDays(1).isBeforeNow();
     }
 
 }

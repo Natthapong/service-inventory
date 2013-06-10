@@ -18,9 +18,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import th.co.truemoney.serviceinventory.authen.TransactionAuthenService;
 import th.co.truemoney.serviceinventory.authen.impl.TransactionAuthenServiceImpl;
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
+import th.co.truemoney.serviceinventory.bill.BillRetriever;
 import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentValidationConfig;
+import th.co.truemoney.serviceinventory.bill.impl.BillRetrieverImpl;
+import th.co.truemoney.serviceinventory.bill.validation.BillOverDueValidator;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.engine.client.config.SIEngineConfig;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
@@ -83,6 +86,11 @@ public class ServiceInventoryConfig {
     @Bean
     public BillPaymentService getBillPaymentService(){
         return new BillPaymentServiceImpl();
+    }
+
+    @Bean
+    public BillRetriever billRetriever() {
+        return new BillRetrieverImpl();
     }
 
     @Bean
@@ -153,6 +161,11 @@ public class ServiceInventoryConfig {
     @Bean
     public AsyncTopUpMobileProcessor getAsyncTopUpMobileProcessor() {
         return new AsyncTopUpMobileProcessor();
+    }
+
+    @Bean
+    public BillOverDueValidator billOverDueValidator() {
+        return new BillOverDueValidator();
     }
 
     @Bean

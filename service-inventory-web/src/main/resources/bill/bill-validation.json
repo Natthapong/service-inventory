@@ -1,10 +1,10 @@
 {
     "mea":
     {
-        "validateDuedate" : "TRUE"
+        "validateDuedate" : true
     },
     "water":
     {
-        "validateDuedate" : "TRUE"
+        "validateDuedate" : true
     }
 }

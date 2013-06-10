@@ -135,7 +135,7 @@ public class BillPaymentServiceImplTest {
         when(billPaymentFacade.getBillOutStandingOnline(any(InquiryOutstandingBillRequest.class))).thenReturn(stubOutstandingBill);
 
         //when
-        Bill billInformation = billPayService.retrieveBillInformationWithBillCode("xxxx", "ref1", "ref2", BigDecimal.ZERO, InquiryOutstandingBillType.ONLINE, accessToken.getAccessTokenID());
+        Bill billInformation = billPayService.retrieveBillInformationWithUserFavorite("xxxx", "ref1", "ref2", BigDecimal.ZERO, InquiryOutstandingBillType.ONLINE, accessToken.getAccessTokenID());
 
         //then
         assertNotNull(billInformation);

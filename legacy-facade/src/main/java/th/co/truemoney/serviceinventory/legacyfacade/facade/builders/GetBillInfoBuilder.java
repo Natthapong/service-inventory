@@ -8,131 +8,152 @@ import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOutstandingBillRequest;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
 
 public class GetBillInfoBuilder {
 
-	private String channel;
-	private String channelDetail;
-	private String appUser;
-	private String appPassword;
-	private String appKey;
-	private String barcode;
-	private String billCode;
-	private String ref1;
-	private String operateByStaff;
+    private String channel;
+    private String channelDetail;
+    private String appUser;
+    private String appPassword;
+    private String appKey;
+    private String barcode;
+    private String billCode;
+    private String ref1;
+    private String operateByStaff;
 
-	private BillPaymentHandler billPaymentFacade;
+    private BillPaymentHandler billPaymentFacade;
 
-	@Autowired(required = false)
-	public GetBillInfoBuilder(BillPaymentHandler billPaymentFacade) {
-		this.billPaymentFacade = billPaymentFacade;
-	}
+    @Autowired(required = false)
+    public GetBillInfoBuilder(BillPaymentHandler billPaymentFacade) {
+        this.billPaymentFacade = billPaymentFacade;
+    }
 
-	public GetBillInfoBuilder withBarcode(String barcode) {
-		this.barcode = barcode;
-		return this;
-	}
-	
-	public GetBillInfoBuilder withBillCode(String billCode) {
-		this.billCode = billCode;
-		return this;
-	}
+    public GetBillInfoBuilder withBarcode(String barcode) {
+        this.barcode = barcode;
+        return this;
+    }
 
-	public GetBillInfoBuilder fromBillChannel(String channel, String channelDetail) {
-		this.channel = channel;
-		this.channelDetail = channelDetail;
-		return this;
-	}
+    public GetBillInfoBuilder withBillCode(String billCode) {
+        this.billCode = billCode;
+        return this;
+    }
 
-	public GetBillInfoBuilder fromApp(String appUser, String appPassword, String appKey) {
-		this.appUser = appUser;
-		this.appPassword = appPassword;
-		this.appKey = appKey;
+    public GetBillInfoBuilder fromBillChannel(String channel, String channelDetail) {
+        this.channel = channel;
+        this.channelDetail = channelDetail;
+        return this;
+    }
 
-		return this;
-	}
-	
-	public GetBillInfoBuilder fromRef1(String ref1) {
-		this.ref1 = ref1;
+    public GetBillInfoBuilder fromApp(String appUser, String appPassword, String appKey) {
+        this.appUser = appUser;
+        this.appPassword = appPassword;
+        this.appKey = appKey;
 
-		return this;
-	}
-	
-	public GetBillInfoBuilder fromOperateByStaff(String operateByStaff) {
-		this.operateByStaff = operateByStaff;
+        return this;
+    }
 
-		return this;
-	}
+    public GetBillInfoBuilder fromRef1(String ref1) {
+        this.ref1 = ref1;
 
-	public Bill getInformationWithBarcode() {
-		Validate.notNull(channel, "data missing. get barcode information from which channel?");
-		Validate.notNull(channelDetail, "missing channel detail.");
-		Validate.notNull(appUser, "data missing. from which app user?");
-		Validate.notNull(appPassword, "data missing. missing app password.");
-		Validate.notNull(appKey, "data missing. missing app key.");
-		Validate.notNull(barcode, "data missing. barcode missing?");
+        return this;
+    }
 
-		GetBarcodeRequest billRequest = new GetBarcodeRequest();
+    public GetBillInfoBuilder fromOperateByStaff(String operateByStaff) {
+        this.operateByStaff = operateByStaff;
 
-		billRequest.setChannel(channel);
-		billRequest.setChannelDetail(channelDetail);
+        return this;
+    }
 
-		billRequest.setAppUser(appUser);
-		billRequest.setAppPassword(appPassword);
-		billRequest.setAppKey(appKey);
+    public Bill read() {
+        if (barcode != null) {
+            return getInformationWithBarcode();
+        } else if (billCode != null) {
+            return getInformationWithBillCode();
+        } else {
+            throw new UnknownBillReaderTypeException();
+        }
+    }
 
-		billRequest.setBarcode(barcode);
+    private Bill getInformationWithBarcode() {
+        Validate.notNull(channel, "data missing. get barcode information from which channel?");
+        Validate.notNull(channelDetail, "missing channel detail.");
+        Validate.notNull(appUser, "data missing. from which app user?");
+        Validate.notNull(appPassword, "data missing. missing app password.");
+        Validate.notNull(appKey, "data missing. missing app key.");
+        Validate.notNull(barcode, "data missing. barcode missing?");
 
-		return billPaymentFacade.getBarcodeInformation(billRequest);
-	}
-	
-	public Bill getInformationWithBillCode() {
-		Validate.notNull(channel, "data missing. get barcode information from which channel?");
-		Validate.notNull(channelDetail, "missing channel detail.");
-		Validate.notNull(appUser, "data missing. from which app user?");
-		Validate.notNull(appPassword, "data missing. missing app password.");
-		Validate.notNull(appKey, "data missing. missing app key.");
-		Validate.notNull(billCode, "data missing. billCode missing?");
+        GetBarcodeRequest billRequest = new GetBarcodeRequest();
 
-		GetBillRequest billRequest = new GetBillRequest();
+        billRequest.setChannel(channel);
+        billRequest.setChannelDetail(channelDetail);
 
-		billRequest.setChannel(channel);
-		billRequest.setChannelDetail(channelDetail);
+        billRequest.setAppUser(appUser);
+        billRequest.setAppPassword(appPassword);
+        billRequest.setAppKey(appKey);
 
-		billRequest.setAppUser(appUser);
-		billRequest.setAppPassword(appPassword);
-		billRequest.setAppKey(appKey);
+        billRequest.setBarcode(barcode);
 
-		billRequest.setBillCode(billCode);
+        return billPaymentFacade.getBarcodeInformation(billRequest);
+    }
 
-		return billPaymentFacade.getBillCodeInformation(billRequest);
-	}
+    private Bill getInformationWithBillCode() {
+        Validate.notNull(channel, "data missing. get barcode information from which channel?");
+        Validate.notNull(channelDetail, "missing channel detail.");
+        Validate.notNull(appUser, "data missing. from which app user?");
+        Validate.notNull(appPassword, "data missing. missing app password.");
+        Validate.notNull(appKey, "data missing. missing app key.");
+        Validate.notNull(billCode, "data missing. billCode missing?");
 
-	public OutStandingBill getBillOutStandingOnline() {
-		Validate.notNull(channel, "data missing. get barcode information from which channel?");
-		Validate.notNull(channelDetail, "missing channel detail.");
-		Validate.notNull(appUser, "data missing. from which app user?");
-		Validate.notNull(appPassword, "data missing. missing app password.");
-		Validate.notNull(appKey, "data missing. missing app key.");
-		Validate.notNull(billCode, "data missing. billCode missing?");
-		Validate.notNull(ref1, "data missing. ref1 missing?");
-		
-		InquiryOutstandingBillRequest inquiryOutstandingBillRequest = new InquiryOutstandingBillRequest();
-		
-		inquiryOutstandingBillRequest.setChannel(channel);
-		inquiryOutstandingBillRequest.setChannelDetail(channelDetail);
+        GetBillRequest billRequest = new GetBillRequest();
 
-		inquiryOutstandingBillRequest.setAppUser(appUser);
-		inquiryOutstandingBillRequest.setAppPassword(appPassword);
-		inquiryOutstandingBillRequest.setAppKey(appKey);
+        billRequest.setChannel(channel);
+        billRequest.setChannelDetail(channelDetail);
 
-		inquiryOutstandingBillRequest.setBillCode(billCode);
-		
-		inquiryOutstandingBillRequest.setRef1(ref1);
-		inquiryOutstandingBillRequest.setOperateByStaff(operateByStaff);
-		
-		return billPaymentFacade.getBillOutStandingOnline(inquiryOutstandingBillRequest);
-	}
+        billRequest.setAppUser(appUser);
+        billRequest.setAppPassword(appPassword);
+        billRequest.setAppKey(appKey);
+
+        billRequest.setBillCode(billCode);
+
+        return billPaymentFacade.getBillCodeInformation(billRequest);
+    }
+
+    public OutStandingBill getBillOutStandingOnline() {
+        Validate.notNull(channel, "data missing. get barcode information from which channel?");
+        Validate.notNull(channelDetail, "missing channel detail.");
+        Validate.notNull(appUser, "data missing. from which app user?");
+        Validate.notNull(appPassword, "data missing. missing app password.");
+        Validate.notNull(appKey, "data missing. missing app key.");
+        Validate.notNull(billCode, "data missing. billCode missing?");
+        Validate.notNull(ref1, "data missing. ref1 missing?");
+
+        InquiryOutstandingBillRequest inquiryOutstandingBillRequest = new InquiryOutstandingBillRequest();
+
+        inquiryOutstandingBillRequest.setChannel(channel);
+        inquiryOutstandingBillRequest.setChannelDetail(channelDetail);
+
+        inquiryOutstandingBillRequest.setAppUser(appUser);
+        inquiryOutstandingBillRequest.setAppPassword(appPassword);
+        inquiryOutstandingBillRequest.setAppKey(appKey);
+
+        inquiryOutstandingBillRequest.setBillCode(billCode);
+
+        inquiryOutstandingBillRequest.setRef1(ref1);
+        inquiryOutstandingBillRequest.setOperateByStaff(operateByStaff);
+
+        return billPaymentFacade.getBillOutStandingOnline(inquiryOutstandingBillRequest);
+    }
+
+    public static class UnknownBillReaderTypeException extends ServiceInventoryException {
+
+        private static final long serialVersionUID = 5313680069554085972L;
+        private static final String UNKNOWN_BILL_READER_TYPE = "20005";
+
+        public UnknownBillReaderTypeException() {
+            super(500, UNKNOWN_BILL_READER_TYPE,  "unknown bill reader type", "BILL-PROXY", null);
+        }
+    }
 
 }

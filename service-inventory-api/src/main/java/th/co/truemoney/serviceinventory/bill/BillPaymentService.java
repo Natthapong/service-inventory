@@ -14,10 +14,7 @@ public interface BillPaymentService {
     public Bill retrieveBillInformationWithBarcode(String barcode, String accessTokenID)
             throws ServiceInventoryException;
 
-    public Bill retrieveBillInformationWithFavorite(String billCode, String ref1, String ref2, BigDecimal amount, String accessTokenID)
-            throws ServiceInventoryException;
-
-    public Bill retrieveBillInformationWithBillCode(String billCode, String ref1, String ref2, BigDecimal amount, InquiryOutstandingBillType inquiryType, String accessTokenID)
+    public Bill retrieveBillInformationWithUserFavorite(String billCode, String ref1, String ref2, BigDecimal amount, InquiryOutstandingBillType inquiryType, String accessTokenID)
             throws ServiceInventoryException;
 
     public Bill retrieveBillInformationWithKeyin(String billCode, String accessTokenID)

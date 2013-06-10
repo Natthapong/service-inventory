@@ -95,7 +95,7 @@ public class BillPaymentControllerSuccessTest {
 
         //given
         Bill stubbedBill = BillPaymentStubbed.createSuccessBillPaymentInfo();
-        when(billPaymentServiceMock.retrieveBillInformationWithBillCode(stubbedBill.getTarget(), stubbedBill.getRef1(), stubbedBill.getRef2(), BigDecimal.ZERO, InquiryOutstandingBillType.ONLINE, "12345"))
+        when(billPaymentServiceMock.retrieveBillInformationWithUserFavorite(stubbedBill.getTarget(), stubbedBill.getRef1(), stubbedBill.getRef2(), BigDecimal.ZERO, InquiryOutstandingBillType.ONLINE, "12345"))
         .thenReturn(stubbedBill);
 
         //perform
