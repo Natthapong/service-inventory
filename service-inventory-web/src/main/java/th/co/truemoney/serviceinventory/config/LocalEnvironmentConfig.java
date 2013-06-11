@@ -114,13 +114,13 @@ public class LocalEnvironmentConfig {
     public TopUpMobileProxy topUpMobileProxy() {
         return new TrueConvergenceOneBillPersona().getTopUpMobileProxy();
     }
-    
+
     @Bean
-	public DataSource dataSource() {
-		EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-		EmbeddedDatabase database = (EmbeddedDatabase)builder.setType(EmbeddedDatabaseType.H2)
-				.addScript("dataset/schema.sql")
-				.build();
-		return database;
-	}
+    public DataSource dataSource() {
+        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+        EmbeddedDatabase database = (EmbeddedDatabase)builder.setType(EmbeddedDatabaseType.H2)
+                .addScript("dataset/schema.sql")
+                .build();
+        return database;
+    }
 }
