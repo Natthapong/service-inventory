@@ -220,9 +220,10 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             String accessTokenID)
             throws ServiceInventoryException {
 
-        Bill billInfo = this.retrieveBillInformationWithFavorite(billCode, ref1, ref2, amount, accessTokenID);
+        Bill billInfo = null;
 
         if (inquiryType == InquiryOutstandingBillType.ONLINE) {
+        	billInfo = this.retrieveBillInformationWithFavorite(billCode, ref1, ref2, amount, accessTokenID);
             OutStandingBill outstanding = retrieveBillOutStandingOnline(billCode, ref1, ref2, accessTokenID);
 
             String newRef1 = StringUtils.hasText(outstanding.getRef1()) ? outstanding.getRef1() : ref1;
@@ -233,10 +234,14 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             billInfo.setAmount(outstanding.getOutStandingBalance());
             billInfo.setDueDate(outstanding.getDueDate());
 
-            overDueValidator.validate(billInfo);
-
-            billInfoRepo.saveBill(billInfo, accessTokenID);
+        } else {
+        	billInfo = this.retrieveBillInformationWithFavorite(billCode, ref1, ref2, amount, accessTokenID);
         }
+        
+        overDueValidator.validate(billInfo);
+        
+        billInfo.setPayWith(PAYWITH_FAVORITE);
+        billInfoRepo.saveBill(billInfo, accessTokenID);
 
         return billInfo;
     }
@@ -316,14 +321,11 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
                                  .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
                                  .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
                                  .read();
-
-        overDueValidator.validate(bill);
+        
         bill.setID(UUID.randomUUID().toString());
-        bill.setPayWith(PAYWITH_FAVORITE);
         bill.setRef1(ref1);
         bill.setRef2(ref2);
         bill.setAmount(amount);
-        billInfoRepo.saveBill(bill, accessTokenID);
 
         return bill;
     }
