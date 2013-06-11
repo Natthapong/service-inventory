@@ -94,7 +94,7 @@ public class AsyncJdbcLoggingProcessor {
 			
 			Long logID = activityDAO.createLogID();
 			
-			StringBuilder detailInput = new StringBuilder();;
+			StringBuilder detailInput = new StringBuilder();
 			if( (objectList!=null) 
 					&& (objectList.size()>0) ) {
 				for (Object tmpObject : objectList) {
@@ -102,9 +102,9 @@ public class AsyncJdbcLoggingProcessor {
 				}
 			}
 			
-			String detailOutput = null;
+			StringBuilder detailOutput = new StringBuilder();
 			if(retObject!=null) {
-				detailOutput = retObject.toString();
+				detailOutput = detailOutput.append(retObject.toString());
 			}
 			
 			ActivityLog activityLog = new ActivityLog();
@@ -126,7 +126,7 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
 			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
+			activityLog.setDetailOutput(detailOutput.toString());
 			
 			logger.info("-----------------------------");
 			logger.info("ActivityLog: " + activityLog.toString());
@@ -160,13 +160,13 @@ public class AsyncJdbcLoggingProcessor {
 			String accessID = MDC.get("accessTokenID");
 			Long logID = activityDAO.createLogID();
 			
-			String detailInput = null;
+			StringBuilder detailInput = new StringBuilder();
 			if(siEngineRequest!=null) {
-				detailInput = siEngineRequest.toString();
+				detailInput = detailInput.append(siEngineRequest.toString());
 			}
-			String detailOutput = null;
+			StringBuilder detailOutput = new StringBuilder();
 			if(siEngineResponse!=null) {
-				detailOutput = siEngineResponse.toString();
+				detailOutput = detailOutput.append(siEngineResponse.toString());
 			}
 			if(refTransID!=null) {
 				MDC.put("refTransID", refTransID);
@@ -194,7 +194,7 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
 			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
+			activityLog.setDetailOutput(detailOutput.toString());
 			
 			logger.info("-----------------------------");
 			logger.info("ActivityLog: " + activityLog.toString());
@@ -228,13 +228,13 @@ public class AsyncJdbcLoggingProcessor {
 			String accessID = MDC.get("accessTokenID");
 			Long logID = activityDAO.createLogID();
 			
-			String detailInput = null;
+			StringBuilder detailInput = new StringBuilder();
 			if(ewalletRequest!=null) {
-				detailInput = ewalletRequest.toString();
+				detailInput = detailInput.append(ewalletRequest.toString());
 			}
-			String detailOutput = null;
+			StringBuilder detailOutput = new StringBuilder();
 			if(ewalletResponse!=null) {
-				detailOutput = ewalletResponse.toString();
+				detailOutput = detailOutput.append(ewalletResponse.toString());
 			}
 			if(refTransID!=null) {
 				MDC.put("refTransID", refTransID);
@@ -262,7 +262,7 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
 			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
+			activityLog.setDetailOutput(detailOutput.toString());
 			
 			logger.info("-----------------------------");
 			logger.info("ActivityLog: " + activityLog.toString());
@@ -295,13 +295,13 @@ public class AsyncJdbcLoggingProcessor {
 			String accessID = MDC.get("accessTokenID");
 			Long logID = activityDAO.createLogID();
 			
-			String detailInput = null;
+			StringBuilder detailInput = new StringBuilder();
 			if(smsRequest!=null) {
-				detailInput = smsRequest.toString();
+				detailInput = detailInput.append(smsRequest.toString());
 			}
-			String detailOutput = null;
+			StringBuilder detailOutput = new StringBuilder();
 			if(smsResponse!=null) {
-				detailOutput = smsResponse.toString();
+				detailOutput = detailOutput.append(smsResponse.toString());
 			}
 			if(refTransID!=null) {
 				MDC.put("refTransID", refTransID);
@@ -329,7 +329,7 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
 			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
+			activityLog.setDetailOutput(detailOutput.toString());
 			
 			logger.info("-----------------------------");
 			logger.info("ActivityLog: " + activityLog.toString());
