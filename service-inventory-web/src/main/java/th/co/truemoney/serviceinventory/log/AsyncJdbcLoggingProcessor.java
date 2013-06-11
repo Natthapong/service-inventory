@@ -17,6 +17,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
+import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.EwalletRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.EwalletResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -124,7 +125,7 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setCreatedDate(createdDate);
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput==null?null:detailInput.toString());
+			activityLog.setDetailInput(detailInput.toString());
 			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
 			
 			logger.info("-----------------------------");
@@ -152,7 +153,7 @@ public class AsyncJdbcLoggingProcessor {
 			Short httpStatus = (errorException instanceof SIEngineUnExpectedException) ? Short.valueOf("500") : Short.valueOf("200");
 			String resultCode = siEngineResponse != null ? siEngineResponse.getResultCode() : errorException.getCode();
 			String resultNamespace = siEngineResponse != null ? siEngineResponse.getResultNamespace() : errorException.getNamespace();
-			String transactionID = siEngineRequest.getReqTransactionId();
+			String transactionID = siEngineRequest != null ? siEngineRequest.getReqTransactionId() : null;
 			String processState = null;
 			String refTransID = siEngineResponse != null ? siEngineResponse.getTransactionID() : null;
 			Integer durationTime = (int) (stopTime - startTime);
@@ -192,7 +193,7 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setCreatedDate(createdDate);
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput==null?null:detailInput.toString());
+			activityLog.setDetailInput(detailInput.toString());
 			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
 			
 			logger.info("-----------------------------");
@@ -217,10 +218,10 @@ public class AsyncJdbcLoggingProcessor {
 			Timestamp responseDate = new Timestamp(stopTime);
 			String loginID = MDC.get("loginID");
 			String truemoneyID = MDC.get("truemoneyID");
-			Short httpStatus = (errorException instanceof EwalletException) ? Short.valueOf("500") : Short.valueOf("200");
+			Short httpStatus = (errorException instanceof EwalletUnExpectedException) ? Short.valueOf("500") : Short.valueOf("200");
 			String resultCode = ewalletResponse != null ? ewalletResponse.getResultCode() : errorException.getCode();
 			String resultNamespace = ewalletResponse != null ? ewalletResponse.getResultNamespace() : errorException.getNamespace();
-			String transactionID = ewalletRequest.getRequestTransactionId();
+			String transactionID = ewalletRequest != null ? ewalletRequest.getRequestTransactionId() : null;
 			String processState = null;
 			String refTransID = ewalletResponse != null ? ewalletResponse.getTransactionId() : null;
 			Integer durationTime = (int) (stopTime - startTime);
@@ -260,7 +261,7 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setCreatedDate(createdDate);
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput==null?null:detailInput.toString());
+			activityLog.setDetailInput(detailInput.toString());
 			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
 			
 			logger.info("-----------------------------");
@@ -287,7 +288,7 @@ public class AsyncJdbcLoggingProcessor {
 			Short httpStatus = errorException == null ? Short.valueOf("200") : Short.valueOf("500");
 			String resultCode = smsResponse != null ? smsResponse.getResultCode() : null;
 			String resultNamespace = smsResponse != null ? smsResponse.getResultNamespace() : null;
-			String transactionID = smsRequest.getReqTransactionId();
+			String transactionID = smsRequest != null ? smsRequest.getReqTransactionId() : null;
 			String processState = null;
 			String refTransID = smsResponse != null ? smsResponse.getTransactionID() : null;
 			Integer durationTime = (int) (stopTime - startTime);
@@ -327,7 +328,7 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setCreatedDate(createdDate);
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput==null?null:detailInput.toString());
+			activityLog.setDetailInput(detailInput.toString());
 			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
 			
 			logger.info("-----------------------------");
