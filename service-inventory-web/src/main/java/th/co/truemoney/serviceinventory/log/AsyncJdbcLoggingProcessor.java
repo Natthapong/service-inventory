@@ -57,6 +57,9 @@ public class AsyncJdbcLoggingProcessor {
 	public void writeLogController(String workerName, String activityName, List<Object> objectList, Object retObject, ServiceInventoryException serviceInventoryErrorCase, long startTime, long stopTime)  {
 		try {
 			String trackingID = MDC.get("trackingID");
+			if(trackingID==null) {
+				return;
+			}
 			Timestamp createdDate = new Timestamp(startTime);
 			Timestamp responseDate = new Timestamp(stopTime);
 			
@@ -121,8 +124,8 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setCreatedDate(createdDate);
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput.toString());
+			activityLog.setDetailInput(detailInput==null?null:detailInput.toString());
+			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
 			
 			logger.info("-----------------------------");
 			logger.info("ActivityLog: " + activityLog.toString());
@@ -139,6 +142,9 @@ public class AsyncJdbcLoggingProcessor {
 			SIEngineException errorException, Long startTime, Long stopTime) {
 		try {
 			String trackingID = MDC.get("trackingID");
+			if(trackingID==null) {
+				return;
+			}
 			Timestamp createdDate = new Timestamp(startTime);
 			Timestamp responseDate = new Timestamp(stopTime);
 			String loginID = MDC.get("loginID");
@@ -186,8 +192,8 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setCreatedDate(createdDate);
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput.toString());
+			activityLog.setDetailInput(detailInput==null?null:detailInput.toString());
+			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
 			
 			logger.info("-----------------------------");
 			logger.info("ActivityLog: " + activityLog.toString());
@@ -204,6 +210,9 @@ public class AsyncJdbcLoggingProcessor {
 			EwalletException errorException, Long startTime, Long stopTime) {
 		try {
 			String trackingID = MDC.get("trackingID");
+			if(trackingID==null) {
+				return;
+			}
 			Timestamp createdDate = new Timestamp(startTime);
 			Timestamp responseDate = new Timestamp(stopTime);
 			String loginID = MDC.get("loginID");
@@ -251,8 +260,8 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setCreatedDate(createdDate);
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput.toString());
+			activityLog.setDetailInput(detailInput==null?null:detailInput.toString());
+			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
 			
 			logger.info("-----------------------------");
 			logger.info("ActivityLog: " + activityLog.toString());
@@ -268,6 +277,9 @@ public class AsyncJdbcLoggingProcessor {
 			SmsRequest smsRequest, SmsResponse smsResponse, Exception errorException, Long startTime, Long stopTime) {
 		try {
 			String trackingID = MDC.get("trackingID");
+			if(trackingID==null) {
+				return;
+			}
 			Timestamp createdDate = new Timestamp(startTime);
 			Timestamp responseDate = new Timestamp(stopTime);
 			String loginID = MDC.get("loginID");
@@ -315,8 +327,8 @@ public class AsyncJdbcLoggingProcessor {
 			activityLog.setCreatedDate(createdDate);
 			activityLog.setResponseDate(responseDate);
 			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput.toString());
+			activityLog.setDetailInput(detailInput==null?null:detailInput.toString());
+			activityLog.setDetailOutput(detailOutput==null?null:detailOutput.toString());
 			
 			logger.info("-----------------------------");
 			logger.info("ActivityLog: " + activityLog.toString());
