@@ -252,23 +252,26 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             String accessTokenID)
             throws ServiceInventoryException {
 
-        Bill billInfo = this.retrieveBillInformationWithKeyin(billCode, accessTokenID);
+        Bill billInfo = null;
 
         if (inquiryType == InquiryOutstandingBillType.ONLINE) {
+        	billInfo = this.retrieveBillInformationWithKeyin(billCode, ref1, ref2, accessTokenID);
             OutStandingBill outstanding = retrieveBillOutStandingOnline(billCode, ref1, ref2, accessTokenID);
 
             String newRef1 = StringUtils.hasText(outstanding.getRef1()) ? outstanding.getRef1() : ref1;
             String newRef2 = StringUtils.hasText(outstanding.getRef2()) ? outstanding.getRef2() : ref2;
-
+            
             billInfo.setRef1(newRef1);
             billInfo.setRef2(newRef2);
             billInfo.setAmount(outstanding.getOutStandingBalance());
             billInfo.setDueDate(outstanding.getDueDate());
-
-            overDueValidator.validate(billInfo);
-
-            billInfoRepo.saveBill(billInfo, accessTokenID);
+        } else {
+        	billInfo = this.retrieveBillInformationWithKeyin(billCode, ref1, ref2, accessTokenID);
         }
+        
+        overDueValidator.validate(billInfo);
+        billInfo.setPayWith(PAYWITH_KEYIN);
+        billInfoRepo.saveBill(billInfo, accessTokenID);
 
         return billInfo;
     }
@@ -291,7 +294,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         return outStandingBill;
     }
 
-    private Bill retrieveBillInformationWithKeyin(String billCode, String accessTokenID)
+    private Bill retrieveBillInformationWithKeyin(String billCode, String ref1, String ref2, String accessTokenID)
             throws ServiceInventoryException {
         AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
         ClientCredential appData = token.getClientCredential();
@@ -302,10 +305,13 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
                                  .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
                                  .read();
 
-        overDueValidator.validate(bill);
         bill.setID(UUID.randomUUID().toString());
-        bill.setPayWith(PAYWITH_KEYIN);
-        billInfoRepo.saveBill(bill, accessTokenID);
+        
+        String newRef1 = StringUtils.hasText(bill.getRef1()) ? bill.getRef1() : ref1;
+        String newRef2 = StringUtils.hasText(bill.getRef2()) ? bill.getRef2() : ref2;
+        
+        bill.setRef1(newRef1);
+        bill.setRef2(newRef2);
 
         return bill;
     }
