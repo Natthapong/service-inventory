@@ -339,4 +339,5 @@ public class AsyncJdbcLoggingProcessor {
 			e.printStackTrace();
 		}
 	}
+	
 }

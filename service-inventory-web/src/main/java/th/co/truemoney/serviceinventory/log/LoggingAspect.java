@@ -126,7 +126,7 @@ public class LoggingAspect {
         return joinPoint.proceed();
     }
     
-    /*@Around("execution(* th.co.truemoney.serviceinventory.firsthop.proxy.*.*(..))")
+    @Around("execution(* th.co.truemoney.serviceinventory.firsthop.proxy.*.*(..))")
     public Object logSmsProxies(ProceedingJoinPoint joinPoint) throws Throwable  {
 
                 Long startTime = System.currentTimeMillis();
@@ -152,6 +152,7 @@ public class LoggingAspect {
         return joinPoint.proceed();
     }
 
+    /*
     @Around("execution(* th.co.truemoney.serviceinventory.ewallet.impl.ActivityServiceImpl.*(..))")
     public Object asyncLogCoreReportWeb(ProceedingJoinPoint joinPoint) throws Throwable  {
 
