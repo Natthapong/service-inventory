@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
@@ -122,12 +124,14 @@ public class EwalletBalanceHandler {
 	{
 		try {
 
+			String tmpPersonalMessage = Base64.encodeBase64String(StringUtils.getBytesUtf8(personalMessage));
+			
 			TransferRequest transferRequest = new TransferRequest();
 			transferRequest.setAmount(amount);
 			transferRequest.setChannelId(channelID);
 			transferRequest.setSecurityContext(new SecurityContext(sessionID, tmnID));
 			transferRequest.setTarget(targetMobileNumber);
-			transferRequest.setPersonalMessage(personalMessage);
+			transferRequest.setPersonalMessage(tmpPersonalMessage);
 
 			StandardMoneyResponse standardMoneyResponse = ewalletProxy.transfer(transferRequest);
 
