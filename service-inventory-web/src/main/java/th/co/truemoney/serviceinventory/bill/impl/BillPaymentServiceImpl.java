@@ -42,35 +42,22 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     private static final String PAYWITH_KEYIN = "keyin";
 
     @Autowired
-    private AccessTokenRepository accessTokenRepo;
-
-    @Autowired
-    private BillInformationRepository billInfoRepo;
+    private AsyncBillPayProcessor asyncBillPayProcessor;
 
     @Autowired
     private TransactionRepository transactionRepository;
 
     @Autowired
-    private LegacyFacade legacyFacade;
-
-    @Autowired
-    private AsyncBillPayProcessor asyncBillPayProcessor;
+    private BillInformationRepository billInfoRepo;
 
     @Autowired
     private BillOverDueValidator overDueValidator;
 
+    @Autowired
+    private AccessTokenRepository accessTokenRepo;
 
-    public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
-        this.accessTokenRepo = accessTokenRepo;
-    }
-
-    public void setTransactionRepository(TransactionRepository transactionRepository) {
-        this.transactionRepository = transactionRepository;
-    }
-
-    public void setLegacyFacade(LegacyFacade legacyFacade) {
-        this.legacyFacade = legacyFacade;
-    }
+    @Autowired
+    private LegacyFacade legacyFacade;
 
     @Override
     public BillPaymentDraft verifyPaymentAbility(String billID, BigDecimal amount, String accessTokenID)
@@ -219,11 +206,10 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             String ref1, String ref2, BigDecimal amount, InquiryOutstandingBillType inquiryType,
             String accessTokenID)
             throws ServiceInventoryException {
-
-        Bill billInfo = null;
+    	
+        Bill billInfo = this.retrieveBillInformationWithFavorite(billCode, ref1, ref2, amount, accessTokenID);
 
         if (inquiryType == InquiryOutstandingBillType.ONLINE) {
-        	billInfo = this.retrieveBillInformationWithFavorite(billCode, ref1, ref2, amount, accessTokenID);
             OutStandingBill outstanding = retrieveBillOutStandingOnline(billCode, ref1, ref2, accessTokenID);
 
             String newRef1 = StringUtils.hasText(outstanding.getRef1()) ? outstanding.getRef1() : ref1;
@@ -234,8 +220,6 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             billInfo.setAmount(outstanding.getOutStandingBalance());
             billInfo.setDueDate(outstanding.getDueDate());
 
-        } else {
-        	billInfo = this.retrieveBillInformationWithFavorite(billCode, ref1, ref2, amount, accessTokenID);
         }
         
         overDueValidator.validate(billInfo);
@@ -252,10 +236,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             String accessTokenID)
             throws ServiceInventoryException {
 
-        Bill billInfo = null;
+        Bill billInfo = this.retrieveBillInformationWithKeyin(billCode, ref1, ref2, amount, accessTokenID);
 
         if (inquiryType == InquiryOutstandingBillType.ONLINE) {
-        	billInfo = this.retrieveBillInformationWithKeyin(billCode, ref1, ref2, accessTokenID);
             OutStandingBill outstanding = retrieveBillOutStandingOnline(billCode, ref1, ref2, accessTokenID);
 
             String newRef1 = StringUtils.hasText(outstanding.getRef1()) ? outstanding.getRef1() : ref1;
@@ -265,20 +248,21 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             billInfo.setRef2(newRef2);
             billInfo.setAmount(outstanding.getOutStandingBalance());
             billInfo.setDueDate(outstanding.getDueDate());
-        } else {
-        	billInfo = this.retrieveBillInformationWithKeyin(billCode, ref1, ref2, accessTokenID);
-        	if (amount.compareTo(BigDecimal.ZERO) == 1) {
-        		billInfo.setAmount(amount);
-        	}
         }
         
         overDueValidator.validate(billInfo);
+        
         billInfo.setPayWith(PAYWITH_KEYIN);
         billInfoRepo.saveBill(billInfo, accessTokenID);
 
         return billInfo;
     }
-
+    
+    private ClientCredential getClientCredential(String accessTokenID) {
+        AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
+        return token.getClientCredential();
+    }
+    
     @Override
     public OutStandingBill retrieveBillOutStandingOnline(String billCode,
             String ref1, String ref2, String accessTokenID)
@@ -296,47 +280,40 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
         return outStandingBill;
     }
+    
+    private Bill retrieveBillInformationWithBillCode(String billCode, 
+    		String ref1, String ref2, BigDecimal amount, String accessTokenID) throws ServiceInventoryException {
 
-    private Bill retrieveBillInformationWithKeyin(String billCode, String ref1, String ref2, String accessTokenID)
-            throws ServiceInventoryException {
-        AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
-        ClientCredential appData = token.getClientCredential();
+    	ClientCredential appData = getClientCredential(accessTokenID);
 
-        Bill bill =  legacyFacade.billing()
-                                 .readBillInfoWithBillCode(billCode)
-                                 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+        Bill bill =  legacyFacade.billing().readBillInfoWithBillCode(billCode)
                                  .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
+                                 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
                                  .read();
+        String generatedBillID = UUID.randomUUID().toString();
+        bill.setID(generatedBillID);
+        bill.setAmount(amount);
+        return bill;
+    }
 
-        bill.setID(UUID.randomUUID().toString());
-        
-        String newRef1 = StringUtils.hasText(bill.getRef1()) ? bill.getRef1() : ref1;
+    private Bill retrieveBillInformationWithKeyin(String billCode, 
+    		String ref1, String ref2, BigDecimal amount, String accessTokenID) throws ServiceInventoryException {
+    	
+    	Bill bill = retrieveBillInformationWithBillCode(billCode, ref1, ref2, amount, accessTokenID);
+    	String newRef1 = StringUtils.hasText(bill.getRef1()) ? bill.getRef1() : ref1;
         String newRef2 = StringUtils.hasText(bill.getRef2()) ? bill.getRef2() : ref2;
-        
         bill.setRef1(newRef1);
         bill.setRef2(newRef2);
-
-        return bill;
+    	return bill;
     }
 
     private Bill retrieveBillInformationWithFavorite(String billCode,
             String ref1, String ref2, BigDecimal amount, String accessTokenID) throws ServiceInventoryException {
-
-        AccessToken token = accessTokenRepo.findAccessToken(accessTokenID);
-        ClientCredential appData = token.getClientCredential();
-
-        Bill bill =  legacyFacade.billing()
-                                 .readBillInfoWithBillCode(billCode)
-                                 .fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
-                                 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
-                                 .read();
-        
-        bill.setID(UUID.randomUUID().toString());
-        bill.setRef1(ref1);
-        bill.setRef2(ref2);
-        bill.setAmount(amount);
-
-        return bill;
+    	
+    	Bill bill = retrieveBillInformationWithBillCode(billCode, ref1, ref2, amount, accessTokenID);
+    	bill.setRef1(ref1);
+    	bill.setRef2(ref2);
+    	return bill;
     }
 
     private void validateMinMaxAmount(BigDecimal amount, BigDecimal minAmount, BigDecimal maxAmount) {
@@ -366,6 +343,18 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     public boolean isOverdue(Date duedate) {
         DateTime dateTime = new DateTime(duedate);
         return dateTime.plusDays(1).isBeforeNow();
+    }
+    
+    public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
+        this.accessTokenRepo = accessTokenRepo;
+    }
+
+    public void setTransactionRepository(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+
+    public void setLegacyFacade(LegacyFacade legacyFacade) {
+        this.legacyFacade = legacyFacade;
     }
 
 }
