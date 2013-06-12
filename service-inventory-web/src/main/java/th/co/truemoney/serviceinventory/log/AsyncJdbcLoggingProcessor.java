@@ -13,14 +13,12 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.SIEngineRe
 import th.co.truemoney.serviceinventory.engine.client.domain.services.SIEngineResponseWrapper;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineUnExpectedException;
-import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.EwalletRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.EwalletResponse;
-import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
