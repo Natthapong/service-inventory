@@ -267,6 +267,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             billInfo.setDueDate(outstanding.getDueDate());
         } else {
         	billInfo = this.retrieveBillInformationWithKeyin(billCode, ref1, ref2, accessTokenID);
+        	if (amount.compareTo(BigDecimal.ZERO) == 1) {
+        		billInfo.setAmount(amount);
+        	}
         }
         
         overDueValidator.validate(billInfo);

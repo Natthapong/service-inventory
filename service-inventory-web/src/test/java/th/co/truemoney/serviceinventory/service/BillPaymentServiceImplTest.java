@@ -2,12 +2,15 @@ package th.co.truemoney.serviceinventory.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+
+import javax.validation.constraints.AssertTrue;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -148,19 +151,21 @@ public class BillPaymentServiceImplTest {
     }
 
     @Test
-    public void getBillInformationViaKeyin() {
+    public void getBillInformationViaKeyinOffline() {
         Bill stubbedBillPaymentInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
 
         when(billPaymentFacade.getBillCodeInformation(any(GetBillRequest.class))).thenReturn(stubbedBillPaymentInfo);
 
         //when
-        Bill billInformation = billPayService.retrieveBillInformationWithKeyin("xxxx", "ref1", "ref2", BigDecimal.ZERO, InquiryOutstandingBillType.OFFLINE, accessToken.getAccessTokenID());
+        Bill billInformation = billPayService.retrieveBillInformationWithKeyin("xxxx", "ref1", "ref2", BigDecimal.TEN, InquiryOutstandingBillType.OFFLINE, accessToken.getAccessTokenID());
 
         //then
         assertNotNull(billInformation);
         verify(billPaymentFacade).getBillCodeInformation(any(GetBillRequest.class));
 
         assertEquals("keyin", billInformation.getPayWith());
+        //assertEquals(BigDecimal.TEN, billInformation.getAmount());
+        assertTrue(BigDecimal.TEN.compareTo(billInformation.getAmount()) == 0);
     }
 
     @Test
