@@ -81,22 +81,22 @@ public class LocalEnvironmentConfig {
         return new TrueConvergenceOneBillPersona().getTopUpMobileProxy();
     }
 
-//    @Bean
-//    public DataSource dataSource() {
-//        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-//        EmbeddedDatabase database = (EmbeddedDatabase)builder.setType(EmbeddedDatabaseType.H2)
-//                .addScript("dataset/schema.sql")
-//                .build();
-//        return database;
-//    }
-
     @Bean
     public DataSource dataSource() {
-	DriverManagerDataSource dataSource = new DriverManagerDataSource();
-	dataSource.setDriverClassName("org.h2.Driver");
-	dataSource.setUrl("jdbc:h2:tcp://localhost/~/test");
-	dataSource.setUsername("sa");
-	dataSource.setPassword("");
-	return dataSource;
+        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+        EmbeddedDatabase database = (EmbeddedDatabase)builder.setType(EmbeddedDatabaseType.H2)
+                .addScript("dataset/schema.sql")
+                .build();
+        return database;
+    }
+
+//    @Bean
+//    public DataSource dataSource() {
+//	DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//	dataSource.setDriverClassName("org.h2.Driver");
+//	dataSource.setUrl("jdbc:h2:tcp://localhost/~/test");
+//	dataSource.setUsername("sa");
+//	dataSource.setPassword("");
+//	return dataSource;
     }
 }
