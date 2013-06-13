@@ -56,14 +56,14 @@ public class LoggingAspect {
         return retVal;
     }
 
-    @Around("execution(* th.co.truemoney.serviceinventory.controller.BillPaymentController.*.*(..)) || " +
-    		"execution(* th.co.truemoney.serviceinventory.controller.BillRetrieverController.*.*(..)) || " +
-    		"execution(* th.co.truemoney.serviceinventory.controller.P2PTransferController.*.*(..)) || " +
-    		"execution(* th.co.truemoney.serviceinventory.controller.SourceOfFundController.*.*(..)) || " +
-    		"execution(* th.co.truemoney.serviceinventory.controller.TmnProfileController.*.*(..)) || " +
-    		"execution(* th.co.truemoney.serviceinventory.controller.TopUpEwalletController.*.*(..)) || " +
-    		"execution(* th.co.truemoney.serviceinventory.controller.TopUpMobileController.*.*(..)) || " +
-    		"execution(* th.co.truemoney.serviceinventory.controller.TransactionAuthenticatorController.*.*(..))")
+    @Around("execution(* th.co.truemoney.serviceinventory.controller.BillPaymentController.*(..)) || " +
+    		"execution(* th.co.truemoney.serviceinventory.controller.BillRetrieverController.*(..)) || " +
+    		"execution(* th.co.truemoney.serviceinventory.controller.P2PTransferController.*(..)) || " +
+    		"execution(* th.co.truemoney.serviceinventory.controller.SourceOfFundController.*(..)) || " +
+    		"execution(* th.co.truemoney.serviceinventory.controller.TmnProfileController.*(..)) || " +
+    		"execution(* th.co.truemoney.serviceinventory.controller.TopUpEwalletController.*(..)) || " +
+    		"execution(* th.co.truemoney.serviceinventory.controller.TopUpMobileController.*(..)) || " +
+    		"execution(* th.co.truemoney.serviceinventory.controller.TransactionAuthenticatorController.*(..))")
     public Object logController(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Long startTime = System.currentTimeMillis();
