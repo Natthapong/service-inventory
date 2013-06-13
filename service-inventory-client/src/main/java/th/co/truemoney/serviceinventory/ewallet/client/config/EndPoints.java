@@ -39,7 +39,7 @@ public class EndPoints {
     }
 
     public String getTopUpPerformURL() {
-        return host + "/service-inventory-web/v1/top-up/quote/{quoteID}?accessTokenID={accessTokenID}";
+	return host + "/service-inventory-web/v1/top-up/order/{quoteID}?accessTokenID={accessTokenID}";
     }
 
     public String getTopUpOrderStatusURL() {
@@ -75,7 +75,7 @@ public class EndPoints {
     }
 
     public String getP2PPerformTransferURL() {
-        return host + "/service-inventory-web/v1/transfer/draft/{transferDraftID}?accessTokenID={accessTokenID}";
+	return host + "/service-inventory-web/v1/transfer/transaction/{transferDraftID}?accessTokenID={accessTokenID}";
     }
 
     public String getP2PTransactionStatusURL() {
@@ -111,7 +111,7 @@ public class EndPoints {
     }
 
     public String getBillPaymentPerformURL() {
-        return host + "/service-inventory-web/v1/bill-payment/invoice/{invoiceID}?accessTokenID={accessTokenID}";
+	return host + "/service-inventory-web/v1/bill-payment/transaction/{invoiceID}?accessTokenID={accessTokenID}";
     }
 
     public String getBillPaymentStatusURL() {
@@ -127,7 +127,7 @@ public class EndPoints {
     }
 
     public String getPerformToppingMobileURL(){
-        return host + "/service-inventory-web/v1/top-up/mobile/draft/{topUpMobileDraftID}?accessTokenID={accessTokenID}";
+	return host + "/service-inventory-web/v1/top-up/mobile/transaction/{topUpMobileDraftID}?accessTokenID={accessTokenID}";
     }
 
     public String getTopUpMobileDraftDetailURL() {

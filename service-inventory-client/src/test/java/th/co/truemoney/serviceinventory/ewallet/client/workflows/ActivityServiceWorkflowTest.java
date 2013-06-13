@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -28,29 +29,29 @@ import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 @ActiveProfiles(profiles = "local")
 @Category(IntegrationTest.class)
 public class ActivityServiceWorkflowTest {
-	
-	@Autowired
-	ActivityServicesClient client;
-	
-	@Autowired
-	TmnProfileServiceClient profileService;
-	
-	@Test
-	public void getActivitySuccess(){
-		String accessToken = profileService.login(
-				TestData.createSuccessUserLogin(),
-				TestData.createSuccessClientLogin());
 
-		assertNotNull(accessToken);
-		
-		List<Activity> activities = client.getActivities(accessToken);
-		assertNotNull(activities);
-		assertTrue(activities.size() > 0);
-		
-		ActivityDetail activityDetail = client.getActivityDetail(1000L, accessToken);
-		assertNotNull(activityDetail);
-		assertEquals(-200, activityDetail.getAmount().intValue());
-		
-	}
-	
+    @Autowired
+    ActivityServicesClient client;
+
+    @Autowired
+    TmnProfileServiceClient profileService;
+
+    @Test @Ignore
+    public void getActivitySuccess(){
+	String accessToken = profileService.login(
+		TestData.createSuccessUserLogin(),
+		TestData.createSuccessClientLogin());
+
+	assertNotNull(accessToken);
+
+	List<Activity> activities = client.getActivities(accessToken);
+	assertNotNull(activities);
+	assertTrue(activities.size() > 0);
+
+	ActivityDetail activityDetail = client.getActivityDetail(1000L, accessToken);
+	assertNotNull(activityDetail);
+	assertEquals(-200, activityDetail.getAmount().intValue());
+
+    }
+
 }

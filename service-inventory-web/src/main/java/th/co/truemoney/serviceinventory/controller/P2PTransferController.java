@@ -68,16 +68,16 @@ public class P2PTransferController {
         return p2pTransferService.getTransferDraftDetails(draftTransactionID, accessTokenID);
     }
 
-    @RequestMapping(value = "/draft/{draftTransactionID}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.PUT)
     public @ResponseBody P2PTransferTransaction.Status performTransfer(
-            @PathVariable String draftTransactionID,
+	    @PathVariable String transactionID,
             @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
-        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+	MDC.put(MDC_TRANSACTION_ID, transactionID);
 
         extendExpireAccessToken(accessTokenID);
 
-        return p2pTransferService.performTransfer(draftTransactionID, accessTokenID);
+	return p2pTransferService.performTransfer(transactionID, accessTokenID);
     }
 
     @RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)

@@ -18,6 +18,7 @@ import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.domain.InquiryOutstandingBillType;
 import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 
 @Controller
@@ -110,7 +111,7 @@ public class BillPaymentController {
     }
 
     @RequestMapping(value = "/invoice/{draftTransactionID}", method = RequestMethod.GET)
-    public @ResponseBody BillPaymentDraft getBillDetails(
+    public @ResponseBody BillPaymentDraft getDraftDetail(
            @PathVariable String draftTransactionID,
            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
@@ -121,16 +122,16 @@ public class BillPaymentController {
         return billPaymentService.getBillPaymentDraftDetail(draftTransactionID, accessTokenID);
     }
 
-    @RequestMapping(value = "/invoice/{draftTransactionID}", method = RequestMethod.PUT)
-    public @ResponseBody BillPaymentTransaction.Status performPayment(
-            @PathVariable String draftTransactionID,
+    @RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.PUT)
+    public @ResponseBody Transaction.Status performPayment(
+	    @PathVariable String transactionID,
             @RequestParam String accessTokenID) {
 
-        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+	MDC.put(MDC_TRANSACTION_ID, transactionID);
 
         extendExpireAccessToken(accessTokenID);
 
-        return billPaymentService.performPayment(draftTransactionID, accessTokenID);
+	return billPaymentService.performPayment(transactionID, accessTokenID);
     }
 
     @RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)

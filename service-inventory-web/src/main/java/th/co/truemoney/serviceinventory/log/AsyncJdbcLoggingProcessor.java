@@ -14,6 +14,7 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.SIEngineRe
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineUnExpectedException;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
@@ -28,6 +29,7 @@ import th.co.truemoney.serviceinventory.log.domain.ActivityLog;
 @Component
 public class AsyncJdbcLoggingProcessor {
 
+    private static final String MDC_WORKFLOW_STATUS = "worflowStatus";
     private static final String MDC_DRAFT_TRANSACTION_ID = "draftTransactionID";
     private static final String MDC_TRANSACTION_ID = "transactionID";
 
@@ -55,6 +57,8 @@ public class AsyncJdbcLoggingProcessor {
 
             String processState = getWorkflowStatus(returnObj);
             String transactionID = getWorkflowTransactionID(returnObj);
+
+	    logger.info("transaction ID : " + workerName + " " + activityName + ": " + transactionID);
 
             String refTransID = MDC.get("refTransID");
             String accessID = MDC.get("accessTokenID");
@@ -119,17 +123,10 @@ public class AsyncJdbcLoggingProcessor {
 
     private String getWorkflowTransactionID(Object retObject) {
 
-        if(retObject instanceof DraftTransaction) {
-            return ((DraftTransaction) retObject).getID();
-        } else if(retObject instanceof Transaction) {
-            return ((Transaction) retObject).getID();
-        } else if(retObject instanceof Transaction.Status) {
-            return MDC.get(MDC_TRANSACTION_ID);
-        } else if(retObject instanceof DraftTransaction.Status) {
-            return MDC.get(MDC_DRAFT_TRANSACTION_ID);
-        }
+	String mdcDraftTransactionID = MDC.get(MDC_DRAFT_TRANSACTION_ID);
+	String mdcTransactionID = MDC.get(MDC_TRANSACTION_ID);
 
-        return null;
+	return mdcDraftTransactionID != null ? mdcDraftTransactionID : mdcTransactionID;
     }
 
     private String getWorkflowStatus(Object retObject) {
@@ -141,6 +138,8 @@ public class AsyncJdbcLoggingProcessor {
             return ((Transaction.Status) retObject).getStatus();
         } else if(retObject instanceof DraftTransaction.Status) {
             return ((DraftTransaction.Status) retObject).getStatus();
+	} else if(retObject instanceof OTP)  {
+	    return MDC.get(MDC_WORKFLOW_STATUS);
         }
 
         return null;

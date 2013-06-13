@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -80,12 +81,22 @@ public class LocalEnvironmentConfig {
         return new TrueConvergenceOneBillPersona().getTopUpMobileProxy();
     }
 
+//    @Bean
+//    public DataSource dataSource() {
+//        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+//        EmbeddedDatabase database = (EmbeddedDatabase)builder.setType(EmbeddedDatabaseType.H2)
+//                .addScript("dataset/schema.sql")
+//                .build();
+//        return database;
+//    }
+
     @Bean
     public DataSource dataSource() {
-        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        EmbeddedDatabase database = (EmbeddedDatabase)builder.setType(EmbeddedDatabaseType.H2)
-                .addScript("dataset/schema.sql")
-                .build();
-        return database;
+	DriverManagerDataSource dataSource = new DriverManagerDataSource();
+	dataSource.setDriverClassName("org.h2.Driver");
+	dataSource.setUrl("jdbc:h2:tcp://localhost/~/test");
+	dataSource.setUsername("sa");
+	dataSource.setPassword("");
+	return dataSource;
     }
 }

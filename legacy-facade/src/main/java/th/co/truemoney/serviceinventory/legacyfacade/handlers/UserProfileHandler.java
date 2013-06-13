@@ -236,6 +236,10 @@ public class UserProfileHandler {
                 return signonRequest;
         }
 
+	private String generateRequestTransactionId() {
+	    return System.currentTimeMillis() + "";
+	}
+
         private DeleteFavoriteRequest createRemoveFavoriteRequest(
                 Integer channelID, String sessionID, String tmnID,
                 String serviceCode, String reference1) {
