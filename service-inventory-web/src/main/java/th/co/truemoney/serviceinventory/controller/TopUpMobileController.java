@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.controller;
 
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,58 +20,84 @@ import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 @RequestMapping(value = "/top-up/mobile")
 public class TopUpMobileController {
 
-	@Autowired
-	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
+    private static final String MDC_TRANSACTION_ID = "transactionID";
 
-	@Autowired
-	private TopUpMobileService topUpMobileService;
+    private static final String MDC_DRAFT_TRANSACTION_ID = "draftTransactionID";
 
+    @Autowired
+    private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
-	@RequestMapping(value = "/draft", method = RequestMethod.POST)
-	public @ResponseBody TopUpMobileDraft verifyAndCreateTopUpMobileDraft(
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-			@RequestBody TopUpMobileDraft draft) {
-		extendExpireAccessToken(accessTokenID);
-		TopUpMobile topUpInfo = draft.getTopUpMobileInfo();
-		return topUpMobileService.verifyAndCreateTopUpMobileDraft(topUpInfo.getMobileNumber(), topUpInfo.getAmount(), accessTokenID);
-	}
-
-	@RequestMapping(value = "/draft/{topUpMobileDraftID}", method = RequestMethod.GET)
-	public @ResponseBody TopUpMobileDraft getTopUpMobileDraftDetail(
-			@PathVariable String topUpMobileDraftID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-		extendExpireAccessToken(accessTokenID);
-		return topUpMobileService.getTopUpMobileDraftDetail(topUpMobileDraftID, accessTokenID);
-	}
-
-	@RequestMapping(value = "/draft/{topUpMobileDraftID}", method = RequestMethod.PUT)
-	public @ResponseBody TopUpMobileTransaction.Status performToppingMobile(
-			@PathVariable String topUpMobileDraftID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-
-		extendExpireAccessToken(accessTokenID);
-		return topUpMobileService.performTopUpMobile(topUpMobileDraftID, accessTokenID);
-	}
+    @Autowired
+    private TopUpMobileService topUpMobileService;
 
 
-	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
-	public @ResponseBody TopUpMobileTransaction.Status getToppingMobileStatus(
-			@PathVariable String transactionID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-		extendExpireAccessToken(accessTokenID);
-		return topUpMobileService.getTopUpMobileStatus(transactionID, accessTokenID);
-	}
+    @RequestMapping(value = "/draft", method = RequestMethod.POST)
+    public @ResponseBody TopUpMobileDraft verifyAndCreateTopUpMobileDraft(
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
+            @RequestBody TopUpMobileDraft draft) {
 
-	@RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.GET)
-	public @ResponseBody TopUpMobileTransaction getTransactionInfo(
-			@PathVariable String transactionID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-		extendExpireAccessToken(accessTokenID);
-		return topUpMobileService.getTopUpMobileResult(transactionID, accessTokenID);
-	}
+        extendExpireAccessToken(accessTokenID);
 
-	private void extendExpireAccessToken(String accessTokenID) {
-		extendAccessTokenAsynService.setExpire(accessTokenID);
-	}
+        TopUpMobile topUpInfo = draft.getTopUpMobileInfo();
+
+        TopUpMobileDraft topUpDraft = topUpMobileService.verifyAndCreateTopUpMobileDraft(topUpInfo.getMobileNumber(), topUpInfo.getAmount(), accessTokenID);
+
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, topUpDraft.getID());
+
+        return topUpDraft;
+    }
+
+    @RequestMapping(value = "/draft/{draftTransactionID}", method = RequestMethod.GET)
+    public @ResponseBody TopUpMobileDraft getTopUpMobileDraftDetail(
+            @PathVariable String draftTransactionID,
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        extendExpireAccessToken(accessTokenID);
+
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+
+        return topUpMobileService.getTopUpMobileDraftDetail(draftTransactionID, accessTokenID);
+    }
+
+    @RequestMapping(value = "/draft/{draftTransactionID}", method = RequestMethod.PUT)
+    public @ResponseBody TopUpMobileTransaction.Status performToppingMobile(
+            @PathVariable String draftTransactionID,
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        extendExpireAccessToken(accessTokenID);
+
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+
+        return topUpMobileService.performTopUpMobile(draftTransactionID, accessTokenID);
+    }
+
+
+    @RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
+    public @ResponseBody TopUpMobileTransaction.Status getToppingMobileStatus(
+            @PathVariable String transactionID,
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        extendExpireAccessToken(accessTokenID);
+
+        MDC.put(MDC_TRANSACTION_ID, transactionID);
+
+        return topUpMobileService.getTopUpMobileStatus(transactionID, accessTokenID);
+    }
+
+    @RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.GET)
+    public @ResponseBody TopUpMobileTransaction getTransactionInfo(
+            @PathVariable String transactionID,
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        extendExpireAccessToken(accessTokenID);
+
+        MDC.put(MDC_TRANSACTION_ID, transactionID);
+
+        return topUpMobileService.getTopUpMobileResult(transactionID, accessTokenID);
+    }
+
+    private void extendExpireAccessToken(String accessTokenID) {
+        extendAccessTokenAsynService.setExpire(accessTokenID);
+    }
 
 }

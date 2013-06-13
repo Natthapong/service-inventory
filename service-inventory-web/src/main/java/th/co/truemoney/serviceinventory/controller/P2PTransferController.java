@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.controller;
 
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,64 +19,93 @@ import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 @RequestMapping(value="/transfer")
 public class P2PTransferController {
 
-	@Autowired
-	private P2PTransferService p2pTransferService;
+    private static final String MDC_TRANSACTION_ID = "transactionID";
 
-	@Autowired
-	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
+    private static final String MDC_DRAFT_TRANSACTION_ID = "draftTransactionID";
 
-	@RequestMapping(value = "/draft", method = RequestMethod.POST)
-	public @ResponseBody P2PTransferDraft createTransferDraft(
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-			@RequestBody P2PTransferDraft draft) {
-		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.createAndVerifyTransferDraft(draft.getMobileNumber(), draft.getAmount(), accessTokenID);
-	}
-	
-	@RequestMapping(value = "/draft/{transferDraftID}/update", method = RequestMethod.PUT)
-	public @ResponseBody void setPersonalMessage(
-			@PathVariable String transferDraftID,
-			@RequestParam(value = "personalMessage", defaultValue = "") String personalMessage,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-		extendExpireAccessToken(accessTokenID);
-		p2pTransferService.setPersonalMessage(transferDraftID, personalMessage, accessTokenID);
-	}
-	
-	@RequestMapping(value = "/draft/{transferDraftID}", method = RequestMethod.GET)
-	public @ResponseBody P2PTransferDraft getTransferDraftInfo(
-			@PathVariable String transferDraftID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.getTransferDraftDetails(transferDraftID, accessTokenID);
-	}
+    @Autowired
+    private P2PTransferService p2pTransferService;
 
-	@RequestMapping(value = "/draft/{transferDraftID}", method = RequestMethod.PUT)
-	public @ResponseBody P2PTransferTransaction.Status performTransfer(
-			@PathVariable String transferDraftID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+    @Autowired
+    private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
-		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.performTransfer(transferDraftID, accessTokenID);
-	}
+    @RequestMapping(value = "/draft", method = RequestMethod.POST)
+    public @ResponseBody P2PTransferDraft createTransferDraft(
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
+            @RequestBody P2PTransferDraft draft) {
 
-	@RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
-	public @ResponseBody P2PTransferTransaction.Status getTransferringStatus(
-			@PathVariable String transactionID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.getTransferringStatus(transactionID, accessTokenID);
-	}
+        extendExpireAccessToken(accessTokenID);
 
-	@RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.GET)
-	public @ResponseBody P2PTransferTransaction getTransactionInfo(
-			@PathVariable String transactionID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-		extendExpireAccessToken(accessTokenID);
-		return p2pTransferService.getTransactionResult(transactionID, accessTokenID);
-	}
+        P2PTransferDraft transferDraft = p2pTransferService.createAndVerifyTransferDraft(draft.getMobileNumber(), draft.getAmount(), accessTokenID);
 
-	private void extendExpireAccessToken(String accessTokenID) {
-		extendAccessTokenAsynService.setExpire(accessTokenID);
-	}
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, transferDraft.getID());
+
+        return transferDraft;
+    }
+
+    @RequestMapping(value = "/draft/{draftTransactionID}/update", method = RequestMethod.PUT)
+    public @ResponseBody void setPersonalMessage(
+            @PathVariable String draftTransactionID,
+            @RequestParam(value = "personalMessage", defaultValue = "") String personalMessage,
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+
+        extendExpireAccessToken(accessTokenID);
+
+        p2pTransferService.setPersonalMessage(draftTransactionID, personalMessage, accessTokenID);
+    }
+
+    @RequestMapping(value = "/draft/{draftTransactionID}", method = RequestMethod.GET)
+    public @ResponseBody P2PTransferDraft getTransferDraftInfo(
+            @PathVariable String draftTransactionID,
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+
+        extendExpireAccessToken(accessTokenID);
+
+        return p2pTransferService.getTransferDraftDetails(draftTransactionID, accessTokenID);
+    }
+
+    @RequestMapping(value = "/draft/{draftTransactionID}", method = RequestMethod.PUT)
+    public @ResponseBody P2PTransferTransaction.Status performTransfer(
+            @PathVariable String draftTransactionID,
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+
+        extendExpireAccessToken(accessTokenID);
+
+        return p2pTransferService.performTransfer(draftTransactionID, accessTokenID);
+    }
+
+    @RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
+    public @ResponseBody P2PTransferTransaction.Status getTransferringStatus(
+            @PathVariable String transactionID,
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        MDC.put(MDC_TRANSACTION_ID, transactionID);
+
+        extendExpireAccessToken(accessTokenID);
+
+        return p2pTransferService.getTransferringStatus(transactionID, accessTokenID);
+    }
+
+    @RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.GET)
+    public @ResponseBody P2PTransferTransaction getTransactionInfo(
+            @PathVariable String transactionID,
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        MDC.put(MDC_TRANSACTION_ID, transactionID);
+
+        extendExpireAccessToken(accessTokenID);
+
+        return p2pTransferService.getTransactionResult(transactionID, accessTokenID);
+    }
+
+    private void extendExpireAccessToken(String accessTokenID) {
+        extendAccessTokenAsynService.setExpire(accessTokenID);
+    }
 
 }

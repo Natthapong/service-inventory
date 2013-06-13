@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.controller;
 
 import java.math.BigDecimal;
 
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,10 @@ import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynServic
 @Controller
 @RequestMapping(value = "/bill-payment")
 public class BillPaymentController {
+
+    private static final String MDC_TRANSACTION_ID = "transactionID";
+
+    private static final String MDC_DRAFT_TRANSACTION_ID = "draftTransactionID";
 
     @Autowired
     private BillPaymentService billPaymentService;
@@ -88,33 +93,44 @@ public class BillPaymentController {
         return billPaymentService.retrieveBillOutStandingOnline(billCode, ref1, ref2, accessTokenID);
     }
 
-    @RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/invoice/{billInfoID}", method = RequestMethod.POST)
     public @ResponseBody
     BillPaymentDraft verifyPaymentAbility(
-            @PathVariable String invoiceID,
+            @PathVariable String billInfoID,
             @RequestParam String accessTokenID,
             @RequestBody BillPaymentDraft billPaymentInfo) {
+
         extendExpireAccessToken(accessTokenID);
 
-        return billPaymentService.verifyPaymentAbility(invoiceID, billPaymentInfo.getAmount(), accessTokenID);
+        BillPaymentDraft draft = billPaymentService.verifyPaymentAbility(billInfoID, billPaymentInfo.getAmount(), accessTokenID);
+
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draft.getID());
+
+        return draft;
     }
 
-    @RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.GET)
+    @RequestMapping(value = "/invoice/{draftTransactionID}", method = RequestMethod.GET)
     public @ResponseBody BillPaymentDraft getBillDetails(
-           @PathVariable String invoiceID,
+           @PathVariable String draftTransactionID,
            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+
         extendExpireAccessToken(accessTokenID);
-        return billPaymentService.getBillPaymentDraftDetail(invoiceID, accessTokenID);
+
+        return billPaymentService.getBillPaymentDraftDetail(draftTransactionID, accessTokenID);
     }
 
-    @RequestMapping(value = "/invoice/{invoiceID}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/invoice/{draftTransactionID}", method = RequestMethod.PUT)
     public @ResponseBody BillPaymentTransaction.Status performPayment(
-            @PathVariable String invoiceID,
+            @PathVariable String draftTransactionID,
             @RequestParam String accessTokenID) {
 
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+
         extendExpireAccessToken(accessTokenID);
-        return billPaymentService.performPayment(invoiceID, accessTokenID);
+
+        return billPaymentService.performPayment(draftTransactionID, accessTokenID);
     }
 
     @RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
@@ -122,18 +138,23 @@ public class BillPaymentController {
            @PathVariable String transactionID,
            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
+        MDC.put(MDC_TRANSACTION_ID, transactionID);
+
         extendExpireAccessToken(accessTokenID);
 
         return billPaymentService.getBillPaymentStatus(transactionID, accessTokenID);
     }
 
-    @RequestMapping(value = "/transaction/{billPaymentID}", method = RequestMethod.GET)
+    @RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.GET)
     public @ResponseBody BillPaymentTransaction getPaymentResult(
-           @PathVariable String billPaymentID,
+           @PathVariable String transactionID,
            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
+        MDC.put(MDC_TRANSACTION_ID, transactionID);
+
         extendExpireAccessToken(accessTokenID);
-        return billPaymentService.getBillPaymentResult(billPaymentID, accessTokenID);
+
+        return billPaymentService.getBillPaymentResult(transactionID, accessTokenID);
     }
 
     private void extendExpireAccessToken(String accessTokenID) {

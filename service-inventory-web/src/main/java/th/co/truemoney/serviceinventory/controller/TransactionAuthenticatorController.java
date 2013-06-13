@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.controller;
 
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,33 +19,46 @@ import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynServic
 @RequestMapping(value = "/authen")
 public class TransactionAuthenticatorController {
 
-	@Autowired
-	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
+    private static final String MDC_DRAFT_TRANSACTION_ID = "draftTransactionID";
 
-	@Autowired
-	private TransactionAuthenService transactionAuthenService;
+    @Autowired
+    private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
-	@RequestMapping(value = "/draft/{draftID}/otp", method = RequestMethod.POST)
-	public @ResponseBody OTP submitTopUpMobileDraftRequest(
-			@PathVariable String draftID,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
-		extendAccessTokenAsynService.setExpire(accessTokenID);
-		return transactionAuthenService.requestOTP(draftID, accessTokenID);
-	}
+    @Autowired
+    private TransactionAuthenService transactionAuthenService;
 
-	@RequestMapping(value = "/draft/{draftID}/otp/{refCode}", method = RequestMethod.PUT)
-	public @ResponseBody DraftTransaction.Status verifyOTPToppingMobile(
-			@PathVariable String draftID,
-			@PathVariable String refCode,
-			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-			@RequestBody OTP otp) {
+    @RequestMapping(value = "/draft/{draftTransactionID}/otp", method = RequestMethod.POST)
+    public @ResponseBody OTP submitTopUpMobileDraftRequest(
+            @PathVariable String draftTransactionID,
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
-		if (otp != null) {
-			otp.setReferenceCode(refCode);
-		}
+        extendExpireAccessToken(accessTokenID);
 
-		extendAccessTokenAsynService.setExpire(accessTokenID);
-		return transactionAuthenService.verifyOTP(draftID, otp, accessTokenID);
-	}
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+
+        return transactionAuthenService.requestOTP(draftTransactionID, accessTokenID);
+    }
+
+    @RequestMapping(value = "/draft/{draftTransactionID}/otp/{refCode}", method = RequestMethod.PUT)
+    public @ResponseBody DraftTransaction.Status verifyOTPToppingMobile(
+            @PathVariable String draftTransactionID,
+            @PathVariable String refCode,
+            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
+            @RequestBody OTP otp) {
+
+        if (otp != null) {
+            otp.setReferenceCode(refCode);
+        }
+
+        extendExpireAccessToken(accessTokenID);
+
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+
+        return transactionAuthenService.verifyOTP(draftTransactionID, otp, accessTokenID);
+    }
+
+    private void extendExpireAccessToken(String accessTokenID) {
+        extendAccessTokenAsynService.setExpire(accessTokenID);
+    }
 
 }

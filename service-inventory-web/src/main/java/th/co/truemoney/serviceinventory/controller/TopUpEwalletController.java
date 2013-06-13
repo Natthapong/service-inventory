@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.controller;
 
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,61 +18,81 @@ import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynServic
 @Controller
 public class TopUpEwalletController {
 
-	@Autowired
-	private TopUpService topupService;
+    private static final String MDC_TRANSACTION_ID = "transactionID";
 
-	@Autowired
-	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
+    private static final String MDC_DRAFT_TRANSACTION_ID = "draftTransactionID";
 
-	@RequestMapping(value = "/directdebit/{sourceOfFundID}/quote", method = RequestMethod.POST)
-	public @ResponseBody TopUpQuote createTopUpQuoteFromDirectDebit(
-		   @PathVariable String sourceOfFundID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-		   @RequestBody TopUpQuote quote) {
+    @Autowired
+    private TopUpService topupService;
 
-		TopUpQuote topUpQuote = topupService.createAndVerifyTopUpQuote(sourceOfFundID, quote.getAmount(), accessTokenID);
-		extendExpireAccessToken(accessTokenID);
+    @Autowired
+    private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
-		return topUpQuote;
-	}
+    @RequestMapping(value = "/directdebit/{sourceOfFundID}/quote", method = RequestMethod.POST)
+    public @ResponseBody TopUpQuote createTopUpQuoteFromDirectDebit(
+           @PathVariable String sourceOfFundID,
+           @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
+           @RequestBody TopUpQuote quote) {
 
-	@RequestMapping(value = "/top-up/quote/{quoteID}", method = RequestMethod.GET)
-	public @ResponseBody TopUpQuote getTopUpQuoteDetails(@PathVariable String quoteID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
-		extendExpireAccessToken(accessTokenID);
-		return topupService.getTopUpQuoteDetails(quoteID, accessTokenID);
-	}
+        extendExpireAccessToken(accessTokenID);
 
-	@RequestMapping(value = "/top-up/quote/{quoteID}", method = RequestMethod.PUT)
-	public @ResponseBody TopUpOrder.Status performTopUp(
-		   @PathVariable String quoteID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+        TopUpQuote topUpQuote = topupService.createAndVerifyTopUpQuote(sourceOfFundID, quote.getAmount(), accessTokenID);
 
-		extendExpireAccessToken(accessTokenID);
-		return topupService.performTopUp(quoteID, accessTokenID);
-	}
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, topUpQuote.getID());
 
-	@RequestMapping(value = "/top-up/order/{orderID}/status", method = RequestMethod.GET)
-	public @ResponseBody TopUpOrder.Status getOrderStatus(
-		   @PathVariable String orderID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+        return topUpQuote;
+    }
 
-		extendExpireAccessToken(accessTokenID);
+    @RequestMapping(value = "/top-up/quote/{draftTransactionID}", method = RequestMethod.GET)
+    public @ResponseBody TopUpQuote getTopUpQuoteDetails(@PathVariable String draftTransactionID,
+           @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
-		return topupService.getTopUpProcessingStatus(orderID, accessTokenID);
-	}
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
 
-	@RequestMapping(value = "/top-up/order/{orderID}", method = RequestMethod.GET)
-	public @ResponseBody TopUpOrder getOrderInfo(
-		   @PathVariable String orderID,
-		   @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+        extendExpireAccessToken(accessTokenID);
 
-		return topupService.getTopUpOrderResults(orderID, accessTokenID);
-	}
+        return topupService.getTopUpQuoteDetails(draftTransactionID, accessTokenID);
+    }
 
-	private void extendExpireAccessToken(String accessTokenID) {
-		extendAccessTokenAsynService.setExpire(accessTokenID);
-	}
+    @RequestMapping(value = "/top-up/quote/{draftTransactionID}", method = RequestMethod.PUT)
+    public @ResponseBody TopUpOrder.Status performTopUp(
+           @PathVariable String draftTransactionID,
+           @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+
+        extendExpireAccessToken(accessTokenID);
+
+        return topupService.performTopUp(draftTransactionID, accessTokenID);
+    }
+
+    @RequestMapping(value = "/top-up/order/{transactionID}/status", method = RequestMethod.GET)
+    public @ResponseBody TopUpOrder.Status getOrderStatus(
+           @PathVariable String transactionID,
+           @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        MDC.put(MDC_TRANSACTION_ID, transactionID);
+
+        extendExpireAccessToken(accessTokenID);
+
+        return topupService.getTopUpProcessingStatus(transactionID, accessTokenID);
+    }
+
+    @RequestMapping(value = "/top-up/order/{transactionID}", method = RequestMethod.GET)
+    public @ResponseBody TopUpOrder getOrderInfo(
+           @PathVariable String transactionID,
+           @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+
+        MDC.put(MDC_TRANSACTION_ID, transactionID);
+
+        extendExpireAccessToken(accessTokenID);
+
+        return topupService.getTopUpOrderResults(transactionID, accessTokenID);
+    }
+
+    private void extendExpireAccessToken(String accessTokenID) {
+        extendAccessTokenAsynService.setExpire(accessTokenID);
+    }
 
 }
