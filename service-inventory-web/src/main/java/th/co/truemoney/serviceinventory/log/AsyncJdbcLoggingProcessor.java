@@ -30,315 +30,325 @@ import th.co.truemoney.serviceinventory.log.domain.ActivityLog;
 @Component
 public class AsyncJdbcLoggingProcessor {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	@Autowired
-	private ActivityDAO activityDAO;
-	
-	@Autowired
-	private AccessTokenRepository accessTokenRepository;
-	
-	public void setLogin() {
-		try {
-			String accessTokenID = MDC.get("accessTokenID");
-			AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
-			String loginID = accessToken==null?null:(accessToken.getEmail()==null?accessToken.getMobileNumber():accessToken.getEmail());
-			String truemoneyID = accessToken==null?null:(accessToken.getTruemoneyID());
-			if(loginID!=null) {
-				MDC.put("loginID", loginID);
-			}
-			if(truemoneyID!=null) {
-				MDC.put("truemoneyID", truemoneyID);
-			}
-		} catch (IllegalArgumentException e) {
-		} catch (ServiceInventoryException e) {
-		}
-	}
-	
-	public void writeLogController(String workerName, String activityName, List<Object> objectList, Object retObject, ServiceInventoryException serviceInventoryErrorCase, long startTime, long stopTime)  {
-		try {
-			String trackingID = MDC.get("trackingID");
-			if(trackingID==null) {
-				return;
-			}
-			Timestamp createdDate = new Timestamp(startTime);
-			Timestamp responseDate = new Timestamp(stopTime);
-			
-			String loginID = MDC.get("loginID");
-			String truemoneyID = MDC.get("truemoneyID");
-			Short httpStatus = serviceInventoryErrorCase == null ? Short.valueOf("200") : Short.valueOf(serviceInventoryErrorCase.getHttpStatus().toString()) ;
-			String resultCode = serviceInventoryErrorCase != null ? serviceInventoryErrorCase.getErrorCode() : null;
-			String resultNamespace = serviceInventoryErrorCase != null ? serviceInventoryErrorCase.getErrorNamespace() : null;
-			String transactionID = null;
-			String processState = null;
-			if(retObject instanceof DraftTransaction) {
-				transactionID = ((DraftTransaction) retObject).getID();
-				processState = ((DraftTransaction) retObject).getStatus().getStatus();
-			} else if(retObject instanceof Transaction) {
-				transactionID = ((Transaction) retObject).getID();
-				processState = ((Transaction) retObject).getStatus().getStatus();
-			} else if(retObject instanceof Transaction.Status) {
-				transactionID = null;
-				processState = ((Transaction.Status) retObject).getStatus();
-			} else if(retObject instanceof DraftTransaction.Status) {
-				transactionID = null;
-				processState = ((DraftTransaction.Status) retObject).getStatus();
-			}
-			if(transactionID==null) {
-				transactionID = MDC.get("transactionID");
-			}
-			
-			String refTransID = MDC.get("refTransID");
-			Integer durationTime = (int) (stopTime - startTime);
-			String accessID = MDC.get("accessTokenID");
-			
-			Long logID = activityDAO.createLogID();
-			
-			StringBuilder detailInput = new StringBuilder();
-			if( (objectList!=null) 
-					&& (objectList.size()>0) ) {
-				for (Object tmpObject : objectList) {
-					detailInput.append(tmpObject.toString());
-				}
-			}
-			
-			StringBuilder detailOutput = new StringBuilder();
-			if(retObject!=null) {
-				detailOutput = detailOutput.append(retObject.toString());
-			}
-			
-			ActivityLog activityLog = new ActivityLog();
-			activityLog.setLogID(logID);
-			activityLog.setTrackingID(trackingID);
-			activityLog.setWorkerTypeID(Short.valueOf("0"));
-			activityLog.setAccessID(accessID);
-			activityLog.setTruemoneyID(truemoneyID);
-			activityLog.setLoginID(loginID);
-			activityLog.setWorkerName(workerName);
-			activityLog.setActivityName(activityName);
-			activityLog.setHttpStatus(httpStatus);
-			activityLog.setResultCode(resultCode);
-			activityLog.setResultNamespace(resultNamespace);
-			activityLog.setTransactionID(transactionID);
-			activityLog.setProcessState(processState);
-			activityLog.setRefTransID(refTransID);
-			activityLog.setCreatedDate(createdDate);
-			activityLog.setResponseDate(responseDate);
-			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput.toString());
-			
-			logger.info("-----------------------------");
-			logger.info("ActivityLog: " + activityLog.toString());
-			logger.info("-----------------------------");
-			
-			activityDAO.createActivityLog(activityLog);
-		} catch(ServiceInventoryException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void writeLogSiEngineProxies(String workerName, String activityName,
-			SIEngineRequestWrapper siEngineRequest, SIEngineResponseWrapper siEngineResponse,
-			SIEngineException errorException, Long startTime, Long stopTime) {
-		try {
-			String trackingID = MDC.get("trackingID");
-			if(trackingID==null) {
-				return;
-			}
-			Timestamp createdDate = new Timestamp(startTime);
-			Timestamp responseDate = new Timestamp(stopTime);
-			String loginID = MDC.get("loginID");
-			String truemoneyID = MDC.get("truemoneyID");
-			Short httpStatus = (errorException instanceof SIEngineUnExpectedException) ? Short.valueOf("500") : Short.valueOf("200");
-			String resultCode = siEngineResponse != null ? siEngineResponse.getResultCode() : errorException.getCode();
-			String resultNamespace = siEngineResponse != null ? siEngineResponse.getResultNamespace() : errorException.getNamespace();
-			String transactionID = siEngineRequest != null ? siEngineRequest.getReqTransactionId() : null;
-			String processState = null;
-			String refTransID = siEngineResponse != null ? siEngineResponse.getTransactionID() : null;
-			Integer durationTime = (int) (stopTime - startTime);
-			String accessID = MDC.get("accessTokenID");
-			Long logID = activityDAO.createLogID();
-			
-			StringBuilder detailInput = new StringBuilder();
-			if(siEngineRequest!=null) {
-				detailInput = detailInput.append(siEngineRequest.toString());
-			}
-			StringBuilder detailOutput = new StringBuilder();
-			if(siEngineResponse!=null) {
-				detailOutput = detailOutput.append(siEngineResponse.toString());
-			}
-			if(refTransID!=null) {
-				MDC.put("refTransID", refTransID);
-			}
-			if(transactionID!=null) {
-				MDC.put("transactionID", transactionID);
-			}
-			
-			ActivityLog activityLog = new ActivityLog();
-			activityLog.setLogID(logID);
-			activityLog.setTrackingID(trackingID);
-			activityLog.setWorkerTypeID(Short.valueOf("1"));
-			activityLog.setAccessID(accessID);
-			activityLog.setTruemoneyID(truemoneyID);
-			activityLog.setLoginID(loginID);
-			activityLog.setWorkerName(workerName);
-			activityLog.setActivityName(activityName);
-			activityLog.setHttpStatus(httpStatus);
-			activityLog.setResultCode(resultCode);
-			activityLog.setResultNamespace(resultNamespace);
-			activityLog.setTransactionID(transactionID);
-			activityLog.setProcessState(processState);
-			activityLog.setRefTransID(refTransID);
-			activityLog.setCreatedDate(createdDate);
-			activityLog.setResponseDate(responseDate);
-			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput.toString());
-			
-			logger.info("-----------------------------");
-			logger.info("ActivityLog: " + activityLog.toString());
-			logger.info("-----------------------------");
-			
-			activityDAO.createActivityLog(activityLog);
-		} catch (ServiceInventoryException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void writeLogEwalletProxies(String workerName, String activityName,
-			EwalletRequest ewalletRequest, EwalletResponse ewalletResponse,
-			EwalletException errorException, Long startTime, Long stopTime) {
-		try {
-			String trackingID = MDC.get("trackingID");
-			if(trackingID==null) {
-				return;
-			}
-			Timestamp createdDate = new Timestamp(startTime);
-			Timestamp responseDate = new Timestamp(stopTime);
-			String loginID = MDC.get("loginID");
-			String truemoneyID = MDC.get("truemoneyID");
-			Short httpStatus = (errorException instanceof EwalletUnExpectedException) ? Short.valueOf("500") : Short.valueOf("200");
-			String resultCode = ewalletResponse != null ? ewalletResponse.getResultCode() : errorException.getCode();
-			String resultNamespace = ewalletResponse != null ? ewalletResponse.getResultNamespace() : errorException.getNamespace();
-			String transactionID = ewalletRequest != null ? ewalletRequest.getRequestTransactionId() : null;
-			String processState = null;
-			String refTransID = ewalletResponse != null ? ewalletResponse.getTransactionId() : null;
-			Integer durationTime = (int) (stopTime - startTime);
-			String accessID = MDC.get("accessTokenID");
-			Long logID = activityDAO.createLogID();
-			
-			StringBuilder detailInput = new StringBuilder();
-			if(ewalletRequest!=null) {
-				detailInput = detailInput.append(ewalletRequest.toString());
-			}
-			StringBuilder detailOutput = new StringBuilder();
-			if(ewalletResponse!=null) {
-				detailOutput = detailOutput.append(ewalletResponse.toString());
-			}
-			if(refTransID!=null) {
-				MDC.put("refTransID", refTransID);
-			}
-			if(transactionID!=null) {
-				MDC.put("transactionID", transactionID);
-			}
-			
-			ActivityLog activityLog = new ActivityLog();
-			activityLog.setLogID(logID);
-			activityLog.setTrackingID(trackingID);
-			activityLog.setWorkerTypeID(Short.valueOf("1"));
-			activityLog.setAccessID(accessID);
-			activityLog.setTruemoneyID(truemoneyID);
-			activityLog.setLoginID(loginID);
-			activityLog.setWorkerName(workerName);
-			activityLog.setActivityName(activityName);
-			activityLog.setHttpStatus(httpStatus);
-			activityLog.setResultCode(resultCode);
-			activityLog.setResultNamespace(resultNamespace);
-			activityLog.setTransactionID(transactionID);
-			activityLog.setProcessState(processState);
-			activityLog.setRefTransID(refTransID);
-			activityLog.setCreatedDate(createdDate);
-			activityLog.setResponseDate(responseDate);
-			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput.toString());
-			
-			logger.info("-----------------------------");
-			logger.info("ActivityLog: " + activityLog.toString());
-			logger.info("-----------------------------");
-			
-			activityDAO.createActivityLog(activityLog);
-		} catch (ServiceInventoryException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void writeLogSmsProxies(String workerName, String activityName,
-			SmsRequest smsRequest, SmsResponse smsResponse, Exception errorException, Long startTime, Long stopTime) {
-		try {
-			String trackingID = MDC.get("trackingID");
-			if(trackingID==null) {
-				return;
-			}
-			Timestamp createdDate = new Timestamp(startTime);
-			Timestamp responseDate = new Timestamp(stopTime);
-			String loginID = MDC.get("loginID");
-			String truemoneyID = MDC.get("truemoneyID");
-			Short httpStatus = errorException == null ? Short.valueOf("200") : Short.valueOf("500");
-			String resultCode = smsResponse != null ? smsResponse.getResultCode() : null;
-			String resultNamespace = smsResponse != null ? smsResponse.getResultNamespace() : null;
-			String transactionID = smsRequest != null ? smsRequest.getReqTransactionId() : null;
-			String processState = null;
-			String refTransID = smsResponse != null ? smsResponse.getTransactionID() : null;
-			Integer durationTime = (int) (stopTime - startTime);
-			String accessID = MDC.get("accessTokenID");
-			Long logID = activityDAO.createLogID();
-			
-			StringBuilder detailInput = new StringBuilder();
-			if(smsRequest!=null) {
-				detailInput = detailInput.append(smsRequest.toString());
-			}
-			StringBuilder detailOutput = new StringBuilder();
-			if(smsResponse!=null) {
-				detailOutput = detailOutput.append(smsResponse.toString());
-			}
-			if(refTransID!=null) {
-				MDC.put("refTransID", refTransID);
-			}
-			if(transactionID!=null) {
-				MDC.put("transactionID", transactionID);
-			}
-			
-			ActivityLog activityLog = new ActivityLog();
-			activityLog.setLogID(logID);
-			activityLog.setTrackingID(trackingID);
-			activityLog.setWorkerTypeID(Short.valueOf("1"));
-			activityLog.setAccessID(accessID);
-			activityLog.setTruemoneyID(truemoneyID);
-			activityLog.setLoginID(loginID);
-			activityLog.setWorkerName(workerName);
-			activityLog.setActivityName(activityName);
-			activityLog.setHttpStatus(httpStatus);
-			activityLog.setResultCode(resultCode);
-			activityLog.setResultNamespace(resultNamespace);
-			activityLog.setTransactionID(transactionID);
-			activityLog.setProcessState(processState);
-			activityLog.setRefTransID(refTransID);
-			activityLog.setCreatedDate(createdDate);
-			activityLog.setResponseDate(responseDate);
-			activityLog.setDurationTime(durationTime);
-			activityLog.setDetailInput(detailInput.toString());
-			activityLog.setDetailOutput(detailOutput.toString());
-			
-			logger.info("-----------------------------");
-			logger.info("ActivityLog: " + activityLog.toString());
-			logger.info("-----------------------------");
-			
-			activityDAO.createActivityLog(activityLog);
-		} catch (ServiceInventoryException e) {
-			e.printStackTrace();
-		}
-	}
-	
+    private static final String MDC_DRAFT_TRANSACTION_ID = "draftTransactionID";
+    private static final String MDC_TRANSACTION_ID = "transactionID";
+
+    private static final String MDC_TRACKING_ID = "trackingID";
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private ActivityDAO activityDAO;
+
+    public void writeLogController(String workerName, String activityName, List<Object> inputArgs, Object returnObj, ServiceInventoryException siWebException, long startTime, long stopTime)  {
+        try {
+            String trackingID = MDC.get(MDC_TRACKING_ID);
+
+            if(trackingID==null) {
+                return;
+            }
+
+            String loginID = MDC.get("loginID");
+            String truemoneyID = MDC.get("truemoneyID");
+
+            Short httpStatus = siWebException == null ? Short.valueOf("200") : siWebException.getHttpStatus().shortValue();
+            String resultCode = siWebException != null ? siWebException.getErrorCode() : "0";
+            String resultNamespace = siWebException != null ? siWebException.getErrorNamespace() : "TMN-SERVICE-INVENTORY";
+
+            String processState = getWorkflowStatus(returnObj);
+            String transactionID = getWorkflowTransactionID(returnObj);
+
+            String refTransID = MDC.get("refTransID");
+            String accessID = MDC.get("accessTokenID");
+
+            Integer durationTime = getDurationTime(startTime, stopTime);
+
+            String detailInput = getInputDetails(inputArgs);
+            String detailOutput = getOutputDetails(returnObj);
+
+            Long logID = activityDAO.createLogID();
+
+            ActivityLog activityLog = new ActivityLog();
+            activityLog.setLogID(logID);
+            activityLog.setTrackingID(trackingID);
+            activityLog.setWorkerTypeID(Short.valueOf("0"));
+            activityLog.setAccessID(accessID);
+            activityLog.setTruemoneyID(truemoneyID);
+            activityLog.setLoginID(loginID);
+            activityLog.setWorkerName(workerName);
+            activityLog.setActivityName(activityName);
+            activityLog.setHttpStatus(httpStatus);
+            activityLog.setResultCode(resultCode);
+            activityLog.setResultNamespace(resultNamespace);
+            activityLog.setTransactionID(transactionID);
+            activityLog.setProcessState(processState);
+            activityLog.setRefTransID(refTransID);
+            activityLog.setCreatedDate(new Timestamp(startTime));
+            activityLog.setResponseDate(new Timestamp(stopTime));
+            activityLog.setDurationTime(durationTime);
+            activityLog.setDetailInput(detailInput);
+            activityLog.setDetailOutput(detailOutput);
+
+            logger.info("-----------------------------");
+            logger.info("ActivityLog: " + activityLog.toString());
+            logger.info("-----------------------------");
+
+            activityDAO.createActivityLog(activityLog);
+        } catch(ServiceInventoryException e) {
+            logger.error("error writing user activity log", e);
+        }
+    }
+
+    private String getOutputDetails(Object retObject) {
+        return (retObject != null) ? retObject.toString() : null;
+    }
+
+    private String getInputDetails(List<Object> inputArgs) {
+        StringBuilder builder = new StringBuilder();
+        if( (inputArgs!=null)
+                && (inputArgs.size()>0) ) {
+            for (Object tmpObject : inputArgs) {
+                builder.append(tmpObject.toString());
+            }
+        }
+
+        return builder.toString();
+    }
+
+    private Integer getDurationTime(long startTime, long stopTime) {
+        return (int) (stopTime - startTime);
+    }
+
+    private String getWorkflowTransactionID(Object retObject) {
+
+        if(retObject instanceof DraftTransaction) {
+            return ((DraftTransaction) retObject).getID();
+        } else if(retObject instanceof Transaction) {
+            return ((Transaction) retObject).getID();
+        } else if(retObject instanceof Transaction.Status) {
+            return MDC.get(MDC_TRANSACTION_ID);
+        } else if(retObject instanceof DraftTransaction.Status) {
+            return MDC.get(MDC_DRAFT_TRANSACTION_ID);
+        }
+
+        return null;
+    }
+
+    private String getWorkflowStatus(Object retObject) {
+        if(retObject instanceof DraftTransaction) {
+            return ((DraftTransaction) retObject).getStatus().getStatus();
+        } else if(retObject instanceof Transaction) {
+            return ((Transaction) retObject).getStatus().getStatus();
+        } else if(retObject instanceof Transaction.Status) {
+            return ((Transaction.Status) retObject).getStatus();
+        } else if(retObject instanceof DraftTransaction.Status) {
+            return ((DraftTransaction.Status) retObject).getStatus();
+        }
+
+        return null;
+    }
+
+    public void writeLogSiEngineProxies(String workerName, String activityName,
+            SIEngineRequestWrapper siEngineRequest, SIEngineResponseWrapper siEngineResponse,
+            SIEngineException errorException, Long startTime, Long stopTime) {
+        try {
+            String trackingID = MDC.get(MDC_TRACKING_ID);
+            if(trackingID==null) {
+                return;
+            }
+            Timestamp createdDate = new Timestamp(startTime);
+            Timestamp responseDate = new Timestamp(stopTime);
+            String loginID = MDC.get("loginID");
+            String truemoneyID = MDC.get("truemoneyID");
+            Short httpStatus = (errorException instanceof SIEngineUnExpectedException) ? Short.valueOf("500") : Short.valueOf("200");
+            String resultCode = siEngineResponse != null ? siEngineResponse.getResultCode() : errorException.getCode();
+            String resultNamespace = siEngineResponse != null ? siEngineResponse.getResultNamespace() : errorException.getNamespace();
+            String proxyTransactionID = siEngineRequest != null ? siEngineRequest.getReqTransactionId() : null;
+            String processState = null;
+            String refTransID = siEngineResponse != null ? siEngineResponse.getTransactionID() : null;
+            Integer durationTime = (int) (stopTime - startTime);
+            String accessID = MDC.get("accessTokenID");
+            Long logID = activityDAO.createLogID();
+
+            StringBuilder detailInput = new StringBuilder();
+            if(siEngineRequest!=null) {
+                detailInput = detailInput.append(siEngineRequest.toString());
+            }
+            StringBuilder detailOutput = new StringBuilder();
+            if(siEngineResponse!=null) {
+                detailOutput = detailOutput.append(siEngineResponse.toString());
+            }
+            if(refTransID!=null) {
+                MDC.put("refTransID", refTransID);
+            }
+            if(proxyTransactionID!=null) {
+                MDC.put("proxyTransactionID", proxyTransactionID);
+            }
+
+            ActivityLog activityLog = new ActivityLog();
+            activityLog.setLogID(logID);
+            activityLog.setTrackingID(trackingID);
+            activityLog.setWorkerTypeID(Short.valueOf("1"));
+            activityLog.setAccessID(accessID);
+            activityLog.setTruemoneyID(truemoneyID);
+            activityLog.setLoginID(loginID);
+            activityLog.setWorkerName(workerName);
+            activityLog.setActivityName(activityName);
+            activityLog.setHttpStatus(httpStatus);
+            activityLog.setResultCode(resultCode);
+            activityLog.setResultNamespace(resultNamespace);
+            activityLog.setTransactionID(proxyTransactionID);
+            activityLog.setProcessState(processState);
+            activityLog.setRefTransID(refTransID);
+            activityLog.setCreatedDate(createdDate);
+            activityLog.setResponseDate(responseDate);
+            activityLog.setDurationTime(durationTime);
+            activityLog.setDetailInput(detailInput.toString());
+            activityLog.setDetailOutput(detailOutput.toString());
+
+            logger.info("-----------------------------");
+            logger.info("ActivityLog: " + activityLog.toString());
+            logger.info("-----------------------------");
+
+            activityDAO.createActivityLog(activityLog);
+        } catch (Exception e) {
+            logger.error("error writing user activity log", e);
+        }
+    }
+
+    public void writeLogEwalletProxies(String workerName, String activityName,
+            EwalletRequest ewalletRequest, EwalletResponse ewalletResponse,
+            EwalletException errorException, Long startTime, Long stopTime) {
+        try {
+            String trackingID = MDC.get(MDC_TRACKING_ID);
+            if(trackingID==null) {
+                return;
+            }
+            Timestamp createdDate = new Timestamp(startTime);
+            Timestamp responseDate = new Timestamp(stopTime);
+            String loginID = MDC.get("loginID");
+            String truemoneyID = MDC.get("truemoneyID");
+            Short httpStatus = (errorException instanceof EwalletUnExpectedException) ? Short.valueOf("500") : Short.valueOf("200");
+            String resultCode = ewalletResponse != null ? ewalletResponse.getResultCode() : errorException.getCode();
+            String resultNamespace = ewalletResponse != null ? ewalletResponse.getResultNamespace() : errorException.getNamespace();
+            String proxyTransactionID = ewalletRequest != null ? ewalletRequest.getRequestTransactionId() : null;
+            String processState = null;
+            String refTransID = ewalletResponse != null ? ewalletResponse.getTransactionId() : null;
+            Integer durationTime = (int) (stopTime - startTime);
+            String accessID = MDC.get("accessTokenID");
+            Long logID = activityDAO.createLogID();
+
+            StringBuilder detailInput = new StringBuilder();
+            if(ewalletRequest!=null) {
+                detailInput = detailInput.append(ewalletRequest.toString());
+            }
+            StringBuilder detailOutput = new StringBuilder();
+            if(ewalletResponse!=null) {
+                detailOutput = detailOutput.append(ewalletResponse.toString());
+            }
+            if(refTransID!=null) {
+                MDC.put("refTransID", refTransID);
+            }
+            if(proxyTransactionID!=null) {
+                MDC.put("proxyTransactionID", proxyTransactionID);
+            }
+
+            ActivityLog activityLog = new ActivityLog();
+            activityLog.setLogID(logID);
+            activityLog.setTrackingID(trackingID);
+            activityLog.setWorkerTypeID(Short.valueOf("1"));
+            activityLog.setAccessID(accessID);
+            activityLog.setTruemoneyID(truemoneyID);
+            activityLog.setLoginID(loginID);
+            activityLog.setWorkerName(workerName);
+            activityLog.setActivityName(activityName);
+            activityLog.setHttpStatus(httpStatus);
+            activityLog.setResultCode(resultCode);
+            activityLog.setResultNamespace(resultNamespace);
+            activityLog.setTransactionID(proxyTransactionID);
+            activityLog.setProcessState(processState);
+            activityLog.setRefTransID(refTransID);
+            activityLog.setCreatedDate(createdDate);
+            activityLog.setResponseDate(responseDate);
+            activityLog.setDurationTime(durationTime);
+            activityLog.setDetailInput(detailInput.toString());
+            activityLog.setDetailOutput(detailOutput.toString());
+
+            logger.info("-----------------------------");
+            logger.info("ActivityLog: " + activityLog.toString());
+            logger.info("-----------------------------");
+
+            activityDAO.createActivityLog(activityLog);
+        } catch (Exception e) {
+            logger.error("error writing user activity log", e);
+        }
+    }
+
+    public void writeLogSmsProxies(String workerName, String activityName,
+            SmsRequest smsRequest, SmsResponse smsResponse, Exception errorException, Long startTime, Long stopTime) {
+        try {
+            String trackingID = MDC.get(MDC_TRACKING_ID);
+            if(trackingID==null) {
+                return;
+            }
+            Timestamp createdDate = new Timestamp(startTime);
+            Timestamp responseDate = new Timestamp(stopTime);
+            String loginID = MDC.get("loginID");
+            String truemoneyID = MDC.get("truemoneyID");
+            Short httpStatus = errorException == null ? Short.valueOf("200") : Short.valueOf("500");
+            String resultCode = smsResponse != null ? smsResponse.getResultCode() : null;
+            String resultNamespace = smsResponse != null ? smsResponse.getResultNamespace() : null;
+            String proxyTransactionID = smsRequest != null ? smsRequest.getReqTransactionId() : null;
+            String processState = null;
+            String refTransID = smsResponse != null ? smsResponse.getTransactionID() : null;
+            Integer durationTime = (int) (stopTime - startTime);
+            String accessID = MDC.get("accessTokenID");
+            Long logID = activityDAO.createLogID();
+
+            StringBuilder detailInput = new StringBuilder();
+            if(smsRequest!=null) {
+                detailInput = detailInput.append(smsRequest.toString());
+            }
+            StringBuilder detailOutput = new StringBuilder();
+            if(smsResponse!=null) {
+                detailOutput = detailOutput.append(smsResponse.toString());
+            }
+            if(refTransID!=null) {
+                MDC.put("refTransID", refTransID);
+            }
+            if(proxyTransactionID!=null) {
+                MDC.put("proxyTransactionID", proxyTransactionID);
+            }
+
+            ActivityLog activityLog = new ActivityLog();
+            activityLog.setLogID(logID);
+            activityLog.setTrackingID(trackingID);
+            activityLog.setWorkerTypeID(Short.valueOf("1"));
+            activityLog.setAccessID(accessID);
+            activityLog.setTruemoneyID(truemoneyID);
+            activityLog.setLoginID(loginID);
+            activityLog.setWorkerName(workerName);
+            activityLog.setActivityName(activityName);
+            activityLog.setHttpStatus(httpStatus);
+            activityLog.setResultCode(resultCode);
+            activityLog.setResultNamespace(resultNamespace);
+            activityLog.setTransactionID(proxyTransactionID);
+            activityLog.setProcessState(processState);
+            activityLog.setRefTransID(refTransID);
+            activityLog.setCreatedDate(createdDate);
+            activityLog.setResponseDate(responseDate);
+            activityLog.setDurationTime(durationTime);
+            activityLog.setDetailInput(detailInput.toString());
+            activityLog.setDetailOutput(detailOutput.toString());
+
+            logger.info("-----------------------------");
+            logger.info("ActivityLog: " + activityLog.toString());
+            logger.info("-----------------------------");
+
+            activityDAO.createActivityLog(activityLog);
+        } catch (Exception e) {
+            logger.error("error writing user activity log", e);
+        }
+    }
+
 }
