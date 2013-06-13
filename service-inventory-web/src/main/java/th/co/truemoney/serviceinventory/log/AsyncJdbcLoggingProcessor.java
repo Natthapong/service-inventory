@@ -84,15 +84,15 @@ public class AsyncJdbcLoggingProcessor {
             activityLog.setCreatedDate(new Timestamp(startTime));
             activityLog.setResponseDate(new Timestamp(stopTime));
             activityLog.setDurationTime(durationTime);
-            activityLog.setDetailInput(detailInput);
-            activityLog.setDetailOutput(detailOutput);
+            activityLog.setDetailInput(getActivityDetail(detailInput));
+            activityLog.setDetailOutput(getActivityDetail(detailOutput));
 
             logger.info("-----------------------------");
             logger.info("ActivityLog: " + activityLog.toString());
             logger.info("-----------------------------");
 
             activityDAO.createActivityLog(activityLog);
-        } catch(ServiceInventoryException e) {
+        } catch(Exception e) {
             logger.error("error writing user activity log", e);
         }
     }
@@ -201,8 +201,8 @@ public class AsyncJdbcLoggingProcessor {
             activityLog.setCreatedDate(createdDate);
             activityLog.setResponseDate(responseDate);
             activityLog.setDurationTime(durationTime);
-            activityLog.setDetailInput(detailInput.toString());
-            activityLog.setDetailOutput(detailOutput.toString());
+            activityLog.setDetailInput(getActivityDetail(detailInput.toString()));
+            activityLog.setDetailOutput(getActivityDetail(detailOutput.toString()));
 
             logger.info("-----------------------------");
             logger.info("ActivityLog: " + activityLog.toString());
@@ -269,8 +269,8 @@ public class AsyncJdbcLoggingProcessor {
             activityLog.setCreatedDate(createdDate);
             activityLog.setResponseDate(responseDate);
             activityLog.setDurationTime(durationTime);
-            activityLog.setDetailInput(detailInput.toString());
-            activityLog.setDetailOutput(detailOutput.toString());
+            activityLog.setDetailInput(getActivityDetail(detailInput.toString()));
+            activityLog.setDetailOutput(getActivityDetail(detailOutput.toString()));
 
             logger.info("-----------------------------");
             logger.info("ActivityLog: " + activityLog.toString());
@@ -336,8 +336,8 @@ public class AsyncJdbcLoggingProcessor {
             activityLog.setCreatedDate(createdDate);
             activityLog.setResponseDate(responseDate);
             activityLog.setDurationTime(durationTime);
-            activityLog.setDetailInput(detailInput.toString());
-            activityLog.setDetailOutput(detailOutput.toString());
+            activityLog.setDetailInput(getActivityDetail(detailInput.toString()));
+            activityLog.setDetailOutput(getActivityDetail(detailOutput.toString()));
 
             logger.info("-----------------------------");
             logger.info("ActivityLog: " + activityLog.toString());
@@ -347,6 +347,14 @@ public class AsyncJdbcLoggingProcessor {
         } catch (Exception e) {
             logger.error("error writing user activity log", e);
         }
+    }
+    
+    private String getActivityDetail(String details) {
+    	String retDetails = null;
+    	if(details!=null) {
+    		retDetails = details.length()>4000 ? details.substring(0, 4000) : details;
+    	}
+    	return retDetails;
     }
 
 }
