@@ -12,7 +12,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
 import th.co.truemoney.serviceinventory.log.dao.ActivityDAO;
 import th.co.truemoney.serviceinventory.log.domain.ActivityLog;
