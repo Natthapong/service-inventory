@@ -352,7 +352,7 @@ public class AsyncJdbcLoggingProcessor {
     private String getActivityDetail(String details) {
     	String retDetails = null;
     	if(details!=null) {
-    		retDetails = details.length()>4000 ? details.substring(0, 4000) : details;
+    		retDetails = details.length()>1000 ? details.substring(0, 1000) : details;
     	}
     	return retDetails;
     }
