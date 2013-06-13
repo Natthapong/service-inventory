@@ -51,7 +51,6 @@ public class ActivityDetail extends Activity {
 			.appendSuper(super.toString())
 			.append("transactionID: ", this.getTransactionID())
 			.append("ref2: ", this.getRef2())
-			.append("personalMessage: ", this.getPersonalMessage())
 			.toString();
 	}
 	
