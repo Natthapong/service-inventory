@@ -59,16 +59,16 @@ public class TopUpMobileController {
         return topUpMobileService.getTopUpMobileDraftDetail(draftTransactionID, accessTokenID);
     }
 
-    @RequestMapping(value = "/draft/{draftTransactionID}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/transaction/{transactionID}",  method = RequestMethod.PUT)
     public @ResponseBody TopUpMobileTransaction.Status performToppingMobile(
-            @PathVariable String draftTransactionID,
+	    @PathVariable String transactionID,
             @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
         extendExpireAccessToken(accessTokenID);
 
-        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+	MDC.put(MDC_TRANSACTION_ID, transactionID);
 
-        return topUpMobileService.performTopUpMobile(draftTransactionID, accessTokenID);
+	return topUpMobileService.performTopUpMobile(transactionID, accessTokenID);
     }
 
 

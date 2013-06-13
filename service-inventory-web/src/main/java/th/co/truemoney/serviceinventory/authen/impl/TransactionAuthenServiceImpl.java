@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.authen.impl;
 
+import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.authen.TransactionAuthenService;
@@ -18,68 +19,72 @@ import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 
 public class TransactionAuthenServiceImpl implements TransactionAuthenService {
 
-	@Autowired
-	private AccessTokenRepository accessTokenRepo;
+    private static final String WORKFLOW_STATUS = "workflowStatus";
 
-	@Autowired
-	private TransactionRepository transactionRepo;
+    @Autowired
+    private AccessTokenRepository accessTokenRepo;
 
-	@Autowired
-	private OTPService otpService;
+    @Autowired
+    private TransactionRepository transactionRepo;
 
-	@Override
-	public OTP requestOTP(String draftID, String accessTokenID)
-			throws ServiceInventoryException {
+    @Autowired
+    private OTPService otpService;
 
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+    @Override
+    public OTP requestOTP(String draftID, String accessTokenID)
+	    throws ServiceInventoryException {
 
-		DraftTransaction draftTransaction = transactionRepo.findDraftTransaction(draftID, accessTokenID, DraftTransaction.class);
+	AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
-		if (draftTransaction.getStatus() == Status.OTP_CONFIRMED) {
-			throw new OTPAlreadyConfirmedException();
-		}
+	DraftTransaction draftTransaction = transactionRepo.findDraftTransaction(draftID, accessTokenID, DraftTransaction.class);
 
-		OTP otp = otpService.send(accessToken.getMobileNumber());
-
-		draftTransaction.setOtpReferenceCode(otp.getReferenceCode());
-		draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_SENT);
-
-		transactionRepo.saveDraftTransaction(draftTransaction, accessTokenID);
-
-		return otp;
+	if (draftTransaction.getStatus() == Status.OTP_CONFIRMED) {
+	    throw new OTPAlreadyConfirmedException();
 	}
 
-	@Override
-	public Status verifyOTP(String draftID, OTP otp, String accessTokenID)
-			throws ServiceInventoryException {
+	OTP otp = otpService.send(accessToken.getMobileNumber());
 
-		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		DraftTransaction draftTransaction = transactionRepo.findDraftTransaction(draftID, accessTokenID, DraftTransaction.class);
+	draftTransaction.setOtpReferenceCode(otp.getReferenceCode());
+	draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_SENT);
 
-		if (draftTransaction.getStatus() == Status.OTP_CONFIRMED) {
-			throw new OTPAlreadyConfirmedException();
-		}
+	transactionRepo.saveDraftTransaction(draftTransaction, accessTokenID);
 
-		if (isAppleUser(accessToken)) {
-			if (!isAppleValidOTP(otp)) {
-				throw new ServiceInventoryWebException(Code.INVALID_OTP, "invalid OTP.");
-			}
-		} else {
-			otpService.isValidOTP(otp);	
-		} 
+	MDC.put(WORKFLOW_STATUS, draftTransaction.getStatus());
 
-		draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
-		transactionRepo.saveDraftTransaction(draftTransaction, accessTokenID);
+	return otp;
+    }
 
-		return draftTransaction.getStatus();
+    @Override
+    public Status verifyOTP(String draftID, OTP otp, String accessTokenID)
+	    throws ServiceInventoryException {
+
+	AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+	DraftTransaction draftTransaction = transactionRepo.findDraftTransaction(draftID, accessTokenID, DraftTransaction.class);
+
+	if (draftTransaction.getStatus() == Status.OTP_CONFIRMED) {
+	    throw new OTPAlreadyConfirmedException();
 	}
 
-	private boolean isAppleValidOTP(OTP otp) {
-		return "123456".equals(otp.getOtpString());
+	if (isAppleUser(accessToken)) {
+	    if (!isAppleValidOTP(otp)) {
+		throw new ServiceInventoryWebException(Code.INVALID_OTP, "invalid OTP.");
+	    }
+	} else {
+	    otpService.isValidOTP(otp);
 	}
 
-	private boolean isAppleUser(AccessToken accessToken) {
-		return "tmn.10000000020".equals(accessToken.getTruemoneyID());
-	}
-	
+	draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
+	transactionRepo.saveDraftTransaction(draftTransaction, accessTokenID);
+
+	return draftTransaction.getStatus();
+    }
+
+    private boolean isAppleValidOTP(OTP otp) {
+	return "123456".equals(otp.getOtpString());
+    }
+
+    private boolean isAppleUser(AccessToken accessToken) {
+	return "tmn.10000000020".equals(accessToken.getTruemoneyID());
+    }
+
 }

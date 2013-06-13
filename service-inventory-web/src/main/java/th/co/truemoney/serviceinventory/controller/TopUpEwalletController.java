@@ -55,16 +55,16 @@ public class TopUpEwalletController {
         return topupService.getTopUpQuoteDetails(draftTransactionID, accessTokenID);
     }
 
-    @RequestMapping(value = "/top-up/quote/{draftTransactionID}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/top-up/order/{transactionID}", method = RequestMethod.PUT)
     public @ResponseBody TopUpOrder.Status performTopUp(
-           @PathVariable String draftTransactionID,
+	   @PathVariable String transactionID,
            @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
-        MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
+	MDC.put(MDC_TRANSACTION_ID, transactionID);
 
         extendExpireAccessToken(accessTokenID);
 
-        return topupService.performTopUp(draftTransactionID, accessTokenID);
+	return topupService.performTopUp(transactionID, accessTokenID);
     }
 
     @RequestMapping(value = "/top-up/order/{transactionID}/status", method = RequestMethod.GET)
