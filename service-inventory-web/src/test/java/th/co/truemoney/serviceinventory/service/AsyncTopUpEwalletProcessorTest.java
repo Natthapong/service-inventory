@@ -42,7 +42,7 @@ public class AsyncTopUpEwalletProcessorTest {
 
     private EwalletSoapProxy mockEwalletProxy = mock(EwalletSoapProxy.class);
 
-    private AccessToken accessToken = new AccessToken("tokenID", "sessionID", "tmnID", 41);
+    private AccessToken accessToken = new AccessToken("tokenID", "loginID", "sessionID", "tmnID", 41);
 
     private TopUpOrder incomingOrder;
 

@@ -10,8 +10,6 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.AssertTrue;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -78,7 +76,7 @@ public class BillPaymentServiceImplTest {
     @Before
     public void setup() {
 
-        accessToken = new AccessToken("12345", "5555", "4444", "0868185055", "tanathip.se@gmail.com", 41);
+        accessToken = new AccessToken("12345", "1111", "5555", "4444", "0868185055", "tanathip.se@gmail.com", 41);
         accessToken.setClientCredential(new ClientCredential("appKey", "appUser", "appPassword", "channel", "channel detail"));
         accessTokenRepo.save(accessToken);
 

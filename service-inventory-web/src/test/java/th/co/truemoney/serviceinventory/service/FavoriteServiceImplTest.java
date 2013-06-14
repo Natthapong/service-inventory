@@ -48,10 +48,10 @@ public class FavoriteServiceImplTest {
     public void setup() {
 
         accessTokenRepo = new AccessTokenMemoryRepository();
-        accessToken = new AccessToken("12345", "5555", "AdamTmnMoneyId", "0868185055", "adam@tmn.com", 41);
+        accessToken = new AccessToken("12345", "1111", "5555", "AdamTmnMoneyId", "0868185055", "adam@tmn.com", 41);
         accessTokenRepo.save(accessToken);
-        accessTokenRepo.save(new AccessToken("0000", "5555", "EveTmnMoneyId", "0868185055", "eve@tmn.com", 41));
-        accessTokenRepo.save(new AccessToken("0001", "5555", "failUser", "0868185055", "fail@tmn.com", 41));
+        accessTokenRepo.save(new AccessToken("0000", "1111", "5555", "EveTmnMoneyId", "0868185055", "eve@tmn.com", 41));
+        accessTokenRepo.save(new AccessToken("0001", "1111", "5555", "failUser", "0868185055", "fail@tmn.com", 41));
         favoriteServiceImpl.setAccessTokenRepository(accessTokenRepo);
         favorite = new Favorite(2000L,"billpay","tr","0811234567", "", new BigDecimal(2000));
         // tr, trmv, tmvh, tlp, tic, ti, tcg

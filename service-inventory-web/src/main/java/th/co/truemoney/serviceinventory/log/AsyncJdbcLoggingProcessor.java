@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import th.co.truemoney.serviceinventory.engine.client.domain.services.SIEngineRequestWrapper;
@@ -40,6 +41,7 @@ public class AsyncJdbcLoggingProcessor {
     @Autowired
     private ActivityDAO activityDAO;
 
+    @Async
     public void writeLogController(String workerName, String activityName, List<Object> inputArgs, Object returnObj, ServiceInventoryException siWebException, long startTime, long stopTime)  {
         try {
             String trackingID = MDC.get(MDC_TRACKING_ID);
@@ -58,7 +60,7 @@ public class AsyncJdbcLoggingProcessor {
             String processState = getWorkflowStatus(returnObj);
             String transactionID = getWorkflowTransactionID(returnObj);
 
-	    logger.info("transaction ID : " + workerName + " " + activityName + ": " + transactionID);
+            logger.info("transaction ID : " + workerName + " " + activityName + ": " + transactionID);
 
             String refTransID = MDC.get("refTransID");
             String accessID = MDC.get("accessTokenID");
@@ -145,6 +147,7 @@ public class AsyncJdbcLoggingProcessor {
         return null;
     }
 
+    @Async
     public void writeLogSiEngineProxies(String workerName, String activityName,
             SIEngineRequestWrapper siEngineRequest, SIEngineResponseWrapper siEngineResponse,
             SIEngineException errorException, Long startTime, Long stopTime) {
@@ -213,6 +216,7 @@ public class AsyncJdbcLoggingProcessor {
         }
     }
 
+    @Async
     public void writeLogEwalletProxies(String workerName, String activityName,
             EwalletRequest ewalletRequest, EwalletResponse ewalletResponse,
             EwalletException errorException, Long startTime, Long stopTime) {
@@ -281,6 +285,7 @@ public class AsyncJdbcLoggingProcessor {
         }
     }
 
+    @Async
     public void writeLogSmsProxies(String workerName, String activityName,
             SmsRequest smsRequest, SmsResponse smsResponse, Exception errorException, Long startTime, Long stopTime) {
         try {
@@ -337,6 +342,56 @@ public class AsyncJdbcLoggingProcessor {
             activityLog.setDurationTime(durationTime);
             activityLog.setDetailInput(getActivityDetail(detailInput.toString()));
             activityLog.setDetailOutput(getActivityDetail(detailOutput.toString()));
+
+            logger.info("-----------------------------");
+            logger.info("ActivityLog: " + activityLog.toString());
+            logger.info("-----------------------------");
+
+            activityDAO.createActivityLog(activityLog);
+        } catch (Exception e) {
+            logger.error("error writing user activity log", e);
+        }
+    }
+
+    @Async
+    public void writeLogActivityReportProxies(String workerName, String activityName, ServiceInventoryException errorException, Long startTime, Long stopTime) {
+        try {
+            String trackingID = MDC.get(MDC_TRACKING_ID);
+            if(trackingID==null) {
+                return;
+            }
+            Timestamp createdDate = new Timestamp(startTime);
+            Timestamp responseDate = new Timestamp(stopTime);
+            String loginID = MDC.get("loginID");
+            String truemoneyID = MDC.get("truemoneyID");
+            Short httpStatus = errorException == null ? Short.valueOf("200") : Short.valueOf("500");
+            String resultCode = errorException != null ? errorException.getErrorCode(): null;
+            String resultNamespace = errorException != null ? errorException.getErrorNamespace() : null;
+            String proxyTransactionID = null;
+            String processState = null;
+            String refTransID = null;
+            Integer durationTime = (int) (stopTime - startTime);
+            String accessID = MDC.get("accessTokenID");
+            Long logID = activityDAO.createLogID();
+
+            ActivityLog activityLog = new ActivityLog();
+            activityLog.setLogID(logID);
+            activityLog.setTrackingID(trackingID);
+            activityLog.setWorkerTypeID(Short.valueOf("1"));
+            activityLog.setAccessID(accessID);
+            activityLog.setTruemoneyID(truemoneyID);
+            activityLog.setLoginID(loginID);
+            activityLog.setWorkerName(workerName);
+            activityLog.setActivityName(activityName);
+            activityLog.setHttpStatus(httpStatus);
+            activityLog.setResultCode(resultCode);
+            activityLog.setResultNamespace(resultNamespace);
+            activityLog.setTransactionID(proxyTransactionID);
+            activityLog.setProcessState(processState);
+            activityLog.setRefTransID(refTransID);
+            activityLog.setCreatedDate(createdDate);
+            activityLog.setResponseDate(responseDate);
+            activityLog.setDurationTime(durationTime);
 
             logger.info("-----------------------------");
             logger.info("ActivityLog: " + activityLog.toString());

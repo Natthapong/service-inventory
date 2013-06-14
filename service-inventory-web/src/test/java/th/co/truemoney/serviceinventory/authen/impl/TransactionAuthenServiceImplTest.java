@@ -68,7 +68,7 @@ public class TransactionAuthenServiceImplTest {
         asyncServiceMock = mock(AsyncTopUpEwalletProcessor.class);
 
         //given
-        accessToken =  new AccessToken("tokenID", "sessionID", "tmnID", 41);
+        accessToken =  new AccessToken("tokenID", "loginID", "sessionID", "tmnID", 41);
         accessTokenRepo.save(accessToken);
 
         goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");

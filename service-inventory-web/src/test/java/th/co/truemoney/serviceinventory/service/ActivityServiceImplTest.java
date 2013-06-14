@@ -48,7 +48,7 @@ public class ActivityServiceImplTest {
         service.setRestTemplate(restTemplate);
 
         AccessTokenRepository accessTokenRepo = new AccessTokenMemoryRepository();
-        accessTokenRepo.save(new AccessToken("accessToken", "sessionID", "54321", 40));
+        accessTokenRepo.save(new AccessToken("accessToken", "loginID", "sessionID", "54321", 40));
 
         service.setAccessTokenRepository(accessTokenRepo);
 
@@ -77,7 +77,7 @@ public class ActivityServiceImplTest {
         service.setRestTemplate(restTemplate);
 
         AccessTokenRepository accessTokenRepo = new AccessTokenMemoryRepository();
-        accessTokenRepo.save(new AccessToken("accessToken", "sessionID", "54321", 40));
+        accessTokenRepo.save(new AccessToken("accessToken", "loginID", "sessionID", "54321", 40));
 
         service.setAccessTokenRepository(accessTokenRepo);
 
@@ -108,7 +108,7 @@ public class ActivityServiceImplTest {
         service.setRestTemplate(restTemplate);
 
         AccessTokenRepository accessTokenRepo = new AccessTokenMemoryRepository();
-        accessTokenRepo.save(new AccessToken("accessToken", "sessionID", "54321", 40));
+        accessTokenRepo.save(new AccessToken("accessToken", "loginID", "sessionID", "54321", 40));
 
         service.setAccessTokenRepository(accessTokenRepo);
         try {

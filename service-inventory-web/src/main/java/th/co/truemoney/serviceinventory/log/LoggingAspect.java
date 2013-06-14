@@ -204,7 +204,7 @@ public class LoggingAspect {
             try {
                 AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 
-                String loginID = accessToken.getEmail() != null ? accessToken.getEmail() : accessToken.getMobileNumber();
+                String loginID = accessToken.getLoginID() != null ? accessToken.getLoginID() : accessToken.getMobileNumber();
                 String truemoneyID = accessToken.getTruemoneyID();
 
                 MDC.put("loginID", loginID);
@@ -217,37 +217,22 @@ public class LoggingAspect {
         }
     }
 
-    /*
-     * @Around(
-     * "execution(* th.co.truemoney.serviceinventory.ewallet.impl.ActivityServiceImpl.*(..))"
-     * ) public Object asyncLogCoreReportWeb(ProceedingJoinPoint joinPoint)
-     * throws Throwable {
-     *
-     * Long startTime = System.currentTimeMillis(); Object[] args =
-     * joinPoint.getArgs();
-     *
-     * if (args.length > 0 && args[0] instanceof SIEngineRequestWrapper) {
-     *
-     * SIEngineRequestWrapper siEngineRequest = (SIEngineRequestWrapper)
-     * args[0]; SIEngineException errorException = null; SIEngineResponseWrapper
-     * siEngineResponse = null; try { siEngineResponse =
-     * (SIEngineResponseWrapper) joinPoint.proceed(); return siEngineResponse; }
-     * catch (SIEngineException ex) { errorException = ex; throw ex; } finally {
-     * Long stopTime = System.currentTimeMillis();
-     * System.out.println("joinPoint.getTarget().getClass()=>" +
-     * joinPoint.getTarget().getClass() + "<" ) ;
-     * System.out.println("joinPoint.getTarget().getClass().getSimpleName()=>" +
-     * joinPoint.getTarget().getClass().getSimpleName() + "<" ) ; //
-     * System.out.println("joinPoint.getSignature()=>" +
-     * joinPoint.getSignature() + "<" ) ; //
-     * System.out.println("joinPoint.getSignature().getName()=>" +
-     * joinPoint.getSignature().getName() + "<" );
-     * asyncJdbcLoggingProcessor.writeLogSiEngineProxies
-     * (joinPoint.getTarget().getClass().getSimpleName(),
-     * joinPoint.getSignature().getName(), siEngineRequest, siEngineResponse,
-     * errorException, startTime, stopTime); }
-     *
-     * } return joinPoint.proceed(); }
-     */
+    @Around("execution(* th.co.truemoney.serviceinventory.ewallet.impl.ActivityServiceImpl.*(..))")
+    public Object logActivityReportProxies(ProceedingJoinPoint joinPoint) throws Throwable {
+        Long startTime = System.currentTimeMillis();
+        ServiceInventoryException errorException = null;
+        try {
+            return joinPoint.proceed();
+        } catch (ServiceInventoryException ex) {
+        	errorException = ex;
+            throw ex;
+        } finally {
+            Long stopTime = System.currentTimeMillis();
+            asyncJdbcLoggingProcessor.writeLogActivityReportProxies(joinPoint
+                    .getTarget().getClass().getSimpleName(), joinPoint
+                    .getSignature().getName(),
+                    errorException, startTime, stopTime);
+        }
+    }
 
 }

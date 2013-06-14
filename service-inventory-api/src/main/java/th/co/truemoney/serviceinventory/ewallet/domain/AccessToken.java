@@ -13,6 +13,7 @@ public class AccessToken implements Serializable {
 
 	private String accessTokenID;
 
+	private String loginID;
 	private String sessionID;
 	private String truemoneyID;
 	private Integer channelID;
@@ -29,11 +30,11 @@ public class AccessToken implements Serializable {
 		this.accessTokenID = token;
 	}
 
-	public AccessToken(String token, String sessionID, String tmnID, Integer channelID) {
-		this(token, sessionID, tmnID, null, null, channelID);
+	public AccessToken(String token, String loginID, String sessionID, String tmnID, Integer channelID) {
+		this(token, loginID, sessionID, tmnID, null, null, channelID);
 	}
 
-	public AccessToken(String token,
+	public AccessToken(String token, String loginID,
 			String sessionID, String truemoneyID,
 			String mobileNumber, String email,
 			Integer channelID) {
@@ -100,6 +101,14 @@ public class AccessToken implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getLoginID() {
+		return loginID;
+	}
+
+	public void setLoginID(String loginID) {
+		this.loginID = loginID;
 	}
 
 	@JsonIgnore

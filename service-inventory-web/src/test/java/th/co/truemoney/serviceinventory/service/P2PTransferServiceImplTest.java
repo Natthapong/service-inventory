@@ -71,7 +71,7 @@ public class P2PTransferServiceImplTest {
 
         this.p2pService.setAsyncP2PTransferProcessor(asyncP2PProcessorMock);
 
-        accessToken = new AccessToken("1234567890", "0987654321", "1111111111", "0866012345", "local@tmn.com", 41);
+        accessToken = new AccessToken("1234567890", "1111111111", "0987654321", "1111111111", "0866012345", "local@tmn.com", 41);
         accessTokenRepo.save(accessToken);
 
         goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");

@@ -72,6 +72,7 @@ public class UserProfileHandler {
 
                 return new AccessToken(
                                 UUID.randomUUID().toString(),
+                                credentialUsername,
                                 signon.getSessionId(),
                                 signon.getTmnId(),
                                 profile.getMobile(),
@@ -235,10 +236,6 @@ public class UserProfileHandler {
 
                 return signonRequest;
         }
-
-	private String generateRequestTransactionId() {
-	    return System.currentTimeMillis() + "";
-	}
 
         private DeleteFavoriteRequest createRemoveFavoriteRequest(
                 Integer channelID, String sessionID, String tmnID,

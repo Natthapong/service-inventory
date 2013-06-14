@@ -43,7 +43,7 @@ public class TmnProfileServiceImplTest {
 
     private UserProfileHandler mockProfileFacade;
 
-    private AccessToken accessToken = new AccessToken("tokenID", "sessionID", "tmnID", 41);
+    private AccessToken accessToken = new AccessToken("tokenID", "loginID", "sessionID", "tmnID", 41);
 
     @Before
     public void setup() {
