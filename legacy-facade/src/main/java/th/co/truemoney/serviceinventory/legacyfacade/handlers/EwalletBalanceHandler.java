@@ -131,7 +131,7 @@ public class EwalletBalanceHandler {
 	    transferRequest.setChannelId(channelID);
 	    transferRequest.setSecurityContext(new SecurityContext(sessionID, tmnID));
 	    transferRequest.setTarget(targetMobileNumber);
-	    transferRequest.setPersonalMessage(personalMessage);
+	    transferRequest.setPersonalMessage(tmpPersonalMessage);
 
 	    StandardMoneyResponse standardMoneyResponse = ewalletProxy.transfer(transferRequest);
 
