@@ -71,4 +71,20 @@ public class OTPService {
 		this.otpGenerator = otpGenerator;
 	}
 
+	public OTP saveOtpString(String mobileNumber, String otpString) throws ServiceInventoryWebException {
+
+		OTP otp = otpGenerator.generateNewOTP(mobileNumber);
+
+		logger.debug("==============================");
+		logger.debug("mobileNumber = " + otp.getMobileNumber());
+		logger.debug("otp = " + otp.getOtpString());
+		logger.debug("refCode = " + otp.getReferenceCode());
+		logger.debug("==============================");
+
+		otpRepository.save(otp);
+
+		return new OTP(otp.getMobileNumber(), otp.getReferenceCode(), otp.getOtpString().replaceAll(".", "x"));
+
+	}
+
 }
