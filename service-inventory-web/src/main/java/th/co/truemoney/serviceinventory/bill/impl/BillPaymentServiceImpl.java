@@ -235,19 +235,25 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             String ref1, String ref2, BigDecimal amount, InquiryOutstandingBillType inquiryType,
             String accessTokenID)
             throws ServiceInventoryException {
-
-        Bill billInfo = this.retrieveBillInformationWithKeyin(billCode, ref1, ref2, amount, accessTokenID);
-
+    	
+    	Bill billInfo = null;
+    	
         if (inquiryType == InquiryOutstandingBillType.ONLINE) {
-            OutStandingBill outstanding = retrieveBillOutStandingOnline(billCode, ref1, ref2, accessTokenID);
+        	OutStandingBill outstanding = this.retrieveBillOutStandingOnline(billCode, ref1, ref2, accessTokenID);
+        	
+        	String outstandingBillCode = outstanding.getBillCode();
+            billInfo = this.retrieveBillInformationWithKeyin(outstandingBillCode, ref1, ref2, amount, accessTokenID);
 
             String newRef1 = StringUtils.hasText(outstanding.getRef1()) ? outstanding.getRef1() : ref1;
             String newRef2 = StringUtils.hasText(outstanding.getRef2()) ? outstanding.getRef2() : ref2;
             
+            billInfo.setTarget(outstandingBillCode);
             billInfo.setRef1(newRef1);
             billInfo.setRef2(newRef2);
             billInfo.setAmount(outstanding.getOutStandingBalance());
             billInfo.setDueDate(outstanding.getDueDate());
+        } else {
+        	billInfo = this.retrieveBillInformationWithKeyin(billCode, ref1, ref2, amount, accessTokenID);
         }
         
         overDueValidator.validate(billInfo);

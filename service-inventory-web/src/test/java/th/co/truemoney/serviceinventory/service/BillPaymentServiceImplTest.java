@@ -53,9 +53,6 @@ import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 public class BillPaymentServiceImplTest {
 
     @Autowired
-    private BillPaymentServiceImpl billPayService;
-
-    @Autowired
     private AccessTokenMemoryRepository accessTokenRepo;
 
     @Autowired
@@ -65,12 +62,15 @@ public class BillPaymentServiceImplTest {
     private BillInformationRepository billInfoRepo;
 
     @Autowired
+    private BillPaymentServiceImpl billPayService;
+
+    @Autowired
     private LegacyFacade legacyFacade;
 
     private AccessToken accessToken;
 
     private AsyncBillPayProcessor asyncProcessor;
-
+    
     private BillPaymentHandler billPaymentFacade;
 
     @Before
@@ -141,7 +141,8 @@ public class BillPaymentServiceImplTest {
         //then
         assertNotNull(billInformation);
         verify(billPaymentFacade).getBillCodeInformation(any(GetBillRequest.class));
-
+        verify(billPaymentFacade).getBillOutStandingOnline(any(InquiryOutstandingBillRequest.class));
+        
         assertEquals("favorite", billInformation.getPayWith());
         assertEquals(billInformation.getRef1(), stubOutstandingBill.getRef1());
         assertEquals(billInformation.getRef2(), stubOutstandingBill.getRef2());
@@ -162,8 +163,29 @@ public class BillPaymentServiceImplTest {
         verify(billPaymentFacade).getBillCodeInformation(any(GetBillRequest.class));
 
         assertEquals("keyin", billInformation.getPayWith());
-        //assertEquals(BigDecimal.TEN, billInformation.getAmount());
         assertTrue(BigDecimal.TEN.compareTo(billInformation.getAmount()) == 0);
+    }
+    
+    @Test
+    public void getBillInformationViaKeyIn_TMOB() {
+    	String tmvhNumber = "0897661234";
+    	
+    	Bill returnedBill = new Bill();
+    	returnedBill.setTarget("blabla");
+    	
+    	OutStandingBill returnedOutstanding = new OutStandingBill();
+    	returnedOutstanding.setBillCode("tmvh");
+    	
+    	//given
+        when(billPaymentFacade.getBillCodeInformation(any(GetBillRequest.class))).thenReturn(returnedBill);
+        when(billPaymentFacade.getBillOutStandingOnline(any(InquiryOutstandingBillRequest.class))).thenReturn(returnedOutstanding);
+        
+        //when
+        Bill bill = billPayService.retrieveBillInformationWithKeyin("tmob", tmvhNumber, "", new BigDecimal(300), InquiryOutstandingBillType.ONLINE, accessToken.getAccessTokenID());
+        
+        //then
+        assertNotNull(bill);
+        assertEquals("tmvh", bill.getTarget());
     }
 
     @Test
