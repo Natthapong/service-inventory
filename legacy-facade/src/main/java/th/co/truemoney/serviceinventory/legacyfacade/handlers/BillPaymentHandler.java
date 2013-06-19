@@ -155,7 +155,7 @@ public class BillPaymentHandler {
             InquiryOutstandingBillResponse inquiryOutstandingBillResponse = billPayProxy.inquiryOutstandingBill(inquiryOutstandingBillRequest);
 
             OutStandingBill outStandingBill = new OutStandingBill();
-            outStandingBill.setBillCode(inquiryOutstandingBillRequest.getBillCode());
+            outStandingBill.setBillCode(inquiryOutstandingBillResponse.getBillCode());
             outStandingBill.setOutStandingBalance(inquiryOutstandingBillResponse.getAmount());
             outStandingBill.setRef1(inquiryOutstandingBillResponse.getReference1());
             outStandingBill.setRef2(inquiryOutstandingBillResponse.getReference2());
