@@ -1,6 +1,6 @@
 package th.co.truemoney.serviceinventory.bill.validation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -56,7 +56,6 @@ public class BillOverDueValidatorTest {
 
         validator.validate(bill);
     }
-
 
     @Test
     public void validate_BillHasNoDueDate_ThrowBillDueDateMissingException() {

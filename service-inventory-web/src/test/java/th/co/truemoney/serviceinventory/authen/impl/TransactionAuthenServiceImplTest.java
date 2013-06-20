@@ -2,7 +2,9 @@ package th.co.truemoney.serviceinventory.authen.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Assert;
@@ -16,15 +18,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import th.co.truemoney.serviceinventory.authen.impl.TransactionAuthenServiceImpl;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
-import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
@@ -164,7 +165,23 @@ public class TransactionAuthenServiceImplTest {
         Assert.assertEquals(TopUpQuote.Status.OTP_CONFIRMED, quote.getStatus());
     }
 
+    @Test
+    public void shouldNotSendOTPWhenUseAppleUser() {
+        
+        //given
+    	accessToken =  new AccessToken("tokenID", "loginID", "sessionID", "tmn.10000000020", 41);
+    	accessToken.setMobileNumber("0866013468");
+        accessTokenRepo.save(accessToken);
+        
+    	//when
+        authenService.requestOTP(quote.getID(), accessToken.getAccessTokenID());
+        
+        //then
+        verify(otpServiceMock, never()).send(anyString());
 
+    }
+
+    
     private TopUpQuote createQuote(AccessToken accessToken, OTP otp) {
         TopUpQuote quote = new TopUpQuote();
         quote.setID("quoteID");
