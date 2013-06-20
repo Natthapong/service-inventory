@@ -97,7 +97,7 @@ public class EmailServiceTest {
     @Test
     public void emailConfig() throws IOException, TemplateException {
         assertEquals("utf-8", emailEncoding);
-        assertEquals("ยินดีต้อนรับสู่บริการ True Money Smart Wallet", welcomeSubject);
+        assertEquals("ยินดีต้อนรับเข้าสู่บริการทรูมันนี่ วอลเล็ท", welcomeSubject);
 
         Configuration configuration = freeMarker.createConfiguration();
         assertNotNull(configuration.getTemplate("welcome-email.ftl"));
