@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<response result_namespace="core" result_code="0" result_desc="SUCCESS"
+	req_transaction_id="3310R0041" transaction_id="130419013811"
+	response_message="SUCCESS">
+	<parameters>
+		<p k="logo"
+			v="http://www3.truecorp.co.th/assets/layouts/truecorp/images/logo/logo_truemoveh.png" />
+		<p k="service_min_amount" v="0" />
+		<p k="login_id" v="user1.test.v1@gmail.com" />
+		<p k="title_th" v="ทรูมูฟ เอช แบบเติมเงิน" />
+		<p k="amount" v="10100" />
+		<p k="msisdn" v="0864041515" />
+		<p k="service_max_amount" v="200000" />
+		<p k="title_en" v="TrueMove-H Prepaid" />
+		<p k="service_fee" v="1400" />
+		<p k="total_service_fee" v="1400" />
+		<p k="target" v="TRMVH" />
+		<p k="remaining_balance" v="284800" />
+		<p k="service_fee_type" v="THB" />
+	</parameters>
+	<extra_xml>
+		<source_fees>
+			<source_fee source="EW" source_fee="000" source_fee_type="THB"
+				total_source_fee="000" min_amount="10000" max_amount="30000000" />
+		</source_fees>
+	</extra_xml>
+</response>

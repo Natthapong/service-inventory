@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<response result_namespace="PCS" result_code="0"
+	result_desc="This Action is successful" req_transaction_id="4410A0322"
+	transaction_id="130401012310" response_message="This Action is successful">
+	<parameters>
+		<p k="ref1" v="02110004198411" />
+		<p k="ref2" v="22060100300001" />
+		<p k="amount" v="100" />
+		<p k="source" v="EW" />
+	</parameters>
+</response>

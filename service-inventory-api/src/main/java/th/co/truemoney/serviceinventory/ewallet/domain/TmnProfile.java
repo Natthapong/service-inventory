@@ -1,47 +1,121 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
-public class TmnProfile {
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public class TmnProfile implements Serializable {
 	
-	private String sessionID;
-	private String truemoneyID;
+	private static final long serialVersionUID = 8341135419244797163L;
+	private String email;
+	private String password;
 	private String fullname;
-	private String ewalletBalance;
-	private String mobileno;
+	private String thaiID;
+	private String mobileNumber;
+	private BigDecimal balance;
+	private String type;
+	private Integer status;
 	
-	public TmnProfile(String sessionID, String truemoneyID) {
-		this.sessionID = sessionID;
-		this.truemoneyID = truemoneyID;
+	public TmnProfile() {
+		super();
 	}
 	
-	public String getSessionID() {
-		return sessionID;
+	public TmnProfile(String fullname, BigDecimal balance) {
+		this.fullname = fullname;
+		this.balance = balance;
 	}
-	public void setSessionID(String sessionID) {
-		this.sessionID = sessionID;
+
+	public TmnProfile(String email, String password, String fullname,
+			String thaiID, String mobileNumber, BigDecimal balance,
+			String type, Integer status) {
+		super();
+		this.email = email;
+		this.password = password;
+		this.fullname = fullname;
+		this.thaiID = thaiID;
+		this.mobileNumber = mobileNumber;
+		this.balance = balance;
+		this.type = type;
+		this.status = status;
 	}
-	public String getTruemoneyID() {
-		return truemoneyID;
+
+	public String getEmail() {
+		return email;
 	}
-	public void setTruemoneyID(String truemoneyID) {
-		this.truemoneyID = truemoneyID;
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public String getFullname() {
 		return fullname;
 	}
+
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
 	}
-	public String getEwalletBalance() {
-		return ewalletBalance;
+
+	public String getThaiID() {
+		return thaiID;
 	}
-	public void setEwalletBalance(String ewalletBalance) {
-		this.ewalletBalance = ewalletBalance;
+
+	public void setThaiID(String thaiID) {
+		this.thaiID = thaiID;
 	}
-	public String getMobileno() {
-		return mobileno;
+
+	public String getMobileNumber() {
+		return mobileNumber;
 	}
-	public void setMobileno(String mobileno) {
-		this.mobileno = mobileno;
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
 	}
-			
+
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	
+	@JsonIgnore
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.append("email: ", this.getEmail())
+				.append("mobileNumber: ", this.getMobileNumber())
+				.append("balance: ", this.getBalance())
+				.append("type: ", this.getType())
+				.append("status: ", this.getStatus())
+				.toString();
+	}
+	
 }

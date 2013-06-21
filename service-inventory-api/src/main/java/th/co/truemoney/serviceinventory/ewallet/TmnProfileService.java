@@ -1,16 +1,28 @@
 package th.co.truemoney.serviceinventory.ewallet;
 
-import th.co.truemoney.serviceinventory.common.domain.ServiceResponse;
-import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import java.math.BigDecimal;
+
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-@SuppressWarnings("rawtypes")
 public interface TmnProfileService {
-	
-	public ServiceResponse<TmnProfile> login(Login login);
-	
-	public ServiceResponse extend(TmnProfile tmnProfile);
 
-	public ServiceResponse logout(TmnProfile tmnProfile); 
-	
+	public String login(EWalletOwnerCredential ewalletLogin, ClientCredential clientLogin) throws ServiceInventoryException;
+
+    public TmnProfile getTruemoneyProfile(String accessTokenID) throws ServiceInventoryException;
+
+    public BigDecimal getEwalletBalance(String accessTokenID) throws ServiceInventoryException;
+
+    public String logout(String accessTokenID) throws ServiceInventoryException;
+
+    public String validateEmail(Integer channelID, String email) throws ServiceInventoryException;
+
+    public OTP createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException;
+
+    public TmnProfile confirmCreateProfile(Integer channelID, OTP otp) throws ServiceInventoryException;
+
 }
+

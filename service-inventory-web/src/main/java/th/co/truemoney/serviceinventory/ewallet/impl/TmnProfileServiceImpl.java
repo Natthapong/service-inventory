@@ -1,96 +1,169 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.common.domain.ServiceResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
-import th.co.truemoney.serviceinventory.ewallet.domain.Login;
+import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
+import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
+import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
-import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.profile.TmnProfileProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.security.TmnSecurityProxy;
+import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
+import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.sms.OTPService;
 
+@Service
 public class TmnProfileServiceImpl implements TmnProfileService {
 
-	@Autowired
-	private TmnSecurityProxy tmnSecurityProxy;
-	
-	@Autowired
-	private TmnProfileProxy tmnProfileProxy;
-		
-	@Override
-	public ServiceResponse<TmnProfile> login(Login login) {
+	private static Logger logger = LoggerFactory.getLogger(TmnProfileServiceImpl.class);
 
-		try {
-			// Create Request ID
-			SignonRequest signonRequest = new SignonRequest();
-			signonRequest.setInitiator(login.getUsername());
-			signonRequest.setPin(login.getPassword());
-			signonRequest.setChannelId("41");
-			
-			SignonResponse signonResponse = this.tmnSecurityProxy.signon(signonRequest);
-			
-			ServiceResponse<TmnProfile> serviceResponse = new ServiceResponse<TmnProfile>(
-					ServiceInventoryException.NAMESPACE, 
-					ServiceInventoryException.Code.SUCCESS, 
-					"Success");
-			TmnProfile tmnProfile = new TmnProfile(signonResponse.getSessionId(), signonResponse.getTmnId());
-			serviceResponse.setBody(tmnProfile);
-			return serviceResponse;
-		} catch (EwalletException e) {
-			throw new SignonServiceException(e.getCode(), "fail to sign on : " + e.getCode(), e.getNamespace());
-		}
-	}
-	
+	@Autowired
+	private LegacyFacade legacyFacade;
+
+	@Autowired
+	private OTPService otpService;
+
+	@Autowired
+	private EmailService emailService;
+
+	@Autowired
+	private AccessTokenRepository accessTokenRepo;
+
+	@Autowired
+	private RegisteringProfileRepository registeringProfileRepo;
+
 	@Override
-	public ServiceResponse<StandardBizResponse> extend(TmnProfile tmnProfile) {
-		try {
-			StandardBizRequest standardBizRequest = new StandardBizRequest();
-			SecurityContext securityContext = new SecurityContext(tmnProfile.getSessionID(), tmnProfile.getTruemoneyID());
-			standardBizRequest.setSecurityContext(securityContext);
-			StandardBizResponse standardBizResponse = this.tmnSecurityProxy.extendSession(standardBizRequest);
-			ServiceResponse<StandardBizResponse> serviceResponse = new ServiceResponse<StandardBizResponse>(
-					ServiceInventoryException.NAMESPACE, 
-					ServiceInventoryException.Code.SUCCESS, 
-					"Success");
-			serviceResponse.setBody(standardBizResponse);
-			return serviceResponse;
-		} catch (ServiceInventoryException e) {
-			throw e;
-		}
+	public String login(EWalletOwnerCredential userLogin, ClientCredential clientLogin)
+				throws SignonServiceException {
+
+		//TODO: verify client login first???
+
+		Integer channelID = userLogin.getChannelId();
+		String initiator = userLogin.getLoginKey();
+		String secret = userLogin.getLoginSecret();
+
+		AccessToken accessToken = legacyFacade.login(channelID, initiator, secret);
+
+		accessToken.setClientCredential(clientLogin);
+
+		logger.info("Access token created: " + accessToken);
+
+		accessTokenRepo.save(accessToken);
+
+		return accessToken.getAccessTokenID();
 	}
 
 	@Override
-	public ServiceResponse<StandardBizResponse> logout(TmnProfile tmnProfile) {
-		try {
-			StandardBizRequest standardBizRequest = new StandardBizRequest();
-			SecurityContext securityContext = new SecurityContext(tmnProfile.getSessionID(), tmnProfile.getTruemoneyID());
-			standardBizRequest.setSecurityContext(securityContext);
-			StandardBizResponse standardBizResponse = this.tmnSecurityProxy.terminateSession(standardBizRequest);
-			ServiceResponse<StandardBizResponse> serviceResponse = new ServiceResponse<StandardBizResponse>(
-					ServiceInventoryException.NAMESPACE, 
-					ServiceInventoryException.Code.SUCCESS, 
-					"Success");
-			serviceResponse.setBody(standardBizResponse);
-			return serviceResponse;
-		} catch (ServiceInventoryException e) {
-			throw e;
-		}
+	public TmnProfile getTruemoneyProfile(String accessTokenID) throws ServiceInventoryException {
+
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+						   .fromChannel(accessToken.getChannelID())
+						   .getProfile();
 	}
-	
-	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
-		this.tmnProfileProxy = tmnProfileProxy;
+
+	@Override
+	public BigDecimal getEwalletBalance(String accessTokenID) throws ServiceInventoryException {
+
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+						   .fromChannel(accessToken.getChannelID())
+				   		   .getCurrentBalance();
 	}
-	
-	public void setTmnSecurityProxy(TmnSecurityProxy tmnSecurityProxy) {
-		this.tmnSecurityProxy = tmnSecurityProxy;
+
+	@Override
+	public String logout(String accessTokenID) {
+
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+
+		accessTokenRepo.remove(accessTokenID);
+
+		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+					.fromChannel(accessToken.getChannelID())
+					.logout();
+
+		return "";
 	}
+
+	@Override
+    public String validateEmail(Integer channelID, String registeringEmail) throws ServiceInventoryException {
+
+		legacyFacade.registering()
+						.fromChannel(channelID)
+						.verifyEmail(registeringEmail);
+
+		return registeringEmail;
+    }
+
+	@Override
+    public OTP createProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
+
+		legacyFacade.registering()
+						.fromChannel(channelID)
+						.verifyMobileNumber(tmnProfile.getMobileNumber());
+
+       	OTP otp = otpService.send(tmnProfile.getMobileNumber());
+
+       	registeringProfileRepo.saveRegisteringProfile(tmnProfile);
+
+       	return otp;
+    }
+
+	@Override
+	public TmnProfile confirmCreateProfile(Integer channelID, OTP otp) throws ServiceInventoryException {
+
+		otpService.isValidOTP(otp);
+
+		TmnProfile tmnProfile = registeringProfileRepo.findRegisteringProfileByMobileNumber(otp.getMobileNumber());
+
+		performCreateProfile(channelID, tmnProfile);
+
+		sendOutWelcomeEmail(tmnProfile.getEmail());
+
+		return tmnProfile;
+	}
+
+	private void performCreateProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
+		legacyFacade.fromChannel(channelID)
+			.registering()
+			.register(tmnProfile);
+    }
+
+	private void sendOutWelcomeEmail(String email) {
+		emailService.sendWelcomeEmail(email, null);
+	}
+
+	public void setLegacyFacade(LegacyFacade legacyFacade) {
+		this.legacyFacade = legacyFacade;
+	}
+
+	public void setOtpService(OTPService otpService) {
+		this.otpService = otpService;
+	}
+
+	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepo) {
+		this.accessTokenRepo = accessTokenRepo;
+	}
+
+	public void setRegisteringProfileRepository(RegisteringProfileRepository registeringProfileRepo) {
+		this.registeringProfileRepo = registeringProfileRepo;
+	}
+
+	public void setEmailService(EmailService emailService) {
+		this.emailService = emailService;
+	}
+
+
 
 }

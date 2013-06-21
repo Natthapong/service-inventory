@@ -1,0 +1,46 @@
+{
+    "BBL":
+    {
+        "bankNameTh" : "กรุงเทพ",
+        "bankNameEn" : "Bangkok Bank",
+        "minAmount" : 300.00,
+        "maxAmount" : 3000.00,
+        "feeValue" : 12.00,
+        "feeType" : "F",
+        "minTotalFee" : 12.00,
+        "maxTotalFee" : 12.00
+    },
+    "KTB":
+    {
+        "bankNameTh" : "กรุงไทย",
+        "bankNameEn" : "Krungthai Bank",
+        "minAmount" : 300.00,
+        "maxAmount" : 30000.00,
+        "feeValue" : 3.00,
+        "feeType" : "P",
+        "minTotalFee" : 10.00,
+        "maxTotalFee" : 20.00
+    },
+    "BAY":
+    {
+        "bankNameTh" : "กรุงศรีอยุธยา",
+        "bankNameEn" : "Bank of Ayudhya",
+        "minAmount" : 300.00,
+        "maxAmount" : 3000.00,
+        "feeValue" : 10.00,
+        "feeType" : "F",
+        "minTotalFee" : 10.00,
+        "maxTotalFee" : 10.00
+    },
+    "SCB":
+    {
+        "bankNameTh" : "ไทยพาณิชย์",
+        "bankNameEn" : "The Siam Commercial Bank",
+        "minAmount" : 300.00,
+        "maxAmount" : 3000.00,
+        "feeValue" : 20.00,
+        "feeType" : "F",
+        "minTotalFee" : 20.00,
+        "maxTotalFee" : 20.00
+    }
+}
