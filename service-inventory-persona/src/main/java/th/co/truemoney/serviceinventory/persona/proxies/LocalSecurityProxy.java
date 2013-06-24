@@ -20,10 +20,6 @@ public class LocalSecurityProxy implements TmnSecurityProxy {
     private Eve eve = new Eve();
     private Simpsons simpsons = new Simpsons();
 
-    private String AdamTmnMoneyID = "AdamTmnMoneyId";
-    private String EveTmnMoneyID = "EveTmnMoneyId";
-    private String SimpsonsTmnMoneyID = "SimpsonsTmnMoneyId";
-
     @Override
     public StandardBizResponse terminateSession(StandardBizRequest standardBizRequest)
             throws EwalletException {
@@ -35,29 +31,18 @@ public class LocalSecurityProxy implements TmnSecurityProxy {
             throws EwalletException {
 
         String initiator = signOnRequest.getInitiator();
-        String password = signOnRequest.getPin();
 
-        if ("adam@tmn.com".equals(initiator)
-                && "password".equals(password)) {
+        if ("adam@tmn.com".equals(initiator)) {
             return adam.getTmnSecurity().signon(signOnRequest);
 
-        }else if("eve@tmn.com".equals(initiator)
-                && "password".equals(password)){
+        }else if("eve@tmn.com".equals(initiator)){
             return eve.getTmnSecurity().signon(signOnRequest);
 
-        }else if("simpson@tmn.com".equals(initiator)
-                && "password".equals(password)){
-            return new SignonResponse("1", "0", "namespace",
-                    new String[] { "key" }, new String[] { "value" },
-                    "sessionId", SimpsonsTmnMoneyID);
-
-        }else {
-            return new SignonResponse("1", "0", "namespace",
-                    new String[] { "key" }, new String[] { "value" },
-                    "sessionId", "1000");
+        }else if("simpson@tmn.com".equals(initiator)){
+            return simpsons.getTmnSecurity().signon(signOnRequest);
         }
 
-        //throw new ServiceInventoryException(400, "4", "", "TMN-SERVICE-INVENTORY");
+        throw new ServiceInventoryException(400, "4", "", "TMN-SERVICE-INVENTORY");
     }
 
     @Override

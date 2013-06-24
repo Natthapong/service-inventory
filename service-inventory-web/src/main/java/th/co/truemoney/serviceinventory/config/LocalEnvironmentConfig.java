@@ -19,7 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
-import th.co.truemoney.serviceinventory.persona.TrueConvergenceOneBillPersona;
+import th.co.truemoney.serviceinventory.persona.LocalBillsPersona;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalEwalletSoapProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalProfileAdminProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalSecurityProxy;
@@ -74,7 +74,7 @@ public class LocalEnvironmentConfig {
 
     @Bean
     public BillProxy billPayProxy() {
-        return new TrueConvergenceOneBillPersona().getBillPayProxy();
+        return new LocalBillsPersona().getBillPayProxy();
     }
 
     @Bean

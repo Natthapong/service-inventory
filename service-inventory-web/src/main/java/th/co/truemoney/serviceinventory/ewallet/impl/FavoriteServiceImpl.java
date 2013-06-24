@@ -15,65 +15,65 @@ import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 
 public class FavoriteServiceImpl implements FavoriteService {
 
-	@Autowired
-	private AccessTokenRepository accessTokenRepository;
+    @Autowired
+    private AccessTokenRepository accessTokenRepository;
 
-	@Autowired
-	private LegacyFacade legacyFacade;
-	
-	@Override
-	public Favorite addFavorite(Favorite favorite, String accessTokenID)
-			throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
-		
-		if(!isFavoritable(favorite.getServiceType() , favorite.getServiceCode(), favorite.getRef1(), accessToken.getAccessTokenID())) {
-			throw new UnVerifiedFavoritePaymentException(Code.FAVORITE_SERVICE_CODE_NOT_INLIST, "service code not in list");
-		}
-		
-		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
-				.fromChannel(accessToken.getChannelID())
-				.withFavorite(favorite)
-				.addFavorite();
-	}
+    @Autowired
+    private LegacyFacade legacyFacade;
 
-	@Override
-	public Boolean deleteFavorite(String serviceCode, String ref1,
-			String accessTokenID) throws ServiceInventoryException {
-		
-		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
-		
-		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
-				.fromChannel(accessToken.getChannelID())
-				.withServiceCode(serviceCode)
-				.withRefernce1(ref1)
-				.removeFavorite();
-	}
-	
-	@Override
-	public List<Favorite> getFavorites(String accessTokenID)
-			throws ServiceInventoryException {
-		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);		
-		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
-				.fromChannel(accessToken.getChannelID())
-				.getListFavorite();
-	}
-	
-	public boolean isFavoritable(String serviceType, String serviceCode, String ref1, String accessTokenID){
-		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
-		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
-				.fromChannel(accessToken.getChannelID())
-				.withServiceType(serviceType)
-				.withServiceCode(serviceCode)
-				.withRefernce1(ref1)
-				.isFavoritable();
-	}
+    @Override
+    public Favorite addFavorite(Favorite favorite, String accessTokenID)
+            throws ServiceInventoryException {
+        AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 
-	public void setAccessTokenRepository(AccessTokenRepository accessTokenRepository) {
-		this.accessTokenRepository = accessTokenRepository;
-	}
+        if(!isFavoritable(favorite.getServiceType() , favorite.getServiceCode(), favorite.getRef1(), accessToken.getAccessTokenID())) {
+            throw new UnVerifiedFavoritePaymentException(Code.FAVORITE_SERVICE_CODE_NOT_INLIST, "service code not in list: " + favorite.getServiceCode());
+        }
 
-	public void setLegacyFacade(LegacyFacade legacyFacade) {
-		this.legacyFacade = legacyFacade;
-	}
+        return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+                .fromChannel(accessToken.getChannelID())
+                .withFavorite(favorite)
+                .addFavorite();
+    }
+
+    @Override
+    public Boolean deleteFavorite(String serviceCode, String ref1,
+            String accessTokenID) throws ServiceInventoryException {
+
+        AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
+
+        return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+                .fromChannel(accessToken.getChannelID())
+                .withServiceCode(serviceCode)
+                .withRefernce1(ref1)
+                .removeFavorite();
+    }
+
+    @Override
+    public List<Favorite> getFavorites(String accessTokenID)
+            throws ServiceInventoryException {
+        AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
+        return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+                .fromChannel(accessToken.getChannelID())
+                .getListFavorite();
+    }
+
+    public boolean isFavoritable(String serviceType, String serviceCode, String ref1, String accessTokenID){
+        AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
+        return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+                .fromChannel(accessToken.getChannelID())
+                .withServiceType(serviceType)
+                .withServiceCode(serviceCode)
+                .withRefernce1(ref1)
+                .isFavoritable();
+    }
+
+    public void setAccessTokenRepository(AccessTokenRepository accessTokenRepository) {
+        this.accessTokenRepository = accessTokenRepository;
+    }
+
+    public void setLegacyFacade(LegacyFacade legacyFacade) {
+        this.legacyFacade = legacyFacade;
+    }
 
 }

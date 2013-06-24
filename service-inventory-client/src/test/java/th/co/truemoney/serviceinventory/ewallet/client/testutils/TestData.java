@@ -8,56 +8,56 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 
 public class TestData {
 
-	public static EWalletOwnerCredential createSuccessUserLogin() {
-		return new EWalletOwnerCredential("local@tmn.com", "password", 40);
-	}
-	
-	public static ClientCredential createSuccessClientLogin() {
-		return new ClientCredential("myAppKey", "myAppUser", "myAppPassword", "iPhone", "iPhone");
-	}
+    public static EWalletOwnerCredential createSuccessUserLogin() {
+        return new EWalletOwnerCredential("adam@tmn.com", "password", 40);
+    }
 
-	public static EWalletOwnerCredential createAdamSuccessLogin(){
-		return new EWalletOwnerCredential("adam@tmn.com","password", 40);
-	}
+    public static ClientCredential createSuccessClientLogin() {
+        return new ClientCredential("myAppKey", "myAppUser", "myAppPassword", "iPhone", "iPhone");
+    }
 
-	public static EWalletOwnerCredential createEveSuccessLogin(){
-		return new EWalletOwnerCredential("eve@tmn.com","password", 40);
-	}
-	
-	public static EWalletOwnerCredential createSimpsonsSuccessLogin(){
-		return new EWalletOwnerCredential("simpson@tmn.com","password", 40);
-	}
-	
-	public static Favorite createFavoriteBill() {
+    public static EWalletOwnerCredential createAdamSuccessLogin(){
+        return new EWalletOwnerCredential("adam@tmn.com","password", 40);
+    }
 
-		Favorite favoriteBill = new Favorite();
-		favoriteBill.setAmount(new BigDecimal(2000));
-		favoriteBill.setRef1("555");
-		favoriteBill.setServiceCode("tr");
-		favoriteBill.setServiceType("billpay");
+    public static EWalletOwnerCredential createEveSuccessLogin(){
+        return new EWalletOwnerCredential("eve@tmn.com","password", 40);
+    }
 
-		return favoriteBill;
-	}
-	
-	public static Favorite createFavoriteBillOnline() {
+    public static EWalletOwnerCredential createSimpsonsSuccessLogin(){
+        return new EWalletOwnerCredential("simpson@tmn.com","password", 40);
+    }
 
-		Favorite favoriteBill = new Favorite();
-		favoriteBill.setAmount(new BigDecimal(1520));
-		favoriteBill.setRef1("123456789");
-		favoriteBill.setServiceCode("mea");
-		favoriteBill.setServiceType("billpay");
+    public static Favorite createFavoriteBill() {
 
-		return favoriteBill;
-	}
-	
-	public static Favorite createNotFavoriteBill() {
+        Favorite favoriteBill = new Favorite();
+        favoriteBill.setAmount(new BigDecimal(2000));
+        favoriteBill.setRef1("555");
+        favoriteBill.setServiceCode("tli");
+        favoriteBill.setServiceType("billpay");
 
-		Favorite favoriteBill = new Favorite();
-		favoriteBill.setAmount(new BigDecimal(2000));
-		favoriteBill.setRef1("555");
-		favoriteBill.setServiceCode("mart");
-		favoriteBill.setServiceType("billpay");
+        return favoriteBill;
+    }
 
-		return favoriteBill;
-	}
+    public static Favorite createFavoriteBillOnline() {
+
+        Favorite favoriteBill = new Favorite();
+        favoriteBill.setAmount(new BigDecimal(1520));
+        favoriteBill.setRef1("123456789");
+        favoriteBill.setServiceCode("tcg");
+        favoriteBill.setServiceType("billpay");
+
+        return favoriteBill;
+    }
+
+    public static Favorite createNotFavoriteBill() {
+
+        Favorite favoriteBill = new Favorite();
+        favoriteBill.setAmount(new BigDecimal(2000));
+        favoriteBill.setRef1("555");
+        favoriteBill.setServiceCode("mart");
+        favoriteBill.setServiceType("billpay");
+
+        return favoriteBill;
+    }
 }

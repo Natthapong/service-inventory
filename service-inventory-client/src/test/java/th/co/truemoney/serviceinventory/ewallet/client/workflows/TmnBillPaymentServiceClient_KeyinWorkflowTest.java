@@ -51,7 +51,7 @@ public class TmnBillPaymentServiceClient_KeyinWorkflowTest {
         assertNotNull(accessToken);
 
         Bill bill = billPaymentServiceClient.retrieveBillInformationWithKeyin(
-                "mea", "ref1", "ref2",
+                "aeon", "ref1", "",
                 BigDecimal.TEN, InquiryOutstandingBillType.OFFLINE, accessToken);
 
         assertNotNull(bill);
