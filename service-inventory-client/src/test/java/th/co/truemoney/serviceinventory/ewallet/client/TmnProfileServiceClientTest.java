@@ -97,7 +97,7 @@ public class TmnProfileServiceClientTest {
 
         TmnProfile tmnProfile = client.getTruemoneyProfile(accessToken);
         assertNotNull(tmnProfile);
-        assertEquals("username", tmnProfile.getFullname());
+        assertEquals("adam", tmnProfile.getFullname());
     }
 
     @Test
