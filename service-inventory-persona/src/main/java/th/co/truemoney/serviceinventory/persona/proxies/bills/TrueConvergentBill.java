@@ -1,30 +1,19 @@
-package th.co.truemoney.serviceinventory.persona.proxies;
+package th.co.truemoney.serviceinventory.persona.proxies.bills;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import th.co.truemoney.serviceinventory.engine.client.domain.ExtraXML;
 import th.co.truemoney.serviceinventory.engine.client.domain.SIEngineResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.SourceFee;
-import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayRequest;
-import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBillPayResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOutstandingBillRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOutstandingBillResponse;
-import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
-import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
-import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 
-public class TrueConvergentBillProxy implements BillProxy {
+public class TrueConvergentBill extends Bill {
 
-    @Override
-    public GetBarcodeResponse getBarcodeInformation(
-            GetBarcodeRequest barcodeRequest) throws SIEngineException {
-        SIEngineResponse billResponse = new SIEngineResponse();
+    public GetBarcodeResponse getBarcodeInformation(GetBarcodeRequest barcodeRequest, SIEngineResponse billResponse) throws SIEngineException {
+
         billResponse.setResultCode("0");
         billResponse.setResultDesc("Success");
         billResponse.setReqTransactionID("4410A0318");
@@ -50,77 +39,15 @@ public class TrueConvergentBillProxy implements BillProxy {
         billResponse.addParameterElement("service_max_amount", "1000000");
         billResponse.addParameterElement("duedate_bill", "310153");
 
-        ExtraXML extraXML = new ExtraXML();
-
-        List<SourceFee> sourceFeeList = new ArrayList<SourceFee>();
-
-        SourceFee source1 = new SourceFee();
-        source1.setSource("EW");
-        source1.setSourceFee("300");
-        source1.setSourceFeeType("THB");
-        source1.setMinAmount("1000");
-        source1.setMaxAmount("1000000");
-
-        SourceFee source2 = new SourceFee();
-        source2.setSource("MMCC");
-        source2.setSourceFee("700");
-        source2.setSourceFeeType("THB");
-        source2.setMinAmount("1000");
-        source2.setMaxAmount("1000000");
-
-        sourceFeeList.add(source1);
-        sourceFeeList.add(source2);
-
-        extraXML.setSourceFeeList(sourceFeeList);
-        billResponse.setExtraXML(extraXML);
+        SourceFee source1 = createSourceFee("EW", "300", "THB", "50", "10000");
+        SourceFee source2 = createSourceFee("MMCC", "700", "THB", "100", "10000");
+        addSourceFee(billResponse, source1, source2);
 
         return new GetBarcodeResponse(billResponse);
     }
 
-    @Override
-    public VerifyBillPayResponse verifyBillPay(VerifyBillPayRequest billPayRequest) throws SIEngineException {
+    public GetBillResponse getBillCodeInformation(GetBillRequest request, SIEngineResponse billResponse) throws SIEngineException {
 
-        SIEngineResponse billResponse = new SIEngineResponse();
-
-        billResponse.setResultCode("0");
-        billResponse.setResultNamespace("PCS");
-        billResponse.setResultDesc("This Bill is verified");
-        billResponse.setReqTransactionID("4410A0322");
-        billResponse.setTransactionID("130401012310");
-        billResponse.setResponseMessage("This Action is successful");
-
-        billResponse.addParameterElement("ref1", "02110004198411");
-        billResponse.addParameterElement("ref2", "22060100300001");
-        billResponse.addParameterElement("amount", "100");
-        billResponse.addParameterElement("source", "EW");
-
-        return new VerifyBillPayResponse(billResponse);
-    }
-
-    @Override
-    public ConfirmBillPayResponse confirmBillPay(ConfirmBillPayRequest billPayRequest) throws SIEngineException {
-
-        SIEngineResponse billResponse = new SIEngineResponse();
-
-        billResponse.setResultCode("0");
-        billResponse.setResultNamespace("ENGINE");
-        billResponse.setResultDesc("This Transaction is completed");
-        billResponse.setReqTransactionID("4410A0334");
-        billResponse.setTransactionID("20130401125936048554");
-        billResponse.setResponseMessage("Success");
-
-        billResponse.addParameterElement("trans_relation", "27e8c5d9e37746c7e");
-        billResponse.addParameterElement("remaining_balance", "50000");
-        billResponse.addParameterElement("amount", "100");
-        billResponse.addParameterElement("msisdn", "0891267357");
-
-        return new ConfirmBillPayResponse(billResponse);
-    }
-
-    @Override
-    public GetBillResponse getBillCodeInformation(GetBillRequest request)
-            throws SIEngineException {
-        SIEngineResponse billResponse = new SIEngineResponse();
         billResponse.setResultCode("0");
         billResponse.setResultDesc("Success");
         billResponse.setReqTransactionID("4410A0318");
@@ -145,37 +72,14 @@ public class TrueConvergentBillProxy implements BillProxy {
         billResponse.addParameterElement("target", "tcg");
         billResponse.addParameterElement("service_max_amount", "1000000");
 
-        ExtraXML extraXML = new ExtraXML();
-
-        List<SourceFee> sourceFeeList = new ArrayList<SourceFee>();
-
-        SourceFee source1 = new SourceFee();
-        source1.setSource("EW");
-        source1.setSourceFee("300");
-        source1.setSourceFeeType("THB");
-        source1.setMinAmount("1000");
-        source1.setMaxAmount("1000000");
-
-        SourceFee source2 = new SourceFee();
-        source2.setSource("MMCC");
-        source2.setSourceFee("700");
-        source2.setSourceFeeType("THB");
-        source2.setMinAmount("1000");
-        source2.setMaxAmount("1000000");
-
-        sourceFeeList.add(source1);
-        sourceFeeList.add(source2);
-
-        extraXML.setSourceFeeList(sourceFeeList);
-        billResponse.setExtraXML(extraXML);
+        SourceFee source1 = createSourceFee("EW", "300", "THB", "50", "10000");
+        SourceFee source2 = createSourceFee("MMCC", "700", "THB", "100", "10000");
+        addSourceFee(billResponse, source1, source2);
 
         return new GetBillResponse(billResponse);
     }
 
-    @Override
-    public InquiryOutstandingBillResponse inquiryOutstandingBill(InquiryOutstandingBillRequest inquiryOutstandingBillRequest)
-            throws SIEngineException {
-        SIEngineResponse billResponse = new SIEngineResponse();
+    public InquiryOutstandingBillResponse inquiryOutstandingBill(InquiryOutstandingBillRequest inquiryOutstandingBillRequest, SIEngineResponse billResponse) throws SIEngineException {
         billResponse.setResultCode("0");
         billResponse.setResultDesc("Success");
         billResponse.setReqTransactionID("4410A0318");
@@ -194,4 +98,5 @@ public class TrueConvergentBillProxy implements BillProxy {
 
         return new InquiryOutstandingBillResponse(billResponse);
     }
+
 }
