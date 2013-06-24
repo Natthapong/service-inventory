@@ -29,139 +29,152 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 
 public class Simpsons  implements Persona {
-	@Override
-	public TmnProfileProxy getTmnProfile() {
-		return new TmnProfileProxy() {
 
-			@Override
-			public GetBasicProfileResponse getBasicProfile(
-					StandardBizRequest standardBizRequest)
-					throws EwalletException {
-				return new GetBasicProfileResponse("1", "0", "namespace",
+    private BigDecimal balance = new BigDecimal(1000);
+
+    @Override
+    public TmnProfileProxy getTmnProfile() {
+        return new TmnProfileProxy() {
+
+            @Override
+            public GetBasicProfileResponse getBasicProfile(
+                    StandardBizRequest standardBizRequest)
+                    throws EwalletException {
+                return new GetBasicProfileResponse("1", "0", "namespace",
                         new String[] { "key" }, new String[] { "value" },
                         "SimpsonsTmnMoneyId", "simpsons@tmn.com", "0891231234",
-                        new BigDecimal(50.0d), "C", 3);
-			}
+                        balance, "C", 3);
+            }
 
-			@Override
-			public CreateTmnProfileResponse createTmnProfile(
-					CreateTmnProfileRequest createTmnProfileRequest)
-					throws EwalletException {
-				return new CreateTmnProfileResponse("1", "0", "namespace",
-						new String[] { "key" }, new String[] { "value" },
-						"123123");
-			}
+            @Override
+            public CreateTmnProfileResponse createTmnProfile(
+                    CreateTmnProfileRequest createTmnProfileRequest)
+                    throws EwalletException {
+                return new CreateTmnProfileResponse("1", "0", "namespace",
+                        new String[] { "key" }, new String[] { "value" },
+                        "123123");
+            }
 
-			@Override
-			public ListSourceResponse listSource(
-					ListSourceRequest listSourceRequest)
-					throws EwalletException {
+            @Override
+            public ListSourceResponse listSource(
+                    ListSourceRequest listSourceRequest)
+                    throws EwalletException {
 
-				SourceContext[] sourceContext = new SourceContext[3];
-				sourceContext[0] = new SourceContext("1", "type", new String[] {
-						"SCB", "xxxx1233" });
-				sourceContext[1] = new SourceContext("2", "type", new String[] {
-						"KTB", "xxx5673" });
-				sourceContext[2] = new SourceContext("3", "type", new String[] {
-						"BBL", "xxxx9103" });
+                SourceContext[] sourceContext = new SourceContext[3];
+                sourceContext[0] = new SourceContext("1", "type", new String[] {
+                        "SCB", "xxxx1233" });
+                sourceContext[1] = new SourceContext("2", "type", new String[] {
+                        "KTB", "xxx5673" });
+                sourceContext[2] = new SourceContext("3", "type", new String[] {
+                        "BBL", "xxxx9103" });
 
-				return new ListSourceResponse("1", "2", "namespace",
-						new String[] { "key" }, new String[] { "value" },
-						sourceContext);
-			}
+                return new ListSourceResponse("1", "2", "namespace",
+                        new String[] { "key" }, new String[] { "value" },
+                        sourceContext);
+            }
 
-			@Override
-			public StandardBizResponse isFavoritable(IsFavoritableRequest isIsFavoritableRequest)
-					throws EwalletException {
-				return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
-			}
+            @Override
+            public StandardBizResponse isFavoritable(IsFavoritableRequest isIsFavoritableRequest)
+                    throws EwalletException {
+                return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+            }
 
-			@Override
-			public AddFavoriteResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
-					throws EwalletException {
-				return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
-			}
-			
-			@Override
-			public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
-					throws EwalletException {
-				FavoriteContext[] favoriteContexts = new FavoriteContext[2];
-				favoriteContexts[0] = new FavoriteContext("1", "billpay", "d.trmv", "", new BigDecimal("15.00"), "20000211101010");
+            @Override
+            public AddFavoriteResponse addFavorite(AddFavoriteRequest addFavoriteRequest)
+                    throws EwalletException {
+                return new AddFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, new FavoriteContext());
+            }
+
+            @Override
+            public ListFavoriteResponse listFavorite(ListFavoriteRequest listFavoriteRequest)
+                    throws EwalletException {
+                FavoriteContext[] favoriteContexts = new FavoriteContext[2];
+                favoriteContexts[0] = new FavoriteContext("1", "billpay", "d.trmv", "", new BigDecimal("15.00"), "20000211101010");
                 favoriteContexts[1] = new FavoriteContext("2", "billpay", "d.tlp", "", new BigDecimal("17.00"), "20000210101010");
 
-				return new ListFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContexts);
-			}
+                return new ListFavoriteResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" }, favoriteContexts);
+            }
 
-			@Override
-			public StandardBizResponse isFavorited(
-					IsFavoritedRequest isFavoritedRequest)
-					throws EwalletException {
-				throw new FailResultCodeException("2014", "stub ewallet client");
-			}
+            @Override
+            public StandardBizResponse isFavorited(
+                    IsFavoritedRequest isFavoritedRequest)
+                    throws EwalletException {
+                throw new FailResultCodeException("2014", "stub ewallet client");
+            }
 
-			@Override
-			public StandardBizResponse removeFavorite(
-					DeleteFavoriteRequest removeFavoriteRequest)
-					throws EwalletException {
-				// TODO Auto-generated method stub
-				return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
-			}
-		};
-	}
+            @Override
+            public StandardBizResponse removeFavorite(
+                    DeleteFavoriteRequest removeFavoriteRequest)
+                    throws EwalletException {
+                // TODO Auto-generated method stub
+                return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+            }
+        };
+    }
 
-	@Override
-	public TmnSecurityProxy getTmnSecurity() {
-		return new TmnSecurityProxy() {
+    @Override
+    public TmnSecurityProxy getTmnSecurity() {
+        return new TmnSecurityProxy() {
 
-			@Override
-			public SignonResponse signon(SignonRequest signOnRequest)
-					throws EwalletException {
+            @Override
+            public SignonResponse signon(SignonRequest signOnRequest)
+                    throws EwalletException {
 
-				String initiator = signOnRequest.getInitiator();
-				String password = signOnRequest.getPin();
+                String initiator = signOnRequest.getInitiator();
+                String password = signOnRequest.getPin();
 
-				if ("simpson@tmn.com".equals(initiator)
-						&& "password".equals(password)) {
+                if ("simpson@tmn.com".equals(initiator)
+                        && "password".equals(password)) {
 
-					return new SignonResponse("1", "0", "namespace",
-							new String[] { "key" }, new String[] { "value" },
-							"sessionId", "SimpsonsTmnMoneyId");
-				}
+                    return new SignonResponse("1", "0", "namespace",
+                            new String[] { "key" }, new String[] { "value" },
+                            "sessionId", "SimpsonsTmnMoneyId");
+                }
 
-				throw new FailResultCodeException("4", "");
-			}
+                throw new FailResultCodeException("4", "");
+            }
 
-			@Override
-			public CreateSessionResponse createSession()
-					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
-			}
+            @Override
+            public CreateSessionResponse createSession()
+                    throws EwalletException {
+                // TODO Auto-generated method stub
+                return null;
+            }
 
-			@Override
-			public AuthenticateResponse authenticate(
-					AuthenticateRequest authenticateRequest)
-					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
-			}
+            @Override
+            public AuthenticateResponse authenticate(
+                    AuthenticateRequest authenticateRequest)
+                    throws EwalletException {
+                // TODO Auto-generated method stub
+                return null;
+            }
 
-			@Override
-			public StandardBizResponse extendSession(
-					StandardBizRequest standardBizRequest)
-					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
-			}
+            @Override
+            public StandardBizResponse extendSession(
+                    StandardBizRequest standardBizRequest)
+                    throws EwalletException {
+                // TODO Auto-generated method stub
+                return null;
+            }
 
-			@Override
-			public StandardBizResponse terminateSession(
-					StandardBizRequest standardBizRequest)
-					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
-			}
+            @Override
+            public StandardBizResponse terminateSession(
+                    StandardBizRequest standardBizRequest)
+                    throws EwalletException {
+                // TODO Auto-generated method stub
+                return null;
+            }
 
-		};
-	}
+        };
+    }
+
+    @Override
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    @Override
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 }

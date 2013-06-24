@@ -25,6 +25,7 @@ import th.co.truemoney.serviceinventory.persona.proxies.LocalProfileAdminProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalSecurityProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalSmsProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalTmnProfileProxy;
+import th.co.truemoney.serviceinventory.persona.proxies.TopUpTruemoneyProxy;
 import th.co.truemoney.serviceinventory.sms.OTPGenerator;
 import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 
@@ -78,7 +79,7 @@ public class LocalEnvironmentConfig {
 
     @Bean
     public TopUpMobileProxy topUpMobileProxy() {
-        return new TrueConvergenceOneBillPersona().getTopUpMobileProxy();
+        return new TopUpTruemoneyProxy();
     }
 
     @Bean
