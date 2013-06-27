@@ -11,7 +11,7 @@ import org.springframework.util.StringUtils;
 import th.co.truemoney.serviceinventory.bill.BillRetriever;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
-import th.co.truemoney.serviceinventory.bill.validation.BillOverDueValidator;
+import th.co.truemoney.serviceinventory.bill.validation.BillValidator;
 import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
@@ -41,7 +41,7 @@ public class BillRetrieverImpl implements BillRetriever {
     private LegacyFacade legacyFacade;
 
     @Autowired
-    private BillOverDueValidator overDueValidator;
+    private BillValidator billValidator;
 
     @Autowired
     private FavoriteService favoriteService;
@@ -116,12 +116,12 @@ public class BillRetrieverImpl implements BillRetriever {
         this.favoriteService = favoriteService;
     }
 
-    public void setValidator(BillOverDueValidator overDueValidator) {
-        this.overDueValidator = overDueValidator;
+    public void setValidator(BillValidator billValidator) {
+        this.billValidator = billValidator;
     }
 
     private void validateOverdue(Bill bill) {
-        overDueValidator.validate(bill);
+        billValidator.validateOverDue(bill);
     }
 
     private Bill saveBill(Bill bill, String accessTokenID) {

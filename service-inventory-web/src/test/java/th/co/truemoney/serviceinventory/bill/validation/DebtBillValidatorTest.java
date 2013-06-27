@@ -12,7 +12,7 @@ import th.co.truemoney.serviceinventory.bill.impl.BillPaymentValidationConfig;
 
 public class DebtBillValidatorTest {
 	
-	private DebtBillValidator debtBillValidator;
+	private BillValidator billValidator;
 	
 	private BillPaymentValidationConfig config;
 	private Bill bill;
@@ -21,15 +21,15 @@ public class DebtBillValidatorTest {
 	public void setup() {
 		bill = new Bill();
 		config = new BillPaymentValidationConfig();
-		debtBillValidator = new DebtBillValidator();
-		debtBillValidator.setConfig(config);
+		billValidator = new BillValidator();
+		billValidator.setConfig(config);
 	}
 	
 	@Test
 	public void noDebt_validateSuccess() {
 		bill.setTarget("dlt");
 		bill.setDebtStatus(DebtStatus.NoDebt);
-		debtBillValidator.validate(bill);
+		billValidator.validateDebtStatus(bill);
 	}
 	
 	@Test
@@ -38,7 +38,7 @@ public class DebtBillValidatorTest {
 		bill.setDebtStatus(null);
 
 		try {
-			debtBillValidator.validate(bill);
+			billValidator.validateDebtStatus(bill);
 			fail();
 		} catch (DebtStatusRequiredException ex) {
 		}
@@ -51,7 +51,7 @@ public class DebtBillValidatorTest {
 		bill.setDebtStatus(DebtStatus.Debt);
 
 		try {
-			debtBillValidator.validate(bill);
+			billValidator.validateDebtStatus(bill);
 			fail();
 		} catch (DebtBillException ex) {
 		}
@@ -63,7 +63,7 @@ public class DebtBillValidatorTest {
 		bill.setDebtStatus(DebtStatus.Debt);
 		
 		try {
-			debtBillValidator.validate(bill);
+			billValidator.validateDebtStatus(bill);
 			fail();
 		} catch (DebtBillException ex) {
 			assertEquals("1021", ex.getErrorCode());
@@ -75,7 +75,7 @@ public class DebtBillValidatorTest {
 		bill.setTarget("trmv");
 		bill.setDebtStatus(DebtStatus.Debt);
 		
-		debtBillValidator.validate(bill);
+		billValidator.validateDebtStatus(bill);
 	}
 	
 	@Test
@@ -83,6 +83,6 @@ public class DebtBillValidatorTest {
 		bill.setTarget("ti");
 		bill.setDebtStatus(DebtStatus.NoDebt);		
 		
-		debtBillValidator.validate(bill);
+		billValidator.validateDebtStatus(bill);
 	}
 }

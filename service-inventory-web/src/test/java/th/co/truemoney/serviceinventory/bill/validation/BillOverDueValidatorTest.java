@@ -15,7 +15,7 @@ import th.co.truemoney.serviceinventory.bill.impl.BillPaymentValidationConfig;
 public class BillOverDueValidatorTest {
 
     //unit under test
-    private BillOverDueValidator validator = new BillOverDueValidator();
+    private BillValidator validator = new BillValidator();
 
     private Bill bill;
 
@@ -33,7 +33,7 @@ public class BillOverDueValidatorTest {
         bill.setDueDate(getYesterday());
 
         try {
-            validator.validate(bill);
+            validator.validateOverDue(bill);
             fail();
         } catch (OverDueBillException ex) {
         }
@@ -45,7 +45,7 @@ public class BillOverDueValidatorTest {
         bill.setTarget("mea");
         bill.setDueDate(getNex7Days());
 
-        validator.validate(bill);
+        validator.validateOverDue(bill);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class BillOverDueValidatorTest {
         bill.setTarget("mea");
         bill.setDueDate(new Date());
 
-        validator.validate(bill);
+        validator.validateOverDue(bill);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class BillOverDueValidatorTest {
         bill.setTarget("mea");
 
         try {
-            validator.validate(bill);
+            validator.validateOverDue(bill);
             fail();
         } catch (BillDueDateMissingException ex) {
         }
@@ -75,7 +75,7 @@ public class BillOverDueValidatorTest {
         bill.setTarget("random");
 
         try {
-            validator.validate(bill);
+            validator.validateOverDue(bill);
         } catch (BillDueDateMissingException ex) {
             fail();
         }

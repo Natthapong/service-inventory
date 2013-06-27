@@ -15,8 +15,7 @@ import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction.FailStatus;
 import th.co.truemoney.serviceinventory.bill.domain.InquiryOutstandingBillType;
 import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
-import th.co.truemoney.serviceinventory.bill.validation.BillOverDueValidator;
-import th.co.truemoney.serviceinventory.bill.validation.DebtBillValidator;
+import th.co.truemoney.serviceinventory.bill.validation.BillValidator;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
@@ -50,10 +49,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     private BillInformationRepository billInfoRepo;
 
     @Autowired
-    private BillOverDueValidator overDueValidator;
-    
-    @Autowired
-    private DebtBillValidator debtBillValidator;
+    private BillValidator billValidator;
 
     @Autowired
     private AccessTokenRepository accessTokenRepo;
@@ -195,8 +191,8 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
                                 .fromBillChannel(appData.getChannel(), appData.getChannelDetail())
                                 .read();
 
-        overDueValidator.validate(bill);
-        debtBillValidator.validate(bill);
+        billValidator.validateOverDue(bill);
+        billValidator.validateDebtStatus(bill);
         bill.setID(UUID.randomUUID().toString());
         bill.setPayWith(PAYWITH_BARCODE);
         billInfoRepo.saveBill(bill, accessTokenID);
@@ -225,7 +221,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
         }
         
-        overDueValidator.validate(billInfo);
+        billValidator.validateOverDue(billInfo);
         
         billInfo.setPayWith(PAYWITH_FAVORITE);
         billInfoRepo.saveBill(billInfo, accessTokenID);
@@ -259,7 +255,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         	billInfo = this.retrieveBillInformationWithKeyin(billCode, ref1, ref2, amount, accessTokenID);
         }
         
-        overDueValidator.validate(billInfo);
+        billValidator.validateOverDue(billInfo);
         
         billInfo.setPayWith(PAYWITH_KEYIN);
         billInfoRepo.saveBill(billInfo, accessTokenID);

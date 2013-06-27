@@ -25,7 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.bill.impl.BillRetrieverImpl;
-import th.co.truemoney.serviceinventory.bill.validation.BillOverDueValidator;
+import th.co.truemoney.serviceinventory.bill.validation.BillValidator;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
@@ -130,14 +130,14 @@ public class BillRetrieverImpl_getBillByUserFavoritedTest {
         public void getBillInfoFromUserFavorite_ValidateOverDue() {
 
             //given
-            BillOverDueValidator mockValidator = Mockito.mock(BillOverDueValidator.class);
+            BillValidator mockValidator = Mockito.mock(BillValidator.class);
             billRetriever.setValidator(mockValidator);
 
             //when
             Bill bill = billRetriever.getOfflineBillInfoFromUserFavorited(2L, BigDecimal.TEN, accessToken.getAccessTokenID());
 
             //then
-            verify(mockValidator).validate(bill);
+            verify(mockValidator).validateOverDue(bill);
         }
 
         @Test
@@ -188,14 +188,14 @@ public class BillRetrieverImpl_getBillByUserFavoritedTest {
             OutStandingBill stubOutstanding = BillPaymentStubbed.createSuccessOutStandingBill();
             when(mockBillPaymentHandler.getBillOutStandingOnline(any(InquiryOutstandingBillRequest.class))).thenReturn(stubOutstanding);
 
-            BillOverDueValidator mockOverDueValidator = Mockito.mock(BillOverDueValidator.class);
+            BillValidator mockOverDueValidator = Mockito.mock(BillValidator.class);
             billRetriever.setValidator(mockOverDueValidator);
 
             //when
             Bill bill = billRetriever.getOnlineBillInfoFromUserFavorited(2L, accessToken.getAccessTokenID());
 
             //then
-            Mockito.verify(mockOverDueValidator).validate(bill);
+            Mockito.verify(mockOverDueValidator).validateOverDue(bill);
         }
 
         @Test

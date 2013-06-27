@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.impl.BillRetrieverImpl;
-import th.co.truemoney.serviceinventory.bill.validation.BillOverDueValidator;
+import th.co.truemoney.serviceinventory.bill.validation.BillValidator;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
@@ -96,14 +96,14 @@ public class BillRetrieverImpl_getBillByScanBarcodeTest {
     public void getBillByScanBarcode_overDueIsValidated() {
 
         //given
-        BillOverDueValidator mockValidator = Mockito.mock(BillOverDueValidator.class);
+        BillValidator mockValidator = Mockito.mock(BillValidator.class);
         billRetriever.setValidator(mockValidator);
 
         //when
         Bill billInformation = billRetriever.getOfflineBillInfoByScanningBarcode("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
 
         //then
-        verify(mockValidator).validate(billInformation);
+        verify(mockValidator).validateOverDue(billInformation);
     }
 
     @Test
