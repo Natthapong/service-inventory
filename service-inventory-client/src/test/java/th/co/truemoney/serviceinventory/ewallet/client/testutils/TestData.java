@@ -33,7 +33,7 @@ public class TestData {
         Favorite favoriteBill = new Favorite();
         favoriteBill.setAmount(new BigDecimal(2000));
         favoriteBill.setRef1("555");
-        favoriteBill.setServiceCode("tli");
+        favoriteBill.setServiceCode("glc");
         favoriteBill.setServiceType("billpay");
 
         return favoriteBill;

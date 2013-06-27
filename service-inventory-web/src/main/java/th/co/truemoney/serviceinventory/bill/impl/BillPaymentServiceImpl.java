@@ -1,11 +1,9 @@
 package th.co.truemoney.serviceinventory.bill.impl;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -18,6 +16,7 @@ import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction.FailS
 import th.co.truemoney.serviceinventory.bill.domain.InquiryOutstandingBillType;
 import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.bill.validation.BillOverDueValidator;
+import th.co.truemoney.serviceinventory.bill.validation.DebtBillValidator;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction.Status;
@@ -52,6 +51,9 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
 
     @Autowired
     private BillOverDueValidator overDueValidator;
+    
+    @Autowired
+    private DebtBillValidator debtBillValidator;
 
     @Autowired
     private AccessTokenRepository accessTokenRepo;
@@ -194,6 +196,7 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
                                 .read();
 
         overDueValidator.validate(bill);
+        debtBillValidator.validate(bill);
         bill.setID(UUID.randomUUID().toString());
         bill.setPayWith(PAYWITH_BARCODE);
         billInfoRepo.saveBill(bill, accessTokenID);
@@ -346,11 +349,6 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         .isFavorited();
     }
 
-    public boolean isOverdue(Date duedate) {
-        DateTime dateTime = new DateTime(duedate);
-        return dateTime.plusDays(1).isBeforeNow();
-    }
-    
     public void setAccessTokenRepo(AccessTokenRepository accessTokenRepo) {
         this.accessTokenRepo = accessTokenRepo;
     }

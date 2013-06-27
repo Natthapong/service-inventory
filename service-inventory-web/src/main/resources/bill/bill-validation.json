@@ -1,10 +1,22 @@
 {
     "mea":
     {
-        "validateDuedate" : true
+        "validateDuedate" : true,
+        "validateDeptStatus": true
     },
     "water":
     {
-        "validateDuedate" : true
+        "validateDuedate" : true,
+        "validateDeptStatus": false
+    },
+    "dlt":
+    {
+        "validateDuedate" : true,
+        "validateDeptStatus": false
+    },
+    "tli":
+    {
+        "validateDuedate" : true,
+        "validateDeptStatus": false
     }
 }

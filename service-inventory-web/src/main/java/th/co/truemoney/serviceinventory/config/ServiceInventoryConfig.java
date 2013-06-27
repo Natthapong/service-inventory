@@ -25,6 +25,7 @@ import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentValidationConfig;
 import th.co.truemoney.serviceinventory.bill.impl.BillRetrieverImpl;
 import th.co.truemoney.serviceinventory.bill.validation.BillOverDueValidator;
+import th.co.truemoney.serviceinventory.bill.validation.DebtBillValidator;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.engine.client.config.SIEngineConfig;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
@@ -169,6 +170,11 @@ public class ServiceInventoryConfig {
         return new BillOverDueValidator();
     }
 
+    @Bean
+    public DebtBillValidator billDebtBillValidator() {
+        return new DebtBillValidator();
+    }
+    
     @Bean
     public EndPoints endPoints() {
         return new EndPoints();

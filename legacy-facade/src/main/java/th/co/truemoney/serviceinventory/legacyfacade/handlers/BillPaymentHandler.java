@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
+import th.co.truemoney.serviceinventory.bill.domain.DebtStatus;
 import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.bill.domain.ServiceFeeInfo;
 import th.co.truemoney.serviceinventory.bill.domain.SourceOfFund;
@@ -89,6 +90,7 @@ public class BillPaymentHandler {
             billInfo.setSourceOfFundFees(sourceOfFundFees.toArray(new SourceOfFund[sourceOfFundFees.size()]));
 
             billInfo.setDueDate(barcodeResponse.getDueDate());
+            billInfo.setDebtStatus(DebtStatus.valueFromCode(barcodeResponse.getDebtStatus()));
 
             return billInfo;
 

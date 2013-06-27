@@ -3,12 +3,14 @@ package th.co.truemoney.serviceinventory.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -24,10 +26,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+import th.co.truemoney.serviceinventory.bill.domain.DebtStatus;
 import th.co.truemoney.serviceinventory.bill.domain.InquiryOutstandingBillType;
 import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.bill.impl.AsyncBillPayProcessor;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
+import th.co.truemoney.serviceinventory.bill.validation.DebtBillException;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
@@ -250,5 +254,40 @@ public class BillPaymentServiceImplTest {
 
     }
 
+    @Test
+    public void getBillHasDebt() {
+        Bill billInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        billInfo.setDebtStatus(DebtStatus.Debt);
+        billInfo.setTarget("mea");
+        billInfo.setDueDate(new Date());
+        
+        when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(billInfo);
+        
+        try {
+	        //when
+	        billPayService.retrieveBillInformationWithBarcode("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
+	        fail();
+        } catch(DebtBillException ex) {
+        	
+        }
 
+        verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
+        
+    }
+    
+    @Test
+    public void getBillHasNoDebt() {
+        Bill billInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        billInfo.setDebtStatus(DebtStatus.NoDebt);
+        billInfo.setTarget("dlt");
+        billInfo.setDueDate(new Date());
+        
+        when(billPaymentFacade.getBarcodeInformation(any(GetBarcodeRequest.class))).thenReturn(billInfo);
+        
+        billPayService.retrieveBillInformationWithBarcode("|010554614953100 010004552 010520120200015601 85950", accessToken.getAccessTokenID());
+
+        verify(billPaymentFacade).getBarcodeInformation(any(GetBarcodeRequest.class));
+        
+    }
+    
 }

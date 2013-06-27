@@ -48,6 +48,8 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
         public static final String FAVORITE_SERVICE_CODE_NOT_INLIST = "1018";
         public static final String INVALID_MOBILE_NUMBER = "1019";
         public static final String BILL_REQUIRED_DUEDATE  = "1020";
+        public static final String DEBT_BILL  	= "1021";
+		public static final String BILL_REQUIRED_DEBT_STATUS = "1022";
 
         //profile
         public static final String INVALID_PROFILE_TYPE 	= "10000";

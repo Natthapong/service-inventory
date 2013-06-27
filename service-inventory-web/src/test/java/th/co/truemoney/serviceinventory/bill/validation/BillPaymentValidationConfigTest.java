@@ -35,12 +35,4 @@ public class BillPaymentValidationConfigTest {
         assertEquals(true, validation.hasValidateDuedate());
     }
 
-    @Test
-    public void isOverdue() throws Exception {
-        BillPaymentServiceImpl serviceImpl = new BillPaymentServiceImpl();
-        Date dueDate = new SimpleDateFormat("ddMMyy", new Locale("TH","th")).parse("310153");
-        boolean isOverDue = serviceImpl.isOverdue(dueDate);
-        Assert.assertTrue(isOverDue);
-    }
-
-}
+ }

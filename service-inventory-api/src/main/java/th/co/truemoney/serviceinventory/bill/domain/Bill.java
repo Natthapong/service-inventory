@@ -49,6 +49,7 @@ public class Bill implements Serializable {
     private String payWith = "barcode";
 
     private Date dueDate;
+    private DebtStatus debtStatus;
 
     public Bill() {
         super();
@@ -250,8 +251,16 @@ public class Bill implements Serializable {
     public void setPayWith(String payWith) {
         this.payWith = payWith;
     }
+    
+    public DebtStatus getDebtStatus() {
+		return debtStatus;
+	}
+    
+    public void setDebtStatus(DebtStatus debtStatus) {
+		this.debtStatus = debtStatus;
+	}
 
-    @JsonIgnore
+	@JsonIgnore
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
             .append("ID", this.getID())
@@ -273,6 +282,7 @@ public class Bill implements Serializable {
             .append("sourceOfFundFees", this.getSourceOfFundFees())
             .append("dueDate", this.getDueDate())
             .append("callCenterNumber", this.getCallCenterNumber())
+            .append("debtStatus", this.getDebtStatus())
             .toString();
     }
 

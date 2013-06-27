@@ -41,7 +41,7 @@ public class TLI_Bill extends BillTemplate {
         billResponse.addParameterElement("call_center", "");
         billResponse.addParameterElement("logo", "https://secure.truemoney-dev.com/m/tmn_webview/images/logo_bill/tli@2x.png");
 
-        billResponse.addParameterElement("duedate_bill", "");
+        billResponse.addParameterElement("duedate_bill", "26/06/2013");
 
         SourceFee source1 = createSourceFee("EW", "0", "THB", "10000", "30000000");
         SourceFee source2 = createSourceFee("MMCC", "700", "THB", "1000", "1000000");

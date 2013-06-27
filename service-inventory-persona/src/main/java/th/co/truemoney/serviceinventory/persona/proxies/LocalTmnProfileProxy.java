@@ -86,7 +86,7 @@ public class LocalTmnProfileProxy implements TmnProfileProxy {
             IsFavoritableRequest isIsFavoritableRequest)
             throws EwalletException {
         List<String> serviceCodes = Arrays.asList("tr", "trmv", "tmvh", "tlp",
-                "tic", "ti", "tcg", "mea", "tli");
+                "tic", "ti", "tcg", "mea", "glc");
         if (!serviceCodes.contains(isIsFavoritableRequest.getServiceCode())) {
             throw new FailResultCodeException("2013",
                     "stub ADD_FAVORITE_DENIED");
