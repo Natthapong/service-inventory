@@ -7,6 +7,8 @@
 	ACCESS_ID="d80ec5cd-aae5-478c-a201-7e1234567890"
 	TMNID="tmn.10000000001"
 	LOGIN_ID="0838309928"
+	MOBILE_NUMBER="0838309928"
+  	EMAIL="tully.william@gmail.com"
 	WORKER_NAME="BillPaymentController"
 	ACTIVITY_NAME="scanAndCreateBillPayment"
 	HTTP_STATUS="200"

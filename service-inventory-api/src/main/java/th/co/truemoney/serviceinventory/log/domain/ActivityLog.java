@@ -23,6 +23,8 @@ public class ActivityLog implements Serializable {
 	private String accessID;
 	private String truemoneyID;
 	private String loginID;
+	private String mobile;
+	private String email;
 	private String workerName;
 	private String activityName;
 	private Short httpStatus;
@@ -216,6 +218,22 @@ public class ActivityLog implements Serializable {
 
 	public void setDetailOutput(String detailOutput) {
 		this.detailOutput = detailOutput;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	@JsonIgnore

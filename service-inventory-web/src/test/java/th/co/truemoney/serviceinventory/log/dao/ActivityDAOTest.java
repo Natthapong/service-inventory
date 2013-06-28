@@ -40,6 +40,8 @@ public class ActivityDAOTest {
 		String accessID = "d80ec5cd-aae5-478c-a201-7e1234567890";
 		String truemoneyID = "tmn.10000000001";
 		String loginID = "0838309928";
+		String mobile = "0838309928";
+		String email = "tully.william@gmail.com";
 		String workerName = "billpaymentcontroller";
 		String activityName = "scanandcreatebillpayment";
 		Short httpStatus = 200;
@@ -64,6 +66,8 @@ public class ActivityDAOTest {
 		activityLog.setDurationTime(durationTime);
 		activityLog.setHttpStatus(httpStatus);
 		activityLog.setLoginID(loginID);
+		activityLog.setMobile(mobile);
+		activityLog.setEmail(email);
 		activityLog.setProcessState(processState);
 		activityLog.setRefTransID(refTransID);
 		activityLog.setResponseDate(responseDate);

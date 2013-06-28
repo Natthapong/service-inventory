@@ -206,9 +206,14 @@ public class LoggingAspect {
 
                 String loginID = accessToken.getLoginID() != null ? accessToken.getLoginID() : accessToken.getMobileNumber();
                 String truemoneyID = accessToken.getTruemoneyID();
+                String mobile = accessToken.getMobileNumber();
+                String email = accessToken.getEmail();
 
                 MDC.put("loginID", loginID);
                 MDC.put("truemoneyID", truemoneyID);
+                MDC.put("mobile", mobile);
+                MDC.put("email", email);
+                
 
             } catch (ResourceNotFoundException ex) {
                 MDC.put("loginID", "INVALID_LOGIN");

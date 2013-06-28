@@ -52,6 +52,8 @@ public class AsyncJdbcLoggingProcessor {
 
             String loginID = MDC.get("loginID");
             String truemoneyID = MDC.get("truemoneyID");
+            String mobile =  MDC.get("mobile");
+            String email =  MDC.get("email");
 
             Short httpStatus = siWebException == null ? Short.valueOf("200") : siWebException.getHttpStatus().shortValue();
             String resultCode = siWebException != null ? siWebException.getErrorCode() : "0";
@@ -79,6 +81,8 @@ public class AsyncJdbcLoggingProcessor {
             activityLog.setAccessID(accessID);
             activityLog.setTruemoneyID(truemoneyID);
             activityLog.setLoginID(loginID);
+            activityLog.setMobile(mobile);
+            activityLog.setEmail(email);
             activityLog.setWorkerName(workerName);
             activityLog.setActivityName(activityName);
             activityLog.setHttpStatus(httpStatus);
@@ -160,6 +164,8 @@ public class AsyncJdbcLoggingProcessor {
             Timestamp responseDate = new Timestamp(stopTime);
             String loginID = MDC.get("loginID");
             String truemoneyID = MDC.get("truemoneyID");
+            String mobile =  MDC.get("mobile");
+            String email =  MDC.get("email");
             Short httpStatus = (errorException instanceof SIEngineUnExpectedException) ? Short.valueOf("500") : Short.valueOf("200");
             String resultCode = siEngineResponse != null ? siEngineResponse.getResultCode() : errorException.getCode();
             String resultNamespace = siEngineResponse != null ? siEngineResponse.getResultNamespace() : errorException.getNamespace();
@@ -192,6 +198,8 @@ public class AsyncJdbcLoggingProcessor {
             activityLog.setAccessID(accessID);
             activityLog.setTruemoneyID(truemoneyID);
             activityLog.setLoginID(loginID);
+            activityLog.setMobile(mobile);
+            activityLog.setEmail(email);
             activityLog.setWorkerName(workerName);
             activityLog.setActivityName(activityName);
             activityLog.setHttpStatus(httpStatus);
@@ -229,6 +237,8 @@ public class AsyncJdbcLoggingProcessor {
             Timestamp responseDate = new Timestamp(stopTime);
             String loginID = MDC.get("loginID");
             String truemoneyID = MDC.get("truemoneyID");
+            String mobile =  MDC.get("mobile");
+            String email =  MDC.get("email");
             Short httpStatus = (errorException instanceof EwalletUnExpectedException) ? Short.valueOf("500") : Short.valueOf("200");
             String resultCode = ewalletResponse != null ? ewalletResponse.getResultCode() : errorException.getCode();
             String resultNamespace = ewalletResponse != null ? ewalletResponse.getResultNamespace() : errorException.getNamespace();
@@ -261,6 +271,8 @@ public class AsyncJdbcLoggingProcessor {
             activityLog.setAccessID(accessID);
             activityLog.setTruemoneyID(truemoneyID);
             activityLog.setLoginID(loginID);
+            activityLog.setMobile(mobile);
+            activityLog.setEmail(email);
             activityLog.setWorkerName(workerName);
             activityLog.setActivityName(activityName);
             activityLog.setHttpStatus(httpStatus);
@@ -297,6 +309,8 @@ public class AsyncJdbcLoggingProcessor {
             Timestamp responseDate = new Timestamp(stopTime);
             String loginID = MDC.get("loginID");
             String truemoneyID = MDC.get("truemoneyID");
+            String mobile =  MDC.get("mobile");
+            String email =  MDC.get("email");
             Short httpStatus = errorException == null ? Short.valueOf("200") : Short.valueOf("500");
             String resultCode = smsResponse != null ? smsResponse.getResultCode() : null;
             String resultNamespace = smsResponse != null ? smsResponse.getResultNamespace() : null;
@@ -329,6 +343,8 @@ public class AsyncJdbcLoggingProcessor {
             activityLog.setAccessID(accessID);
             activityLog.setTruemoneyID(truemoneyID);
             activityLog.setLoginID(loginID);
+            activityLog.setMobile(mobile);
+            activityLog.setEmail(email);
             activityLog.setWorkerName(workerName);
             activityLog.setActivityName(activityName);
             activityLog.setHttpStatus(httpStatus);
@@ -364,6 +380,8 @@ public class AsyncJdbcLoggingProcessor {
             Timestamp responseDate = new Timestamp(stopTime);
             String loginID = MDC.get("loginID");
             String truemoneyID = MDC.get("truemoneyID");
+            String mobile =  MDC.get("mobile");
+            String email =  MDC.get("email");
             Short httpStatus = errorException == null ? Short.valueOf("200") : Short.valueOf("500");
             String resultCode = errorException != null ? errorException.getErrorCode(): null;
             String resultNamespace = errorException != null ? errorException.getErrorNamespace() : null;
@@ -381,6 +399,8 @@ public class AsyncJdbcLoggingProcessor {
             activityLog.setAccessID(accessID);
             activityLog.setTruemoneyID(truemoneyID);
             activityLog.setLoginID(loginID);
+            activityLog.setMobile(mobile);
+            activityLog.setEmail(email);
             activityLog.setWorkerName(workerName);
             activityLog.setActivityName(activityName);
             activityLog.setHttpStatus(httpStatus);

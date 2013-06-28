@@ -44,12 +44,12 @@ public class ActivityDAOImpl implements ActivityDAO {
     public void createActivityLog(ActivityLog activityLog) throws DataAccessException {
         try {
             String sql1 = "INSERT INTO SI_ACTIVITY_LOG (LOG_ID, TRACKING_ID, WORKER_TYPE_ID, " +
-                    "ACCESS_ID, TMNID, LOGIN_ID, WORKER_NAME, ACTIVITY_NAME, HTTP_STATUS, " +
+                    "ACCESS_ID, TMNID, LOGIN_ID, MOBILE_NUMBER, EMAIL, WORKER_NAME, ACTIVITY_NAME, HTTP_STATUS, " +
                     "RESULT_CODE, RESULT_NAMESPACE, TRANS_ID, PROCESS_STATE, REF_TRANS_ID, CREATED_DATE, " +
                     "RESPONSE_DATE, DURATION_TIME, DETAIL_INPUT, DETAIL_OUTPUT) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             jdbcTemplate.update(sql1, new Object[] { activityLog.getLogID(), activityLog.getTrackingID(), activityLog.getWorkerTypeID(), activityLog.getAccessID(),
-                    activityLog.getTruemoneyID(), activityLog.getLoginID(),activityLog.getWorkerName(), activityLog.getActivityName(), activityLog.getHttpStatus(),
+                    activityLog.getTruemoneyID(), activityLog.getLoginID(), activityLog.getMobile(), activityLog.getEmail(), activityLog.getWorkerName(), activityLog.getActivityName(), activityLog.getHttpStatus(),
                     activityLog.getResultCode(), activityLog.getResultNamespace(), activityLog.getTransactionID(), activityLog.getProcessState(), activityLog.getRefTransID(), activityLog.getCreatedDate(),
                     activityLog.getResponseDate(), activityLog.getDurationTime(), activityLog.getDetailInput(), activityLog.getDetailOutput()});
         } catch (RuntimeException ex) {
