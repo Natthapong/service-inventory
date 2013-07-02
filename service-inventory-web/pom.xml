@@ -3,7 +3,7 @@
     <parent>
         <groupId>th.co.truemoney.serviceinventory</groupId>
         <artifactId>service-inventory</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1.RC1</version>
     </parent>
     <artifactId>service-inventory-web</artifactId>
     <packaging>war</packaging>
@@ -18,12 +18,12 @@
         <dependency>
             <groupId>th.co.truemoney.serviceinventory</groupId>
             <artifactId>legacy-facade</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.1.RC1</version>
         </dependency>
         <dependency>
             <groupId>th.co.truemoney.serviceinventory</groupId>
             <artifactId>service-inventory-persona</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.1.RC1</version>
         </dependency>
         <dependency>
             <groupId>th.co.truemoney.serviceinventory</groupId>
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>th.co.truemoney.serviceinventory</groupId>
             <artifactId>sms-client</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <version>1.2.RC1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
