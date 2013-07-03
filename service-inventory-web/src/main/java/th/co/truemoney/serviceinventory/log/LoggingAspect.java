@@ -207,7 +207,7 @@ public class LoggingAspect {
                 String loginID = accessToken.getLoginID() != null ? accessToken.getLoginID() : accessToken.getMobileNumber();
                 String truemoneyID = accessToken.getTruemoneyID();
                 String mobile = accessToken.getMobileNumber();
-                String email = accessToken.getEmail();
+                String email = accessToken.getEmail() != null ? accessToken.getEmail() : "";
 
                 MDC.put("loginID", loginID);
                 MDC.put("truemoneyID", truemoneyID);
