@@ -5,6 +5,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public interface ForgotPasswordService {
 	
-	public ForgotPassword requestForgotPassword(ForgotPassword request)throws ServiceInventoryException;
+	public ForgotPassword requestForgotPassword(ForgotPassword request) 
+			throws ServiceInventoryException;
 			
 }

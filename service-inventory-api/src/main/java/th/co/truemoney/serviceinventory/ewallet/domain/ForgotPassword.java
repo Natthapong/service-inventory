@@ -3,6 +3,7 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 public class ForgotPassword {
 	private String username;
 	private String idcard;
+	private Integer channelID;
 	
 	public ForgotPassword(){
 		super();
@@ -13,6 +14,7 @@ public class ForgotPassword {
 		this.username = username;
 		this.idcard = idcard;
 	}
+	
 	public String getUsername() {
 		return username;
 	}
@@ -24,5 +26,11 @@ public class ForgotPassword {
 	}
 	public void setIdcard(String idcard) {
 		this.idcard = idcard;
+	}
+	public Integer getChannelID() {
+		return channelID;
+	}
+	public void setChannelID(Integer channelID) {
+		this.channelID = channelID;
 	}
 }

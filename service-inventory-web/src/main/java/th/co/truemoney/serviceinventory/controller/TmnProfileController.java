@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import th.co.truemoney.serviceinventory.bean.LoginRequest;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
+import th.co.truemoney.serviceinventory.ewallet.ForgotPasswordService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
 import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
+import th.co.truemoney.serviceinventory.ewallet.domain.ForgotPassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
@@ -45,6 +47,9 @@ public class TmnProfileController {
 	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
+	@Autowired
+	private ForgotPasswordService forgotPasswordService;
+	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody String login(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -164,6 +169,12 @@ public class TmnProfileController {
 		List<Favorite> favorites = favoriteService.getFavorites(accessTokenID);
 		
 		return favorites;
+	}
+	
+	@RequestMapping(value = "/profile/requestforgotpassword", method = RequestMethod.POST)
+	public @ResponseBody ForgotPassword requestForgotPassword(@RequestBody ForgotPassword request) {
+		
+		return forgotPasswordService.requestForgotPassword(request);
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {
