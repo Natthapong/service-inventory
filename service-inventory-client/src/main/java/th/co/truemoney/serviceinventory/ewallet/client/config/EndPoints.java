@@ -170,4 +170,8 @@ public class EndPoints {
         return host + "/service-inventory-web/v1/authen/draft/{draftID}/otp/{refCode}?accessTokenID={accessTokenID}";
     }
 
+	public String getRequestForgotPasswordURL() {
+		return host + "/service-inventory-web/v1/ewallet/profile/requestforgotpassword";
+	}
+
 }
