@@ -30,10 +30,12 @@ import th.co.truemoney.serviceinventory.engine.client.config.SIEngineConfig;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
+import th.co.truemoney.serviceinventory.ewallet.ForgotPasswordService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.config.EwalletConfig;
 import th.co.truemoney.serviceinventory.ewallet.config.TmnProfileConfig;
+import th.co.truemoney.serviceinventory.ewallet.domain.ForgotPassword;
 import th.co.truemoney.serviceinventory.ewallet.impl.ActivityServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncP2PTransferProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
@@ -41,6 +43,7 @@ import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpMobileProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.DirectDebitSourceOfFundServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.ewallet.impl.FavoriteServiceImpl;
+import th.co.truemoney.serviceinventory.ewallet.impl.ForgotPasswordServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.P2PTransferServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.TopUpMobileServiceImpl;
@@ -158,7 +161,12 @@ public class ServiceInventoryConfig {
     public EmailService emailService() {
         return new EmailService();
     }
-
+    
+    @Bean
+    public ForgotPasswordService forgotPasswordService() {
+    	return new ForgotPasswordServiceImpl();
+    }
+    
     @Bean
     public AsyncTopUpMobileProcessor getAsyncTopUpMobileProcessor() {
         return new AsyncTopUpMobileProcessor();

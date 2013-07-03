@@ -11,7 +11,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateForgotPasswo
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
-@Service
 public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 	
 	private static Logger logger = LoggerFactory.getLogger(ForgotPasswordServiceImpl.class);

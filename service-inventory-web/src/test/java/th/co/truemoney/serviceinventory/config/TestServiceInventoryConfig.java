@@ -11,6 +11,7 @@ import th.co.truemoney.serviceinventory.bill.BillRetriever;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.EnhancedDirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
+import th.co.truemoney.serviceinventory.ewallet.ForgotPasswordService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
@@ -77,7 +78,12 @@ public class TestServiceInventoryConfig {
     public ExtendAccessTokenAsynService mockExtendAccessTokenAsynService() {
         return Mockito.mock(ExtendAccessTokenAsynService.class);
     }
-
+    
+    @Bean
+    public ForgotPasswordService mockForgotPasswordService() {
+    	return Mockito.mock(ForgotPasswordService.class);
+    }
+    
     @Bean
     public OTPGenerator otpGenerator() {
         return new UnSecureOTPGenerator();
