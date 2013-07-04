@@ -11,11 +11,13 @@ import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.ForgotPasswordRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.BillInformationMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.ForgotPasswordMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.ProfileMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
@@ -70,6 +72,11 @@ public class MemRepositoriesConfig {
 	@Bean
 	public BillInformationRepository memBillInfoRepository() {
 		return new BillInformationMemoryRepository();
+	}
+	
+	@Bean
+	public ForgotPasswordRepository memForgotPasswordRepository() {
+		return new ForgotPasswordMemoryRepository();
 	}
 
 }

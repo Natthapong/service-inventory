@@ -174,4 +174,12 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/ewallet/profile/requestforgotpassword";
 	}
 
+	public String getVerifyResetPasswordURL() {
+		return host + "/service-inventory-web/v1/ewallet/profile/password/verify-reset?channelID={channelID}";
+	}
+	
+	public String getComfirmResetPasswordURL() {
+		return host + "/service-inventory-web/v1/ewallet/profile/password/comfirm-reset?channelID={channelID}";
+	}
+
 }

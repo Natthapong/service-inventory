@@ -8,11 +8,13 @@ import th.co.truemoney.serviceinventory.dao.ExpirableMap;
 import th.co.truemoney.serviceinventory.dao.impl.RedisExpirableMap;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.ForgotPasswordRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.BillInformationRedisRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.ForgotPasswordRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.OTPRedisRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.ProfileRedisRepository;
@@ -46,6 +48,11 @@ public class RedisRepositoriesConfig {
 		return new BillInformationRedisRepository();
 	}
 
+	@Bean
+	public ForgotPasswordRepository redisForgotPasswordRepository() {
+		return new ForgotPasswordRedisRepository();
+	}
+	
 	@Bean
 	public ExpirableMap redisLoggingGateway() {
 		return new RedisExpirableMap();

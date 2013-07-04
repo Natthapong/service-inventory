@@ -35,7 +35,6 @@ import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
 import th.co.truemoney.serviceinventory.ewallet.config.EwalletConfig;
 import th.co.truemoney.serviceinventory.ewallet.config.TmnProfileConfig;
-import th.co.truemoney.serviceinventory.ewallet.domain.ForgotPassword;
 import th.co.truemoney.serviceinventory.ewallet.impl.ActivityServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncP2PTransferProcessor;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncTopUpEwalletProcessor;
