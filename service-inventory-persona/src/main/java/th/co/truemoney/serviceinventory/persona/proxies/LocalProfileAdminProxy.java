@@ -18,8 +18,7 @@ public class LocalProfileAdminProxy implements TmnProfileAdminProxy {
     public VerifyForgotPasswordResponse verifyForgotPassword(
             VerifyForgotPasswordRequest verifyForgotPasswordRequest)
             throws EwalletException {
-        // TODO Auto-generated method stub
-        return null;
+        return new VerifyForgotPasswordResponse();
     }
 
     @Override

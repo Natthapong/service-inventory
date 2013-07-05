@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.client.workflows;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -26,7 +27,8 @@ public class ForgotPasswordServiceWorkflowTest {
 	private ForgotPasswordServiceClient client;
 	
 	@Test
-	public void verifyAndConfirmForgotPasswordSuccess() {
+	@Ignore
+	public void verifyAndConfirmForgotPasswordSuccess() throws Exception {
 		
     	//stubbed
     	ResetPassword resetPassword = new ResetPassword("tokenID", "newPassword");
