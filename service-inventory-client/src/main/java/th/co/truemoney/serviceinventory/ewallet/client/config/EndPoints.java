@@ -171,7 +171,7 @@ public class EndPoints {
     }
 
 	public String getRequestForgotPasswordURL() {
-		return host + "/service-inventory-web/v1/ewallet/profile/requestforgotpassword";
+		return host + "/service-inventory-web/v1/ewallet/profile/createforgotpassword?channelID={channelID}";
 	}
 
 	public String getVerifyResetPasswordURL() {

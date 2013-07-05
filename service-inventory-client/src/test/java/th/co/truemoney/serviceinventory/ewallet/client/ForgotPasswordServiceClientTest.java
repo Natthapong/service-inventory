@@ -57,8 +57,8 @@ public class ForgotPasswordServiceClientTest {
 		ResponseEntity<ForgotPassword> responseEntity = new ResponseEntity<ForgotPassword>(request,HttpStatus.OK);
 		
 		when(restTemplate.exchange(eq(endPoints.getRequestForgotPasswordURL()), eq(HttpMethod.POST), any(HttpEntity.class)
-				, eq(ForgotPassword.class))).thenReturn(responseEntity);
-		ForgotPassword forgotPasswordResult = client.requestForgotPassword(request);
+				, eq(ForgotPassword.class), any(Integer.class))).thenReturn(responseEntity);
+		ForgotPassword forgotPasswordResult = client.createForgotPassword(40, request);
 		Assert.assertNotNull(forgotPasswordResult);
 	}
 

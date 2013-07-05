@@ -173,10 +173,14 @@ public class TmnProfileController {
 		return favorites;
 	}
 	
-	@RequestMapping(value = "/profile/requestforgotpassword", method = RequestMethod.POST)
-	public @ResponseBody ForgotPassword requestForgotPassword(@RequestBody ForgotPassword request) {
+	@RequestMapping(value = "/profile/createforgotpassword", method = RequestMethod.POST)
+	public @ResponseBody ForgotPassword createForgotPassword(
+			@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+			@RequestBody ForgotPassword request) {
 		
-		return forgotPasswordService.requestForgotPassword(request);
+		validateRequestParam(channelID);
+		
+		return forgotPasswordService.createForgotPassword(channelID, request);
 	}
 	
 	@RequestMapping(value = "/profile/password/verify-reset", method = RequestMethod.POST)

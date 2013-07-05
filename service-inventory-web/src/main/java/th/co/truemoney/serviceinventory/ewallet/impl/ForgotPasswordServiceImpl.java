@@ -19,9 +19,6 @@ import th.co.truemoney.serviceinventory.sms.OTPService;
 public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 	
 	private static Logger logger = LoggerFactory.getLogger(ForgotPasswordServiceImpl.class);
-
-	@Autowired
-	private TmnProfileAdminProxy tmnProfileAdminProxy;
 	
 	@Autowired
 	private LegacyFacade legacyFacade;
@@ -33,17 +30,14 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private OTPService otpService;
     
 	@Override
-	public ForgotPassword requestForgotPassword(ForgotPassword request)
+	public ForgotPassword createForgotPassword(Integer channelID, ForgotPassword request)
 			throws ServiceInventoryException {
-		logger.debug("request forgot password for " + request.getUsername());
-		CreateForgotPasswordRequest createForgotPasswordRequest = new CreateForgotPasswordRequest();
-		createForgotPasswordRequest.setChannelId(request.getChannelID());
-		createForgotPasswordRequest.setLoginId(request.getUsername());
-		createForgotPasswordRequest.setThaiId(request.getIdcard());
-		
-		tmnProfileAdminProxy.createForgotPassword(createForgotPasswordRequest);
-		
-		return request; //just echo back something
+		legacyFacade.forgotPassword()
+					.fromChannel(channelID)
+					.withLogin(request.getLoginID())
+					.withIdCardNumber(request.getIdCardNumber())
+					.createForgotPassword();
+		return request;
 	}
 
 	@Override
