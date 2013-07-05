@@ -13,6 +13,7 @@ public class ForgotPasswordBuilder {
 	private String resetPasswordToken;
 	private String newPassword;
 	private String loginID;
+	private String idCardNumber;
 
 	@Autowired(required = false)
     public ForgotPasswordBuilder(ForgotPasswordHandler forgotPasswordFacade) {
@@ -50,4 +51,22 @@ public class ForgotPasswordBuilder {
         
         forgotPasswordFacade.confirmResetPassword(channelID, newPassword, loginID, resetPasswordToken);
     }
+
+	public ForgotPasswordBuilder withLogin(String loginID) {
+		this.loginID = loginID;
+		return this;
+	}
+
+	public ForgotPasswordBuilder withIdCardNumber(String idcard) {
+		this.idCardNumber = idcard;
+		return this;
+	}
+
+	public void createForgotPassword() {
+		Validate.notNull(loginID, "data missing. login ID?");
+		Validate.notNull(idCardNumber, "data missing. id card number?");
+		Validate.notNull(channelID, "data missing. from which channel ?");
+		
+		forgotPasswordFacade.createForgotpassword(channelID, loginID, idCardNumber);
+	}
 }

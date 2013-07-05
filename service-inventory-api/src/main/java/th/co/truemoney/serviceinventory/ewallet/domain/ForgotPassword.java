@@ -1,36 +1,35 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
 public class ForgotPassword {
-	private String username;
-	private String idcard;
-	private Integer channelID;
+	private String loginID;
+	private String idCardNumber;
 	
 	public ForgotPassword(){
 		super();
 	}
-	
-	public ForgotPassword(String username, String idcard) {
+
+	public ForgotPassword(String loginID, String idCardNumber) {
 		super();
-		this.username = username;
-		this.idcard = idcard;
+		this.loginID = loginID;
+		this.idCardNumber = idCardNumber;
+	}
+
+	public String getLoginID() {
+		return loginID;
+	}
+
+	public void setLoginID(String loginID) {
+		this.loginID = loginID;
+	}
+
+	public String getIdCardNumber() {
+		return idCardNumber;
+	}
+
+	public void setIdCardNumber(String idCardNumber) {
+		this.idCardNumber = idCardNumber;
 	}
 	
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getIdcard() {
-		return idcard;
-	}
-	public void setIdcard(String idcard) {
-		this.idcard = idcard;
-	}
-	public Integer getChannelID() {
-		return channelID;
-	}
-	public void setChannelID(Integer channelID) {
-		this.channelID = channelID;
-	}
+	
+
 }
