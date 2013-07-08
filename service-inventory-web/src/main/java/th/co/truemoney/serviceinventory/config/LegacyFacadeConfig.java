@@ -8,6 +8,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapPro
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.ForgotPasswordHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.MobileTopUpHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.ProfileRegisteringHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.TopUpSourceOfFundHandler;
@@ -54,4 +55,8 @@ public class LegacyFacadeConfig {
 		return new MobileTopUpHandler();
 	}
 	
+	@Bean 
+	public ForgotPasswordHandler forgotPasswordFacade() {
+		return new ForgotPasswordHandler();
+	}
 }

@@ -11,10 +11,12 @@ import org.springframework.web.client.RestTemplate;
 import th.co.truemoney.serviceinventory.ewallet.ForgotPasswordService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.domain.ForgotPassword;
+import th.co.truemoney.serviceinventory.ewallet.domain.ResetPassword;
+import th.co.truemoney.serviceinventory.ewallet.domain.VerifyResetPassword;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
-public class ForgotPasswordServiceClient implements ForgotPasswordService{
+public class ForgotPasswordServiceClient implements ForgotPasswordService {
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -34,15 +36,54 @@ public class ForgotPasswordServiceClient implements ForgotPasswordService{
 	}
 	
 	@Override
-	public ForgotPassword requestForgotPassword(ForgotPassword request) throws ServiceInventoryException{
-		
+	public ForgotPassword createForgotPassword(Integer channelID, ForgotPassword request) throws ServiceInventoryException {
 		HttpEntity<ForgotPassword> requestEntity = new HttpEntity<ForgotPassword>(request, headers);
 		
 		ResponseEntity<ForgotPassword> responseEntity = restTemplate.exchange(
 				endPoints.getRequestForgotPasswordURL(), HttpMethod.POST,
-				requestEntity,ForgotPassword.class);
+				requestEntity,ForgotPassword.class, channelID);
+
+		return responseEntity.getBody();
+		
+	}
+
+	@Override
+	public VerifyResetPassword verifyResetPassword(Integer channelID, ResetPassword request) throws ServiceInventoryException {
+		
+		HttpEntity<ResetPassword> requestEntity = new HttpEntity<ResetPassword>(request, headers);
+		
+		ResponseEntity<VerifyResetPassword> responseEntity = restTemplate.exchange(
+				endPoints.getVerifyResetPasswordURL(), HttpMethod.POST,
+				requestEntity, VerifyResetPassword.class, channelID);
+
+		return responseEntity.getBody();
+		
+	}
+	
+	@Override
+	public String confirmResetPassword(Integer channelID, VerifyResetPassword verifyResetPassword) throws ServiceInventoryException {
+		
+		HttpEntity<VerifyResetPassword> requestEntity = new HttpEntity<VerifyResetPassword>(verifyResetPassword, headers);
+		
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				endPoints.getComfirmResetPasswordURL(), HttpMethod.POST,
+				requestEntity, String.class, channelID);
+
+		return responseEntity.getBody();
+		
+	}
+
+	@Override
+	public VerifyResetPassword resendOTP(Integer channelID, String resetPasswordID) {
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		
+		ResponseEntity<VerifyResetPassword> responseEntity = restTemplate.exchange(
+				endPoints.getResendOTPResetPasswordURL(), HttpMethod.POST,
+				requestEntity, VerifyResetPassword.class, resetPasswordID, channelID);
 
 		return responseEntity.getBody();
 	}
+	
+	
 
 }

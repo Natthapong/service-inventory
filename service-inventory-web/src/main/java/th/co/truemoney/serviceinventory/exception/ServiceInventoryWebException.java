@@ -55,6 +55,7 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
         public static final String INVALID_PROFILE_TYPE 	= "10000";
         public static final String ACCESS_TOKEN_NOT_FOUND 	= "10001";
         public static final String INVALID_PROFILE_STATUS	= "10002";
+        public static final String RESET_PASSWORD_TOKEN_NOT_FOUND = "10003";
 
         //topup eWallet
         public static final String INVALID_AMOUNT_LESS ="20001";

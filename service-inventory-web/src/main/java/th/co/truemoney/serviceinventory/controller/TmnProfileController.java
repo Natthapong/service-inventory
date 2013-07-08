@@ -24,7 +24,9 @@ import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.ForgotPassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
+import th.co.truemoney.serviceinventory.ewallet.domain.ResetPassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
+import th.co.truemoney.serviceinventory.ewallet.domain.VerifyResetPassword;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
@@ -171,10 +173,45 @@ public class TmnProfileController {
 		return favorites;
 	}
 	
-	@RequestMapping(value = "/profile/requestforgotpassword", method = RequestMethod.POST)
-	public @ResponseBody ForgotPassword requestForgotPassword(@RequestBody ForgotPassword request) {
+	@RequestMapping(value = "/profile/createforgotpassword", method = RequestMethod.POST)
+	public @ResponseBody ForgotPassword createForgotPassword(
+			@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+			@RequestBody ForgotPassword request) {
 		
-		return forgotPasswordService.requestForgotPassword(request);
+		validateRequestParam(channelID);
+		
+		return forgotPasswordService.createForgotPassword(channelID, request);
+	}
+	
+	@RequestMapping(value = "/profile/password/verify-reset", method = RequestMethod.POST)
+	public @ResponseBody VerifyResetPassword verifyResetPassword(
+		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		   @RequestBody ResetPassword resetPasswordRequest) {
+
+		validateRequestParam(channelID);
+
+		return forgotPasswordService.verifyResetPassword(channelID, resetPasswordRequest);
+	}
+	
+	@RequestMapping(value = "/profile/password/confirm-reset", method = RequestMethod.POST)
+	public @ResponseBody String confirmResetPassword(
+		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		   @RequestBody VerifyResetPassword verifyResetPassword) {
+
+		validateRequestParam(channelID);
+
+		return forgotPasswordService.confirmResetPassword(channelID, verifyResetPassword);
+		
+	}
+	
+	@RequestMapping(value = "profile/password/resend-otp/{resetPasswordID}", method = RequestMethod.POST)
+	public @ResponseBody VerifyResetPassword resendOTP(
+		   @PathVariable String resetPasswordID,
+		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID) {
+
+		validateRequestParam(channelID);
+
+		return forgotPasswordService.resendOTP(channelID, resetPasswordID);
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {

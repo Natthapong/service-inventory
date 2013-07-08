@@ -12,10 +12,12 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.BillPaymentBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.ForgotPasswordBuilder;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.GetBillInfoBuilder;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.TopUpMobileBuilder;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.ForgotPasswordHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.MobileTopUpHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.ProfileRegisteringHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.TopUpSourceOfFundHandler;
@@ -43,6 +45,9 @@ public class LegacyFacade {
 
     @Autowired(required = false)
     private MobileTopUpHandler topUpMobileFacade;
+    
+    @Autowired(required = false)
+    private ForgotPasswordHandler forgotPasswordFacade;
 
     public LegacyFacade fromChannel(Integer channelID) {
         this.channelID = channelID;
@@ -75,6 +80,11 @@ public class LegacyFacade {
                     .fromChannelID(channelID)
                     .withAmount(amount);
     }
+    
+    public ForgotPasswordBuilder forgotPassword() {
+        return new ForgotPasswordBuilder(forgotPasswordFacade)
+                    .fromChannel(channelID);
+    }
 
     public BillPaymentOptionsBuilder billing() {
         return new BillPaymentOptionsBuilder(billPaymentFacade);
@@ -87,7 +97,7 @@ public class LegacyFacade {
     public TopUpMobileBuilder topUpMobile() {
         return new TopUpMobileBuilder(topUpMobileFacade);
     }
-
+    
     public LegacyFacade setBalanceFacade(EwalletBalanceHandler balanceFacade) {
         this.balanceFacade = balanceFacade;
         return this;
@@ -118,6 +128,11 @@ public class LegacyFacade {
         return this;
     }
 
+	public LegacyFacade setForgotPasswordFacade(ForgotPasswordHandler forgotPasswordFacade) {
+		this.forgotPasswordFacade = forgotPasswordFacade;
+		return this;
+	}
+	
     public static class UserProfileBuilder {
 
         private Integer channelID;
@@ -174,7 +189,7 @@ public class LegacyFacade {
             this.favorite = favorite;
             return this;
         }
-
+        
         public TmnProfile getProfile() {
             Validate.notNull(channelID, "from which channel");
             Validate.notNull(sessionID, "missing sessionID");
