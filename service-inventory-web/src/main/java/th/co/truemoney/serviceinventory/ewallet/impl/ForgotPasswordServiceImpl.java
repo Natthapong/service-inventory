@@ -1,7 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.ewallet.ForgotPasswordService;
@@ -15,8 +13,6 @@ import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 public class ForgotPasswordServiceImpl implements ForgotPasswordService {
-	
-	private static Logger logger = LoggerFactory.getLogger(ForgotPasswordServiceImpl.class);
 	
 	@Autowired
 	private LegacyFacade legacyFacade;
@@ -76,7 +72,6 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 	
 	@Override
 	public VerifyResetPassword resendOTP(Integer channelID, String resetPasswordID) {
-		logger.debug("================= resendOTP ==================");
 		ResetPassword resetPassword = forgotPasswordRepository.findResetPassword(resetPasswordID);
 			
 		OTP otp = otpService.send(resetPassword.getMobileNumber());
