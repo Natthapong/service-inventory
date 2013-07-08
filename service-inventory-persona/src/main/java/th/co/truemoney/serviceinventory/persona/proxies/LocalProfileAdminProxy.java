@@ -6,6 +6,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.ConfirmForgotPassw
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateForgotPasswordRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateForgotPasswordResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsCreatableRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.ResetPinRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.UpdateAccountRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordRequest;
@@ -57,5 +58,11 @@ public class LocalProfileAdminProxy implements TmnProfileAdminProxy {
             throws EwalletException {
         return null;
     }
+
+	@Override
+	public StandardBizResponse resetPin(ResetPinRequest resetPinRequest)
+			throws EwalletException {
+		return null;
+	}
 
 }
