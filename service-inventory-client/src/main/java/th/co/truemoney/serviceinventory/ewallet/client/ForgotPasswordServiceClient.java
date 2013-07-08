@@ -16,7 +16,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.VerifyResetPassword;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 @Service
-public class ForgotPasswordServiceClient implements ForgotPasswordService{
+public class ForgotPasswordServiceClient implements ForgotPasswordService {
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -57,6 +57,7 @@ public class ForgotPasswordServiceClient implements ForgotPasswordService{
 				requestEntity, VerifyResetPassword.class, channelID);
 
 		return responseEntity.getBody();
+		
 	}
 	
 	@Override
@@ -78,7 +79,7 @@ public class ForgotPasswordServiceClient implements ForgotPasswordService{
 		
 		ResponseEntity<VerifyResetPassword> responseEntity = restTemplate.exchange(
 				endPoints.getResendOTPResetPasswordURL(), HttpMethod.POST,
-				requestEntity, VerifyResetPassword.class, channelID);
+				requestEntity, VerifyResetPassword.class, resetPasswordID, channelID);
 
 		return responseEntity.getBody();
 	}

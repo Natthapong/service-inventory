@@ -6,6 +6,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.ConfirmForgotPassw
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateForgotPasswordRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateForgotPasswordResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsCreatableRequest;
+import th.co.truemoney.serviceinventory.ewallet.proxy.message.ResetPinRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.UpdateAccountRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordRequest;
@@ -18,23 +19,49 @@ public class LocalProfileAdminProxy implements TmnProfileAdminProxy {
     public VerifyForgotPasswordResponse verifyForgotPassword(
             VerifyForgotPasswordRequest verifyForgotPasswordRequest)
             throws EwalletException {
-        return new VerifyForgotPasswordResponse();
+        if (verifyForgotPasswordRequest != null) {
+            if ("tokenID".equals(verifyForgotPasswordRequest.getForgotToken())) {
+            	VerifyForgotPasswordResponse response = new VerifyForgotPasswordResponse("1", "0", "EWALLET-PROXY", 
+            			new String[] {  }, new String[] {  }, "tmnId", "xxx@tmn.com", "0891111111");
+                return response;          
+            } else {
+            	throw new FailResultCodeException("401", "EWALLET-PROXY");
+            }
+        } else {
+            throw new FailResultCodeException("401", "EWALLET-PROXY");
+        }
     }
 
     @Override
-    public StandardBizResponse confirmForgotPassword(
-            ConfirmForgotPasswordRequest confirmForgotPasswordRequest)
+    public StandardBizResponse confirmForgotPassword(ConfirmForgotPasswordRequest confirmForgotPasswordRequest)
             throws EwalletException {
-        // TODO Auto-generated method stub
-        return null;
+        if (confirmForgotPasswordRequest != null) {
+            if ("tokenID".equals(confirmForgotPasswordRequest.getForgotToken()) 
+            		&& "newPassword".equals(confirmForgotPasswordRequest.getNewPin())
+            		&& "xxx@tmn.com".equals(confirmForgotPasswordRequest.getLoginId())) {
+            	StandardBizResponse response = new StandardBizResponse("1", "0", "EWALLET-PROXY", new String[] { }, new String[] { });
+                return response;          
+            } else {
+            	throw new FailResultCodeException("401", "EWALLET-PROXY");
+            }
+        } else {
+            throw new FailResultCodeException("401", "EWALLET-PROXY");
+        }
     }
 
     @Override
-    public CreateForgotPasswordResponse createForgotPassword(
-            CreateForgotPasswordRequest createForgotPasswordRequest)
+    public CreateForgotPasswordResponse createForgotPassword(CreateForgotPasswordRequest createForgotPasswordRequest)
             throws EwalletException {
-        // TODO Auto-generated method stub
-        return null;
+        if (createForgotPasswordRequest != null) {
+            if ("xxx@tmn.com".equals(createForgotPasswordRequest.getLoginId())) {
+            	CreateForgotPasswordResponse response = new CreateForgotPasswordResponse("1", "0", "EWALLET-PROXY", new String[] {  }, new String[] {  }, "tokenID");
+                return response;          
+            } else {
+            	throw new FailResultCodeException("401", "EWALLET-PROXY");
+            }
+        } else {
+            throw new FailResultCodeException("401", "EWALLET-PROXY");
+        }
     }
 
     @Override
@@ -56,5 +83,12 @@ public class LocalProfileAdminProxy implements TmnProfileAdminProxy {
             throws EwalletException {
         return null;
     }
+
+	@Override
+	public StandardBizResponse resetPin(ResetPinRequest resetPinRequest)
+			throws EwalletException {
+		// TODO Auto-generated method stub
+		return null;
+	}   
 
 }

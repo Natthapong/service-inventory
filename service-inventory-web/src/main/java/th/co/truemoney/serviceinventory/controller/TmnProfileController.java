@@ -207,8 +207,7 @@ public class TmnProfileController {
 	@RequestMapping(value = "profile/password/resend-otp/{resetPasswordID}", method = RequestMethod.POST)
 	public @ResponseBody VerifyResetPassword resendOTP(
 		   @PathVariable String resetPasswordID,
-		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		   @RequestBody ResetPassword resetPasswordRequest) {
+		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID) {
 
 		validateRequestParam(channelID);
 

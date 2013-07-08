@@ -38,8 +38,7 @@ public class ForgotPasswordHandler {
 			ResetPassword resetPassword = new ResetPassword();
 			resetPassword.setLoginID(response.getLoginId());
 			resetPassword.setTruemoneyID(response.getTmnId());
-			//resetPassword.setMobileNumber(response.getMobile());
-			resetPassword.setMobileNumber("0891111111");	//TODO new ewallet-client new API will return mobile by Tully Williams	
+			resetPassword.setMobileNumber(response.getMobile());
 			return resetPassword;
 		} catch (FailResultCodeException ex) {
 			throw new UnknownSystemTransactionFailException(ex);

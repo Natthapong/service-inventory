@@ -179,7 +179,7 @@ public class EndPoints {
 	}
 	
 	public String getComfirmResetPasswordURL() {
-		return host + "/service-inventory-web/v1/ewallet/profile/password/comfirm-reset?channelID={channelID}";
+		return host + "/service-inventory-web/v1/ewallet/profile/password/confirm-reset?channelID={channelID}";
 	}
 
 	public String getResendOTPResetPasswordURL() {

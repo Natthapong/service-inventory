@@ -1,7 +1,10 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
-public class ResetPassword {
+import java.io.Serializable;
+
+public class ResetPassword implements Serializable {
 	
+	private static final long serialVersionUID = -2743924875147025570L;
 	private String token;
 	private String newPassword;
 	private String loginID;
