@@ -9,8 +9,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.ForgotPassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.ResetPassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.VerifyResetPassword;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateForgotPasswordRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.repositories.ForgotPasswordRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
@@ -32,6 +30,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 	@Override
 	public ForgotPassword createForgotPassword(Integer channelID, ForgotPassword request)
 			throws ServiceInventoryException {
+		logger.debug("================= createForgotPassword ==================");
 		legacyFacade.forgotPassword()
 					.fromChannel(channelID)
 					.withLogin(request.getLoginID())
@@ -42,7 +41,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
 	@Override
 	public VerifyResetPassword verifyResetPassword(Integer channelID, ResetPassword request)	throws ServiceInventoryException {
-		
+		logger.debug("================= verifyResetPassword ==================");
 		ResetPassword resetPassword = legacyFacade.forgotPassword()
 						   .fromChannel(channelID)
 						   .withToken(request.getToken())
@@ -61,7 +60,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
 	@Override
 	public String confirmResetPassword(Integer channelID, VerifyResetPassword verifyResetPassword) throws ServiceInventoryException {
-		
+		logger.debug("================= confirmResetPassword ==================");
 		otpService.isValidOTP(verifyResetPassword.getOtp());
 		
 		ResetPassword resetPassword = forgotPasswordRepository.findResetPassword(verifyResetPassword.getResetPasswordID());
@@ -74,6 +73,22 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 		
 		return resetPassword.getToken();
 		
+	}
+	
+	@Override
+	public VerifyResetPassword resendOTP(Integer channelID, String resetPasswordID) {
+		logger.debug("================= resendOTP ==================");
+		ResetPassword resetPassword = forgotPasswordRepository.findResetPassword(resetPasswordID);
+			
+		OTP otp = otpService.send(resetPassword.getMobileNumber());
+		
+		forgotPasswordRepository.saveResetPassword(resetPassword.getToken(), resetPassword);
+		
+		VerifyResetPassword verifyResetPassword = new VerifyResetPassword();
+		verifyResetPassword.setOtp(otp);
+		verifyResetPassword.setResetPasswordID(resetPassword.getToken());
+		
+		return verifyResetPassword;
 	}
 
 	public void setForgotPasswordRepository(ForgotPasswordRepository forgotPasswordRepository) {

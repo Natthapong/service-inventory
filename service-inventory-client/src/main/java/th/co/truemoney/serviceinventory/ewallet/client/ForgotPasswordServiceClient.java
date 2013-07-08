@@ -72,4 +72,17 @@ public class ForgotPasswordServiceClient implements ForgotPasswordService{
 		
 	}
 
+	@Override
+	public VerifyResetPassword resendOTP(Integer channelID, String resetPasswordID) {
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		
+		ResponseEntity<VerifyResetPassword> responseEntity = restTemplate.exchange(
+				endPoints.getResendOTPResetPasswordURL(), HttpMethod.POST,
+				requestEntity, VerifyResetPassword.class, channelID);
+
+		return responseEntity.getBody();
+	}
+	
+	
+
 }

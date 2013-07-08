@@ -13,8 +13,8 @@ import th.co.truemoney.serviceinventory.ewallet.client.ForgotPasswordServiceClie
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
+import th.co.truemoney.serviceinventory.ewallet.domain.ForgotPassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.ResetPassword;
-import th.co.truemoney.serviceinventory.ewallet.domain.VerifyResetPassword;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -30,13 +30,16 @@ public class ForgotPasswordServiceWorkflowTest {
 	@Ignore
 	public void verifyAndConfirmForgotPasswordSuccess() throws Exception {
 		
+		ForgotPassword forgotPassword = new ForgotPassword("adam@tmn.com", "1212121212121");
+		forgotPassword = client.createForgotPassword(40, forgotPassword);
+		
     	//stubbed
     	ResetPassword resetPassword = new ResetPassword("tokenID", "newPassword");
     	resetPassword.setMobileNumber("0866013468");
     	resetPassword.setLoginID("adam@tmn.com");
     	resetPassword.setTruemoneyID("tmn.0000000010");
     	
-		VerifyResetPassword verifyResetPassword = client.verifyResetPassword(40, resetPassword);
+		//VerifyResetPassword verifyResetPassword = client.verifyResetPassword(40, resetPassword);
 		
 		
 	}
