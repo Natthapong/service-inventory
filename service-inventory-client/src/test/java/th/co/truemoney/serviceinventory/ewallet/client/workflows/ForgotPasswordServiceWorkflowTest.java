@@ -51,10 +51,14 @@ public class ForgotPasswordServiceWorkflowTest {
 		assertNotNull(verifyResetPassword.getOtp());
 		assertEquals("0891111111", verifyResetPassword.getOtp().getMobileNumber());
 		assertEquals("tokenID", verifyResetPassword.getResetPasswordID());
-
+		
 		OTP otp = verifyResetPassword.getOtp();
 		otp.setOtpString("111111");		
-		String resetPasswordID = client.confirmResetPassword(40, verifyResetPassword);
+		String resetPasswordID = client.verifyOTP(40, verifyResetPassword);
+		assertNotNull(resetPasswordID);
+		assertEquals("tokenID", resetPasswordID);
+		
+		resetPasswordID = client.confirmResetPassword(40, verifyResetPassword.getResetPasswordID());
 		assertNotNull(resetPasswordID);
 		assertEquals("tokenID", resetPasswordID);
 		
@@ -111,7 +115,7 @@ public class ForgotPasswordServiceWorkflowTest {
 			OTP otp = verifyResetPassword.getOtp();
 			otp.setOtpString("111111");		
 			verifyResetPassword.setResetPasswordID("tokenIDFake");
-			client.confirmResetPassword(40, verifyResetPassword);
+			client.confirmResetPassword(40, verifyResetPassword.getResetPasswordID());
 			fail();
 		} catch (ServiceInventoryException e) {
 			assertEquals("10003", e.getErrorCode());

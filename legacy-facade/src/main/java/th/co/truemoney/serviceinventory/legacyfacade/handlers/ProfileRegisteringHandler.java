@@ -29,7 +29,8 @@ public class ProfileRegisteringHandler {
 
 	public void verifyValidRegisteringEmail(Integer channelID, String registeringEmail) throws ServiceInventoryException {
 		try {
-			IsCreatableRequest isCreatableRequest = createIsCreatableRequest(tmnProfileInitiator, tmnProfilePin, channelID, registeringEmail);
+			String requestTransactionID = Long.toString(System.currentTimeMillis());
+			IsCreatableRequest isCreatableRequest = createIsCreatableRequest(requestTransactionID, channelID, registeringEmail);
 			tmnProfileAdminProxy.isCreatable(isCreatableRequest);
 		} catch (ServiceInventoryException e) {
 			e.putDate("email", registeringEmail);
@@ -39,7 +40,8 @@ public class ProfileRegisteringHandler {
 
 	public void verifyValidRegisteringMobileNumber(Integer channelID, String registeringMobileNumber) throws ServiceInventoryException {
 		try {
-			IsCreatableRequest isCreatableRequest = createIsCreatableRequest(tmnProfileInitiator, tmnProfilePin, channelID, registeringMobileNumber);
+			String requestTransactionID = Long.toString(System.currentTimeMillis());
+			IsCreatableRequest isCreatableRequest = createIsCreatableRequest(requestTransactionID, channelID, registeringMobileNumber);
 			tmnProfileAdminProxy.isCreatable(isCreatableRequest);
 		} catch (ServiceInventoryException e) {
 			e.putDate("mobileNumber", registeringMobileNumber);
@@ -56,23 +58,26 @@ public class ProfileRegisteringHandler {
     	tmnProfileProxy.createTmnProfile(createProfileRequest);
     }
 
-    private IsCreatableRequest createIsCreatableRequest(String tmnProfileInitiator, String tmnProfilePin, Integer channelID, String loginID) {
+    private IsCreatableRequest createIsCreatableRequest(String requestTransactionID, Integer channelID, String loginID) {
         IsCreatableRequest isCreatableRequest = new IsCreatableRequest();
+        isCreatableRequest.setRequestTransactionId(requestTransactionID);
         isCreatableRequest.setChannelId(channelID);
         isCreatableRequest.setLoginId(loginID);
-
-		String encryptedPin = encryptSHA1(tmnProfileInitiator, tmnProfilePin);
-
-        AdminSecurityContext adminSecurityContext = new AdminSecurityContext(tmnProfileInitiator, encryptedPin);
-        isCreatableRequest.setAdminSecurityContext(adminSecurityContext);
+        isCreatableRequest.setAdminSecurityContext(createSecurityContext(requestTransactionID));
         return isCreatableRequest;
     }
 
-	private String encryptSHA1(String tmnProfileInitiator, String tmnProfilePin) {
+	private String encryptSHA1(String requestTransactionID) {
 		String initiator = tmnProfileInitiator != null ? tmnProfileInitiator.toLowerCase() : "";
-		return HashPasswordUtil.encryptSHA1(initiator + tmnProfilePin).toLowerCase();
+		String tempEncrypted = HashPasswordUtil.encryptSHA1(initiator + tmnProfilePin).toLowerCase();
+		return HashPasswordUtil.encryptSHA1(requestTransactionID + tempEncrypted).toUpperCase();
 	}
-
+	
+	private AdminSecurityContext createSecurityContext(String requestTransactionID) {
+		String encryptedPin = encryptSHA1(requestTransactionID);
+        return new AdminSecurityContext(tmnProfileInitiator, encryptedPin);
+	}
+	
     private CreateTmnProfileRequest createTmnProfileRequest(Integer channelID, TmnProfile tmnProfile) {
 		CreateTmnProfileRequest tmnProfileRequest = new CreateTmnProfileRequest();
 		tmnProfileRequest.setChannelId(channelID);

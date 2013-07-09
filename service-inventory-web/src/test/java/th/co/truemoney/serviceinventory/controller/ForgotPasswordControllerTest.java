@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.controller;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -75,6 +76,29 @@ public class ForgotPasswordControllerTest {
 	}
 	
 	@Test
+	public void shouldVerifyOTPResetPasswordSuccess() throws Exception {
+
+		when(forgotPasswordServiceMock.verifyOTP(anyInt(), any(VerifyResetPassword.class))).thenReturn("tokenID");
+
+    	//stubbed
+    	ResetPassword resetPassword = new ResetPassword("tokenID", "newPassword");
+    	resetPassword.setMobileNumber("0866013468");
+    	resetPassword.setLoginID("adam@tmn.com");
+    	resetPassword.setTruemoneyID("tmn.0000000010");
+    	
+        OTP stubbedOTP = new OTP("0866013468", "abcd", "111111");
+        VerifyResetPassword verifyResetPassword = new VerifyResetPassword();
+        verifyResetPassword.setOtp(stubbedOTP);
+        verifyResetPassword.setResetPasswordID(resetPassword.getToken());
+		
+		this.mockMvc.perform(post("/ewallet/profile/password/verify-otp?channelID={channelID}", 40)
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(verifyResetPassword)))
+			.andExpect(status().isOk());
+		
+	}
+	
+	@Test
 	public void shouldConfirmResetPasswordSuccess() throws Exception {
 
     	//stubbed
@@ -89,11 +113,10 @@ public class ForgotPasswordControllerTest {
         verifyResetPassword.setOtp(stubbedOTP);
         verifyResetPassword.setResetPasswordID(resetPassword.getToken());
         
-		when(forgotPasswordServiceMock.confirmResetPassword(anyInt(), any(VerifyResetPassword.class))).thenReturn(resetPassword.getToken());
+		when(forgotPasswordServiceMock.confirmResetPassword(anyInt(), anyString())).thenReturn(resetPassword.getToken());
 
-		this.mockMvc.perform(post("/ewallet/profile/password/confirm-reset?channelID={channelID}", 40)
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsBytes(verifyResetPassword)))
+		this.mockMvc.perform(post("/ewallet/profile/password/confirm-reset/{resetPasswordID}?channelID={channelID}", verifyResetPassword.getResetPasswordID() ,40)
+			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 		
 	}

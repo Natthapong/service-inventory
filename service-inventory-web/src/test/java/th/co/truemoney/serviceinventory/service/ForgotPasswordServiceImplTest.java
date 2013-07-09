@@ -96,7 +96,7 @@ public class ForgotPasswordServiceImplTest {
         when(mockForgotPasswordRepository.findResetPassword(anyString())).thenReturn(resetPassword);     
         
         //when
-        this.forgotPasswordService.confirmResetPassword(40, verifyResetPassword);
+        this.forgotPasswordService.confirmResetPassword(40, verifyResetPassword.getResetPasswordID());
 
         verify(mockForgotPasswordFacade).confirmResetPassword(anyInt(), anyString(), anyString(), anyString());
     }

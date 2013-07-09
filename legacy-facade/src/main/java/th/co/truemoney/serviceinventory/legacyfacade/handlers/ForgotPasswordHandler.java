@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.ResetPassword;
-import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AdminSecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ConfirmForgotPasswordRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateForgotPasswordRequest;
@@ -13,7 +11,6 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswo
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.util.HashPasswordUtil;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 public class ForgotPasswordHandler {
 
@@ -27,36 +24,32 @@ public class ForgotPasswordHandler {
 	private String tmnProfilePin;
 	
 	public void createForgotpassword(Integer channelID, String loginID, String idCardNumber) { 
-		CreateForgotPasswordRequest createForgotPasswordRequest = createForgotPasswordRequest(channelID, loginID, idCardNumber);
+		String requestTransactionID = Long.toString(System.currentTimeMillis());
+		CreateForgotPasswordRequest createForgotPasswordRequest = createForgotPasswordRequest(requestTransactionID, channelID, loginID, idCardNumber);
 		tmnProfileAdminProxy.createForgotPassword(createForgotPasswordRequest);
 	}
 	
 	public ResetPassword verifyResetPassword(Integer channelID, String resetPasswordToken) {
-		try {
-			VerifyForgotPasswordRequest request = createVerifyForgotPasswordRequest(tmnProfileInitiator, tmnProfilePin, channelID, resetPasswordToken);
-			VerifyForgotPasswordResponse response = tmnProfileAdminProxy.verifyForgotPassword(request);
-			ResetPassword resetPassword = new ResetPassword();
-			resetPassword.setLoginID(response.getLoginId());
-			resetPassword.setTruemoneyID(response.getTmnId());
-			resetPassword.setMobileNumber(response.getMobile());
-			return resetPassword;
-		} catch (FailResultCodeException ex) {
-			throw new UnknownSystemTransactionFailException(ex);
-	    }
+		String requestTransactionID = Long.toString(System.currentTimeMillis());
+		VerifyForgotPasswordRequest request = createVerifyForgotPasswordRequest(requestTransactionID, channelID, resetPasswordToken);
+		VerifyForgotPasswordResponse response = tmnProfileAdminProxy.verifyForgotPassword(request);
+		ResetPassword resetPassword = new ResetPassword();
+		resetPassword.setLoginID(response.getLoginId());
+		resetPassword.setTruemoneyID(response.getTmnId());
+		resetPassword.setMobileNumber(response.getMobile());
+		return resetPassword;
 	}
 
 	public void confirmResetPassword(Integer channelID, String newPassword, String loginID, String resetPasswordToken) {
-		try {
-			ConfirmForgotPasswordRequest request = createConfirmForgotPasswordRequest(tmnProfileInitiator, tmnProfilePin, channelID, newPassword, loginID, resetPasswordToken);
-			tmnProfileAdminProxy.confirmForgotPassword(request);
-		} catch (FailResultCodeException ex) {
-			throw new UnknownSystemTransactionFailException(ex);
-	    }
+		String requestTransactionID = Long.toString(System.currentTimeMillis());
+		ConfirmForgotPasswordRequest request = createConfirmForgotPasswordRequest(requestTransactionID, channelID, newPassword, loginID, resetPasswordToken);
+		tmnProfileAdminProxy.confirmForgotPassword(request);
 	}
 
-    private ConfirmForgotPasswordRequest createConfirmForgotPasswordRequest(String tmnProfileInitiator, String tmnProfilePin, Integer channelID, String newPassword, String loginID, String resetPasswordToken) {
+    private ConfirmForgotPasswordRequest createConfirmForgotPasswordRequest(String requestTransactionID, Integer channelID, String newPassword, String loginID, String resetPasswordToken) {
     	ConfirmForgotPasswordRequest confirmForgotPasswordRequest = new ConfirmForgotPasswordRequest();
-    	confirmForgotPasswordRequest.setAdminSecurityContext(createSecurityContext());
+    	confirmForgotPasswordRequest.setRequestTransactionId(requestTransactionID);
+    	confirmForgotPasswordRequest.setAdminSecurityContext(createSecurityContext(requestTransactionID));
     	confirmForgotPasswordRequest.setForgotToken(resetPasswordToken);
     	confirmForgotPasswordRequest.setChannelId(channelID);
     	confirmForgotPasswordRequest.setNewPin(newPassword);
@@ -64,39 +57,34 @@ public class ForgotPasswordHandler {
         return confirmForgotPasswordRequest;
 	}
 
-	private VerifyForgotPasswordRequest createVerifyForgotPasswordRequest(String tmnProfileInitiator, String tmnProfilePin, Integer channelID, String resetPasswordToken) {
+	private VerifyForgotPasswordRequest createVerifyForgotPasswordRequest(String requestTransactionID, Integer channelID, String resetPasswordToken) {
     	VerifyForgotPasswordRequest verifyForgotPasswordRequest = new VerifyForgotPasswordRequest();
+    	verifyForgotPasswordRequest.setRequestTransactionId(requestTransactionID);
+    	verifyForgotPasswordRequest.setAdminSecurityContext(createSecurityContext(requestTransactionID));
     	verifyForgotPasswordRequest.setForgotToken(resetPasswordToken);
-    	verifyForgotPasswordRequest.setAdminSecurityContext(createSecurityContext());
     	verifyForgotPasswordRequest.setChannelId(channelID);
         return verifyForgotPasswordRequest;
     }
 	
-	private CreateForgotPasswordRequest createForgotPasswordRequest(Integer channelID, String loginID, String idCardNumber) {
+	private CreateForgotPasswordRequest createForgotPasswordRequest(String requestTransactionID, Integer channelID, String loginID, String idCardNumber) {
 		CreateForgotPasswordRequest createForgotPasswordRequest = new CreateForgotPasswordRequest();
-		createForgotPasswordRequest.setAdminSecurityContext(createSecurityContext());
+		createForgotPasswordRequest.setRequestTransactionId(requestTransactionID);
+		createForgotPasswordRequest.setAdminSecurityContext(createSecurityContext(requestTransactionID));
 		createForgotPasswordRequest.setChannelId(channelID);
 		createForgotPasswordRequest.setThaiId(idCardNumber);
 		createForgotPasswordRequest.setLoginId(loginID);
         return createForgotPasswordRequest;
 	}
 	
-	private String encryptSHA1(String tmnProfileInitiator, String tmnProfilePin) {
+	private String encryptSHA1(String requestTransactionID) {
 		String initiator = tmnProfileInitiator != null ? tmnProfileInitiator.toLowerCase() : "";
-		return HashPasswordUtil.encryptSHA1(initiator + tmnProfilePin).toLowerCase();
+		String tempEncrypted = HashPasswordUtil.encryptSHA1(initiator + tmnProfilePin).toLowerCase();
+		return HashPasswordUtil.encryptSHA1(requestTransactionID + tempEncrypted).toUpperCase();
 	}
 	
-	private AdminSecurityContext createSecurityContext() {
-		String encryptedPin = encryptSHA1(tmnProfileInitiator, tmnProfilePin);
+	private AdminSecurityContext createSecurityContext(String requestTransactionID) {
+		String encryptedPin = encryptSHA1(requestTransactionID);
         return new AdminSecurityContext(tmnProfileInitiator, encryptedPin);
 	}
-	
-	public static class UnknownSystemTransactionFailException extends ServiceInventoryException {
 
-		private static final long serialVersionUID = 7194368344939582450L;
-
-		public UnknownSystemTransactionFailException(EwalletException ex) {
-			super(500, ex.getCode(),  "unknown system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
-		}
-	}	
 }

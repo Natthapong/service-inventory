@@ -22,6 +22,7 @@ public class Activity implements Serializable {
 	protected String type;
 	protected String action;
 	protected String ref1;
+	protected String channel;
 	protected BigDecimal amount;
 	protected BigDecimal serviceFee;
 	protected BigDecimal sourceOfFundFee;
@@ -104,6 +105,14 @@ public class Activity implements Serializable {
 		return transactionDate;
 	}
 
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
 	public void setTransactionDate(Date transactionDate) {
 		this.transactionDate = transactionDate;
 	}
@@ -127,6 +136,7 @@ public class Activity implements Serializable {
 			.append("type: ", this.getType())
 			.append("action: ", this.getAction())
 			.append("ref1: ", this.getRef1())
+			.append("channel: ", this.getChannel())
 			.append("amount: ", this.getAmount())
 			.append("serviceFee: ", this.getServiceFee())
 			.append("sourceOfFundFee: ", this.getSourceOfFundFee())

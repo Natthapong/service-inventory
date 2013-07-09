@@ -179,11 +179,15 @@ public class EndPoints {
 	}
 	
 	public String getComfirmResetPasswordURL() {
-		return host + "/service-inventory-web/v1/ewallet/profile/password/confirm-reset?channelID={channelID}";
+		return host + "/service-inventory-web/v1/ewallet/profile/password/confirm-reset/{resetPasswordID}?channelID={channelID}";
 	}
 
 	public String getResendOTPResetPasswordURL() {
 		return host + "/service-inventory-web/v1/ewallet/profile/password/resend-otp/{resetPasswordID}?channelID={channelID}";
+	}
+
+	public String getVerifyOTPResetPasswordURL() {
+		return host + "/service-inventory-web/v1/ewallet/profile/password/verify-otp?channelID={channelID}";
 	}
 
 }

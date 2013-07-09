@@ -193,14 +193,25 @@ public class TmnProfileController {
 		return forgotPasswordService.verifyResetPassword(channelID, resetPasswordRequest);
 	}
 	
-	@RequestMapping(value = "/profile/password/confirm-reset", method = RequestMethod.POST)
-	public @ResponseBody String confirmResetPassword(
+	@RequestMapping(value = "/profile/password/verify-otp", method = RequestMethod.POST)
+	public @ResponseBody String verifyOTP(
 		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
 		   @RequestBody VerifyResetPassword verifyResetPassword) {
 
 		validateRequestParam(channelID);
 
-		return forgotPasswordService.confirmResetPassword(channelID, verifyResetPassword);
+		return forgotPasswordService.verifyOTP(channelID, verifyResetPassword);
+		
+	}
+	
+	@RequestMapping(value = "/profile/password/confirm-reset/{resetPasswordID}", method = RequestMethod.POST)
+	public @ResponseBody String confirmResetPassword(
+		   @PathVariable String resetPasswordID,
+		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID) {
+
+		validateRequestParam(channelID);
+
+		return forgotPasswordService.confirmResetPassword(channelID, resetPasswordID);
 		
 	}
 	
