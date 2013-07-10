@@ -22,7 +22,7 @@ public class Activity implements Serializable {
 	protected String type;
 	protected String action;
 	protected String ref1;
-	protected String channel;
+	protected Long channel;
 	protected BigDecimal amount;
 	protected BigDecimal serviceFee;
 	protected BigDecimal sourceOfFundFee;
@@ -105,11 +105,11 @@ public class Activity implements Serializable {
 		return transactionDate;
 	}
 
-	public String getChannel() {
+	public Long getChannel() {
 		return channel;
 	}
 
-	public void setChannel(String channel) {
+	public void setChannel(Long channel) {
 		this.channel = channel;
 	}
 

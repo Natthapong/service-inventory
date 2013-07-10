@@ -113,7 +113,7 @@ public class ForgotPasswordControllerTest {
         verifyResetPassword.setOtp(stubbedOTP);
         verifyResetPassword.setResetPasswordID(resetPassword.getToken());
         
-		when(forgotPasswordServiceMock.confirmResetPassword(anyInt(), anyString())).thenReturn(resetPassword.getToken());
+		when(forgotPasswordServiceMock.confirmResetPassword(anyInt(), anyString(), anyString())).thenReturn(resetPassword.getToken());
 
 		this.mockMvc.perform(post("/ewallet/profile/password/confirm-reset/{resetPasswordID}?channelID={channelID}", verifyResetPassword.getResetPasswordID() ,40)
 			.contentType(MediaType.APPLICATION_JSON))

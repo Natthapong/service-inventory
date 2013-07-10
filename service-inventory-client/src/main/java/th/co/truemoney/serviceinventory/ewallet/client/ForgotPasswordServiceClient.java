@@ -74,12 +74,12 @@ public class ForgotPasswordServiceClient implements ForgotPasswordService {
 	}
 	
 	@Override
-	public String confirmResetPassword(Integer channelID, String resetPasswordID) throws ServiceInventoryException {
+	public String confirmResetPassword(Integer channelID, String resetPasswordID, String newPassword) throws ServiceInventoryException {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 		
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
 				endPoints.getComfirmResetPasswordURL(), HttpMethod.POST,
-				requestEntity, String.class, resetPasswordID, channelID);
+				requestEntity, String.class, resetPasswordID, channelID, newPassword);
 
 		return responseEntity.getBody();
 	}

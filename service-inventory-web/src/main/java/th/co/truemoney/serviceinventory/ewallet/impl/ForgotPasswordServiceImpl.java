@@ -41,10 +41,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 						   .withToken(request.getToken())
 						   .verifyResetPassword();
 		resetPassword.setToken(request.getToken());
-		resetPassword.setNewPassword(request.getNewPassword());
 		
 		OTP otp = otpService.send(resetPassword.getMobileNumber());
-		
+
 		forgotPasswordRepository.saveResetPassword(resetPassword.getToken(), resetPassword);
 		
 		VerifyResetPassword verifyResetPassword = new VerifyResetPassword();
@@ -64,13 +63,13 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 	}
 
 	@Override
-	public String confirmResetPassword(Integer channelID, String resetPasswordID) throws ServiceInventoryException {
+	public String confirmResetPassword(Integer channelID, String resetPasswordID, String newPassword) throws ServiceInventoryException {
 		ResetPassword resetPassword = forgotPasswordRepository.findResetPassword(resetPasswordID);
 				
 		legacyFacade.forgotPassword()
 				   .fromChannel(channelID)
 				   .withToken(resetPassword.getToken())
-				   .withNewPassword(resetPassword.getLoginID(), resetPassword.getNewPassword())
+				   .withNewPassword(resetPassword.getLoginID(), newPassword)
 				   .confirmResetPassword();
 		
 		return resetPassword.getToken();

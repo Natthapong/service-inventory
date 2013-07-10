@@ -207,11 +207,12 @@ public class TmnProfileController {
 	@RequestMapping(value = "/profile/password/confirm-reset/{resetPasswordID}", method = RequestMethod.POST)
 	public @ResponseBody String confirmResetPassword(
 		   @PathVariable String resetPasswordID,
-		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID) {
+		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		   @RequestParam(value = "newPassword", defaultValue="") String newPassword) {
 
 		validateRequestParam(channelID);
 
-		return forgotPasswordService.confirmResetPassword(channelID, resetPasswordID);
+		return forgotPasswordService.confirmResetPassword(channelID, resetPasswordID, newPassword);
 		
 	}
 	
