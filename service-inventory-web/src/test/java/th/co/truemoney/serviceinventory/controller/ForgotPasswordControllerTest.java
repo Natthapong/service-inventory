@@ -2,7 +2,6 @@ package th.co.truemoney.serviceinventory.controller;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -113,10 +112,11 @@ public class ForgotPasswordControllerTest {
         verifyResetPassword.setOtp(stubbedOTP);
         verifyResetPassword.setResetPasswordID(resetPassword.getToken());
         
-		when(forgotPasswordServiceMock.confirmResetPassword(anyInt(), anyString(), anyString())).thenReturn(resetPassword.getToken());
+		when(forgotPasswordServiceMock.confirmResetPassword(anyInt(), any(ResetPassword.class))).thenReturn(resetPassword.getToken());
 
-		this.mockMvc.perform(post("/ewallet/profile/password/confirm-reset/{resetPasswordID}?channelID={channelID}", verifyResetPassword.getResetPasswordID() ,40)
-			.contentType(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(post("/ewallet/profile/password/confirm-reset?channelID={channelID}", 40)
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(resetPassword)))
 			.andExpect(status().isOk());
 		
 	}

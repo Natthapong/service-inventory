@@ -204,19 +204,18 @@ public class TmnProfileController {
 		
 	}
 	
-	@RequestMapping(value = "/profile/password/confirm-reset/{resetPasswordID}", method = RequestMethod.POST)
-	public @ResponseBody String confirmResetPassword(
-		   @PathVariable String resetPasswordID,
+	@RequestMapping(value = "/profile/password/confirm-reset", method = RequestMethod.POST)
+	public @ResponseBody String confirmResetPassword(		   
 		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		   @RequestParam(value = "newPassword", defaultValue="") String newPassword) {
+		   @RequestBody ResetPassword resetPassword) {
 
 		validateRequestParam(channelID);
 
-		return forgotPasswordService.confirmResetPassword(channelID, resetPasswordID, newPassword);
+		return forgotPasswordService.confirmResetPassword(channelID, resetPassword);
 		
 	}
 	
-	@RequestMapping(value = "profile/password/resend-otp/{resetPasswordID}", method = RequestMethod.POST)
+	@RequestMapping(value = "/profile/password/resend-otp/{resetPasswordID}", method = RequestMethod.POST)
 	public @ResponseBody VerifyResetPassword resendOTP(
 		   @PathVariable String resetPasswordID,
 		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID) {

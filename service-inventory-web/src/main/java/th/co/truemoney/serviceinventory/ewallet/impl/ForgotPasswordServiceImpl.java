@@ -63,13 +63,13 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 	}
 
 	@Override
-	public String confirmResetPassword(Integer channelID, String resetPasswordID, String newPassword) throws ServiceInventoryException {
-		ResetPassword resetPassword = forgotPasswordRepository.findResetPassword(resetPasswordID);
+	public String confirmResetPassword(Integer channelID, ResetPassword request) throws ServiceInventoryException {
+		ResetPassword resetPassword = forgotPasswordRepository.findResetPassword(request.getToken());
 				
 		legacyFacade.forgotPassword()
 				   .fromChannel(channelID)
 				   .withToken(resetPassword.getToken())
-				   .withNewPassword(resetPassword.getLoginID(), newPassword)
+				   .withNewPassword(resetPassword.getLoginID(), request.getNewPassword())
 				   .confirmResetPassword();
 		
 		return resetPassword.getToken();

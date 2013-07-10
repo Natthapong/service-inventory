@@ -16,7 +16,7 @@ public interface ForgotPasswordService {
 	public String verifyOTP(Integer channelID, VerifyResetPassword verifyResetPassword)
 			throws ServiceInventoryException;
 			
-	public String confirmResetPassword(Integer channelID, String resetPasswordID, String newPassword) 
+	public String confirmResetPassword(Integer channelID, ResetPassword request) 
 			throws ServiceInventoryException;
 	
 	public VerifyResetPassword resendOTP(Integer channelID, String resetPasswordID)
