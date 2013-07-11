@@ -34,20 +34,29 @@ public class OTPRedisRepository implements OTPRepository {
 
 	@Override
 	public OTP findOTPByRefCode(String mobileNumber, String refCode) {
+		OTP otp = null;
+		
 		try {
 
 			String result = redisLoggingDao.getData(createKey(mobileNumber, refCode));
 
-			if(result == null) {
-				throw new ResourceNotFoundException(Code.OTP_NOT_FOUND, "OTP not found.");
-			}
-
-			return mapper.readValue(result, OTP.class);
-
+			otp = mapper.readValue(result, OTP.class);
+			
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
 		}
+		
+		if(otp == null) {
+			throw new ResourceNotFoundException(Code.OTP_NOT_FOUND, "OTP not found.");
+		}
+
+		logger.debug("=======================================");
+		logger.debug("Mobile Number : "+otp.getMobileNumber());
+		logger.debug("Ref Code : "+otp.getReferenceCode());
+		logger.debug("=======================================");
+
+		return otp;
+
 	}
 
 	private String createKey(String mobileNumber, String referenceCode) {

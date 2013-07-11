@@ -9,6 +9,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import redis.clients.jedis.JedisPoolConfig;
+
 @Configuration
 @Import({LocalRedisConfig.class, DevRedisConfig.class, ProdRedisConfig.class})
 public class RedisConfig {
@@ -19,11 +21,29 @@ public class RedisConfig {
 	@Value("${redis.port}")
 	private Integer redisPort;
 	
+	@Bean 
+	JedisPoolConfig jedisPoolConfig() {
+		JedisPoolConfig poolConfig = new JedisPoolConfig();
+		poolConfig.maxActive = 100;
+		poolConfig.maxIdle = 10;
+		poolConfig.minIdle = 2;
+		poolConfig.maxWait = 100;
+		poolConfig.testWhileIdle = true;
+		poolConfig.testOnBorrow = true;
+		poolConfig.testOnReturn = true;
+		poolConfig.minEvictableIdleTimeMillis = 10000;
+		poolConfig.timeBetweenEvictionRunsMillis = 5000;
+		poolConfig.numTestsPerEvictionRun = 10;
+		return poolConfig;
+	}
+	
 	@Bean
 	JedisConnectionFactory jedisConnectionFactory() {
 		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
 		jedisConnectionFactory.setHostName(redisHost);
 		jedisConnectionFactory.setPort(redisPort);
+		jedisConnectionFactory.setUsePool(true);
+		jedisConnectionFactory.setPoolConfig(jedisPoolConfig());
 		return jedisConnectionFactory;
 	}
 
