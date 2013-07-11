@@ -3,6 +3,7 @@ package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import th.co.truemoney.serviceinventory.dao.ExpirableMap;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -42,24 +43,16 @@ public class OTPRedisRepository implements OTPRepository {
 			e.printStackTrace();
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not read data in repository.", e);
 		}
+		if(StringUtils.isEmpty(result)) {
+			throw new ResourceNotFoundException(Code.OTP_NOT_FOUND, "OTP not found.");
+		}
 		try {
 			otp = mapper.readValue(result, OTP.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not map data from repository.", e);
 		}
-		
-		if(otp == null) {
-			throw new ResourceNotFoundException(Code.OTP_NOT_FOUND, "OTP not found.");
-		}
-
-		logger.debug("=======================================");
-		logger.debug("Mobile Number : "+otp.getMobileNumber());
-		logger.debug("Ref Code : "+otp.getReferenceCode());
-		logger.debug("=======================================");
-
 		return otp;
-
 	}
 
 	private String createKey(String mobileNumber, String referenceCode) {
