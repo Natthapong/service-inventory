@@ -1,7 +1,5 @@
 package th.co.truemoney.serviceinventory.ewallet.repositories.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
@@ -15,8 +13,6 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.C
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OTPRedisRepository implements OTPRepository {
-
-	private static Logger logger = LoggerFactory.getLogger(OTPRedisRepository.class);
 
 	ObjectMapper mapper = new ObjectMapper();
 

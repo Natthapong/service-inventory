@@ -39,8 +39,8 @@
         "minAmount" : 300.00,
         "maxAmount" : 3000.00,
         "feeValue" : 20.00,
-        "feeType" : "F",
-        "minTotalFee" : 20.00,
+        "feeType" : "P",
+        "minTotalFee" : 10.00,
         "maxTotalFee" : 20.00
     }
 }
