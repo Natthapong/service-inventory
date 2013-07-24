@@ -43,7 +43,7 @@ public class ForgotPasswordRedisRepository implements ForgotPasswordRepository {
 	public void saveResetPassword(String resetPasswordToken, ResetPassword resetPassword) {
 		if (resetPassword != null) {
 			try {
-				redisLoggingDao.addData(resetPasswordToken, mapper.writeValueAsString(resetPassword), 20L);
+				redisLoggingDao.addData(resetPasswordToken, mapper.writeValueAsString(resetPassword), 1440L);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
