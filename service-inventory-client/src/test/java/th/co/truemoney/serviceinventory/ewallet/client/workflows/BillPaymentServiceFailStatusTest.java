@@ -64,7 +64,7 @@ public class BillPaymentServiceFailStatusTest {
 	}
 	
 	@Test
-	public void shouldReturnActualErrorCodeAndNamespace() {
+	public void shouldReturnActualErrorCodeAndNamespace() throws InterruptedException {
 		
 		String barcode = "|666666666666666 010004552 010520120200015601 85950";
 
@@ -100,6 +100,8 @@ public class BillPaymentServiceFailStatusTest {
 
 		BillPaymentTransaction.Status transactionStatus = billPaymentClient.performPayment(billDraft.getID(), accessTokenID);
 		assertEquals(BillPaymentTransaction.Status.VERIFIED, transactionStatus);
+		
+		Thread.sleep(100);
 		
 		// get order status
 		try {

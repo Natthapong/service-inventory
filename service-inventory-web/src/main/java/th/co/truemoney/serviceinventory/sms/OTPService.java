@@ -58,6 +58,16 @@ public class OTPService {
 
 		OTP otp = otpRepository.findOTPByRefCode(inputOTP.getMobileNumber(), inputOTP.getReferenceCode());
 
+		logger.debug("==============================> Data From Redis");
+		logger.debug("mobileNumber = " + otp.getMobileNumber());
+		logger.debug("refCode = " + otp.getReferenceCode());
+		logger.debug("otp = " + otp.getOtpString());
+		logger.debug("==============================> Data From User");
+		logger.debug("mobileNumber = " + inputOTP.getMobileNumber());
+		logger.debug("refCode = " + inputOTP.getReferenceCode());
+		logger.debug("otp = " + inputOTP.getOtpString());
+		logger.debug("==============================");
+		
 		if (otp != null && !otp.getOtpString().equals(inputOTP.getOtpString())) {
 			throw new ServiceInventoryWebException(Code.OTP_NOT_MATCH, "OTP not matched.");
 		}
