@@ -16,60 +16,45 @@ import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 public class OTPService {
 
 	private static Logger logger = LoggerFactory.getLogger(OTPService.class);
+	
+	private static final String SMS_TEMPLATE = "รหัส OTP คือ %s (Ref: %s)";
+	
+	@Autowired 
+	@Qualifier("smsSender")
+	private String smsSender;
 
 	@Autowired
 	private SmsProxy smsProxyImpl;
 
-	@Autowired @Qualifier("smsSender")
-	private String smsSender;
-
-	@Autowired
-	private OTPRepository otpRepository;
-
 	@Autowired
 	private OTPGenerator otpGenerator;
 
+	@Autowired
+	private OTPRepository otpRepository;
+	
 	public OTP send(String mobileNumber) throws ServiceInventoryWebException {
 
 		OTP otp = otpGenerator.generateNewOTP(mobileNumber);
-
-		logger.debug("==============================");
-		logger.debug("mobileNumber = " + otp.getMobileNumber());
-		logger.debug("otp = " + otp.getOtpString());
-		logger.debug("refCode = " + otp.getReferenceCode());
-		logger.debug("==============================");
-
-		SmsRequest smsRequest = new SmsRequest(smsSender, mobileNumber,
-				"รหัส OTP คือ " + otp.getOtpString() + " (Ref: " + otp.getReferenceCode() + ")");
-		SmsResponse smsResponse = smsProxyImpl.send(smsRequest);
-		if (!smsResponse.isSuccess()) {
+		log(otp);
+		
+		if (sendSMS(mobileNumber, otp)) {
+			otpRepository.save(otp);
+			return new OTP(otp.getMobileNumber(), otp.getReferenceCode(), maskString(otp.getOtpString()));
+		} else {
 			throw new ServiceInventoryWebException(Code.SEND_OTP_FAIL, "send OTP failed.");
 		}
-		otpRepository.save(otp);
-
-		return new OTP(otp.getMobileNumber(), otp.getReferenceCode(), otp.getOtpString().replaceAll(".", "x"));
-
 	}
 
 	public void isValidOTP(OTP inputOTP) throws ServiceInventoryWebException {
 		if (inputOTP == null || inputOTP.getReferenceCode() == null) {
 			throw new ServiceInventoryWebException(Code.INVALID_OTP, "invalid OTP.");
 		}
-		
-		logger.debug("==============================> Data From User");
-		logger.debug("mobileNumber = " + inputOTP.getMobileNumber());
-		logger.debug("refCode = " + inputOTP.getReferenceCode());
-		logger.debug("otp = " + inputOTP.getOtpString());
-		logger.debug("==============================");
+		log(inputOTP);
 		
 		OTP otp = otpRepository.findOTPByRefCode(inputOTP.getMobileNumber(), inputOTP.getReferenceCode());
 		
 		if (otp != null) {
-			logger.debug("==============================> Data From Redis");
-			logger.debug("mobileNumber = " + otp.getMobileNumber());
-			logger.debug("refCode = " + otp.getReferenceCode());
-			logger.debug("otp = " + otp.getOtpString());
-			
+			log(otp);
 			if (!otp.getOtpString().equals(inputOTP.getOtpString())) {
 				throw new ServiceInventoryWebException(Code.OTP_NOT_MATCH, "OTP not matched.");
 			}
@@ -85,20 +70,30 @@ public class OTPService {
 	}
 
 	public OTP saveOtpString(String mobileNumber, String otpString) throws ServiceInventoryWebException {
-
 		OTP otp = otpGenerator.generateNewOTP(mobileNumber);
 		otp.setOtpString(otpString);
 
+		log(otp);
+
+		otpRepository.save(otp);
+		return new OTP(otp.getMobileNumber(), otp.getReferenceCode(), otp.getOtpString().replaceAll(".", "x"));
+	}
+	
+	private void log(OTP otp) {
 		logger.debug("==============================");
 		logger.debug("mobileNumber = " + otp.getMobileNumber());
 		logger.debug("otp = " + otp.getOtpString());
 		logger.debug("refCode = " + otp.getReferenceCode());
 		logger.debug("==============================");
-
-		otpRepository.save(otp);
-
-		return new OTP(otp.getMobileNumber(), otp.getReferenceCode(), otp.getOtpString().replaceAll(".", "x"));
-
 	}
-
+	
+	private String maskString(String str) {
+		return str.replaceAll(".", "x");
+	}
+	
+	private boolean sendSMS(String mobileNumber, OTP otp) {
+		String msg = String.format(SMS_TEMPLATE, otp.getOtpString(), otp.getReferenceCode());
+		SmsResponse smsResponse = smsProxyImpl.send(new SmsRequest(smsSender, mobileNumber, msg));
+		return smsResponse.isSuccess();
+	}
 }
