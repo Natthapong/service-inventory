@@ -5,6 +5,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,6 +19,8 @@ public class BillPaymentTransaction extends Transaction {
 	private static final long serialVersionUID = -3546197537668299129L;
 
 	private FailStatus failStatus;
+	
+	private ServiceInventoryException failCause;
 
 	private BillPaymentConfirmationInfo confirmationInfo;
 
@@ -69,6 +72,14 @@ public class BillPaymentTransaction extends Transaction {
 
 	public void setConfirmationInfo(BillPaymentConfirmationInfo confirmationInfo) {
 		this.confirmationInfo = confirmationInfo;
+	}
+	
+	public ServiceInventoryException getFailCause() {
+		return failCause;
+	}
+
+	public void setFailCause(ServiceInventoryException failCause) {
+		this.failCause = failCause;
 	}
 
 	@JsonIgnore

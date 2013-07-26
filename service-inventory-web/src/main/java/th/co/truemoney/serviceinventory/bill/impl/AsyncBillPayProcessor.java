@@ -18,8 +18,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler.UMarketSystemTransactionFailException;
 
 @Service
 public class AsyncBillPayProcessor {
@@ -59,11 +59,10 @@ public class AsyncBillPayProcessor {
 
 			billPaymentReceipt.setConfirmationInfo(confirmationInfo);
 			billPaymentReceipt.setStatus(Transaction.Status.SUCCESS);
-
 			logger.info("AsyncService.payBill.resultTransactionID: " + confirmationInfo.getTransactionID());
-		} catch (UMarketSystemTransactionFailException e) {
-			billPaymentReceipt.setFailStatus(BillPaymentTransaction.FailStatus.UMARKET_FAILED);
-			// TODO : Add more exception
+		} catch (ServiceInventoryException e) {
+			billPaymentReceipt.setFailStatus(BillPaymentTransaction.FailStatus.UNKNOWN_FAILED);
+			billPaymentReceipt.setFailCause(e);
 		} catch (Exception ex) {
 			logger.error("unexpect bill payment fail: ", ex);
 			billPaymentReceipt.setFailStatus(BillPaymentTransaction.FailStatus.UNKNOWN_FAILED);

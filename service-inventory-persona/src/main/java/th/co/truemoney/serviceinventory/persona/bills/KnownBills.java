@@ -4,7 +4,7 @@ public enum KnownBills {
     AEON(new AEON_Bill()), CAL(new CAL_Bill()),
     GLC(new GLC_Bill()), SG(new SG_Bill()),
     TCG(new TCG_Bill()), TI(new TI_Bill()),
-    TLI(new TLI_Bill());
+    TLI(new TLI_Bill()), UMBRELLA_CORP(new UmbrellaCorp_Bill());
 
     private BillTemplate billTemplate;
 

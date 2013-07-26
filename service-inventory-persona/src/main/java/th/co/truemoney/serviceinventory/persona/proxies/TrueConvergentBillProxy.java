@@ -11,6 +11,7 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOut
 import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOutstandingBillResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayResponse;
+import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.persona.bills.BarcodeExtractor;
@@ -74,7 +75,11 @@ public class TrueConvergentBillProxy implements BillProxy {
 
     @Override
     public ConfirmBillPayResponse confirmBillPay(ConfirmBillPayRequest billPayRequest) throws SIEngineException {
-
+    	
+    	if (isFailCase(billPayRequest)) {
+    		throw new FailResultCodeException("666666", "UMC-SERVICE");
+    	}
+    	
         SIEngineResponse billResponse = new SIEngineResponse();
 
         billResponse.setResultCode("0");
@@ -90,5 +95,10 @@ public class TrueConvergentBillProxy implements BillProxy {
         billResponse.addParameterElement("msisdn", "0891267357");
 
         return new ConfirmBillPayResponse(billResponse);
+    }
+    
+    private boolean isFailCase(ConfirmBillPayRequest req) {
+    	String target = req.getBillRequest().getParameterValue("target");
+    	return "umbrella_corporation".equalsIgnoreCase(target);
     }
 }

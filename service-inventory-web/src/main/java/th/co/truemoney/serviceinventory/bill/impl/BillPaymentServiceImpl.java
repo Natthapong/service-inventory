@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -126,10 +127,13 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     @Override
     public BillPaymentTransaction.Status getBillPaymentStatus(String billPaymentID, String accessTokenID)
             throws ServiceInventoryException {
+    	
         BillPaymentTransaction billPayment = getBillPaymentResult(billPaymentID, accessTokenID);
 
         if (Transaction.Status.FAILED == billPayment.getStatus()) {
             FailStatus failSts = billPayment.getFailStatus();
+            ServiceInventoryException failCause = billPayment.getFailCause();
+            
             if (FailStatus.PCS_FAILED == failSts) {
                 throw new ServiceInventoryWebException(Code.CONFIRM_PCS_FAILED, "pcs confirmation processing fail.");
             } else if (FailStatus.TPP_FAILED == failSts) {
@@ -137,7 +141,10 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             } else if (FailStatus.UMARKET_FAILED == failSts) {
                 throw new ServiceInventoryWebException(Code.CONFIRM_UMARKET_FAILED, "u-market confirmation processing fail.");
             } else { //UNKNOWN FAIL
-                throw new ServiceInventoryWebException(Code.CONFIRM_FAILED, "confirmation processing fail.");
+            	if (failCause != null) {
+            		throw new ServiceInventoryException(HttpStatus.BAD_REQUEST.value(), failCause.getErrorCode(), failCause.getDeveloperMessage(), failCause.getErrorNamespace());
+            	}
+            	throw new ServiceInventoryWebException(Code.CONFIRM_FAILED, "confirmation processing fail.");
             }
         }
         return billPayment.getStatus();
