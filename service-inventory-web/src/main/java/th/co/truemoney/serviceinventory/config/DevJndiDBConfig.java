@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.config;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.naming.Context;
@@ -34,15 +33,8 @@ public class DevJndiDBConfig {
         Context context = new InitialContext();
         Context envCtx	= (Context) context.lookup("java:comp/env");
         DataSource ds = (DataSource) envCtx.lookup(jndiName);
-        isValidDataSource(ds);
         logger.debug("dataSource : "+ds);
         return ds;
-    }
-
-    private void isValidDataSource(DataSource ds) throws SQLException{
-    	Connection connection = ds.getConnection();
-        logger.debug("dataSource is valid : " + connection.isValid(100));
-        connection.close();
     }
 
     @Bean
