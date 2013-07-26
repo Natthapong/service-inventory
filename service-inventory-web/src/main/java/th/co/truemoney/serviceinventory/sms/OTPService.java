@@ -55,21 +55,24 @@ public class OTPService {
 		if (inputOTP == null || inputOTP.getReferenceCode() == null) {
 			throw new ServiceInventoryWebException(Code.INVALID_OTP, "invalid OTP.");
 		}
-
-		OTP otp = otpRepository.findOTPByRefCode(inputOTP.getMobileNumber(), inputOTP.getReferenceCode());
-
-		logger.debug("==============================> Data From Redis");
-		logger.debug("mobileNumber = " + otp.getMobileNumber());
-		logger.debug("refCode = " + otp.getReferenceCode());
-		logger.debug("otp = " + otp.getOtpString());
+		
 		logger.debug("==============================> Data From User");
 		logger.debug("mobileNumber = " + inputOTP.getMobileNumber());
 		logger.debug("refCode = " + inputOTP.getReferenceCode());
 		logger.debug("otp = " + inputOTP.getOtpString());
 		logger.debug("==============================");
 		
-		if (otp != null && !otp.getOtpString().equals(inputOTP.getOtpString())) {
-			throw new ServiceInventoryWebException(Code.OTP_NOT_MATCH, "OTP not matched.");
+		OTP otp = otpRepository.findOTPByRefCode(inputOTP.getMobileNumber(), inputOTP.getReferenceCode());
+		
+		if (otp != null) {
+			logger.debug("==============================> Data From Redis");
+			logger.debug("mobileNumber = " + otp.getMobileNumber());
+			logger.debug("refCode = " + otp.getReferenceCode());
+			logger.debug("otp = " + otp.getOtpString());
+			
+			if (!otp.getOtpString().equals(inputOTP.getOtpString())) {
+				throw new ServiceInventoryWebException(Code.OTP_NOT_MATCH, "OTP not matched.");
+			}
 		}
 	}
 

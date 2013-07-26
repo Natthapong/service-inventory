@@ -98,10 +98,11 @@ public abstract class BillTemplate {
 
         return sourceFee;
     }
-
+    
+    private static Random random = new Random();
+    
     protected static String randomTransactionID() {
-        return new Random().nextLong() + "";
+        return random.nextLong() + "";
     }
-
 
 }

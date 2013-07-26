@@ -1,5 +1,6 @@
 package th.co.truemoney.serviceinventory.config;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.naming.Context;
@@ -39,8 +40,9 @@ public class ProdJndiDBConfig {
     }
 
     private void isValidDataSource(DataSource ds) throws SQLException{
-            boolean result = ds.getConnection().isValid(100);
-            logger.debug("dataSource is valid : "+result);
+    	Connection connection = ds.getConnection();
+        logger.debug("dataSource is valid : " + connection.isValid(100));
+        connection.close();
     }
 
     @Bean
