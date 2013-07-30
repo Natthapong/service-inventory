@@ -11,8 +11,7 @@ import org.junit.runner.RunWith;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.exception.InvalidMobileNumberException;
 
-@RunWith(Enclosed.class)
-public class OPTGeneratorTest {
+public class OTPGeneratorTest {
 	
 	public static class UnsecureOTPGeneratorTest {
 		

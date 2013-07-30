@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import th.co.truemoney.serviceinventory.config.LocalAppleUserConfig;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
@@ -36,7 +37,7 @@ import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class })
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class, LocalAppleUserConfig.class })
 @ActiveProfiles(profiles = {"local", "mem"})
 @Category(IntegrationTest.class)
 public class TransactionAuthenServiceImplTest {
@@ -190,6 +191,38 @@ public class TransactionAuthenServiceImplTest {
         quote.setAccessTokenID(accessToken.getAccessTokenID());
 
         return quote;
+    }
+    
+    @Test
+    public void testSkipOTPForAppleUser() {
+    	
+        //given
+    	accessToken =  new AccessToken("tokenID", "loginID", "sessionID", "tmn.10000000020", 41);
+    	accessToken.setMobileNumber("0866013468");
+        accessTokenRepo.save(accessToken);
+        
+        //when
+        authenService.skipOTPForAppleUser(accessToken);
+        
+        //then
+        verify(otpServiceMock, never()).send(anyString());
+        
+    }
+    
+    @Test
+    public void testNotSkipOTPForNotAppleUser() {
+    	
+        //given
+    	accessToken =  new AccessToken("tokenID", "loginID", "sessionID", "tmn.10000000021", 41);
+    	accessToken.setMobileNumber("0866013468");
+        accessTokenRepo.save(accessToken);
+        
+        //when
+        authenService.skipOTPForAppleUser(accessToken);
+        
+        //then
+        verify(otpServiceMock, never()).send(anyString());
+        
     }
 
 }

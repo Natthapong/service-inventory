@@ -50,7 +50,8 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
         public static final String BILL_REQUIRED_DUEDATE  = "1020";
         public static final String DEBT_BILL  	= "1021";
 		public static final String BILL_REQUIRED_DEBT_STATUS = "1022";
-
+        public static final String APPLE_USER_ERROR = "1023";
+        
         //profile
         public static final String INVALID_PROFILE_TYPE 	= "10000";
         public static final String ACCESS_TOKEN_NOT_FOUND 	= "10001";

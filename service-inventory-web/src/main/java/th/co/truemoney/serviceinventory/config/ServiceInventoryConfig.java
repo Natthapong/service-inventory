@@ -16,7 +16,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import th.co.truemoney.serviceinventory.authen.TransactionAuthenService;
-import th.co.truemoney.serviceinventory.authen.impl.AppleUserConfig;
 import th.co.truemoney.serviceinventory.authen.impl.TransactionAuthenServiceImpl;
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.BillRetriever;
@@ -179,11 +178,6 @@ public class ServiceInventoryConfig {
     @Bean
     public EndPoints endPoints() {
         return new EndPoints();
-    }
-
-    @Bean
-    public AppleUserConfig getAppleUserConfig() {
-        return new AppleUserConfig();
     }
 
     @Bean

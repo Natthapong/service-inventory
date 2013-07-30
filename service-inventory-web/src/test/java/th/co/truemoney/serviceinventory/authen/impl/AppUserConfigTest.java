@@ -3,28 +3,31 @@ package th.co.truemoney.serviceinventory.authen.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
-
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import th.co.truemoney.serviceinventory.config.LocalAppleUserConfig;
+import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
+import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
+import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class, LocalAppleUserConfig.class })
+@ActiveProfiles(profiles={"local", "mem"})
 public class AppUserConfigTest {
-
-    private AppleUserConfig appleUserConfig;
-
-    @Before
-    public void setup() throws JsonParseException, JsonMappingException, IOException {
-    	appleUserConfig = new AppleUserConfig();
-    }
-
+    
+    @Autowired
+    private AppleUserMap appleUserMap;
+    
     @Test
-    public void getAppleUser() {
-        AppleUser appleUser = appleUserConfig.getAppleUser("tmn.10000000020");
-        assertNotNull(appleUser);
-        assertEquals("123456", appleUser.getOtpString());
+    public void getLocalAppleUser() {
+        assertNotNull(appleUserMap);
+        assertNotNull(appleUserMap.getAppleUsers().get("tmn.10000000020"));
+        assertEquals("123456", appleUserMap.getAppleUsers().get("tmn.10000000020").getOtpString());
     }
 
 }
