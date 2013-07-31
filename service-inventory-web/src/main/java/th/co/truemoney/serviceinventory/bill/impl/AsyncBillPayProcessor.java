@@ -61,6 +61,7 @@ public class AsyncBillPayProcessor {
 			billPaymentReceipt.setStatus(Transaction.Status.SUCCESS);
 			logger.info("AsyncService.payBill.resultTransactionID: " + confirmationInfo.getTransactionID());
 		} catch (ServiceInventoryException e) {
+			billPaymentReceipt.setStatus(Transaction.Status.FAILED);
 			billPaymentReceipt.setFailStatus(BillPaymentTransaction.FailStatus.UNKNOWN_FAILED);
 			billPaymentReceipt.setFailCause(e);
 		} catch (Exception ex) {
