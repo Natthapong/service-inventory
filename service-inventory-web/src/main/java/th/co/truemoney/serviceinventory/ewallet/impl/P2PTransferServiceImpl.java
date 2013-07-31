@@ -18,7 +18,6 @@ import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction.FailStatus;
 import th.co.truemoney.serviceinventory.util.MaskingUtil;
 
 @Service
@@ -103,16 +102,18 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 			throws ServiceInventoryException {
 		P2PTransferTransaction p2pTransaction = getTransactionResult(transactionID, accessTokenID);
 		P2PTransferTransaction.Status p2pTransactionStatus = p2pTransaction.getStatus();
-		FailStatus failStatus = p2pTransaction.getFailStatus();
 
 		if(p2pTransactionStatus == P2PTransferTransaction.Status.FAILED) {
-			if (failStatus == FailStatus.UMARKET_FAILED) {
-				throw new ServiceInventoryWebException(Code.CONFIRM_UMARKET_FAILED,
-						"u-market confirmation processing fail.");
-			} else if (failStatus == FailStatus.UNKNOWN_FAILED){
-				throw new ServiceInventoryWebException(Code.CONFIRM_FAILED,
-						"confirmation processing fail.");
+			ServiceInventoryException failCause = p2pTransaction.getFailCause();
+			if (failCause != null) {
+				ServiceInventoryException e = new ServiceInventoryException();
+				e.setErrorCode(failCause.getErrorCode());
+				e.setErrorNamespace(failCause.getErrorNamespace());
+				e.setErrorDescription(failCause.getErrorDescription());
+				throw e;
 			}
+			throw new ServiceInventoryWebException(Code.CONFIRM_FAILED,
+					"u-market confirmation processing fail.");
 		}
 
 		return p2pTransactionStatus;

@@ -159,7 +159,7 @@ public class P2PTransferServiceImplTest {
             this.p2pService.getTransferringStatus(transferDraft.getID(), accessToken.getAccessTokenID());
             fail();
         } catch (ServiceInventoryWebException ex) {
-            assertEquals(Code.CONFIRM_UMARKET_FAILED, ex.getErrorCode());
+            assertEquals(Code.CONFIRM_FAILED, ex.getErrorCode());
         }
 
         //given status has failed because unknown failure

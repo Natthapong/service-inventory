@@ -142,18 +142,7 @@ public class EwalletBalanceHandler {
 	    return info;
 
 	} catch (FailResultCodeException ex) {
-	    String errorCode = ex.getCode();
-
-	    if (errorCode.equals("5") ||
-		errorCode.equals("6") ||
-		errorCode.equals("7") ||
-		errorCode.equals("19") ||
-		errorCode.equals("27") ||
-		errorCode.equals("38")) {
 		throw new UMarketSystemTransactionFailException(ex);
-	    } else {
-		throw new UnknownSystemTransactionFailException(ex);
-	    }
 	}
     }
 

@@ -13,7 +13,6 @@ import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
-import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction.FailStatus;
 import th.co.truemoney.serviceinventory.bill.domain.InquiryOutstandingBillType;
 import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.bill.validation.BillValidator;
@@ -131,21 +130,16 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
         BillPaymentTransaction billPayment = getBillPaymentResult(billPaymentID, accessTokenID);
 
         if (Transaction.Status.FAILED == billPayment.getStatus()) {
-            FailStatus failSts = billPayment.getFailStatus();
             ServiceInventoryException failCause = billPayment.getFailCause();
             
-            if (FailStatus.PCS_FAILED == failSts) {
-                throw new ServiceInventoryWebException(Code.CONFIRM_PCS_FAILED, "pcs confirmation processing fail.");
-            } else if (FailStatus.TPP_FAILED == failSts) {
-                throw new ServiceInventoryWebException(Code.CONFIRM_TPP_FAILED, "tpp confirmation processing fail.");
-            } else if (FailStatus.UMARKET_FAILED == failSts) {
-                throw new ServiceInventoryWebException(Code.CONFIRM_UMARKET_FAILED, "u-market confirmation processing fail.");
-            } else { //UNKNOWN FAIL
-            	if (failCause != null) {
-            		throw new ServiceInventoryException(HttpStatus.BAD_REQUEST.value(), failCause.getErrorCode(), failCause.getDeveloperMessage(), failCause.getErrorNamespace());
-            	}
-            	throw new ServiceInventoryWebException(Code.CONFIRM_FAILED, "confirmation processing fail.");
+            if (failCause != null) {
+            	throw new ServiceInventoryException(
+            			HttpStatus.BAD_REQUEST.value(), 
+            			failCause.getErrorCode(), 
+            			failCause.getDeveloperMessage(), 
+            			failCause.getErrorNamespace());
             }
+            throw new ServiceInventoryWebException(Code.CONFIRM_FAILED, "confirmation processing fail.");
         }
         return billPayment.getStatus();
     }

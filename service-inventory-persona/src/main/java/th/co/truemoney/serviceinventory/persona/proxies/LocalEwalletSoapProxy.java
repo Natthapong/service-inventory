@@ -3,6 +3,7 @@ package th.co.truemoney.serviceinventory.persona.proxies;
 import java.math.BigDecimal;
 
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
+import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddMoneyRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBalanceResponse;
@@ -49,6 +50,10 @@ public class LocalEwalletSoapProxy implements EwalletSoapProxy {
     @Override
     public StandardMoneyResponse transfer(
             TransferRequest transferRequest) throws EwalletException {
+    	
+    	if ("0866666666".equals(transferRequest.getTarget())) {
+    		throw new FailResultCodeException("666666", "EW-CORE");
+    	}
         StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
         try {
             Thread.sleep(3000);

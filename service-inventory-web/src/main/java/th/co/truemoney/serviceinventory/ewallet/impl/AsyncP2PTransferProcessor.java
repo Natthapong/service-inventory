@@ -70,7 +70,9 @@ public class AsyncP2PTransferProcessor {
 			logger.info("AsyncService.transferEwallet.resultTransactionID: " + confirmationInfo.getTransactionID());
 
 		} catch (UMarketSystemTransactionFailException e) {
+			p2pTransaction.setStatus(Transaction.Status.FAILED);
 			p2pTransaction.setFailStatus(FailStatus.UMARKET_FAILED);
+			p2pTransaction.setFailCause(e);
 		} catch (Exception ex) {
 			logger.error("unexpect p2p transfer fail: ", ex);
 			p2pTransaction.setFailStatus(FailStatus.UNKNOWN_FAILED);
