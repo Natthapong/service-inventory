@@ -44,6 +44,11 @@ public class Activity implements Serializable {
 		this.serviceFee = BigDecimal.ZERO;
 		this.sourceOfFundFee = BigDecimal.ZERO;
 	}
+	
+	public Activity(Long reportID, String type, Date transactionDate, String action, String ref1, Long channelID) {
+		this(reportID, type, transactionDate, action, ref1);
+		this.channel = channelID;
+	}
 
 	public Long getReportID() {
 		return reportID;
