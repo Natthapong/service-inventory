@@ -49,7 +49,11 @@ public class Activity implements Serializable {
 		this(reportID, type, transactionDate, action, ref1);
 		this.channel = channelID;
 	}
-
+	
+	public Activity(Long reportID, Long channelID, String type, String action, String ref1, Date transactionDate) {
+		this(reportID, type, transactionDate, action, ref1, channelID);
+	}
+	
 	public Long getReportID() {
 		return reportID;
 	}
