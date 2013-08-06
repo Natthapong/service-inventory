@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +28,10 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.ForgotPasswordRepos
 import th.co.truemoney.serviceinventory.ewallet.repositories.OTPRepository;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.ForgotPasswordHandler;
-import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
-@Category(IntegrationTest.class)
 public class ForgotPasswordServiceImplTest {
 
     @Autowired

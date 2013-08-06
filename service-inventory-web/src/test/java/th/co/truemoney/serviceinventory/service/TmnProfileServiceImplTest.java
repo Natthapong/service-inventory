@@ -108,5 +108,5 @@ public class TmnProfileServiceImplTest {
     public void shouldLogoutFailWhenUserWasNeverLogined() {
         profileService.logout(accessToken.getAccessTokenID());
     }
-
+    
 }

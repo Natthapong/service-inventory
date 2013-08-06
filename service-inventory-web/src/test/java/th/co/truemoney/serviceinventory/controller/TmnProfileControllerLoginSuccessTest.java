@@ -113,6 +113,9 @@ public class TmnProfileControllerLoginSuccessTest {
 		tmnProfile.setFullname("fullname");
 		tmnProfile.setMobileNumber("086xxxxxxx");
 		tmnProfile.setThaiID("1212121212121");		
+		tmnProfile.setHasPassword(Boolean.TRUE);
+		tmnProfile.setHasPin(Boolean.FALSE);
+		tmnProfile.setImageURL("https://m.truemoney.co.th/images/xxx.jsp");
 		when(this.tmnProfileServiceMock.getTruemoneyProfile(anyString())).thenReturn(tmnProfile);
 		
 		//perform
@@ -121,7 +124,12 @@ public class TmnProfileControllerLoginSuccessTest {
 		.andExpect(status().isOk())
 		.andExpect(jsonPath("$.fullname").value("fullname"))
 		.andExpect(jsonPath("$.thaiID").value("1212121212121"))
-		.andExpect(jsonPath("$.mobileNumber").value("086xxxxxxx"));
+		.andExpect(jsonPath("$.mobileNumber").value("086xxxxxxx"))
+		.andExpect(jsonPath("$..hasPassword").value(Boolean.TRUE))
+		.andExpect(jsonPath("$..hasPin").value(Boolean.FALSE))
+		.andExpect(jsonPath("$..imageURL").value("https://m.truemoney.co.th/images/xxx.jsp"));
+
+		
 		
 	}
 	
