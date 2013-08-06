@@ -137,23 +137,32 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile updateTruemoneyProfile(Integer channelID,
-			TmnProfile tmnProfile) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String changePin(Integer channelID, ChangePin changePin)
+	public TmnProfile updateTruemoneyProfile(Integer channelID, TmnProfile tmnProfile, String accessTokenID) 
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				.fromChannel(accessToken.getChannelID())
+				.withFullname(tmnProfile.getFullname())
+				.changeFullName();
 	}
 
 	@Override
-	public String changePassword(Integer channelID,
-			ChangePassword changePassword) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
+	public String changePin(Integer channelID, ChangePin changePin, String accessTokenID)
+			throws ServiceInventoryException {
+		
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				.fromChannel(accessToken.getChannelID())
+				.withPin(changePin.getOldPin(), changePin.getPin())
+				.changePin();
+	}
+
+	@Override
+	public String changePassword(Integer channelID, ChangePassword changePassword) 
+			throws ServiceInventoryException {
 		return null;
 	}
 

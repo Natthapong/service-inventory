@@ -14,11 +14,11 @@ public class ChangePin implements Serializable {
 	private String oldPin;
 	private String pin;
 	
-	private ChangePin() {
+	public ChangePin() {
 		super();
 	}
 	
-	private ChangePin(String oldPin, String pin) {
+	public ChangePin(String oldPin, String pin) {
 		super();
 		this.oldPin = oldPin;
 		this.pin = pin;

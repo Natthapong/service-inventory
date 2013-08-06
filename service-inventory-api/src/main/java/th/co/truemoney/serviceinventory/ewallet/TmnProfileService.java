@@ -26,9 +26,9 @@ public interface TmnProfileService {
 
     public TmnProfile confirmCreateProfile(Integer channelID, OTP otp) throws ServiceInventoryException;
     
-    public TmnProfile updateTruemoneyProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException;
+    public TmnProfile updateTruemoneyProfile(Integer channelID, TmnProfile tmnProfile, String accessTokenID) throws ServiceInventoryException;
     
-    public String changePin(Integer channelID, ChangePin changePin) throws ServiceInventoryException;
+    public String changePin(Integer channelID, ChangePin changePin, String accessTokenID) throws ServiceInventoryException;
     
     public String changePassword(Integer channelID, ChangePassword changePassword) throws ServiceInventoryException;
 

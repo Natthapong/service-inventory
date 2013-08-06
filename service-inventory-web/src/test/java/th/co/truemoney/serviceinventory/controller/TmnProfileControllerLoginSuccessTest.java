@@ -26,6 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -39,6 +40,7 @@ import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
 import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
@@ -125,9 +127,9 @@ public class TmnProfileControllerLoginSuccessTest {
 		.andExpect(jsonPath("$.fullname").value("fullname"))
 		.andExpect(jsonPath("$.thaiID").value("1212121212121"))
 		.andExpect(jsonPath("$.mobileNumber").value("086xxxxxxx"))
-		.andExpect(jsonPath("$..hasPassword").value(Boolean.TRUE))
-		.andExpect(jsonPath("$..hasPin").value(Boolean.FALSE))
-		.andExpect(jsonPath("$..imageURL").value("https://m.truemoney.co.th/images/xxx.jsp"));
+		.andExpect(jsonPath("$.hasPassword").value(Boolean.TRUE))
+		.andExpect(jsonPath("$.hasPin").value(Boolean.FALSE))
+		.andExpect(jsonPath("$.imageURL").value("https://m.truemoney.co.th/images/xxx.jsp"));
 
 		
 		
@@ -259,4 +261,20 @@ public class TmnProfileControllerLoginSuccessTest {
 				.andExpect(status().isOk());
 		
 	}
+	
+	@Test
+	public void shouldChangePinSuccess() throws Exception {
+		
+		String stubbedMobileNumber = "08xxxxxxxx";		
+		
+		when(this.tmnProfileServiceMock.changePin(anyInt(), any(ChangePin.class), anyString())).thenReturn(stubbedMobileNumber);
+		
+		this.mockMvc.perform(post("/ewallet/profiles/change-pin?channelID={channelID}&accessTokenID={accessTokenID}", "40", "TokenID")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsBytes(new ChangePin("0000", "1111"))))
+				.andExpect(MockMvcResultMatchers.content().string("08xxxxxxxx"))
+				.andExpect(status().isOk());
+		
+	}
+	
 }

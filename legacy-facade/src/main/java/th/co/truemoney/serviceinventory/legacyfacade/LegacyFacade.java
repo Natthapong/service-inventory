@@ -148,6 +148,10 @@ public class LegacyFacade {
         private TopUpSourceOfFundHandler sourceOfFundFacade;
 
         private Favorite favorite;
+        
+        private String oldPin;
+        private String pin;
+        private String fullname;
 
         @Autowired(required = false)
         public UserProfileBuilder(EwalletBalanceHandler balanceFacade, UserProfileHandler profileFacade, TopUpSourceOfFundHandler sourceOfFundFacade) {
@@ -190,6 +194,17 @@ public class LegacyFacade {
             return this;
         }
         
+        public UserProfileBuilder withPin(String oldPin, String pin) {
+        	this.oldPin = oldPin;
+        	this.pin = pin;
+        	return this;
+        }
+        
+		public UserProfileBuilder withFullname(String fullname) {
+			this.fullname = fullname;
+			return this;
+		}
+		
         public TmnProfile getProfile() {
             Validate.notNull(channelID, "from which channel");
             Validate.notNull(sessionID, "missing sessionID");
@@ -250,20 +265,6 @@ public class LegacyFacade {
             return profileFacade.addFavorite(this.channelID, this.sessionID, this.tmnID, this.favorite);
         }
 
-        public TopUpBuilder topUp(BigDecimal amount) {
-            return new TopUpBuilder(balanceFacade)
-                        .fromChannelID(channelID)
-                        .fromUser(sessionID, tmnID)
-                        .withAmount(amount);
-        }
-
-        public P2PTransferBuilder transfer(BigDecimal amount) {
-            return new P2PTransferBuilder(balanceFacade)
-                        .fromChannelID(channelID)
-                        .fromUser(sessionID, tmnID)
-                        .withAmount(amount);
-        }
-
         public void logout() {
             Validate.notNull(channelID, "from which channel");
             Validate.notNull(sessionID, "missing sessionID");
@@ -282,6 +283,25 @@ public class LegacyFacade {
             return profileFacade.removeFavorite(this.channelID, this.sessionID, this.tmnID, this.serviceCode, this.reference1);
         }
 
+        public String changePin() {
+            Validate.notNull(tmnID, "data missing. change PIN of whom?");
+            Validate.notNull(sessionID, "data missing. change PIN of whom?");
+            Validate.notNull(channelID, "data missing. change PIN from which channel?");
+            Validate.notNull(oldPin, "data missing. old PIN ?");
+            Validate.notNull(pin, "data missing. pin ?");
+
+            return profileFacade.changePin(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin);
+        }
+
+		public TmnProfile changeFullName() {
+            Validate.notNull(tmnID, "data missing. change PIN of whom?");
+            Validate.notNull(sessionID, "data missing. change PIN of whom?");
+            Validate.notNull(channelID, "data missing. change PIN from which channel?");
+            Validate.notNull(fullname, "data missing. fullname ?");
+            
+            return profileFacade.update(this.channelID, this.sessionID, this.tmnID, this.fullname);
+		}
+        
     }
 
     public static class TopUpBuilder {

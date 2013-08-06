@@ -21,6 +21,7 @@ import th.co.truemoney.serviceinventory.ewallet.ForgotPasswordService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
 import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.ForgotPassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -223,6 +224,19 @@ public class TmnProfileController {
 		validateRequestParam(channelID);
 
 		return forgotPasswordService.resendOTP(channelID, resetPasswordID);
+	}
+	
+	@RequestMapping(value = "/profiles/change-pin", method = RequestMethod.POST)
+	public @ResponseBody String changePin(
+		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
+		   @RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID,
+		   @RequestBody ChangePin changePin) {
+
+		validateRequestParam(channelID);
+
+		extendExpireAccessToken(accessTokenID);
+		
+		return tmnProfileService.changePin(channelID, changePin, accessTokenID);
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {

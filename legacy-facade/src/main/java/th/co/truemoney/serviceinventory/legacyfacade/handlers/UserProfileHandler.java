@@ -170,10 +170,17 @@ public class UserProfileHandler {
         }
 
         public void logout(Integer channelID, String sessionID, String truemoneyID) {
-                this.tmnSecurityProxy.terminateSession(createAccessRequest(channelID, sessionID, truemoneyID));
+        	this.tmnSecurityProxy.terminateSession(createAccessRequest(channelID, sessionID, truemoneyID));
         }
 
-
+		public String changePin(Integer channelID, String sessionID, String tmnID, String oldPin, String pin) {
+			return null;
+		}
+        
+		public TmnProfile update(Integer channelID, String sessionID, String tmnID, String fullname) {
+			return null;
+		}
+		
         private AddFavoriteRequest createAddFavoriteRequest(Integer channelID,
                 String sessionID, String tmnID, Favorite favorite) {
             SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
@@ -306,5 +313,7 @@ public class UserProfileHandler {
         public void setTmnSecurityProxy(TmnSecurityProxy tmnSecurityProxy) {
                 this.tmnSecurityProxy = tmnSecurityProxy;
         }
+
+
 
 }

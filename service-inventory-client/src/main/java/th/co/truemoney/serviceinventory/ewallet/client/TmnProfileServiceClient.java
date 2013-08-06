@@ -114,16 +114,13 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile updateTruemoneyProfile(Integer channelID,
-			TmnProfile tmnProfile) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
+	public TmnProfile updateTruemoneyProfile(Integer channelID, TmnProfile tmnProfile, String accessTokenID)
+			throws ServiceInventoryException {
 		return null;
 	}
 
 	@Override
-	public String changePin(Integer channelID, ChangePin changePin)
-			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
+	public String changePin(Integer channelID, ChangePin changePin,	String accessTokenID) throws ServiceInventoryException {
 		return null;
 	}
 
