@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChangePassword;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -134,6 +136,27 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		return tmnProfile;
 	}
 
+	@Override
+	public TmnProfile updateTruemoneyProfile(Integer channelID,
+			TmnProfile tmnProfile) throws ServiceInventoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String changePin(Integer channelID, ChangePin changePin)
+			throws ServiceInventoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String changePassword(Integer channelID,
+			ChangePassword changePassword) throws ServiceInventoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	private void performCreateProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {
 		legacyFacade.fromChannel(channelID)
 			.registering()
@@ -163,7 +186,5 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	public void setEmailService(EmailService emailService) {
 		this.emailService = emailService;
 	}
-
-
 
 }

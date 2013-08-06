@@ -2,6 +2,9 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResetPassword implements Serializable {
 	
 	private static final long serialVersionUID = -2743924875147025570L;

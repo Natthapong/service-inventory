@@ -15,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChangePassword;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -109,6 +111,27 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getConfirmCreateTruemoneyProfileURL(), HttpMethod.POST,
 				requestEntity, TmnProfile.class, channelID);
 		return responseEntity.getBody();
+	}
+
+	@Override
+	public TmnProfile updateTruemoneyProfile(Integer channelID,
+			TmnProfile tmnProfile) throws ServiceInventoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String changePin(Integer channelID, ChangePin changePin)
+			throws ServiceInventoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String changePassword(Integer channelID,
+			ChangePassword changePassword) throws ServiceInventoryException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

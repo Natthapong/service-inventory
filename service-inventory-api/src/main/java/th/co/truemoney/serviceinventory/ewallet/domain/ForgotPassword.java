@@ -1,6 +1,13 @@
 package th.co.truemoney.serviceinventory.ewallet.domain;
 
-public class ForgotPassword {
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ForgotPassword implements Serializable {
+
+	private static final long serialVersionUID = -4443827326120382776L;
 	private String loginID;
 	private String idCardNumber;
 	
