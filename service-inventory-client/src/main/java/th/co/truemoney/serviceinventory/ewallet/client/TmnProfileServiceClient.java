@@ -126,8 +126,7 @@ public class TmnProfileServiceClient implements TmnProfileService {
 
 	@Override
 	public String changePassword(Integer channelID,
-			ChangePassword changePassword) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
+			ChangePassword changePassword, String accessTokenID) throws ServiceInventoryException {
 		return null;
 	}
 

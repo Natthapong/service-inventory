@@ -161,7 +161,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public String changePassword(Integer channelID, ChangePassword changePassword) 
+	public String changePassword(Integer channelID, ChangePassword changePassword, String accessTokenID) 
 			throws ServiceInventoryException {
 		return null;
 	}
