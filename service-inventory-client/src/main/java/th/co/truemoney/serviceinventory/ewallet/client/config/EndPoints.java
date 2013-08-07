@@ -195,10 +195,10 @@ public class EndPoints {
 	}
 
 	public String getChangePinURL() {
-		return host + "/service-inventory-web/v1/ewallet/profile/change-pin?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/ewallet/profile/change-pin/{accessTokenID}";
 	}
 
 	public String getChangePasswordURL() {
-		return host + "/service-inventory-web/v1/ewallet/profile/change-password?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/ewallet/profile/change-password/{accessTokenID}";
 	}
 }
