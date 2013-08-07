@@ -27,7 +27,7 @@ public class EndPoints {
     }
 
     public String getBalanceURL() {
-        return host + "/service-inventory-web/v1/ewallet/balance/{accesstokenID}";
+        return host + "/service-inventory-web/v1/ewallet/profile/balance/{accesstokenID}";
     }
 
     public String getCreateTopUpQuoteFromDirectDebitURL() {
@@ -191,7 +191,7 @@ public class EndPoints {
 	}
 
 	public String getUpdateTruemoneyProfileURL() {
-		return host + "/service-inventory-web/v1/ewallet/profile?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/ewallet/profile/{accessTokenID}";
 	}
 
 	public String getChangePinURL() {

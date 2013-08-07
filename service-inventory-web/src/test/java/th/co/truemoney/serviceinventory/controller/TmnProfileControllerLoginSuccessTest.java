@@ -7,7 +7,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,7 +26,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -41,7 +39,6 @@ import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
 import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
@@ -108,33 +105,7 @@ public class TmnProfileControllerLoginSuccessTest {
 			.andExpect(status().isOk());
 	}
 	
-	@Test
-	public void shouldGetProfileSuccess() throws Exception {
-		
-		//given
-		TmnProfile tmnProfile = new TmnProfile();
-		tmnProfile.setFullname("fullname");
-		tmnProfile.setMobileNumber("086xxxxxxx");
-		tmnProfile.setThaiID("1212121212121");		
-		tmnProfile.setHasPassword(Boolean.TRUE);
-		tmnProfile.setHasPin(Boolean.FALSE);
-		tmnProfile.setImageURL("https://m.truemoney.co.th/images/xxx.jsp");
-		when(this.tmnProfileServiceMock.getTruemoneyProfile(anyString())).thenReturn(tmnProfile);
-		
-		//perform
-		this.mockMvc.perform(get("/ewallet/profile/{accessTokenID}", "12345")
-		.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andExpect(jsonPath("$.fullname").value("fullname"))
-		.andExpect(jsonPath("$.thaiID").value("1212121212121"))
-		.andExpect(jsonPath("$.mobileNumber").value("086xxxxxxx"))
-		.andExpect(jsonPath("$.hasPassword").value(Boolean.TRUE))
-		.andExpect(jsonPath("$.hasPin").value(Boolean.FALSE))
-		.andExpect(jsonPath("$.imageURL").value("https://m.truemoney.co.th/images/xxx.jsp"));
 
-		
-		
-	}
 	
 	@Test
 	public void shouldGetBalanceSuccess() throws Exception {
@@ -143,7 +114,7 @@ public class TmnProfileControllerLoginSuccessTest {
 		when(this.tmnProfileServiceMock.getEwalletBalance(anyString())).thenReturn(new BigDecimal("100.00"));
 		
 		//perform
-		this.mockMvc.perform(get("/ewallet/balance/{accessTokenID}", "12345")
+		this.mockMvc.perform(get("/ewallet/profile/balance/{accessTokenID}", "12345")
 		.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk());
 		
@@ -259,21 +230,6 @@ public class TmnProfileControllerLoginSuccessTest {
 		this.mockMvc.perform(post("/ewallet/profile/verify-otp?channelID={channelID}", "40")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsBytes(new OTP("0866013468", "adgf"))))
-				.andExpect(status().isOk());
-		
-	}
-	
-	@Test
-	public void shouldChangePinSuccess() throws Exception {
-		
-		String stubbedMobileNumber = "08xxxxxxxx";		
-		
-		when(this.tmnProfileServiceMock.changePin(anyString(), any(ChangePin.class))).thenReturn(stubbedMobileNumber);
-		
-		this.mockMvc.perform(put("/ewallet/profile/change-pin?channelID={channelID}&accessTokenID={accessTokenID}", "40", "TokenID")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(new ChangePin("0000", "1111"))))
-				.andExpect(MockMvcResultMatchers.content().string("08xxxxxxxx"))
 				.andExpect(status().isOk());
 		
 	}
