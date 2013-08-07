@@ -176,6 +176,10 @@ public class UserProfileHandler {
 		public String changePin(Integer channelID, String sessionID, String tmnID, String oldPin, String pin) {
 			return null;
 		}
+		
+		public String changePassword(Integer channelID, String sessionID, String tmnID, String oldPassword, String password) {
+			return null;
+		}
         
 		public TmnProfile update(Integer channelID, String sessionID, String tmnID, String fullname) {
 			return null;
@@ -313,7 +317,5 @@ public class UserProfileHandler {
         public void setTmnSecurityProxy(TmnSecurityProxy tmnSecurityProxy) {
                 this.tmnSecurityProxy = tmnSecurityProxy;
         }
-
-
 
 }
