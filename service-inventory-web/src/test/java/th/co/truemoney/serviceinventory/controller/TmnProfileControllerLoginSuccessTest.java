@@ -234,4 +234,21 @@ public class TmnProfileControllerLoginSuccessTest {
 		
 	}
 	
+	@Test
+	public void shouldConfirmCreateTrueMoneyProfileNotSendChannelID() throws Exception {
+		
+		TmnProfile tmnProfile = new TmnProfile();
+		tmnProfile.setFullname("fullname");
+		tmnProfile.setMobileNumber("086xxxxxxx");
+		tmnProfile.setThaiID("1212121212121");	
+		
+		when(this.tmnProfileServiceMock.confirmCreateProfile(anyInt(), any(OTP.class))).thenReturn(tmnProfile);
+		
+		this.mockMvc.perform(post("/ewallet/profile/verify-otp")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsBytes(new OTP("0866013468", "adgf"))))
+				.andExpect(status().is(412));
+		
+	}
+	
 }
