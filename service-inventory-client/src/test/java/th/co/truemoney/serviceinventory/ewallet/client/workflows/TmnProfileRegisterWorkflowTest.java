@@ -52,7 +52,6 @@ public class TmnProfileRegisterWorkflowTest {
 		TmnProfile tmnProfile = profileService.confirmCreateProfile(41, otp);
 		assertNotNull(tmnProfile);
 	}
-
 	
 	@Test
 	public void shouldSuccessChangePin() {
@@ -65,6 +64,19 @@ public class TmnProfileRegisterWorkflowTest {
         
         assertNotNull(mobileNumber);
         assertEquals("0891111111",mobileNumber);
+	}
+
+	@Test
+	public void shouldSuccessChangePassword() {
+		
+        String accessTokenID = profileService.login(
+                TestData.createAdamSuccessLogin(),
+                TestData.createSuccessClientLogin());
+        
+        String email = profileService.changePassword(accessTokenID, TestData.createChangePassword());
+        
+        assertNotNull(email);
+        assertEquals("adam@tmn.com",email);
 	}
 	
 	@Test

@@ -132,9 +132,12 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public String changePassword(Integer channelID,
-			ChangePassword changePassword, String accessTokenID) throws ServiceInventoryException {
-		return null;
+	public String changePassword(String accessTokenID, ChangePassword changePassword) throws ServiceInventoryException {
+
+		HttpEntity<ChangePassword> requestEntity = new HttpEntity<ChangePassword>(changePassword,headers);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getChangePasswordURL(), HttpMethod.PUT, requestEntity, String.class, accessTokenID);
+		return responseEntity.getBody();
+	
 	}
 
 }

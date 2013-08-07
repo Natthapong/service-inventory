@@ -176,8 +176,7 @@ public class UserProfileHandler {
 		public void changePin(Integer channelID, String sessionID, String tmnID, String oldPin, String pin) {
 		}
 		
-		public String changePassword(Integer channelID, String sessionID, String tmnID, String oldPassword, String password) {
-			return null;
+		public void changePassword(Integer channelID, String sessionID, String tmnID, String oldPassword, String password) {
 		}
         
 		public void changeFullname(Integer channelID, String sessionID, String tmnID, String fullname) {

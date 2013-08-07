@@ -302,14 +302,14 @@ public class LegacyFacade {
             profileFacade.changePin(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin);
         }
         
-        public String changePassword() {
+        public void changePassword() {
             Validate.notNull(tmnID, "data missing. change password of whom?");
             Validate.notNull(sessionID, "data missing. change password of whom?");
             Validate.notNull(channelID, "data missing. change password from which channel?");
             Validate.notNull(oldPassword, "data missing. old password ?");
             Validate.notNull(password, "data missing. password ?");
 
-            return profileFacade.changePassword(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin);
+            profileFacade.changePassword(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin);
         }
 
 		public void changeFullName() {

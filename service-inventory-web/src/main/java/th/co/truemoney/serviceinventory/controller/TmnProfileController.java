@@ -247,17 +247,14 @@ public class TmnProfileController {
 		return tmnProfileService.updateTruemoneyProfile(accessTokenID, tmnProfile);
 	}
 	
-	@RequestMapping(value = "/profiles/change-password", method = RequestMethod.POST)
+	@RequestMapping(value = "/profile/change-password", method = RequestMethod.PUT)
 	public @ResponseBody String changePassword(
-		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
 		   @RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID,
 		   @RequestBody ChangePassword changePassword) {
 
-		validateRequestParam(channelID);
-
 		extendExpireAccessToken(accessTokenID);
 		
-		return tmnProfileService.changePassword(channelID, changePassword, accessTokenID);
+		return tmnProfileService.changePassword(accessTokenID, changePassword);
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {

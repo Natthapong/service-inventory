@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.ewallet.client.testutils;
 
 import java.math.BigDecimal;
 
+import th.co.truemoney.serviceinventory.ewallet.domain.ChangePassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
@@ -72,6 +73,15 @@ public class TestData {
 		return changePin;
 	}
 
+	public static ChangePassword createChangePassword() {
+
+		ChangePassword changePassword = new ChangePassword();
+		changePassword.setOldPassword("xxxxxxxx");
+		changePassword.setPassword("yyyyyyyy");
+		
+		return changePassword;
+	}
+	
 	public static TmnProfile createChangeTmnProfile() {
 		
 		TmnProfile tmnProfile = new TmnProfile();
