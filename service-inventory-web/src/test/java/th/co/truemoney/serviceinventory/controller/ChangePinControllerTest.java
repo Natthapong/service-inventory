@@ -61,7 +61,6 @@ public class ChangePinControllerTest {
 	
 	@Test
 	public void shouldChangePinSuccess() throws Exception {
-		
 		String stubbedMobileNumber = "08xxxxxxxx";		
 		
 		when(this.tmnProfileServiceMock.changePin(anyString(), any(ChangePin.class))).thenReturn(stubbedMobileNumber);
@@ -69,28 +68,25 @@ public class ChangePinControllerTest {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		this.mockMvc.perform(put("/ewallet/profile/change-pin/{accessTokenID}?channelID={channelID}", "TokenID", "40")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(new ChangePin("0000", "1111"))))
-				.andExpect(MockMvcResultMatchers.content().string("08xxxxxxxx"))
-				.andExpect(status().isOk());
-		
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(new ChangePin("0000", "1111"))))
+			.andExpect(MockMvcResultMatchers.content().string("08xxxxxxxx"))
+			.andExpect(status().isOk());
 	}
 	
 	@Test
 	public void shouldChangePinFail() throws Exception {
-
 		when(this.tmnProfileServiceMock.changePin(anyString(), any(ChangePin.class)))
 			.thenThrow(new ServiceInventoryException(400,"Error Code","Error Description", "Error Namespace"));
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
 		this.mockMvc.perform(put("/ewallet/profile/change-pin/{accessTokenID}?channelID={channelID}", "TokenID", "40")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(new ChangePin("0000", "1111"))))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errorCode").value("Error Code"))
-				.andExpect(jsonPath("$.errorDescription").value("Error Description"))
-				.andExpect(jsonPath("$.errorNamespace").value("Error Namespace"));
-		
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(new ChangePin("0000", "1111"))))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.errorCode").value("Error Code"))
+			.andExpect(jsonPath("$.errorDescription").value("Error Description"))
+			.andExpect(jsonPath("$.errorNamespace").value("Error Namespace"));
 	}
 }

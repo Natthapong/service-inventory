@@ -2,18 +2,14 @@ package th.co.truemoney.serviceinventory.controller;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,20 +30,14 @@ import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
-import th.co.truemoney.serviceinventory.ewallet.ActivityService;
-import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
-import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
-import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
-import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -56,6 +46,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TmnProfileControllerLoginSuccessTest {
 
 	private MockMvc mockMvc;
+	
 	private ObjectMapper mapper;
 
 	@Autowired
@@ -64,25 +55,16 @@ public class TmnProfileControllerLoginSuccessTest {
 	@Autowired
 	private TmnProfileService tmnProfileServiceMock;
 	
-	@Autowired
-	private ActivityService activityServiceMock;
-	
-	@Autowired
-	private FavoriteService favoriteServiceMock;
-
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 		this.tmnProfileServiceMock = wac.getBean(TmnProfileService.class);
-		this.favoriteServiceMock = wac.getBean(FavoriteService.class);
-		
-		mapper = new ObjectMapper();
+		this.mapper = new ObjectMapper();
 	}
 
 	@After
 	public void tierDown() {
 		reset(this.tmnProfileServiceMock);
-		reset(this.favoriteServiceMock);
 	}
 
 	@Test
@@ -105,50 +87,6 @@ public class TmnProfileControllerLoginSuccessTest {
 			.andExpect(status().isOk());
 	}
 	
-
-	
-	@Test
-	public void shouldGetBalanceSuccess() throws Exception {
-		
-		//given
-		when(this.tmnProfileServiceMock.getEwalletBalance(anyString())).thenReturn(new BigDecimal("100.00"));
-		
-		//perform
-		this.mockMvc.perform(get("/ewallet/profile/balance/{accessTokenID}", "12345")
-		.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk());
-		
-	}
-	
-	@Test
-	public void shouldGetActivitySuccess() throws Exception {
-		Activity activity = new Activity();
-		activity.setReportID(1000l);
-		List<Activity> activities = new ArrayList<Activity>();
-		activities.add(activity);
-		
-		when(this.activityServiceMock.getActivities(anyString())).thenReturn(activities);
-		
-		this.mockMvc.perform(get("/ewallet/activities/{accessTokenID}", "12345")
-		.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())	
-		.andExpect(jsonPath("$.[0].reportID").value(1000));
-	}
-	
-	@Test
-	public void shouldGetActivityDetailSuccess() throws Exception {
-		ActivityDetail activity = new ActivityDetail();
-		activity.setTransactionID("xxx");
-		
-		when(this.activityServiceMock.getActivityDetail(anyLong(), anyString())).thenReturn(activity);
-		
-		this.mockMvc.perform(get("/ewallet/activities/{accessTokenID}/detail/{reportID}", "12345", 1000l)
-		.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())	
-		.andExpect(jsonPath("$.transactionID").value("xxx"));
-		
-	}
-	
 	@Test
 	public void shouldLogoutSuccess() throws Exception {
 		
@@ -161,31 +99,16 @@ public class TmnProfileControllerLoginSuccessTest {
 	}
 	
 	@Test
-	public void shouldAddFavoriteSuccess() throws Exception {
-		Favorite favorite = new Favorite();
-		favorite.setFavoriteID(1000l);
-		when(this.favoriteServiceMock.addFavorite(any(Favorite.class), anyString())).thenReturn(favorite);
+	public void shouldGetBalanceSuccess() throws Exception {
 		
-		this.mockMvc.perform(post("/ewallet/favorites/{accessTokenID}", "12345")
-		.contentType(MediaType.APPLICATION_JSON)
-		.content(mapper.writeValueAsBytes(favorite)))
-		.andExpect(status().isOk())
-		.andExpect(jsonPath("$.favoriteID").value(1000));
-	}
-	
-	@Test
-	public void shouldGetFavoritesSuccess() throws Exception {
-		Favorite favorite = new Favorite();
-		favorite.setFavoriteID(1000l);
-		List<Favorite> favorites = new ArrayList<Favorite>();
-		favorites.add(favorite);
+		//given
+		when(this.tmnProfileServiceMock.getEwalletBalance(anyString())).thenReturn(new BigDecimal("100.00"));
 		
-		when(this.favoriteServiceMock.getFavorites(anyString())).thenReturn(favorites);
+		//perform
+		this.mockMvc.perform(get("/ewallet/profile/balance/{accessTokenID}", "12345")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
 		
-		this.mockMvc.perform(get("/ewallet/favorites?accessTokenID={accessTokenID}", "12345")
-		.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())	
-		.andExpect(jsonPath("$.[0].favoriteID").value(1000));
 	}
 	
 	@Test
@@ -194,9 +117,9 @@ public class TmnProfileControllerLoginSuccessTest {
 		when(this.tmnProfileServiceMock.validateEmail(anyInt(), anyString())).thenReturn("local@tmn.com");
 		
 		this.mockMvc.perform(post("/ewallet/profile/validate-email?channelID={channelID}", "40")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes("local@tmn.com")))
-				.andExpect(status().isOk());
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes("local@tmn.com")))
+			.andExpect(status().isOk());
 		
 	}
 	
@@ -211,9 +134,9 @@ public class TmnProfileControllerLoginSuccessTest {
 		tmnProfile.setThaiID("1212121212121");	
 		
 		this.mockMvc.perform(post("/ewallet/profile?channelID={channelID}", "40")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(tmnProfile)))
-				.andExpect(status().isOk());
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(tmnProfile)))
+			.andExpect(status().isOk());
 		
 	}
 
@@ -228,9 +151,9 @@ public class TmnProfileControllerLoginSuccessTest {
 		when(this.tmnProfileServiceMock.confirmCreateProfile(anyInt(), any(OTP.class))).thenReturn(tmnProfile);
 		
 		this.mockMvc.perform(post("/ewallet/profile/verify-otp?channelID={channelID}", "40")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(new OTP("0866013468", "adgf"))))
-				.andExpect(status().isOk());
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(new OTP("0866013468", "adgf"))))
+			.andExpect(status().isOk());
 		
 	}
 	
@@ -245,10 +168,10 @@ public class TmnProfileControllerLoginSuccessTest {
 		when(this.tmnProfileServiceMock.confirmCreateProfile(anyInt(), any(OTP.class))).thenReturn(tmnProfile);
 		
 		this.mockMvc.perform(post("/ewallet/profile/verify-otp")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(new OTP("0866013468", "adgf"))))
-				.andExpect(status().is(412));
-		
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(new OTP("0866013468", "adgf"))))
+			.andExpect(status().is(412));
+	
 	}
 	
 }
