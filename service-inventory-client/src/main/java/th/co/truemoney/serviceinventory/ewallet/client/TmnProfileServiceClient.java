@@ -114,14 +114,21 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile updateTruemoneyProfile(Integer channelID, TmnProfile tmnProfile, String accessTokenID)
-			throws ServiceInventoryException {
-		return null;
+	public TmnProfile updateTruemoneyProfile(String accessTokenID, TmnProfile tmnProfile) throws ServiceInventoryException {
+		
+		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(tmnProfile, headers);
+		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getUpdateTruemoneyProfileURL(), HttpMethod.PUT, requestEntity, TmnProfile.class, accessTokenID);
+		return responseEntity.getBody();
+		
 	}
 
 	@Override
-	public String changePin(Integer channelID, ChangePin changePin,	String accessTokenID) throws ServiceInventoryException {
-		return null;
+	public String changePin(String accessTokenID, ChangePin changePin) throws ServiceInventoryException {
+		
+		HttpEntity<ChangePin> requestEntity = new HttpEntity<ChangePin>(changePin,headers);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getChangePinURL(), HttpMethod.PUT, requestEntity, String.class, accessTokenID);
+		return responseEntity.getBody();
+	
 	}
 
 	@Override

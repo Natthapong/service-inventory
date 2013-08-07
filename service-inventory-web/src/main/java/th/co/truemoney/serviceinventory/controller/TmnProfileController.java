@@ -88,7 +88,7 @@ public class TmnProfileController {
 		return tmnProfileService.logout(accessTokenID);
 	}
 
-	@RequestMapping(value = "/profiles/validate-email", method = RequestMethod.POST)
+	@RequestMapping(value = "/profile/validate-email", method = RequestMethod.POST)
 	public @ResponseBody String isExistRegistered(
 		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
 		   @RequestBody String email) {
@@ -98,7 +98,7 @@ public class TmnProfileController {
 		return tmnProfileService.validateEmail(channelID, email);
 	}
 
-	@RequestMapping(value = "/profiles", method = RequestMethod.POST)
+	@RequestMapping(value = "/profile", method = RequestMethod.POST)
 	public @ResponseBody OTP createTruemoneyProfile(
 		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
 		   @RequestBody TmnProfile tmnProfile) {
@@ -108,7 +108,7 @@ public class TmnProfileController {
 		return tmnProfileService.createProfile(channelID, tmnProfile);
 	}
 
-	@RequestMapping(value = "/profiles/verify-otp", method = RequestMethod.POST)
+	@RequestMapping(value = "/profile/verify-otp", method = RequestMethod.POST)
 	public @ResponseBody TmnProfile confirmCreateTruemoneyProfile(
 		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
 		   @RequestBody OTP otp) {
@@ -226,17 +226,24 @@ public class TmnProfileController {
 		return forgotPasswordService.resendOTP(channelID, resetPasswordID);
 	}
 	
-	@RequestMapping(value = "/profiles/change-pin", method = RequestMethod.POST)
+	@RequestMapping(value = "/profile/change-pin", method = RequestMethod.PUT)
 	public @ResponseBody String changePin(
-		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
 		   @RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID,
 		   @RequestBody ChangePin changePin) {
 
-		validateRequestParam(channelID);
+		extendExpireAccessToken(accessTokenID);
+		
+		return tmnProfileService.changePin(accessTokenID, changePin);
+	}
+	
+	@RequestMapping(value = "/profile", method = RequestMethod.PUT)
+	public @ResponseBody TmnProfile updateTruemoneyProfile(
+		   @RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID,
+		   @RequestBody TmnProfile tmnProfile) {
 
 		extendExpireAccessToken(accessTokenID);
 		
-		return tmnProfileService.changePin(channelID, changePin, accessTokenID);
+		return tmnProfileService.updateTruemoneyProfile(accessTokenID, tmnProfile);
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {

@@ -7,6 +7,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -221,7 +222,7 @@ public class TmnProfileControllerLoginSuccessTest {
 		
 		when(this.tmnProfileServiceMock.validateEmail(anyInt(), anyString())).thenReturn("local@tmn.com");
 		
-		this.mockMvc.perform(post("/ewallet/profiles/validate-email?channelID={channelID}", "40")
+		this.mockMvc.perform(post("/ewallet/profile/validate-email?channelID={channelID}", "40")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsBytes("local@tmn.com")))
 				.andExpect(status().isOk());
@@ -238,7 +239,7 @@ public class TmnProfileControllerLoginSuccessTest {
 		tmnProfile.setMobileNumber("086xxxxxxx");
 		tmnProfile.setThaiID("1212121212121");	
 		
-		this.mockMvc.perform(post("/ewallet/profiles?channelID={channelID}", "40")
+		this.mockMvc.perform(post("/ewallet/profile?channelID={channelID}", "40")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsBytes(tmnProfile)))
 				.andExpect(status().isOk());
@@ -255,7 +256,7 @@ public class TmnProfileControllerLoginSuccessTest {
 		
 		when(this.tmnProfileServiceMock.confirmCreateProfile(anyInt(), any(OTP.class))).thenReturn(tmnProfile);
 		
-		this.mockMvc.perform(post("/ewallet/profiles/verify-otp?channelID={channelID}", "40")
+		this.mockMvc.perform(post("/ewallet/profile/verify-otp?channelID={channelID}", "40")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsBytes(new OTP("0866013468", "adgf"))))
 				.andExpect(status().isOk());
@@ -267,9 +268,9 @@ public class TmnProfileControllerLoginSuccessTest {
 		
 		String stubbedMobileNumber = "08xxxxxxxx";		
 		
-		when(this.tmnProfileServiceMock.changePin(anyInt(), any(ChangePin.class), anyString())).thenReturn(stubbedMobileNumber);
+		when(this.tmnProfileServiceMock.changePin(anyString(), any(ChangePin.class))).thenReturn(stubbedMobileNumber);
 		
-		this.mockMvc.perform(post("/ewallet/profiles/change-pin?channelID={channelID}&accessTokenID={accessTokenID}", "40", "TokenID")
+		this.mockMvc.perform(put("/ewallet/profile/change-pin?channelID={channelID}&accessTokenID={accessTokenID}", "40", "TokenID")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsBytes(new ChangePin("0000", "1111"))))
 				.andExpect(MockMvcResultMatchers.content().string("08xxxxxxxx"))

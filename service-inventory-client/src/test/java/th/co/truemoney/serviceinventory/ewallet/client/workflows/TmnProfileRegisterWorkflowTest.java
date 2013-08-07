@@ -17,6 +17,7 @@ import th.co.truemoney.serviceinventory.ewallet.client.TmnProfileServiceClient;
 import th.co.truemoney.serviceinventory.ewallet.client.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
+import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 
@@ -52,5 +53,30 @@ public class TmnProfileRegisterWorkflowTest {
 		assertNotNull(tmnProfile);
 	}
 
+	
+	@Test
+	public void shouldSuccessChangePin() {
+		
+        String accessTokenID = profileService.login(
+                TestData.createAdamSuccessLogin(),
+                TestData.createSuccessClientLogin());
+        
+        String mobileNumber = profileService.changePin(accessTokenID, TestData.createChangePin());
+        
+        assertNotNull(mobileNumber);
+        assertEquals("0891111111",mobileNumber);
+	}
+	
+	@Test
+	public void shouldSuccessChangeFullName() {
+		
+        String accessTokenID = profileService.login(
+                TestData.createAdamSuccessLogin(),
+                TestData.createSuccessClientLogin());
+        
+        TmnProfile tmnProfile = profileService.updateTruemoneyProfile(accessTokenID, TestData.createChangeTmnProfile());
+        
+        assertNotNull(tmnProfile);
+	}
 
 }

@@ -173,12 +173,11 @@ public class UserProfileHandler {
         	this.tmnSecurityProxy.terminateSession(createAccessRequest(channelID, sessionID, truemoneyID));
         }
 
-		public String changePin(Integer channelID, String sessionID, String tmnID, String oldPin, String pin) {
-			return null;
+		public void changePin(Integer channelID, String sessionID, String tmnID, String oldPin, String pin) {
 		}
         
-		public TmnProfile update(Integer channelID, String sessionID, String tmnID, String fullname) {
-			return null;
+		public void changeFullname(Integer channelID, String sessionID, String tmnID, String fullname) {
+			
 		}
 		
         private AddFavoriteRequest createAddFavoriteRequest(Integer channelID,

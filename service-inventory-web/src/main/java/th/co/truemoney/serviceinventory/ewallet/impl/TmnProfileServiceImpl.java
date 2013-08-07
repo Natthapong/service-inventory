@@ -137,27 +137,35 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile updateTruemoneyProfile(Integer channelID, TmnProfile tmnProfile, String accessTokenID) 
+	public TmnProfile updateTruemoneyProfile(String accessTokenID, TmnProfile tmnProfile) 
 			throws ServiceInventoryException {
 		
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		
-		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 				.fromChannel(accessToken.getChannelID())
 				.withFullname(tmnProfile.getFullname())
 				.changeFullName();
+		
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				   .fromChannel(accessToken.getChannelID())
+				   .getProfile();
+		
 	}
 
 	@Override
-	public String changePin(Integer channelID, ChangePin changePin, String accessTokenID)
+	public String changePin(String accessTokenID, ChangePin changePin)
 			throws ServiceInventoryException {
 		
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		
-		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 				.fromChannel(accessToken.getChannelID())
 				.withPin(changePin.getOldPin(), changePin.getPin())
 				.changePin();
+		
+		return accessToken.getMobileNumber();
+		
 	}
 
 	@Override

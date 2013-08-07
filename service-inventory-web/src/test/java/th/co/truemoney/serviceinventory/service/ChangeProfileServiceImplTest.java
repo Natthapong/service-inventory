@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,15 +53,15 @@ public class ChangeProfileServiceImplTest {
     @Test
     public void shouldChangePinSuccess() {
     	//stubbed
-		String stubbedMobileNumber = "08xxxxxxxx";
 		AccessToken accessToken = new AccessToken("tokenID", "loginID", "sessionID", "tmnID", 41);
+		accessToken.setMobileNumber("08xxxxxxxx");
 		
         //given
-        when(mockUserProfileFacade.changePin(anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(stubbedMobileNumber);
+		doNothing().when(mockUserProfileFacade).changePin(anyInt(), anyString(), anyString(), anyString(), anyString());
         when(mockAccessTokenRepo.findAccessToken(anyString())).thenReturn(accessToken);
         
         //when
-        String mobileNumber = this.tmnProfileService.changePin(accessToken.getChannelID(), new ChangePin("0000", "1111"), accessToken.getAccessTokenID());
+        String mobileNumber = this.tmnProfileService.changePin(accessToken.getAccessTokenID(), new ChangePin("0000", "1111"));
 
         //then
         assertNotNull(mobileNumber);
