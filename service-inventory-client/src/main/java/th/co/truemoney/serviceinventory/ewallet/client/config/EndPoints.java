@@ -191,7 +191,7 @@ public class EndPoints {
 	}
 
 	public String getUpdateTruemoneyProfileURL() {
-		return host + "/service-inventory-web/v1/ewallet/profile?accessTokenID={accessTokenID}";
+		return host + "/service-inventory-web/v1/ewallet/profile/{accessTokenID}";
 	}
 
 	public String getChangePinURL() {
