@@ -30,7 +30,7 @@ import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
-public class ChangeProfileServiceImplTest {
+public class ChangePinServiceImplTest {
 
     @Autowired
     private TmnProfileServiceImpl tmnProfileService;

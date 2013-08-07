@@ -1,7 +1,6 @@
 package th.co.truemoney.serviceinventory.controller;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -15,23 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.bean.LoginRequest;
-import th.co.truemoney.serviceinventory.ewallet.ActivityService;
-import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
-import th.co.truemoney.serviceinventory.ewallet.ForgotPasswordService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
-import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
-import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
-import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
-import th.co.truemoney.serviceinventory.ewallet.domain.ForgotPassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
-import th.co.truemoney.serviceinventory.ewallet.domain.ResetPassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
-import th.co.truemoney.serviceinventory.ewallet.domain.VerifyResetPassword;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.exception.ValidationException;
 
 @Controller
@@ -42,16 +29,8 @@ public class TmnProfileController {
 	private TmnProfileService tmnProfileService;
 	
 	@Autowired
-	private ActivityService activityService;
-	
-	@Autowired
-	private FavoriteService favoriteService;
-
-	@Autowired
 	private ExtendAccessTokenAsynService extendAccessTokenAsynService;
 
-	@Autowired
-	private ForgotPasswordService forgotPasswordService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody String login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -71,7 +50,7 @@ public class TmnProfileController {
 		return tmnProfile;
 	}
 
-	@RequestMapping(value = "/balance/{accessTokenID}", method = RequestMethod.GET)
+	@RequestMapping(value = "/profile/balance/{accessTokenID}", method = RequestMethod.GET)
 	public @ResponseBody BigDecimal getBalance(@PathVariable String accessTokenID) {
 
 		extendExpireAccessToken(accessTokenID);
@@ -118,114 +97,6 @@ public class TmnProfileController {
 		return tmnProfileService.confirmCreateProfile(channelID, otp);
 	}
 
-	@RequestMapping(value = "/activities/{accessTokenID}", method = RequestMethod.GET)
-	public @ResponseBody List<Activity> getActivities(@PathVariable String accessTokenID) {
-		extendExpireAccessToken(accessTokenID);
-		try {
-			List<Activity> activities = activityService.getActivities(accessTokenID);
-			return activities;
-		} catch (ServiceInventoryException e) {
-			throw new ServiceInventoryWebException(Code.GET_ACTIVITY_FAILED, e.getErrorDescription());
-		}
-	}
-	
-	@RequestMapping(value = "/activities/{accessTokenID}/detail/{reportID}", method = RequestMethod.GET)
-	public @ResponseBody ActivityDetail getActivityDetail(@PathVariable String accessTokenID, @PathVariable Long reportID) {
-		extendExpireAccessToken(accessTokenID);
-		try {	
-			ActivityDetail activityDetail = activityService.getActivityDetail(reportID, accessTokenID);
-			return activityDetail;
-		} catch (ServiceInventoryException e) {
-			throw new ServiceInventoryWebException(Code.GET_ACTIVITY_DETAIL_FAILED, e.getErrorDescription());
-		}
-	}
-	
-	@RequestMapping(value = "/favorites/{accessTokenID}" , method = RequestMethod.POST)
-	public @ResponseBody Favorite addFavorite(
-			@RequestBody Favorite favorite,
-			@PathVariable String accessTokenID) {
-		
-		extendExpireAccessToken(accessTokenID);
-
-		Favorite favoriteResponse = favoriteService.addFavorite(favorite, accessTokenID);
-		
-		return favoriteResponse;
-	}
-	
-	@RequestMapping(value = "/favorites" , method = RequestMethod.DELETE)
-	public @ResponseBody Boolean removeFavorite(
-			@RequestParam(value = "serviceCode", defaultValue="") String serviceCode,
-			@RequestParam(value = "ref1", defaultValue="") String ref1,
-			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID) {
-		
-		extendExpireAccessToken(accessTokenID);
-
-		return favoriteService.deleteFavorite(serviceCode, ref1, accessTokenID);
-	}
-	
-	@RequestMapping(value = "/favorites" , method = RequestMethod.GET)
-	public @ResponseBody List<Favorite> getFavorites(
-			@RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID) {
-
-		extendExpireAccessToken(accessTokenID);
-		
-		List<Favorite> favorites = favoriteService.getFavorites(accessTokenID);
-		
-		return favorites;
-	}
-	
-	@RequestMapping(value = "/profile/createforgotpassword", method = RequestMethod.POST)
-	public @ResponseBody ForgotPassword createForgotPassword(
-			@RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-			@RequestBody ForgotPassword request) {
-		
-		validateRequestParam(channelID);
-		
-		return forgotPasswordService.createForgotPassword(channelID, request);
-	}
-	
-	@RequestMapping(value = "/profile/password/verify-reset", method = RequestMethod.POST)
-	public @ResponseBody VerifyResetPassword verifyResetPassword(
-		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		   @RequestBody ResetPassword resetPasswordRequest) {
-
-		validateRequestParam(channelID);
-
-		return forgotPasswordService.verifyResetPassword(channelID, resetPasswordRequest);
-	}
-	
-	@RequestMapping(value = "/profile/password/verify-otp", method = RequestMethod.POST)
-	public @ResponseBody String verifyOTP(
-		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		   @RequestBody VerifyResetPassword verifyResetPassword) {
-
-		validateRequestParam(channelID);
-
-		return forgotPasswordService.verifyOTP(channelID, verifyResetPassword);
-		
-	}
-	
-	@RequestMapping(value = "/profile/password/confirm-reset", method = RequestMethod.POST)
-	public @ResponseBody String confirmResetPassword(		   
-		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID,
-		   @RequestBody ResetPassword resetPassword) {
-
-		validateRequestParam(channelID);
-
-		return forgotPasswordService.confirmResetPassword(channelID, resetPassword);
-		
-	}
-	
-	@RequestMapping(value = "/profile/password/resend-otp/{resetPasswordID}", method = RequestMethod.POST)
-	public @ResponseBody VerifyResetPassword resendOTP(
-		   @PathVariable String resetPasswordID,
-		   @RequestParam(value = "channelID", defaultValue="-1") Integer channelID) {
-
-		validateRequestParam(channelID);
-
-		return forgotPasswordService.resendOTP(channelID, resetPasswordID);
-	}
-	
 	@RequestMapping(value = "/profile/change-pin", method = RequestMethod.PUT)
 	public @ResponseBody String changePin(
 		   @RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID,
@@ -236,9 +107,9 @@ public class TmnProfileController {
 		return tmnProfileService.changePin(accessTokenID, changePin);
 	}
 	
-	@RequestMapping(value = "/profile", method = RequestMethod.PUT)
+	@RequestMapping(value = "/profile/{accessTokenID}", method = RequestMethod.PUT)
 	public @ResponseBody TmnProfile updateTruemoneyProfile(
-		   @RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID,
+		   @PathVariable String accessTokenID,
 		   @RequestBody TmnProfile tmnProfile) {
 
 		extendExpireAccessToken(accessTokenID);
