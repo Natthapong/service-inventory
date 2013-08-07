@@ -292,14 +292,14 @@ public class LegacyFacade {
             return profileFacade.removeFavorite(this.channelID, this.sessionID, this.tmnID, this.serviceCode, this.reference1);
         }
 
-        public String changePin() {
+        public void changePin() {
             Validate.notNull(tmnID, "data missing. change PIN of whom?");
             Validate.notNull(sessionID, "data missing. change PIN of whom?");
             Validate.notNull(channelID, "data missing. change PIN from which channel?");
             Validate.notNull(oldPin, "data missing. old PIN ?");
             Validate.notNull(pin, "data missing. pin ?");
 
-            return profileFacade.changePin(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin);
+            profileFacade.changePin(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin);
         }
         
         public String changePassword() {
@@ -312,13 +312,13 @@ public class LegacyFacade {
             return profileFacade.changePassword(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin);
         }
 
-		public TmnProfile changeFullName() {
+		public void changeFullName() {
             Validate.notNull(tmnID, "data missing. change PIN of whom?");
             Validate.notNull(sessionID, "data missing. change PIN of whom?");
             Validate.notNull(channelID, "data missing. change PIN from which channel?");
             Validate.notNull(fullname, "data missing. fullname ?");
             
-            return profileFacade.update(this.channelID, this.sessionID, this.tmnID, this.fullname);
+            profileFacade.changeFullname(this.channelID, this.sessionID, this.tmnID, this.fullname);
 		}
         
     }

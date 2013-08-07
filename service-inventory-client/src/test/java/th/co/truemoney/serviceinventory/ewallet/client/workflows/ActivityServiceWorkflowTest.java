@@ -28,6 +28,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 @ContextConfiguration(classes = { ServiceInventoryClientConfig.class, LocalEnvironmentConfig.class })
 @ActiveProfiles(profiles = "local")
 @Category(IntegrationTest.class)
+@Ignore
 public class ActivityServiceWorkflowTest {
 
     @Autowired
@@ -36,7 +37,7 @@ public class ActivityServiceWorkflowTest {
     @Autowired
     TmnProfileServiceClient profileService;
 
-    @Test @Ignore
+    @Test 
     public void getActivitySuccess(){
 	String accessToken = profileService.login(
 		TestData.createSuccessUserLogin(),

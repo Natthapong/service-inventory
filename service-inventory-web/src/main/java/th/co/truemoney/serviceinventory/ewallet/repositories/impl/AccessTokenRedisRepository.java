@@ -48,7 +48,7 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 			throw e;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
+			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can find data in repository.", e);
 		}
 	}
 
@@ -70,6 +70,10 @@ public class AccessTokenRedisRepository implements AccessTokenRepository {
 			logger.error(e.getMessage(), e);
 			throw new InternalServerErrorException(Code.GENERAL_ERROR, "Can not store data in repository.", e);
 		}
+	}
+
+	public void setExpirableMap(ExpirableMap redisLoggingDao) {
+		this.redisLoggingDao = redisLoggingDao;
 	}
 
 }

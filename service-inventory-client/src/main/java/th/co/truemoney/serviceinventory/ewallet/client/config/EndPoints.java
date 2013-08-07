@@ -51,15 +51,15 @@ public class EndPoints {
     }
 
     public String getValidateEmailURL() {
-        return host + "/service-inventory-web/v1/ewallet/profiles/validate-email?channelID={channelID}";
+        return host + "/service-inventory-web/v1/ewallet/profile/validate-email?channelID={channelID}";
     }
 
     public String getCreateTruemoneyProfileURL() {
-        return host + "/service-inventory-web/v1/ewallet/profiles?channelID={channelID}";
+        return host + "/service-inventory-web/v1/ewallet/profile?channelID={channelID}";
     }
 
     public String getConfirmCreateTruemoneyProfileURL() {
-        return host + "/service-inventory-web/v1/ewallet/profiles/verify-otp?channelID={channelID}";
+        return host + "/service-inventory-web/v1/ewallet/profile/verify-otp?channelID={channelID}";
     }
 
     public String getP2PCreateTransferDraftURL() {
@@ -188,6 +188,14 @@ public class EndPoints {
 
 	public String getVerifyOTPResetPasswordURL() {
 		return host + "/service-inventory-web/v1/ewallet/profile/password/verify-otp?channelID={channelID}";
+	}
+
+	public String getUpdateTruemoneyProfileURL() {
+		return host + "/service-inventory-web/v1/ewallet/profile?accessTokenID={accessTokenID}";
+	}
+
+	public String getChangePinURL() {
+		return host + "/service-inventory-web/v1/ewallet/profile/change-pin?accessTokenID={accessTokenID}";
 	}
 
 }
