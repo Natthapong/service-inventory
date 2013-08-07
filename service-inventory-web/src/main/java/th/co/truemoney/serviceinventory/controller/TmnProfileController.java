@@ -98,9 +98,9 @@ public class TmnProfileController {
 		return tmnProfileService.confirmCreateProfile(channelID, otp);
 	}
 
-	@RequestMapping(value = "/profile/change-pin", method = RequestMethod.PUT)
+	@RequestMapping(value = "/profile/change-pin/{accessTokenID}", method = RequestMethod.PUT)
 	public @ResponseBody String changePin(
-		   @RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID,
+		   @PathVariable String accessTokenID,
 		   @RequestBody ChangePin changePin) {
 
 		extendExpireAccessToken(accessTokenID);
@@ -118,9 +118,9 @@ public class TmnProfileController {
 		return tmnProfileService.updateTruemoneyProfile(accessTokenID, tmnProfile);
 	}
 	
-	@RequestMapping(value = "/profile/change-password", method = RequestMethod.PUT)
+	@RequestMapping(value = "/profile/change-password/{accessTokenID}", method = RequestMethod.PUT)
 	public @ResponseBody String changePassword(
-		   @RequestParam(value = "accessTokenID", defaultValue="") String accessTokenID,
+		   @PathVariable String accessTokenID,
 		   @RequestBody ChangePassword changePassword) {
 
 		extendExpireAccessToken(accessTokenID);

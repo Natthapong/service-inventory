@@ -28,6 +28,7 @@ import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChangePassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
@@ -38,7 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebAppConfiguration
 @ContextConfiguration(classes = { WebConfig.class, MemRepositoriesConfig.class, TestServiceInventoryConfig.class, TestRedisConfig.class, SmsConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
-public class ChangePinControllerTest {
+public class ChangePasswordControllerTest {
 
 	private MockMvc mockMvc;
 
@@ -60,33 +61,33 @@ public class ChangePinControllerTest {
 	}
 	
 	@Test
-	public void shouldChangePinSuccess() throws Exception {
+	public void shouldChangePasswordSuccess() throws Exception {
 		
-		String stubbedMobileNumber = "08xxxxxxxx";		
+		String stubbedEmail = "change@gmail.com";		
 		
-		when(this.tmnProfileServiceMock.changePin(anyString(), any(ChangePin.class))).thenReturn(stubbedMobileNumber);
+		when(this.tmnProfileServiceMock.changePassword(anyString(), any(ChangePassword.class))).thenReturn(stubbedEmail);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
-		this.mockMvc.perform(put("/ewallet/profile/change-pin/{accessTokenID}?channelID={channelID}", "TokenID", "40")
+		this.mockMvc.perform(put("/ewallet/profile/change-password/{accessTokenID}?channelID={channelID}", "TokenID", "40")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsBytes(new ChangePin("0000", "1111"))))
-				.andExpect(MockMvcResultMatchers.content().string("08xxxxxxxx"))
+				.andExpect(MockMvcResultMatchers.content().string("change@gmail.com"))
 				.andExpect(status().isOk());
 		
 	}
 	
 	@Test
-	public void shouldChangePinFail() throws Exception {
+	public void shouldChangePasswordFail() throws Exception {
 
-		when(this.tmnProfileServiceMock.changePin(anyString(), any(ChangePin.class)))
+		when(this.tmnProfileServiceMock.changePassword(anyString(), any(ChangePassword.class)))
 			.thenThrow(new ServiceInventoryException(400,"Error Code","Error Description", "Error Namespace"));
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
-		this.mockMvc.perform(put("/ewallet/profile/change-pin/{accessTokenID}?channelID={channelID}", "TokenID", "40")
+		this.mockMvc.perform(put("/ewallet/profile/change-password/{accessTokenID}?channelID={channelID}", "TokenID", "40")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(new ChangePin("0000", "1111"))))
+				.content(mapper.writeValueAsBytes(new ChangePassword("0000", "1111"))))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.errorCode").value("Error Code"))
 				.andExpect(jsonPath("$.errorDescription").value("Error Description"))
