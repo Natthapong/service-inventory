@@ -30,9 +30,9 @@ public class TopUpEwalletController {
 
     @RequestMapping(value = "/directdebit/{sourceOfFundID}/quote", method = RequestMethod.POST)
     public @ResponseBody TopUpQuote createTopUpQuoteFromDirectDebit(
-           @PathVariable String sourceOfFundID,
-           @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
-           @RequestBody TopUpQuote quote) {
+    		@PathVariable String sourceOfFundID,
+    		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
+    		@RequestBody TopUpQuote quote) {
 
 
         extendExpireAccessToken(accessTokenID);
@@ -46,7 +46,7 @@ public class TopUpEwalletController {
 
     @RequestMapping(value = "/top-up/quote/{draftTransactionID}", method = RequestMethod.GET)
     public @ResponseBody TopUpQuote getTopUpQuoteDetails(@PathVariable String draftTransactionID,
-           @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+    		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
         MDC.put(MDC_DRAFT_TRANSACTION_ID, draftTransactionID);
 
@@ -57,10 +57,10 @@ public class TopUpEwalletController {
 
     @RequestMapping(value = "/top-up/order/{transactionID}", method = RequestMethod.PUT)
     public @ResponseBody TopUpOrder.Status performTopUp(
-	   @PathVariable String transactionID,
-           @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+    		@PathVariable String transactionID,
+    		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
-	MDC.put(MDC_TRANSACTION_ID, transactionID);
+    	MDC.put(MDC_TRANSACTION_ID, transactionID);
 
         extendExpireAccessToken(accessTokenID);
 
@@ -69,8 +69,8 @@ public class TopUpEwalletController {
 
     @RequestMapping(value = "/top-up/order/{transactionID}/status", method = RequestMethod.GET)
     public @ResponseBody TopUpOrder.Status getOrderStatus(
-           @PathVariable String transactionID,
-           @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+    		@PathVariable String transactionID,
+    		@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
         MDC.put(MDC_TRANSACTION_ID, transactionID);
 
@@ -81,8 +81,8 @@ public class TopUpEwalletController {
 
     @RequestMapping(value = "/top-up/order/{transactionID}", method = RequestMethod.GET)
     public @ResponseBody TopUpOrder getOrderInfo(
-           @PathVariable String transactionID,
-           @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
+			@PathVariable String transactionID,
+			@RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
         MDC.put(MDC_TRANSACTION_ID, transactionID);
 

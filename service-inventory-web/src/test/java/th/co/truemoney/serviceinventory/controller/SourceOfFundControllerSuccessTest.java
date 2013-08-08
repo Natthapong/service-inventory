@@ -4,6 +4,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.DirectDebitSourceOfFundService;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -65,6 +67,21 @@ public class SourceOfFundControllerSuccessTest {
 		this.mockMvc.perform(get("/ewallet/profile/source-of-fund/direct-debits?channelID=41&accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "local@tmn.com")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void shouldFail() throws Exception {
+
+		//given
+		when(sourceOfFundServiceMock.getUserDirectDebitSources(anyString()))
+			.thenThrow(new ServiceInventoryException(400,"Error Code","Error Description", "Error Namespace"));
+
+		this.mockMvc.perform(get("/ewallet/profile/source-of-fund/direct-debits?channelID=41&accessTokenID=e6701de94fdda4347a3d31ec5c892ccadc88b847", "local@tmn.com")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.errorCode").value("Error Code"))
+			.andExpect(jsonPath("$.errorDescription").value("Error Description"))
+			.andExpect(jsonPath("$.errorNamespace").value("Error Namespace"));
 	}
 
 }
