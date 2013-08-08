@@ -19,6 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
@@ -172,6 +173,15 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	public String changePassword(Integer channelID, ChangePassword changePassword) 
 			throws ServiceInventoryException {
 		return null;
+	}
+
+	@Override
+	public String verifyAccessToken(String accessTokenID)
+			throws ServiceInventoryException {
+
+		accessTokenRepo.findAccessToken(accessTokenID);
+
+		return accessTokenID;
 	}
 
 	private void performCreateProfile(Integer channelID, TmnProfile tmnProfile) throws ServiceInventoryException {

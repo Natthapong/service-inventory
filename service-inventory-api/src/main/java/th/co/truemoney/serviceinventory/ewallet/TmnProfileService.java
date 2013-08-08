@@ -32,5 +32,6 @@ public interface TmnProfileService {
     
     public String changePassword(Integer channelID, ChangePassword changePassword) throws ServiceInventoryException;
 
+	public String verifyAccessToken(String accessTokenID) throws ServiceInventoryException;
 }
 

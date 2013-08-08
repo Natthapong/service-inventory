@@ -118,4 +118,15 @@ public class TmnProfileServiceClientTest {
 
         client.logout(accessToken);
     }
+
+	@Test
+	public void verifyAccessToken(){
+		String accessTokenID = client.login(
+				TestData.createSuccessUserLogin(),
+				TestData.createSuccessClientLogin());
+
+
+		String verifyID = client.verifyAccessToken(accessTokenID);
+		assertEquals(accessTokenID, verifyID);
+	}
 }

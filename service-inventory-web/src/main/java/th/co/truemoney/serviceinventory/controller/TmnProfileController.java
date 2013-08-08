@@ -245,6 +245,13 @@ public class TmnProfileController {
 		
 		return tmnProfileService.updateTruemoneyProfile(accessTokenID, tmnProfile);
 	}
+
+	@RequestMapping(value = "/verify-token/{accessTokenID}", method = RequestMethod.GET)
+	public @ResponseBody String verifyAccessTokenID(
+			@PathVariable String accessTokenID) {
+
+		return tmnProfileService.verifyAccessToken(accessTokenID);
+	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {
 		extendAccessTokenAsynService.setExpire(accessTokenID);

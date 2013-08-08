@@ -138,4 +138,11 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		return null;
 	}
 
+	@Override
+	public String verifyAccessToken(String accessTokenID) throws ServiceInventoryException {
+
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getVerifyAccessTokenURL(), HttpMethod.GET, requestEntity, String.class, accessTokenID);
+		return responseEntity.getBody();
+	}
 }

@@ -18,6 +18,10 @@ public class EndPoints {
         return host + "/service-inventory-web/v1/ewallet/logout/{accessTokenID}";
     }
 
+	public String getVerifyAccessTokenURL() {
+		return host + "/service-inventory-web/v1/ewallet/verify-token/{accessTokenID}";
+	}
+
     public String getUserDirectDebitSourceOfFundsURL() {
         return host + "/service-inventory-web/v1/ewallet/profile/source-of-fund/direct-debits?accessTokenID={accessTokenID}";
     }
