@@ -170,9 +170,17 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public String changePassword(Integer channelID, ChangePassword changePassword) 
+	public String changePassword(String accessTokenID, ChangePassword changePassword) 
 			throws ServiceInventoryException {
-		return null;
+		
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		
+		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+			.fromChannel(accessToken.getChannelID())
+			.withPassword(changePassword.getOldPassword(), changePassword.getPassword())
+			.changePassword();
+		
+		return accessToken.getEmail();
 	}
 
 	@Override

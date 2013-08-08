@@ -32,7 +32,7 @@ public class TopUpMobileController {
 
 
     @RequestMapping(value = "/draft", method = RequestMethod.POST)
-    public @ResponseBody TopUpMobileDraft verifyAndCreateTopUpMobileDraft(
+    public @ResponseBody TopUpMobileDraft verifyAndCreateTopupMobileDraft(
             @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID,
             @RequestBody TopUpMobileDraft draft) {
 
@@ -48,7 +48,7 @@ public class TopUpMobileController {
     }
 
     @RequestMapping(value = "/draft/{draftTransactionID}", method = RequestMethod.GET)
-    public @ResponseBody TopUpMobileDraft getTopUpMobileDraftDetail(
+    public @ResponseBody TopUpMobileDraft getTopupMobileDraftDetail(
             @PathVariable String draftTransactionID,
             @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
@@ -60,20 +60,20 @@ public class TopUpMobileController {
     }
 
     @RequestMapping(value = "/transaction/{transactionID}",  method = RequestMethod.PUT)
-    public @ResponseBody TopUpMobileTransaction.Status performToppingMobile(
-	    @PathVariable String transactionID,
+    public @ResponseBody TopUpMobileTransaction.Status performTopupMobile(
+    		@PathVariable String transactionID,
             @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
         extendExpireAccessToken(accessTokenID);
 
-	MDC.put(MDC_TRANSACTION_ID, transactionID);
-
-	return topUpMobileService.performTopUpMobile(transactionID, accessTokenID);
+		MDC.put(MDC_TRANSACTION_ID, transactionID);
+	
+		return topUpMobileService.performTopUpMobile(transactionID, accessTokenID);
     }
 
 
     @RequestMapping(value = "/transaction/{transactionID}/status", method = RequestMethod.GET)
-    public @ResponseBody TopUpMobileTransaction.Status getToppingMobileStatus(
+    public @ResponseBody TopUpMobileTransaction.Status getTopupMobileStatus(
             @PathVariable String transactionID,
             @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 
@@ -85,7 +85,7 @@ public class TopUpMobileController {
     }
 
     @RequestMapping(value = "/transaction/{transactionID}", method = RequestMethod.GET)
-    public @ResponseBody TopUpMobileTransaction getTransactionInfo(
+    public @ResponseBody TopUpMobileTransaction getTopupMobileInfo(
             @PathVariable String transactionID,
             @RequestParam(value = "accessTokenID", defaultValue = "") String accessTokenID) {
 

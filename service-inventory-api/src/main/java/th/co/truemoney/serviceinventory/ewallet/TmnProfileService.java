@@ -30,7 +30,7 @@ public interface TmnProfileService {
     
     public String changePin(String accessTokenID, ChangePin changePin) throws ServiceInventoryException;
     
-    public String changePassword(Integer channelID, ChangePassword changePassword) throws ServiceInventoryException;
+    public String changePassword(String accessTokenID, ChangePassword changePassword) throws ServiceInventoryException;
 
 	public String verifyAccessToken(String accessTokenID) throws ServiceInventoryException;
 }

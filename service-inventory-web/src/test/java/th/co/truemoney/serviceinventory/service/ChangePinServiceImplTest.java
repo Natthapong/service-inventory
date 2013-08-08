@@ -21,6 +21,7 @@ import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
+import th.co.truemoney.serviceinventory.ewallet.domain.ChangePassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -30,7 +31,7 @@ import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
-public class ChangeProfileServiceImplTest {
+public class ChangePinServiceImplTest {
 
     @Autowired
     private TmnProfileServiceImpl tmnProfileService;
@@ -66,6 +67,24 @@ public class ChangeProfileServiceImplTest {
         //then
         assertNotNull(mobileNumber);
         assertEquals("08xxxxxxxx", mobileNumber);
+    }
+    
+    @Test
+    public void shouldChangePasswordSuccess() {
+    	//stubbed
+		AccessToken accessToken = new AccessToken("tokenID", "loginID", "sessionID", "tmnID", 41);
+		accessToken.setEmail("success@change.password");
+		
+        //given
+		doNothing().when(mockUserProfileFacade).changePassword(anyInt(), anyString(), anyString(), anyString(), anyString());
+        when(mockAccessTokenRepo.findAccessToken(anyString())).thenReturn(accessToken);
+        
+        //when
+        String email = this.tmnProfileService.changePassword(accessToken.getAccessTokenID(), new ChangePassword("0000", "1111"));
+
+        //then
+        assertNotNull(email);
+        assertEquals("success@change.password", email);
     }
     
 }

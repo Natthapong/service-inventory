@@ -151,6 +151,9 @@ public class LegacyFacade {
         
         private String oldPin;
         private String pin;
+        private String oldPassword;
+        private String password;
+        
         private String fullname;
 
         @Autowired(required = false)
@@ -197,6 +200,12 @@ public class LegacyFacade {
         public UserProfileBuilder withPin(String oldPin, String pin) {
         	this.oldPin = oldPin;
         	this.pin = pin;
+        	return this;
+        }
+        
+        public UserProfileBuilder withPassword(String oldPassword, String password) {
+        	this.oldPassword = oldPassword;
+        	this.password = password;
         	return this;
         }
         
@@ -291,6 +300,16 @@ public class LegacyFacade {
             Validate.notNull(pin, "data missing. pin ?");
 
             profileFacade.changePin(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin);
+        }
+        
+        public void changePassword() {
+            Validate.notNull(tmnID, "data missing. change password of whom?");
+            Validate.notNull(sessionID, "data missing. change password of whom?");
+            Validate.notNull(channelID, "data missing. change password from which channel?");
+            Validate.notNull(oldPassword, "data missing. old password ?");
+            Validate.notNull(password, "data missing. password ?");
+
+            profileFacade.changePassword(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin);
         }
 
 		public void changeFullName() {
