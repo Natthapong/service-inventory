@@ -7,6 +7,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
@@ -35,6 +36,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -172,6 +174,32 @@ public class TmnProfileControllerLoginSuccessTest {
 			.content(mapper.writeValueAsBytes(new OTP("0866013468", "adgf"))))
 			.andExpect(status().is(412));
 	
+	}
+	
+	@Test
+	public void verifyTokenSuccess() throws Exception {
+		//given
+		when(tmnProfileServiceMock.verifyAccessToken(anyString())).thenReturn("TokenID");
+		
+		//perform
+		this.mockMvc.perform(get("/ewallet/verify-token/{accessTokenID}", "TokenID")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());		
+	}
+	
+	@Test
+	public void verifyTokenFail() throws Exception {
+		//given
+		when(tmnProfileServiceMock.verifyAccessToken(anyString()))
+			.thenThrow(new ServiceInventoryException(400,"Error Code","Error Description", "Error Namespace"));	
+		
+		//perform
+		this.mockMvc.perform(get("/ewallet/verify-token/{accessTokenID}", "TokenID")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.errorCode").value("Error Code"))
+			.andExpect(jsonPath("$.errorDescription").value("Error Description"))
+			.andExpect(jsonPath("$.errorNamespace").value("Error Namespace"));	
 	}
 	
 }
