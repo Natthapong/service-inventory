@@ -12,6 +12,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.DeleteFavoriteRequest;
@@ -22,13 +23,13 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritedRequest
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+
+import com.tmn.core.api.message.SignonRequest;
+import com.tmn.core.api.message.SignonResponse;
 
 public class UserProfileHandler {
 
@@ -45,11 +46,11 @@ public class UserProfileHandler {
         private static final String FAVORITE_NOT_FOUND = "2014";
 
         @Autowired
-        private TmnSecurityProxy tmnSecurityProxy;
+        private TmnSecurityProxyClient tmnSecurityProxy;
 
         @Autowired
         private TmnProfileProxy tmnProfileProxy;
-
+        
         public AccessToken login(Integer channelID, String credentialUsername,String credentialSecret) {
 
                 SignonResponse signon = this.tmnSecurityProxy.signon(createGetSignOnRequest(channelID, credentialUsername, credentialSecret));
@@ -90,6 +91,9 @@ public class UserProfileHandler {
                 tmnProfile.setEmail(profile.getEmail());
                 tmnProfile.setType(profile.getProfileType());
                 tmnProfile.setStatus(profile.getStatusId());
+                tmnProfile.setHasPassword(Boolean.TRUE);
+                tmnProfile.setHasPin(Boolean.FALSE);
+                tmnProfile.setImageURL("");
 
                 return tmnProfile;
         }
@@ -170,7 +174,7 @@ public class UserProfileHandler {
         }
 
         public void logout(Integer channelID, String sessionID, String truemoneyID) {
-        	this.tmnSecurityProxy.terminateSession(createAccessRequest(channelID, sessionID, truemoneyID));
+        	this.tmnSecurityProxy.terminateSession(createNewAccessRequest(channelID, sessionID, truemoneyID));
         }
 
 		public void changePin(Integer channelID, String sessionID, String tmnID, String oldPin, String pin) {
@@ -238,7 +242,20 @@ public class UserProfileHandler {
 
                 return standardBizRequest;
         }
+        
+        private com.tmn.core.api.message.StandardBizRequest createNewAccessRequest(Integer channelID, String sessionID, String truemoneyID) {
+        	
+        	com.tmn.core.api.message.SecurityContext securityContext = new com.tmn.core.api.message.SecurityContext();
+        	securityContext.setSessionId(sessionID);
+        	securityContext.setTmnId(truemoneyID);
+        	
+        	com.tmn.core.api.message.StandardBizRequest standardBizRequest = new com.tmn.core.api.message.StandardBizRequest();
+            standardBizRequest.setSecurityContext(securityContext);
+            standardBizRequest.setChannelId(channelID);
 
+            return standardBizRequest;
+    }
+        
         private SignonRequest createGetSignOnRequest(Integer channelID, String username, String password) {
                 SignonRequest signonRequest = new SignonRequest();
                 signonRequest.setInitiator(username);
@@ -314,7 +331,7 @@ public class UserProfileHandler {
                 this.tmnProfileProxy = tmnProfileProxy;
         }
 
-        public void setTmnSecurityProxy(TmnSecurityProxy tmnSecurityProxy) {
+        public void setTmnSecurityProxy(TmnSecurityProxyClient tmnSecurityProxy) {
                 this.tmnSecurityProxy = tmnSecurityProxy;
         }
 
