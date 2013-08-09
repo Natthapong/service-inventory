@@ -1,20 +1,18 @@
 package th.co.truemoney.serviceinventory.persona.proxies;
 
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.persona.Adam;
 import th.co.truemoney.serviceinventory.persona.Eve;
 import th.co.truemoney.serviceinventory.persona.Simpsons;
 
-public class LocalSecurityProxy implements TmnSecurityProxy {
+import com.tmn.core.api.message.SignonRequest;
+import com.tmn.core.api.message.SignonResponse;
+import com.tmn.core.api.message.StandardBizRequest;
+import com.tmn.core.api.message.StandardBizResponse;
+
+public class LocalSecurityProxy implements TmnSecurityProxyClient {
 
     private Adam adam = new Adam();
     private Eve eve = new Eve();
@@ -23,7 +21,11 @@ public class LocalSecurityProxy implements TmnSecurityProxy {
     @Override
     public StandardBizResponse terminateSession(StandardBizRequest standardBizRequest)
             throws EwalletException {
-        return new StandardBizResponse("1", "0", "namespace", new String[] { "key" }, new String[] { "value" });
+    	StandardBizResponse standardBizResponse = new StandardBizResponse();
+    	standardBizResponse.setTransactionId("11111111");
+    	standardBizResponse.setResultCode("0");
+    	standardBizResponse.setResultNamespace("namespace");
+        return standardBizResponse;
     }
 
     @Override
@@ -47,23 +49,11 @@ public class LocalSecurityProxy implements TmnSecurityProxy {
 
     @Override
     public StandardBizResponse extendSession(StandardBizRequest standardBizRequest) throws EwalletException {
-        return new StandardBizResponse("1", "0", "namespace",
-                new String[] { "key" }, new String[] { "value" });
-    }
-
-    @Override
-    public CreateSessionResponse createSession()
-            throws EwalletException {
-        return new CreateSessionResponse("0", "namespace", "sessionId");
-    }
-
-    @Override
-    public AuthenticateResponse authenticate(
-            AuthenticateRequest authenticateRequest)
-            throws EwalletException {
-        return new AuthenticateResponse("1", "0", "namespace",
-                new String[] { "key" }, new String[] { "value" },
-                "trueMoneyId");
+    	StandardBizResponse standardBizResponse = new StandardBizResponse();
+    	standardBizResponse.setTransactionId("11111111");
+    	standardBizResponse.setResultCode("0");
+    	standardBizResponse.setResultNamespace("namespace");
+        return standardBizResponse;
     }
 
 }

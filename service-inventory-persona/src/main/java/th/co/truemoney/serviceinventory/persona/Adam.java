@@ -4,11 +4,9 @@ import java.math.BigDecimal;
 
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.DeleteFavoriteRequest;
@@ -20,13 +18,10 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteReques
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnsecurity.TmnSecurityProxy;
 
 public class Adam implements Persona {
 
@@ -113,60 +108,46 @@ public class Adam implements Persona {
     }
 
     @Override
-    public TmnSecurityProxy getTmnSecurity() {
-        return new TmnSecurityProxy() {
-
-            @Override
-            public SignonResponse signon(SignonRequest signOnRequest)
-                    throws EwalletException {
-
-                String initiator = signOnRequest.getInitiator();
+    public TmnSecurityProxyClient getTmnSecurity() {
+        return new TmnSecurityProxyClient() {
+			
+			@Override
+			public com.tmn.core.api.message.StandardBizResponse terminateSession(
+					com.tmn.core.api.message.StandardBizRequest standardBizRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public com.tmn.core.api.message.SignonResponse signon(com.tmn.core.api.message.SignonRequest signOnRequest)
+					throws EwalletException {
+			 	String initiator = signOnRequest.getInitiator();
                 String password = signOnRequest.getPin();
 
-                if ("adam@tmn.com".equals(initiator)
-                        && "password".equals(password)) {
-
-                    return new SignonResponse("1", "0", "namespace",
-                            new String[] { "key" }, new String[] { "value" },
-                            "sessionId", "AdamTmnMoneyId");
+                if ("adam@tmn.com".equals(initiator) && "password".equals(password)) {	                	
+                	com.tmn.core.api.message.SignonResponse signOnResponse = new com.tmn.core.api.message.SignonResponse();
+                	signOnResponse.setTransactionId("1");
+                	signOnResponse.setResultCode("0");
+                	signOnResponse.setResultNamespace("core");
+                	signOnResponse.setDetailKey(new String[] { "key" });
+                	signOnResponse.setDetailValue(new String[] { "value" });
+                	signOnResponse.setSessionId("sessionId");
+                	signOnResponse.setTmnId("AdamTmnMoneyId");
+                	return signOnResponse;
                 }
-
                 throw new FailResultCodeException("4", "");
-            }
-
-            @Override
-            public CreateSessionResponse createSession()
-                    throws EwalletException {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public AuthenticateResponse authenticate(
-                    AuthenticateRequest authenticateRequest)
-                    throws EwalletException {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public StandardBizResponse extendSession(
-                    StandardBizRequest standardBizRequest)
-                    throws EwalletException {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public StandardBizResponse terminateSession(
-                    StandardBizRequest standardBizRequest)
-                    throws EwalletException {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-        };
-    }
+			}
+			
+			@Override
+			public com.tmn.core.api.message.StandardBizResponse extendSession(
+					com.tmn.core.api.message.StandardBizRequest standardBizRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
+    }    
 
     @Override
     public BigDecimal getBalance() {
