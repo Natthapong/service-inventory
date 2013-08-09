@@ -155,7 +155,8 @@ public class LegacyFacade {
         private String password;
         
         private String fullname;
-
+        private String profileImage;
+        
         @Autowired(required = false)
         public UserProfileBuilder(EwalletBalanceHandler balanceFacade, UserProfileHandler profileFacade, TopUpSourceOfFundHandler sourceOfFundFacade) {
             this.balanceFacade = balanceFacade;
@@ -211,6 +212,11 @@ public class LegacyFacade {
         
 		public UserProfileBuilder withFullname(String fullname) {
 			this.fullname = fullname;
+			return this;
+		}
+		
+		public UserProfileBuilder withImagePath(String filePath) {
+			this.profileImage = filePath;
 			return this;
 		}
 		
@@ -319,6 +325,15 @@ public class LegacyFacade {
             Validate.notNull(fullname, "data missing. fullname ?");
             
             profileFacade.changeFullname(this.channelID, this.sessionID, this.tmnID, this.fullname);
+		}
+
+		public void changeProfileImage() {
+			Validate.notNull(tmnID, "data missing. change PIN of whom?");
+            Validate.notNull(sessionID, "data missing. change PIN of whom?");
+            Validate.notNull(channelID, "data missing. change PIN from which channel?");
+            Validate.notNull(profileImage, "data missing. profile image path ?");
+			
+            profileFacade.changeProfileImage(this.channelID, this.sessionID, this.tmnID, this.profileImage);
 		}
         
     }

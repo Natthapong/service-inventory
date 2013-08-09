@@ -180,7 +180,9 @@ public class UserProfileHandler {
 		}
         
 		public void changeFullname(Integer channelID, String sessionID, String tmnID, String fullname) {
-			
+		}
+		
+		public void changeProfileImage(Integer channelID, String sessionID, String tmnID, String profileImage) {
 		}
 		
         private AddFavoriteRequest createAddFavoriteRequest(Integer channelID,

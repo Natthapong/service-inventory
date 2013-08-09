@@ -19,7 +19,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.OTPService;
@@ -182,7 +181,21 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		
 		return accessToken.getEmail();
 	}
-
+	
+	@Override
+	public TmnProfile changeProfileImage(String accessTokenID, String filePath)
+			throws ServiceInventoryException {
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		
+		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				.fromChannel(accessToken.getChannelID())
+				.withImagePath(filePath)
+				.changeProfileImage();
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				   .fromChannel(accessToken.getChannelID())
+				   .getProfile();
+	}
+	
 	@Override
 	public String verifyAccessToken(String accessTokenID)
 			throws ServiceInventoryException {

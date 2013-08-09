@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -139,7 +140,13 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		return responseEntity.getBody();
 	
 	}
-
+	
+	@Override
+	public TmnProfile changeProfileImage(String accessTokenID, String filePath)
+			throws ServiceInventoryException {
+		throw new NotImplementedException();
+	}
+	
 	@Override
 	public String verifyAccessToken(String accessTokenID) throws ServiceInventoryException {
 
@@ -147,4 +154,5 @@ public class TmnProfileServiceClient implements TmnProfileService {
 		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getVerifyAccessTokenURL(), HttpMethod.GET, requestEntity, String.class, accessTokenID);
 		return responseEntity.getBody();
 	}
+
 }

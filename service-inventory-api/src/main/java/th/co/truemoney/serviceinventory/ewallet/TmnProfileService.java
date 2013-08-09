@@ -33,5 +33,7 @@ public interface TmnProfileService {
     public String changePassword(String accessTokenID, ChangePassword changePassword) throws ServiceInventoryException;
 
 	public String verifyAccessToken(String accessTokenID) throws ServiceInventoryException;
+	
+	public TmnProfile changeProfileImage(String accessTokenID, String filePath) throws ServiceInventoryException; 
 }
 
