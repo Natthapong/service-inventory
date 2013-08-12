@@ -2,6 +2,7 @@ package th.co.truemoney.serviceinventory.controller;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,16 +32,16 @@ import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
-import th.co.truemoney.serviceinventory.ewallet.TopUpService;
-import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
+import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,7 +49,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebAppConfiguration
 @ContextConfiguration(classes = { WebConfig.class, MemRepositoriesConfig.class, TestServiceInventoryConfig.class, TestRedisConfig.class, SmsConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
-public class TopupEwalletControllerTest {
+public class P2PTransferControllerTest {
 
 	private MockMvc mockMvc;
 	
@@ -58,174 +59,187 @@ public class TopupEwalletControllerTest {
 	private WebApplicationContext wac;
 
 	@Autowired
-	private TopUpService topUpEwalletServiceMock;
+	private P2PTransferService p2pTransferServiceMock;
 	
 	@Autowired
     private ExtendAccessTokenAsynService extendAccessTokenAsynServiceMock;
-	
+
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-		this.topUpEwalletServiceMock = wac.getBean(TopUpService.class);
+		this.p2pTransferServiceMock = wac.getBean(P2PTransferService.class);
 		this.extendAccessTokenAsynServiceMock = wac.getBean(ExtendAccessTokenAsynService.class);
 		this.mapper = new ObjectMapper();
 	}
 
 	@After
 	public void tierDown() {
-		reset(this.topUpEwalletServiceMock);
+		reset(this.p2pTransferServiceMock);
 		reset(this.extendAccessTokenAsynServiceMock);
 	}
 	
 	@Test
-	public void createAndVerifyTopupSuccess() throws Exception {
-		DirectDebit sourceOfFund = new DirectDebit("SofID", "SofType");
-		TopUpQuote topUpQuote = new TopUpQuote("", sourceOfFund, "accessTokenID", BigDecimal.TEN, BigDecimal.ONE);
-		topUpQuote.setID("ID");
+	public void createAndVerifyTransferSuccess() throws Exception {
+		P2PTransferDraft p2pTransferDraft = new P2PTransferDraft("08xxxxxxxx", BigDecimal.TEN);
+		p2pTransferDraft.setID("ID");
 		
 		//given
-		when(topUpEwalletServiceMock.createAndVerifyTopUpQuote(anyString(), any(BigDecimal.class), anyString()))
-			.thenReturn(topUpQuote);
+		when(p2pTransferServiceMock.createAndVerifyTransferDraft(anyString(), any(BigDecimal.class), anyString()))
+			.thenReturn(p2pTransferDraft);
 		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
 		
 		//perform
-		this.mockMvc.perform(post("/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}", "SofID", "TokenID")
+		this.mockMvc.perform(post("/transfer/draft?accessTokenID={accessTokenID}", "TokenID")
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsBytes(topUpQuote)))
+			.content(mapper.writeValueAsBytes(p2pTransferDraft)))
 			.andExpect(status().isOk());
-	}
+	} 
 	
 	@Test
-	public void createAndVerifyTopupFail() throws Exception {
-		DirectDebit sourceOfFund = new DirectDebit("SofID", "SofType");
-		TopUpQuote topUpQuote = new TopUpQuote("", sourceOfFund, "accessTokenID", BigDecimal.TEN, BigDecimal.ONE);
-		topUpQuote.setID("ID");
+	public void createAndVerifyTransferFail() throws Exception {
+		P2PTransferDraft p2pTransferDraft = new P2PTransferDraft("08xxxxxxxx", BigDecimal.TEN);
+		p2pTransferDraft.setID("ID");
 		
 		//given
-		when(topUpEwalletServiceMock.createAndVerifyTopUpQuote(anyString(), any(BigDecimal.class), anyString()))
+		when(p2pTransferServiceMock.createAndVerifyTransferDraft(anyString(), any(BigDecimal.class), anyString()))
 			.thenThrow(new ServiceInventoryException(400,"Error Code","Error Description", "Error Namespace"));	
 		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
 		
 		//perform
-		this.mockMvc.perform(post("/directdebit/{sourceOfFundID}/quote?accessTokenID={accessTokenID}", "SofID", "TokenID")
+		this.mockMvc.perform(post("/transfer/draft?accessTokenID={accessTokenID}", "TokenID")
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsBytes(topUpQuote)))
+			.content(mapper.writeValueAsBytes(p2pTransferDraft)))
 			.andExpect(status().isBadRequest());
 	}
 	
 	@Test
-	public void getTopupDetailSuccess() throws Exception {
-		DirectDebit sourceOfFund = new DirectDebit("SofID", "SofType");
-		TopUpQuote topUpQuote = new TopUpQuote("", sourceOfFund, "accessTokenID", BigDecimal.TEN, BigDecimal.ONE);
-		topUpQuote.setID("ID");
+	public void setPersonalMessageSuccess() throws Exception {
+		P2PTransferDraft p2pTransferDraft = new P2PTransferDraft("08xxxxxxxx", BigDecimal.TEN);
+		p2pTransferDraft.setID("ID");
 		
 		//given
-		when(topUpEwalletServiceMock.getTopUpQuoteDetails(anyString(), anyString())).thenReturn(topUpQuote);
+		doNothing().when(p2pTransferServiceMock).setPersonalMessage(anyString(), anyString(), anyString());
 		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
 		
 		//perform
-		this.mockMvc.perform(get("/top-up/quote/{draftTransactionID}?accessTokenID={accessTokenID}", "TransID", "TokenID")
-			.contentType(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(put("/transfer/draft/{draftTransactionID}/update?personalMessage={personalMessage}&accessTokenID={accessTokenID}", "ID", "Message", "TokenID")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(p2pTransferDraft)))
 			.andExpect(status().isOk());
-	}
+	} 
 	
 	@Test
-	public void getTopupDetailFail() throws Exception {
+	public void getTransferDraftSuccess() throws Exception {
+		P2PTransferDraft p2pTransferDraft = new P2PTransferDraft("08xxxxxxxx", BigDecimal.TEN);
+		p2pTransferDraft.setID("ID");
+		
 		//given
-		when(topUpEwalletServiceMock.getTopUpQuoteDetails(anyString(), anyString()))
+		when(p2pTransferServiceMock.getTransferDraftDetails(anyString(), anyString()))
+			.thenReturn(p2pTransferDraft);
+		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
+		
+		//perform
+		this.mockMvc.perform(get("/transfer/draft/{draftTransactionID}?accessTokenID={accessTokenID}", "ID", "TokenID")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
+	} 
+	
+	@Test
+	public void getTransferDraftFail() throws Exception {
+		//given
+		when(p2pTransferServiceMock.getTransferDraftDetails(anyString(), anyString()))
 			.thenThrow(new ServiceInventoryException(400,"Error Code","Error Description", "Error Namespace"));	
 		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
 		
 		//perform
-		this.mockMvc.perform(get("/top-up/quote/{draftTransactionID}?accessTokenID={accessTokenID}", "TransID", "TokenID")
+		this.mockMvc.perform(get("/transfer/draft/{draftTransactionID}?accessTokenID={accessTokenID}", "ID", "TokenID")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest());
 	}
-
+	
 	@Test
-	public void performTopupSuccess() throws Exception {
+	public void performTransferSuccess() throws Exception {
 		//given
-		when(topUpEwalletServiceMock.performTopUp(anyString(), anyString())).thenReturn(TopUpOrder.Status.SUCCESS);		
+		when(p2pTransferServiceMock.performTransfer(anyString(), anyString())).thenReturn(TopUpOrder.Status.SUCCESS);		
 		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
 
 		//perform		
-		this.mockMvc.perform(put("/top-up/order/{transactionID}?accessTokenID={accessTokenID}","TransactionID","TokenID")
+		this.mockMvc.perform(put("/transfer/transaction/{transactionID}?accessTokenID={accessTokenID}","TransactionID","TokenID")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
 	
 	@Test
-	public void performTopupFail() throws Exception {
+	public void performTransferFail() throws Exception {
 		//given
-		when(topUpEwalletServiceMock.performTopUp(anyString(), anyString()))
+		when(p2pTransferServiceMock.performTransfer(anyString(), anyString()))
 			.thenThrow(new ServiceInventoryWebException(Code.CONFIRM_FAILED, "confirmation processing fail."));		
 		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
 
 		//perform		
-		this.mockMvc.perform(put("/top-up/order/{transactionID}?accessTokenID={accessTokenID}","TransactionID","TokenID")
+		this.mockMvc.perform(put("/transfer/transaction/{transactionID}?accessTokenID={accessTokenID}","TransactionID","TokenID")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.errorCode").value(Code.CONFIRM_FAILED))
 			.andExpect(jsonPath("$.errorDescription").value("confirmation processing fail."))
 			.andExpect(jsonPath("$.errorNamespace").value("TMN-SERVICE-INVENTORY"));
 	}
-	
+
 	@Test
-	public void getTopupStatusSuccess() throws Exception {
+	public void getTransferStatusSuccess() throws Exception {
 		//given
-		when(topUpEwalletServiceMock.getTopUpProcessingStatus(anyString(), anyString())).thenReturn(TopUpOrder.Status.SUCCESS);		
+		when(p2pTransferServiceMock.getTransferringStatus(anyString(), anyString())).thenReturn(P2PTransferTransaction.Status.SUCCESS);		
 		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
 
 		//perform		
-		this.mockMvc.perform(get("/top-up/order/{transactionID}/status?accessTokenID={accessTokenID}","TransactionID","TokenID")
+		this.mockMvc.perform(get("/transfer/transaction/{transactionID}/status?accessTokenID={accessTokenID}","TransactionID","TokenID")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
 	
 	@Test
-	public void getTopupStatusFail() throws Exception {
+	public void getTransferStatusFail() throws Exception {
 		//given
-		when(topUpEwalletServiceMock.getTopUpProcessingStatus(anyString(), anyString())).thenReturn(TopUpOrder.Status.FAILED);		
+		when(p2pTransferServiceMock.getTransferringStatus(anyString(), anyString())).thenReturn(P2PTransferTransaction.Status.FAILED);		
 		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
 
 		//perform		
-		this.mockMvc.perform(get("/top-up/order/{transactionID}/status?accessTokenID={accessTokenID}","TransactionID","TokenID")
+		this.mockMvc.perform(get("/transfer/transaction/{transactionID}/status?accessTokenID={accessTokenID}","TransactionID","TokenID")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
-
+	
 	@Test
-	public void getTopupResultSuccess() throws Exception {
-		TopUpConfirmationInfo confirmationInfo = new TopUpConfirmationInfo();		
-		TopUpOrder topUpOrder = new TopUpOrder();
-		topUpOrder.setConfirmationInfo(confirmationInfo);
+	public void getTransferResultSuccess() throws Exception {
+		P2PTransactionConfirmationInfo confirmationInfo = new P2PTransactionConfirmationInfo();		
+		P2PTransferTransaction p2pTransferTransaction = new P2PTransferTransaction();
+		p2pTransferTransaction.setConfirmationInfo(confirmationInfo);
 
 		//given
-		when(topUpEwalletServiceMock.getTopUpOrderResults(anyString(), anyString())).thenReturn(topUpOrder);		
+		when(p2pTransferServiceMock.getTransactionResult(anyString(), anyString())).thenReturn(p2pTransferTransaction);		
 		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
 
 		//perform		
-		this.mockMvc.perform(get("/top-up/order/{transactionID}?accessTokenID={accessTokenID}","TransactionID","TokenID")
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$..transactionID").exists())
-				.andExpect(jsonPath("$..transactionDate").exists());
+		this.mockMvc.perform(get("/transfer/transaction/{transactionID}?accessTokenID={accessTokenID}","TransactionID","TokenID")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$..transactionID").exists())
+			.andExpect(jsonPath("$..transactionDate").exists());
 	}
 	
 	@Test
-	public void getTopupResultFail() throws Exception {
+	public void getTransferResultFail() throws Exception {
 		//given
-		when(topUpEwalletServiceMock.getTopUpOrderResults(anyString(), anyString()))
+		when(p2pTransferServiceMock.getTransactionResult(anyString(), anyString()))
 			.thenThrow(new ServiceInventoryException(400,"Error Code","Error Description", "Error Namespace"));	
 		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
 
 		//perform		
-		this.mockMvc.perform(get("/top-up/order/{transactionID}?accessTokenID={accessTokenID}","TransactionID","TokenID")
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errorCode").value("Error Code"))
-				.andExpect(jsonPath("$.errorDescription").value("Error Description"))
-				.andExpect(jsonPath("$.errorNamespace").value("Error Namespace"));
+		this.mockMvc.perform(get("/transfer/transaction/{transactionID}?accessTokenID={accessTokenID}","TransactionID","TokenID")		
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.errorCode").value("Error Code"))
+			.andExpect(jsonPath("$.errorDescription").value("Error Description"))
+			.andExpect(jsonPath("$.errorNamespace").value("Error Namespace"));
 	}
-	
 }

@@ -24,8 +24,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import th.co.truemoney.serviceinventory.authen.impl.TransactionAuthenServiceImpl;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.domain.DebtStatus;
 import th.co.truemoney.serviceinventory.bill.domain.InquiryOutstandingBillType;
 import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
@@ -40,16 +42,21 @@ import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBarcodeRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.GetBillRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.InquiryOutstandingBillRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
+import th.co.truemoney.serviceinventory.ewallet.domain.DraftTransaction;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.BillInformationRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
 import th.co.truemoney.serviceinventory.stub.BillPaymentStubbed;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class })
@@ -68,6 +75,9 @@ public class BillPaymentServiceImplTest {
 
     @Autowired
     private BillPaymentServiceImpl billPayService;
+    
+    @Autowired
+    private TransactionAuthenServiceImpl transactionAuthenService;
 
     @Autowired
     private LegacyFacade legacyFacade;
@@ -291,4 +301,105 @@ public class BillPaymentServiceImplTest {
         
     }
     
+    @Test(expected=ServiceInventoryWebException.class)
+    public void verifyingMinAmountException() {
+
+        Bill billInfo = BillPaymentStubbed.createFailMinBillPaymentInfo();
+        billInfo.setPayWith("barcode");
+        billInfoRepo.saveBill(billInfo, accessToken.getAccessTokenID());
+
+        BigDecimal amount = new BigDecimal(300);
+        billPayService.verifyPaymentAbility(billInfo.getID(), amount, accessToken.getAccessTokenID());
+    }
+    
+    @Test(expected=ServiceInventoryWebException.class)
+    public void verifyingMaxAmountException() {
+
+        Bill billInfo = BillPaymentStubbed.createFailMaxBillPaymentInfo();
+        billInfo.setPayWith("barcode");
+        billInfoRepo.saveBill(billInfo, accessToken.getAccessTokenID());
+
+        BigDecimal amount = new BigDecimal(3000001);
+        billPayService.verifyPaymentAbility(billInfo.getID(), amount, accessToken.getAccessTokenID());
+    }
+    
+    @Test
+    public void performPaymentSuccess() throws Exception {
+        Bill billInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        billInfo.setPayWith("barcode");
+        billInfoRepo.saveBill(billInfo, accessToken.getAccessTokenID());
+        
+        when(billPaymentFacade.verify(any(VerifyBillPayRequest.class))).thenReturn("verifyTxnID");
+        
+        BigDecimal amount = new BigDecimal(300);
+        BillPaymentDraft billInvoice = billPayService.verifyPaymentAbility(billInfo.getID(), amount, accessToken.getAccessTokenID());
+        assertEquals("verifyTxnID", billInvoice.getTransactionID());
+        
+		DraftTransaction draftTransaction = transactionRepo.findDraftTransaction(billInvoice.getID(), accessToken.getAccessTokenID(), DraftTransaction.class);
+		draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
+		transactionRepo.saveDraftTransaction(draftTransaction, accessToken.getAccessTokenID());
+		
+		BillPaymentTransaction.Status transactionStatus = billPayService.performPayment(billInvoice.getID(), accessToken.getAccessTokenID());
+        assertEquals(BillPaymentTransaction.Status.VERIFIED, transactionStatus);
+        
+        BillPaymentTransaction billPaymentTransaction = transactionRepo.findTransaction(billInvoice.getID(), accessToken.getAccessTokenID(), BillPaymentTransaction.class);
+        billPaymentTransaction.setStatus(Transaction.Status.SUCCESS);
+		transactionRepo.saveTransaction(billPaymentTransaction, accessToken.getAccessTokenID());
+				
+		BillPaymentTransaction.Status status = billPayService.getBillPaymentStatus(billInvoice.getID(), accessToken.getAccessTokenID());
+        assertEquals(BillPaymentTransaction.Status.SUCCESS, status);
+    }
+    
+    @Test(expected=ServiceInventoryWebException.class)
+    public void performPaymentFail() throws Exception {
+        Bill billInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        billInfo.setPayWith("barcode");
+        billInfoRepo.saveBill(billInfo, accessToken.getAccessTokenID());
+        
+        when(billPaymentFacade.verify(any(VerifyBillPayRequest.class))).thenReturn("verifyTxnID");
+        
+        BigDecimal amount = new BigDecimal(300);
+        BillPaymentDraft billInvoice = billPayService.verifyPaymentAbility(billInfo.getID(), amount, accessToken.getAccessTokenID());
+        assertEquals("verifyTxnID", billInvoice.getTransactionID());
+        
+		DraftTransaction draftTransaction = transactionRepo.findDraftTransaction(billInvoice.getID(), accessToken.getAccessTokenID(), DraftTransaction.class);
+		draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
+		transactionRepo.saveDraftTransaction(draftTransaction, accessToken.getAccessTokenID());
+		
+		BillPaymentTransaction.Status transactionStatus = billPayService.performPayment(billInvoice.getID(), accessToken.getAccessTokenID());
+        assertEquals(BillPaymentTransaction.Status.VERIFIED, transactionStatus);
+        
+        BillPaymentTransaction billPaymentTransaction = transactionRepo.findTransaction(billInvoice.getID(), accessToken.getAccessTokenID(), BillPaymentTransaction.class);
+        billPaymentTransaction.setStatus(Transaction.Status.FAILED);
+		transactionRepo.saveTransaction(billPaymentTransaction, accessToken.getAccessTokenID());
+				
+		billPayService.getBillPaymentStatus(billInvoice.getID(), accessToken.getAccessTokenID());
+    }
+    
+    @Test(expected=ServiceInventoryException.class)
+    public void performPaymentHasFailCause() throws Exception {
+        Bill billInfo = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        billInfo.setPayWith("barcode");
+        billInfoRepo.saveBill(billInfo, accessToken.getAccessTokenID());
+        
+        when(billPaymentFacade.verify(any(VerifyBillPayRequest.class))).thenReturn("verifyTxnID");
+        
+        BigDecimal amount = new BigDecimal(300);
+        BillPaymentDraft billInvoice = billPayService.verifyPaymentAbility(billInfo.getID(), amount, accessToken.getAccessTokenID());
+        assertEquals("verifyTxnID", billInvoice.getTransactionID());
+        
+		DraftTransaction draftTransaction = transactionRepo.findDraftTransaction(billInvoice.getID(), accessToken.getAccessTokenID(), DraftTransaction.class);
+		draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
+		transactionRepo.saveDraftTransaction(draftTransaction, accessToken.getAccessTokenID());
+		
+		BillPaymentTransaction.Status transactionStatus = billPayService.performPayment(billInvoice.getID(), accessToken.getAccessTokenID());
+        assertEquals(BillPaymentTransaction.Status.VERIFIED, transactionStatus);
+        
+        BillPaymentTransaction billPaymentTransaction = transactionRepo.findTransaction(billInvoice.getID(), accessToken.getAccessTokenID(), BillPaymentTransaction.class);
+        billPaymentTransaction.setStatus(Transaction.Status.FAILED);
+        billPaymentTransaction.setFailCause(new ServiceInventoryException());
+		transactionRepo.saveTransaction(billPaymentTransaction, accessToken.getAccessTokenID());
+				
+		billPayService.getBillPaymentStatus(billInvoice.getID(), accessToken.getAccessTokenID());
+     }
 }

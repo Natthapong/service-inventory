@@ -65,7 +65,7 @@ public class GetProfileControllerTest {
 		tmnProfile.setThaiID("1212121212121");		
 		tmnProfile.setHasPassword(Boolean.TRUE);
 		tmnProfile.setHasPin(Boolean.FALSE);
-		tmnProfile.setImageURL("https://m.truemoney.co.th/images/xxx.jsp");
+		tmnProfile.setImageFileName("xxx.jsp");
 		when(this.tmnProfileServiceMock.getTruemoneyProfile(anyString())).thenReturn(tmnProfile);
 		
 		//perform
@@ -77,7 +77,7 @@ public class GetProfileControllerTest {
 			.andExpect(jsonPath("$.mobileNumber").exists())
 			.andExpect(jsonPath("$.hasPassword").exists())
 			.andExpect(jsonPath("$.hasPin").exists())
-			.andExpect(jsonPath("$.imageURL").exists());
+			.andExpect(jsonPath("$.imageFileName").exists());
 		
 	}
 	
@@ -91,7 +91,7 @@ public class GetProfileControllerTest {
 		tmnProfile.setThaiID("1212121212121");		
 		tmnProfile.setHasPassword(Boolean.TRUE);
 		tmnProfile.setHasPin(Boolean.FALSE);
-		tmnProfile.setImageURL("https://m.truemoney.co.th/images/xxx.jsp");
+		tmnProfile.setImageFileName("xxx.jsp");
 		when(this.tmnProfileServiceMock.getTruemoneyProfile(anyString()))
 			.thenThrow(new ServiceInventoryException(400,"Error Code","Error Description", "Error Namespace"));
 		

@@ -142,14 +142,6 @@ public class TopupMobileControllerTest {
 	
 	@Test
 	public void getTopUpMobileDraftDetailFail() throws Exception {
-		TopUpMobile topUpMobile = new TopUpMobile();
-		topUpMobile.setMobileNumber("08xxxxxxxx");
-		topUpMobile.setAmount(BigDecimal.TEN);
-
-		TopUpMobileDraft topUpMobileDraft = new TopUpMobileDraft();
-		topUpMobileDraft.setTopUpMobileInfo(topUpMobile);
-		topUpMobileDraft.setID("draftID");
-		
 		//given
 		when(topUpMobileServiceMock.getTopUpMobileDraftDetail(anyString(), anyString()))
 			.thenThrow(new ServiceInventoryException(400,"Error Code","Error Description", "Error Namespace"));			

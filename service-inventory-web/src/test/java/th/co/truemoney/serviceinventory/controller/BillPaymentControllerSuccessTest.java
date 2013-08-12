@@ -1,9 +1,12 @@
 package th.co.truemoney.serviceinventory.controller;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,6 +28,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.domain.Bill;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentConfirmationInfo;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
 import th.co.truemoney.serviceinventory.bill.domain.InquiryOutstandingBillType;
 import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
@@ -33,6 +39,8 @@ import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
 import th.co.truemoney.serviceinventory.stub.BillPaymentStubbed;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -45,6 +53,8 @@ public class BillPaymentControllerSuccessTest {
     private WebApplicationContext wac;
 
     private MockMvc mockMvc;
+    
+	private ObjectMapper mapper;
 
     @Autowired
     private BillPaymentService billPaymentServiceMock;
@@ -53,6 +63,7 @@ public class BillPaymentControllerSuccessTest {
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         this.billPaymentServiceMock = wac.getBean(BillPaymentService.class);
+		this.mapper = new ObjectMapper();
     }
 
     @After
@@ -76,7 +87,7 @@ public class BillPaymentControllerSuccessTest {
     }
 
     @Test
-    public void getBillInformationWithKeyinSuccess() throws Exception {
+    public void getBillInformationWithKeyinOnlineSuccess() throws Exception {
 
         //given
         Bill stubbedBill = BillPaymentStubbed.createSuccessBillPaymentInfo();
@@ -84,6 +95,21 @@ public class BillPaymentControllerSuccessTest {
 
         //perform
         this.mockMvc.perform(get("/bill-payment/information/?billCode=tcg&ref1=010004552&ref2=010520120200015601&inquiry=online&accessTokenID=12345")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.target").exists());
+
+    }
+    
+    @Test
+    public void getBillInformationWithKeyinOfflineSuccess() throws Exception {
+
+        //given
+        Bill stubbedBill = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        when(billPaymentServiceMock.retrieveBillInformationWithKeyin(stubbedBill.getTarget(), stubbedBill.getRef1(), stubbedBill.getRef2(), BigDecimal.ZERO, InquiryOutstandingBillType.OFFLINE, "12345")).thenReturn(stubbedBill);
+
+        //perform
+        this.mockMvc.perform(get("/bill-payment/information/?billCode=tcg&ref1=010004552&ref2=010520120200015601&inquiry=offline&accessTokenID=12345")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.target").exists());
@@ -106,6 +132,21 @@ public class BillPaymentControllerSuccessTest {
     }
 
     @Test
+    public void getFavouriteBillInformationOfflineSuccess() throws Exception {
+
+        //given
+        Bill stubbedBill = BillPaymentStubbed.createSuccessBillPaymentInfo();
+        when(billPaymentServiceMock.retrieveBillInformationWithUserFavorite(stubbedBill.getTarget(), stubbedBill.getRef1(), stubbedBill.getRef2(), BigDecimal.ZERO, InquiryOutstandingBillType.OFFLINE, "12345"))
+        .thenReturn(stubbedBill);
+
+        //perform
+        this.mockMvc.perform(get("/bill-payment/information?billCode=tcg&ref1=010004552&ref2=010520120200015601&inquiry=offline&favorite=true&accessTokenID=12345")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.target").exists());
+    }
+    
+    @Test
     public void getBillOutStandingOnlineSuccess() throws Exception {
 
         //given
@@ -119,4 +160,72 @@ public class BillPaymentControllerSuccessTest {
                 .andExpect(jsonPath("$.outStandingBalance").exists());
 
     }
+    
+    @Test
+	public void createAndVerifyTransferSuccess() throws Exception {
+		BillPaymentDraft billPaymentDraft = new BillPaymentDraft("ID", BillPaymentStubbed.createSuccessBillPaymentInfo());
+		
+		//given
+		when(billPaymentServiceMock.verifyPaymentAbility(anyString(), any(BigDecimal.class), anyString()))
+			.thenReturn(billPaymentDraft);
+		
+		//perform
+		this.mockMvc.perform(post("/bill-payment/invoice/{billInfoID}?accessTokenID={accessTokenID}", "BillInfoID", "TokenID")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(mapper.writeValueAsBytes(billPaymentDraft)))
+			.andExpect(status().isOk());
+	} 
+	
+	@Test
+	public void getBillPaymentDraftSuccess() throws Exception {
+		BillPaymentDraft billPaymentDraft = new BillPaymentDraft("ID", BillPaymentStubbed.createSuccessBillPaymentInfo());
+		
+		//given
+		when(billPaymentServiceMock.getBillPaymentDraftDetail(anyString(), anyString()))
+			.thenReturn(billPaymentDraft);
+		
+		//perform
+		this.mockMvc.perform(get("/bill-payment/invoice/{draftTransactionID}?accessTokenID={accessTokenID}", "ID", "TokenID")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
+	} 
+	
+	@Test
+	public void performBillPaymentSuccess() throws Exception {
+		//given
+		when(billPaymentServiceMock.performPayment(anyString(), anyString())).thenReturn(BillPaymentTransaction.Status.SUCCESS);		
+
+		//perform		
+		this.mockMvc.perform(put("/bill-payment/transaction/{transactionID}?accessTokenID={accessTokenID}","TransactionID","TokenID")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void getBillPaymentStatusSuccess() throws Exception {
+		//given
+		when(billPaymentServiceMock.getBillPaymentStatus(anyString(), anyString())).thenReturn(BillPaymentTransaction.Status.SUCCESS);		
+
+		//perform		
+		this.mockMvc.perform(get("/bill-payment/transaction/{transactionID}/status?accessTokenID={accessTokenID}","TransactionID","TokenID")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void getTransferResultSuccess() throws Exception {
+		BillPaymentConfirmationInfo confirmationInfo = new BillPaymentConfirmationInfo();		
+		BillPaymentTransaction billPaymentTransaction = new BillPaymentTransaction();
+		billPaymentTransaction.setConfirmationInfo(confirmationInfo);
+
+		//given
+		when(billPaymentServiceMock.getBillPaymentResult(anyString(), anyString())).thenReturn(billPaymentTransaction);		
+
+		//perform		
+		this.mockMvc.perform(get("/bill-payment/transaction/{transactionID}?accessTokenID={accessTokenID}","TransactionID","TokenID")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$..transactionID").exists())
+			.andExpect(jsonPath("$..transactionDate").exists());
+	}
 }

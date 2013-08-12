@@ -58,7 +58,7 @@ public class GetProfileServiceImplTest {
 		stubbedTmnProfile.setThaiID("1212121212121");		
 		stubbedTmnProfile.setHasPassword(Boolean.TRUE);
 		stubbedTmnProfile.setHasPin(Boolean.FALSE);
-		stubbedTmnProfile.setImageURL("https://m.truemoney.co.th/images/xxx.jsp");
+		stubbedTmnProfile.setImageFileName("xxx.jsp");
 		
 		AccessToken accessToken = new AccessToken("tokenID", "loginID", "sessionID", "tmnID", 41);
 		
@@ -73,7 +73,7 @@ public class GetProfileServiceImplTest {
         //then
         assertNotNull(tmnProfile);
         assertEquals("fullname", tmnProfile.getFullname());
-        assertEquals("https://m.truemoney.co.th/images/xxx.jsp", tmnProfile.getImageURL());
+        assertEquals("xxx.jsp", tmnProfile.getImageFileName());
     }
     
 }

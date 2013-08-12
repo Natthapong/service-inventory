@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,8 +21,6 @@ import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePassword;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.impl.TmnProfileServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
@@ -62,7 +60,7 @@ public class ChangePinServiceImplTest {
         when(mockAccessTokenRepo.findAccessToken(anyString())).thenReturn(accessToken);
         
         //when
-        String mobileNumber = this.tmnProfileService.changePin(accessToken.getAccessTokenID(), new ChangePin("0000", "1111"));
+        String mobileNumber = this.tmnProfileService.changePin(accessToken.getAccessTokenID(), "0000", "1111");
 
         //then
         assertNotNull(mobileNumber);
@@ -80,7 +78,7 @@ public class ChangePinServiceImplTest {
         when(mockAccessTokenRepo.findAccessToken(anyString())).thenReturn(accessToken);
         
         //when
-        String email = this.tmnProfileService.changePassword(accessToken.getAccessTokenID(), new ChangePassword("0000", "1111"));
+        String email = this.tmnProfileService.changePassword(accessToken.getAccessTokenID(), "0000", "1111");
 
         //then
         assertNotNull(email);

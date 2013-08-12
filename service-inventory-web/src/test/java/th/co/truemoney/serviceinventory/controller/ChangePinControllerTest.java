@@ -1,6 +1,5 @@
 package th.co.truemoney.serviceinventory.controller;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -28,11 +27,8 @@ import th.co.truemoney.serviceinventory.config.TestRedisConfig;
 import th.co.truemoney.serviceinventory.config.TestServiceInventoryConfig;
 import th.co.truemoney.serviceinventory.config.WebConfig;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -63,27 +59,21 @@ public class ChangePinControllerTest {
 	public void shouldChangePinSuccess() throws Exception {
 		String stubbedMobileNumber = "08xxxxxxxx";		
 		
-		when(this.tmnProfileServiceMock.changePin(anyString(), any(ChangePin.class))).thenReturn(stubbedMobileNumber);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		
-		this.mockMvc.perform(put("/ewallet/profile/change-pin/{accessTokenID}?channelID={channelID}", "TokenID", "40")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsBytes(new ChangePin("0000", "1111"))))
+		when(this.tmnProfileServiceMock.changePin(anyString(), anyString(), anyString())).thenReturn(stubbedMobileNumber);
+
+		this.mockMvc.perform(put("/ewallet/profile/change-pin/{accessTokenID}?oldPin={oldPin}&newPin={newPin}", "TokenID", "oldPin", "newPin")
+			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(MockMvcResultMatchers.content().string("08xxxxxxxx"))
 			.andExpect(status().isOk());
 	}
 	
 	@Test
 	public void shouldChangePinFail() throws Exception {
-		when(this.tmnProfileServiceMock.changePin(anyString(), any(ChangePin.class)))
+		when(this.tmnProfileServiceMock.changePin(anyString(), anyString(), anyString()))
 			.thenThrow(new ServiceInventoryException(400,"Error Code","Error Description", "Error Namespace"));
-		
-		ObjectMapper mapper = new ObjectMapper();
-		
-		this.mockMvc.perform(put("/ewallet/profile/change-pin/{accessTokenID}?channelID={channelID}", "TokenID", "40")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsBytes(new ChangePin("0000", "1111"))))
+
+		this.mockMvc.perform(put("/ewallet/profile/change-pin/{accessTokenID}?oldPin={oldPin}&newPin={newPin}", "TokenID", "oldPin", "newPin")
+			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.errorCode").value("Error Code"))
 			.andExpect(jsonPath("$.errorDescription").value("Error Description"))
