@@ -13,6 +13,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
@@ -24,6 +25,7 @@ import th.co.truemoney.serviceinventory.persona.proxies.LocalProfileAdminProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalSecurityProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalSmsProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalTmnProfileProxy;
+import th.co.truemoney.serviceinventory.persona.proxies.LocalTmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.persona.proxies.TopUpTruemoneyProxy;
 import th.co.truemoney.serviceinventory.sms.OTPGenerator;
 import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
@@ -47,6 +49,12 @@ public class LocalEnvironmentConfig {
     @Primary
     public TmnSecurityProxyClient stubTmnSecurityProxy() {
         return new LocalSecurityProxy();
+    }
+    
+    @Bean
+    @Primary
+    public TmnProfileProxyClient stubTmnProfileProxyClient() {
+        return new LocalTmnProfileProxyClient();
     }
 
     @Bean

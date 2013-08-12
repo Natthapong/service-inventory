@@ -12,6 +12,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
@@ -28,6 +29,8 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRespons
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
+import com.tmn.core.api.message.GetProfileRequest;
+import com.tmn.core.api.message.GetProfileResponse;
 import com.tmn.core.api.message.SignonRequest;
 import com.tmn.core.api.message.SignonResponse;
 
@@ -46,30 +49,33 @@ public class UserProfileHandler {
         private static final String FAVORITE_NOT_FOUND = "2014";
 
         @Autowired
-        private TmnSecurityProxyClient tmnSecurityProxy;
+        private TmnSecurityProxyClient tmnSecurityProxyClient;
 
+        @Autowired
+        private TmnProfileProxyClient tmnProfileProxyClient;
+        
         @Autowired
         private TmnProfileProxy tmnProfileProxy;
         
         public AccessToken login(Integer channelID, String credentialUsername,String credentialSecret) {
 
-                SignonResponse signon = this.tmnSecurityProxy.signon(createGetSignOnRequest(channelID, credentialUsername, credentialSecret));
+                SignonResponse signon = this.tmnSecurityProxyClient.signon(createGetSignOnRequest(channelID, credentialUsername, credentialSecret));
 
                 String sessionID = signon.getSessionId();
                 String truemoneyID = signon.getTmnId();
 
-                GetBasicProfileResponse profile = this.tmnProfileProxy.getBasicProfile(createAccessRequest(channelID, sessionID, truemoneyID));
+                GetProfileResponse profile = this.tmnProfileProxyClient.getProfile(createGetProfileRequest(channelID, sessionID, truemoneyID));
 
                 if (profile == null) {
-                        throw new ProfileNotFoundException();
+                    throw new ProfileNotFoundException();
                 }
-
-                if (!CUSTOMER_TYPE.equals(profile.getProfileType())) {
-                        throw new InvalidProfileTypeSignonException();
-
-                } else if (VALID_CUSTOMER_STATUS != profile.getStatusId()) {
-                        throw new InvalidProfileStatusSignonException(profile.getStatusId());
-                }
+                
+//                if (!CUSTOMER_TYPE.equals(profile.getProfileType())) {
+//                        throw new InvalidProfileTypeSignonException();
+//
+//                } else if (VALID_CUSTOMER_STATUS != profile.getStatusId()) {
+//                        throw new InvalidProfileStatusSignonException(profile.getStatusId());
+//                }
 
                 return new AccessToken(
                                 UUID.randomUUID().toString(),
@@ -81,7 +87,7 @@ public class UserProfileHandler {
                                 channelID);
         }
 
-        public TmnProfile getProfile(Integer channelID, String sessionID, String truemoneyID) {
+		public TmnProfile getProfile(Integer channelID, String sessionID, String truemoneyID) {
 
                 GetBasicProfileResponse profile = this.tmnProfileProxy.getBasicProfile(createAccessRequest(channelID, sessionID, truemoneyID));
 
@@ -174,7 +180,7 @@ public class UserProfileHandler {
         }
 
         public void logout(Integer channelID, String sessionID, String truemoneyID) {
-        	this.tmnSecurityProxy.terminateSession(createNewAccessRequest(channelID, sessionID, truemoneyID));
+        	this.tmnSecurityProxyClient.terminateSession(createNewAccessRequest(channelID, sessionID, truemoneyID));
         }
 
 		public void changePin(Integer channelID, String sessionID, String tmnID, String oldPin, String pin) {
@@ -244,17 +250,12 @@ public class UserProfileHandler {
         }
         
         private com.tmn.core.api.message.StandardBizRequest createNewAccessRequest(Integer channelID, String sessionID, String truemoneyID) {
-        	
-        	com.tmn.core.api.message.SecurityContext securityContext = new com.tmn.core.api.message.SecurityContext();
-        	securityContext.setSessionId(sessionID);
-        	securityContext.setTmnId(truemoneyID);
-        	
         	com.tmn.core.api.message.StandardBizRequest standardBizRequest = new com.tmn.core.api.message.StandardBizRequest();
-            standardBizRequest.setSecurityContext(securityContext);
+            standardBizRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
             standardBizRequest.setChannelId(channelID);
 
             return standardBizRequest;
-    }
+        }
         
         private SignonRequest createGetSignOnRequest(Integer channelID, String username, String password) {
                 SignonRequest signonRequest = new SignonRequest();
@@ -264,8 +265,22 @@ public class UserProfileHandler {
 
                 return signonRequest;
         }
+        
+        private GetProfileRequest createGetProfileRequest(Integer channelID, String sessionID, String truemoneyID) {
+        	GetProfileRequest profileRequest = new GetProfileRequest();
+        	profileRequest.setChannelId(channelID);
+        	profileRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
+        	return profileRequest;
+		}
 
-        private DeleteFavoriteRequest createRemoveFavoriteRequest(
+        private com.tmn.core.api.message.SecurityContext createSecurityContext(String sessionID, String truemoneyID) {
+        	com.tmn.core.api.message.SecurityContext securityContext = new com.tmn.core.api.message.SecurityContext();
+        	securityContext.setSessionId(sessionID);
+        	securityContext.setTmnId(truemoneyID);
+        	return securityContext;
+		}
+
+		private DeleteFavoriteRequest createRemoveFavoriteRequest(
                 Integer channelID, String sessionID, String tmnID,
                 String serviceCode, String reference1) {
             SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
@@ -332,7 +347,7 @@ public class UserProfileHandler {
         }
 
         public void setTmnSecurityProxy(TmnSecurityProxyClient tmnSecurityProxy) {
-                this.tmnSecurityProxy = tmnSecurityProxy;
+                this.tmnSecurityProxyClient = tmnSecurityProxy;
         }
 
 }

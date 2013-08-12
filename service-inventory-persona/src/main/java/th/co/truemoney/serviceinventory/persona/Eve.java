@@ -2,8 +2,15 @@ package th.co.truemoney.serviceinventory.persona;
 
 import java.math.BigDecimal;
 
+import com.tmn.core.api.message.ChangePasswordRequest;
+import com.tmn.core.api.message.ChangePinRequest;
+import com.tmn.core.api.message.GetProfileRequest;
+import com.tmn.core.api.message.GetProfileResponse;
+import com.tmn.core.api.message.UpdateProfileRequest;
+
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
@@ -159,6 +166,47 @@ public class Eve implements Persona {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
-    };
+    }
+
+	@Override
+	public TmnProfileProxyClient getTmnProfileClient() {
+		return new TmnProfileProxyClient() {
+			
+			@Override
+			public com.tmn.core.api.message.StandardBizResponse updateProfile(
+					UpdateProfileRequest updateProfileRequest) throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public GetProfileResponse getProfile(GetProfileRequest getProfileRequest)
+					throws EwalletException {
+	        	GetProfileResponse profileResponse = new GetProfileResponse();
+	        	profileResponse.setTransactionId("1");
+	        	profileResponse.setResultCode("0");
+	        	profileResponse.setResultNamespace("core");
+	        	profileResponse.setFullName("eve");
+	        	profileResponse.setMobile("0892222222");
+	        	profileResponse.setEmail("eve@tmn.com");
+				return profileResponse;
+			}
+			
+			@Override
+			public com.tmn.core.api.message.StandardBizResponse changePin(
+					ChangePinRequest changePinRequest) throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public com.tmn.core.api.message.StandardBizResponse changePassword(
+					ChangePasswordRequest changePasswordRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
+	};
 
 }

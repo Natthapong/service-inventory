@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
@@ -22,6 +23,12 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
+
+import com.tmn.core.api.message.ChangePasswordRequest;
+import com.tmn.core.api.message.ChangePinRequest;
+import com.tmn.core.api.message.GetProfileRequest;
+import com.tmn.core.api.message.GetProfileResponse;
+import com.tmn.core.api.message.UpdateProfileRequest;
 
 public class Simpsons  implements Persona {
 
@@ -159,4 +166,45 @@ public class Simpsons  implements Persona {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
+
+	@Override
+	public TmnProfileProxyClient getTmnProfileClient() {
+		return new TmnProfileProxyClient() {
+			
+			@Override
+			public com.tmn.core.api.message.StandardBizResponse updateProfile(
+					UpdateProfileRequest updateProfileRequest) throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public GetProfileResponse getProfile(GetProfileRequest getProfileRequest)
+					throws EwalletException {
+	        	GetProfileResponse profileResponse = new GetProfileResponse();
+	        	profileResponse.setTransactionId("1");
+	        	profileResponse.setResultCode("0");
+	        	profileResponse.setResultNamespace("core");
+	        	profileResponse.setFullName("eve");
+	        	profileResponse.setMobile("0891231234");
+	        	profileResponse.setEmail("simpsons@tmn.com");
+				return profileResponse;
+			}
+			
+			@Override
+			public com.tmn.core.api.message.StandardBizResponse changePin(
+					ChangePinRequest changePinRequest) throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public com.tmn.core.api.message.StandardBizResponse changePassword(
+					ChangePasswordRequest changePasswordRequest)
+					throws EwalletException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
+	}
 }
