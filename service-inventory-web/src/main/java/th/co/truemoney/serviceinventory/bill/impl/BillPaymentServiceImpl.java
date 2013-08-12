@@ -88,8 +88,14 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
     }
 
     @Override
-    public BillPaymentDraft getBillPaymentDraftDetail(String invoiceID, String accessTokenID) throws ServiceInventoryException {
-        return transactionRepository.findDraftTransaction(invoiceID, accessTokenID, BillPaymentDraft.class);
+    public BillPaymentDraft getBillPaymentDraftDetail(String invoiceID, String accessTokenID) 
+    		throws ServiceInventoryException {
+    	
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		
+		BillPaymentDraft billPaymentDraft = transactionRepository.findDraftTransaction(invoiceID, accessToken.getAccessTokenID(), BillPaymentDraft.class);
+        
+		return billPaymentDraft;
     }
 
     @Override

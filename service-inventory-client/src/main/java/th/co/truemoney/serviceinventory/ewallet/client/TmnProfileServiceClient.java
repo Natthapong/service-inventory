@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -16,8 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePassword;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -115,36 +112,38 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile updateTruemoneyProfile(String accessTokenID, TmnProfile tmnProfile) throws ServiceInventoryException {
+	public TmnProfile changeFullname(String accessTokenID, String fullname) throws ServiceInventoryException {
 		
-		HttpEntity<TmnProfile> requestEntity = new HttpEntity<TmnProfile>(tmnProfile, headers);
-		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getUpdateTruemoneyProfileURL(), HttpMethod.PUT, requestEntity, TmnProfile.class, accessTokenID);
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getChangeFullnameURL(), HttpMethod.PUT, requestEntity, TmnProfile.class, accessTokenID, fullname);
 		return responseEntity.getBody();
 		
 	}
 
 	@Override
-	public String changePin(String accessTokenID, ChangePin changePin) throws ServiceInventoryException {
+	public String changePin(String accessTokenID, String oldPin, String newPin) throws ServiceInventoryException {
 		
-		HttpEntity<ChangePin> requestEntity = new HttpEntity<ChangePin>(changePin,headers);
-		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getChangePinURL(), HttpMethod.PUT, requestEntity, String.class, accessTokenID);
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getChangePinURL(), HttpMethod.PUT, requestEntity, String.class, accessTokenID, oldPin, newPin);
 		return responseEntity.getBody();
 	
 	}
 
 	@Override
-	public String changePassword(String accessTokenID, ChangePassword changePassword) throws ServiceInventoryException {
+	public String changePassword(String accessTokenID, String oldPassword, String newPassword) throws ServiceInventoryException {
 
-		HttpEntity<ChangePassword> requestEntity = new HttpEntity<ChangePassword>(changePassword,headers);
-		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getChangePasswordURL(), HttpMethod.PUT, requestEntity, String.class, accessTokenID);
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(endPoints.getChangePasswordURL(), HttpMethod.PUT, requestEntity, String.class, accessTokenID, oldPassword, newPassword);
 		return responseEntity.getBody();
 	
 	}
 	
 	@Override
-	public TmnProfile changeProfileImage(String accessTokenID, String filePath)
+	public TmnProfile changeProfileImage(String accessTokenID, String imageFileName)
 			throws ServiceInventoryException {
-		throw new NotImplementedException();
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getChangeProfileImageURL(), HttpMethod.PUT, requestEntity, TmnProfile.class, accessTokenID, imageFileName);
+		return responseEntity.getBody();
 	}
 	
 	@Override

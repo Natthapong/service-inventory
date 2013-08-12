@@ -14,7 +14,6 @@ import th.co.truemoney.serviceinventory.exception.AppleUserConfigException;
 import th.co.truemoney.serviceinventory.exception.OTPAlreadyConfirmedException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.sms.OTPService;
-import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 
 public class TransactionAuthenServiceImpl implements TransactionAuthenService {
 
@@ -47,7 +46,7 @@ public class TransactionAuthenServiceImpl implements TransactionAuthenService {
 		OTP otp = skipOTPForAppleUser(accessToken);
 		
 		draftTransaction.setOtpReferenceCode(otp.getReferenceCode());
-		draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_SENT);
+		draftTransaction.setStatus(DraftTransaction.Status.OTP_SENT);
 	
 		transactionRepo.saveDraftTransaction(draftTransaction, accessTokenID);
 	
@@ -70,7 +69,7 @@ public class TransactionAuthenServiceImpl implements TransactionAuthenService {
 	
 		otpService.isValidOTP(otp);
 		 
-		draftTransaction.setStatus(TopUpMobileDraft.Status.OTP_CONFIRMED);
+		draftTransaction.setStatus(DraftTransaction.Status.OTP_CONFIRMED);
 		transactionRepo.saveDraftTransaction(draftTransaction, accessTokenID);
 	
 		return draftTransaction.getStatus();
@@ -85,7 +84,6 @@ public class TransactionAuthenServiceImpl implements TransactionAuthenService {
 				otp = otpService.saveOtpString(accessToken.getMobileNumber(), user.getOtpString());
 			} else {
 				otp = otpService.send(accessToken.getMobileNumber());
-
 			}
 		} else {
 			throw new AppleUserConfigException();

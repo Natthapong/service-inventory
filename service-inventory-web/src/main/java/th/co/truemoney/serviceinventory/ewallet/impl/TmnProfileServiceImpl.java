@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePassword;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -137,31 +135,30 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public TmnProfile updateTruemoneyProfile(String accessTokenID, TmnProfile tmnProfile) 
+	public TmnProfile changeFullname(String accessTokenID, String fullname) 
 			throws ServiceInventoryException {
 		
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		
 		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 				.fromChannel(accessToken.getChannelID())
-				.withFullname(tmnProfile.getFullname())
+				.withFullname(fullname)
 				.changeFullName();
 		
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 				   .fromChannel(accessToken.getChannelID())
-				   .getProfile();
-		
+				   .getProfile();		
 	}
 
 	@Override
-	public String changePin(String accessTokenID, ChangePin changePin)
+	public String changePin(String accessTokenID, String oldPin, String newPin)
 			throws ServiceInventoryException {
 		
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		
 		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 				.fromChannel(accessToken.getChannelID())
-				.withPin(changePin.getOldPin(), changePin.getPin())
+				.withPin(oldPin, newPin)
 				.changePin();
 		
 		return accessToken.getMobileNumber();
@@ -169,28 +166,29 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 
 	@Override
-	public String changePassword(String accessTokenID, ChangePassword changePassword) 
+	public String changePassword(String accessTokenID, String oldPassword, String newPassword) 
 			throws ServiceInventoryException {
 		
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		
 		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 			.fromChannel(accessToken.getChannelID())
-			.withPassword(changePassword.getOldPassword(), changePassword.getPassword())
+			.withPassword(oldPassword, newPassword)
 			.changePassword();
 		
 		return accessToken.getEmail();
 	}
 	
 	@Override
-	public TmnProfile changeProfileImage(String accessTokenID, String filePath)
+	public TmnProfile changeProfileImage(String accessTokenID, String imageFileName)
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		
 		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 				.fromChannel(accessToken.getChannelID())
-				.withImagePath(filePath)
+				.withImageName(imageFileName)
 				.changeProfileImage();
+		
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 				   .fromChannel(accessToken.getChannelID())
 				   .getProfile();

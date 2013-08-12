@@ -2,12 +2,9 @@ package th.co.truemoney.serviceinventory.ewallet.client.testutils;
 
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePassword;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Favorite;
-import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 
 public class TestData {
 
@@ -64,31 +61,4 @@ public class TestData {
         return favoriteBill;
     }
 
-	public static ChangePin createChangePin() {
-
-		ChangePin changePin = new ChangePin();
-		changePin.setOldPin("0000");
-		changePin.setPin("1111");
-		
-		return changePin;
-	}
-
-	public static ChangePassword createChangePassword() {
-
-		ChangePassword changePassword = new ChangePassword();
-		changePassword.setOldPassword("xxxxxxxx");
-		changePassword.setPassword("yyyyyyyy");
-		
-		return changePassword;
-	}
-	
-	public static TmnProfile createChangeTmnProfile() {
-		
-		TmnProfile tmnProfile = new TmnProfile();
-		tmnProfile.setFullname("new-fullname");
-		tmnProfile.setMobileNumber("086xxxxxxx");
-		tmnProfile.setThaiID("1212121212121");	
-		
-		return tmnProfile;
-	}
 }

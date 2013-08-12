@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.co.truemoney.serviceinventory.bean.LoginRequest;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePassword;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.impl.ExtendAccessTokenAsynService;
@@ -101,21 +99,22 @@ public class TmnProfileController {
 	@RequestMapping(value = "/profile/change-pin/{accessTokenID}", method = RequestMethod.PUT)
 	public @ResponseBody String changePin(
 		   @PathVariable String accessTokenID,
-		   @RequestBody ChangePin changePin) {
+		   @RequestParam(value = "oldPin") String oldPin,
+		   @RequestParam(value = "newPin") String newPin) {
 
 		extendExpireAccessToken(accessTokenID);
 		
-		return tmnProfileService.changePin(accessTokenID, changePin);
+		return tmnProfileService.changePin(accessTokenID, oldPin, newPin);
 	}
 	
 	@RequestMapping(value = "/profile/{accessTokenID}", method = RequestMethod.PUT)
-	public @ResponseBody TmnProfile updateTruemoneyProfile(
+	public @ResponseBody TmnProfile changeFullname(
 		   @PathVariable String accessTokenID,
-		   @RequestBody TmnProfile tmnProfile) {
+		   @RequestParam(value = "fullname") String fullname) {
 
 		extendExpireAccessToken(accessTokenID);
 		
-		return tmnProfileService.updateTruemoneyProfile(accessTokenID, tmnProfile);
+		return tmnProfileService.changeFullname(accessTokenID, fullname);
 	}
 
 	@RequestMapping(value = "/verify-token/{accessTokenID}", method = RequestMethod.GET)
@@ -128,11 +127,22 @@ public class TmnProfileController {
 	@RequestMapping(value = "/profile/change-password/{accessTokenID}", method = RequestMethod.PUT)
 	public @ResponseBody String changePassword(
 		   @PathVariable String accessTokenID,
-		   @RequestBody ChangePassword changePassword) {
+		   @RequestParam(value = "oldPassword") String oldPassword,
+		   @RequestParam(value = "newPassword") String newPassword) {
 
 		extendExpireAccessToken(accessTokenID);
 		
-		return tmnProfileService.changePassword(accessTokenID, changePassword);
+		return tmnProfileService.changePassword(accessTokenID, oldPassword, newPassword);
+	}
+	
+	@RequestMapping(value = "/profile/change-image/{accessTokenID}", method = RequestMethod.PUT)
+	public @ResponseBody TmnProfile changeProfileImage(
+		   @PathVariable String accessTokenID,
+		   @RequestParam(value = "imageFileName") String imageFileName) {
+
+		extendExpireAccessToken(accessTokenID);
+		
+		return tmnProfileService.changeProfileImage(accessTokenID, imageFileName);
 	}
 	
 	private void extendExpireAccessToken(String accessTokenID) {

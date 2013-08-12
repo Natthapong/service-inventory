@@ -60,7 +60,7 @@ public class TmnProfileRegisterWorkflowTest {
                 TestData.createAdamSuccessLogin(),
                 TestData.createSuccessClientLogin());
         
-        String mobileNumber = profileService.changePin(accessTokenID, TestData.createChangePin());
+        String mobileNumber = profileService.changePin(accessTokenID, "oldPin", "newPin");
         
         assertNotNull(mobileNumber);
         assertEquals("0891111111",mobileNumber);
@@ -73,7 +73,7 @@ public class TmnProfileRegisterWorkflowTest {
                 TestData.createAdamSuccessLogin(),
                 TestData.createSuccessClientLogin());
         
-        String email = profileService.changePassword(accessTokenID, TestData.createChangePassword());
+        String email = profileService.changePassword(accessTokenID, "oldPassword", "newPassword");
         
         assertNotNull(email);
         assertEquals("adam@tmn.com",email);
@@ -86,9 +86,21 @@ public class TmnProfileRegisterWorkflowTest {
                 TestData.createAdamSuccessLogin(),
                 TestData.createSuccessClientLogin());
         
-        TmnProfile tmnProfile = profileService.updateTruemoneyProfile(accessTokenID, TestData.createChangeTmnProfile());
+        TmnProfile tmnProfile = profileService.changeFullname(accessTokenID, "newFullname");
         
         assertNotNull(tmnProfile);
 	}
 
+	@Test
+	public void shouldSuccessChangeProfileImage() {
+		
+        String accessTokenID = profileService.login(
+                TestData.createAdamSuccessLogin(),
+                TestData.createSuccessClientLogin());
+        
+        TmnProfile tmnProfile = profileService.changeProfileImage(accessTokenID, "newFile.jpg");
+        
+        assertNotNull(tmnProfile);
+	}
+	
 }

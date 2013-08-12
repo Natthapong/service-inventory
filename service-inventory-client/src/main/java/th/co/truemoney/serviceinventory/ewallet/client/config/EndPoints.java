@@ -194,15 +194,20 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/ewallet/profile/password/verify-otp?channelID={channelID}";
 	}
 
-	public String getUpdateTruemoneyProfileURL() {
-		return host + "/service-inventory-web/v1/ewallet/profile/{accessTokenID}";
+	public String getChangeFullnameURL() {
+		return host + "/service-inventory-web/v1/ewallet/profile/{accessTokenID}?fullname={fullname}";
 	}
 
 	public String getChangePinURL() {
-		return host + "/service-inventory-web/v1/ewallet/profile/change-pin/{accessTokenID}";
+		return host + "/service-inventory-web/v1/ewallet/profile/change-pin/{accessTokenID}?oldPin={oldPin}&newPin={newPin}";
 	}
 
 	public String getChangePasswordURL() {
-		return host + "/service-inventory-web/v1/ewallet/profile/change-password/{accessTokenID}";
+		return host + "/service-inventory-web/v1/ewallet/profile/change-password/{accessTokenID}?oldPassword={oldPassword}&newPassword={newPassword}";
 	}
+
+	public String getChangeProfileImageURL() {
+		return host + "/service-inventory-web/v1/ewallet/profile/change-image/{accessTokenID}?imageFileName={imageFileName}";
+	}
+	
 }
