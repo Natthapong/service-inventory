@@ -93,7 +93,7 @@ public class UserProfileHandler {
                 tmnProfile.setStatus(profile.getStatusId());
                 tmnProfile.setHasPassword(Boolean.TRUE);
                 tmnProfile.setHasPin(Boolean.FALSE);
-                tmnProfile.setImageURL("");
+                tmnProfile.setImageFileName("");
 
                 return tmnProfile;
         }

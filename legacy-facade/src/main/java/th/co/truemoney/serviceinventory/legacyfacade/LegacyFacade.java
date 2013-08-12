@@ -215,8 +215,8 @@ public class LegacyFacade {
 			return this;
 		}
 		
-		public UserProfileBuilder withImagePath(String filePath) {
-			this.profileImage = filePath;
+		public UserProfileBuilder withImageName(String imageFileName) {
+			this.profileImage = imageFileName;
 			return this;
 		}
 		
