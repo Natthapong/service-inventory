@@ -2,8 +2,6 @@ package th.co.truemoney.serviceinventory.ewallet;
 
 import java.math.BigDecimal;
 
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePassword;
-import th.co.truemoney.serviceinventory.ewallet.domain.ChangePin;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
@@ -26,14 +24,14 @@ public interface TmnProfileService {
 
     public TmnProfile confirmCreateProfile(Integer channelID, OTP otp) throws ServiceInventoryException;
     
-    public TmnProfile updateTruemoneyProfile(String accessTokenID, TmnProfile tmnProfile) throws ServiceInventoryException;
+    public TmnProfile changeFullname(String accessTokenID, String fullname) throws ServiceInventoryException;
     
-    public String changePin(String accessTokenID, ChangePin changePin) throws ServiceInventoryException;
+    public String changePin(String accessTokenID, String oldPin, String newPin) throws ServiceInventoryException;
     
-    public String changePassword(String accessTokenID, ChangePassword changePassword) throws ServiceInventoryException;
+    public String changePassword(String accessTokenID, String oldPassword, String newPassword) throws ServiceInventoryException;
 
 	public String verifyAccessToken(String accessTokenID) throws ServiceInventoryException;
 	
-	public TmnProfile changeProfileImage(String accessTokenID, String filePath) throws ServiceInventoryException; 
+	public TmnProfile changeProfileImage(String accessTokenID, String imageFileName) throws ServiceInventoryException; 
 }
 

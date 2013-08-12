@@ -19,7 +19,7 @@ public class TmnProfile implements Serializable {
 	private String thaiID;
 	private String mobileNumber;
 	private BigDecimal balance;
-	private String imageURL;
+	private String imageFileName;
 	private Boolean hasPassword;
 	private Boolean hasPin;
 	private String type;
@@ -112,12 +112,12 @@ public class TmnProfile implements Serializable {
 		this.status = status;
 	}
 		
-	public String getImageURL() {
-		return imageURL;
+	public String getImageFileName() {
+		return imageFileName;
 	}
 
-	public void setImageURL(String imageURL) {
-		this.imageURL = imageURL;
+	public void setImageFileName(String imageFileName) {
+		this.imageFileName = imageFileName;
 	}
 
 	public Boolean getHasPassword() {
