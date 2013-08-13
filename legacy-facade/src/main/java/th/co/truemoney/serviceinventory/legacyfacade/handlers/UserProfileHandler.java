@@ -18,13 +18,11 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.DeleteFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.FavoriteContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritableRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsFavoritedRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -40,11 +38,7 @@ import com.tmn.core.api.message.UpdateProfileRequest;
 
 public class UserProfileHandler {
 
-        private static final int VALID_CUSTOMER_STATUS = 3;
-
         private static final String SUCCESS_CODE = "0";
-
-        private static final String CUSTOMER_TYPE = "C";
 
         private static final String ALREADY_ADD_FAVORITE = "2012";
 
@@ -63,52 +57,43 @@ public class UserProfileHandler {
         
         public AccessToken login(Integer channelID, String credentialUsername,String credentialSecret) {
 
-                SignonResponse signon = this.tmnSecurityProxyClient.signon(createGetSignOnRequest(channelID, credentialUsername, credentialSecret));
+            SignonResponse signon = this.tmnSecurityProxyClient.signon(createGetSignOnRequest(channelID, credentialUsername, credentialSecret));
 
-                String sessionID = signon.getSessionId();
-                String truemoneyID = signon.getTmnId();
+            String sessionID = signon.getSessionId();
+            String truemoneyID = signon.getTmnId();
 
-                GetProfileResponse profile = this.tmnProfileProxyClient.getProfile(createGetProfileRequest(channelID, sessionID, truemoneyID));
+            GetProfileResponse profile = this.tmnProfileProxyClient.getProfile(createGetProfileRequest(channelID, sessionID, truemoneyID));
 
-                if (profile == null) {
-                    throw new ProfileNotFoundException();
-                }
-                
-//                if (!CUSTOMER_TYPE.equals(profile.getProfileType())) {
-//                        throw new InvalidProfileTypeSignonException();
-//
-//                } else if (VALID_CUSTOMER_STATUS != profile.getStatusId()) {
-//                        throw new InvalidProfileStatusSignonException(profile.getStatusId());
-//                }
-
-                return new AccessToken(
-                                UUID.randomUUID().toString(),
-                                credentialUsername,
-                                signon.getSessionId(),
-                                signon.getTmnId(),
-                                profile.getMobile(),
-                                profile.getEmail(),
-                                channelID);
+            if (profile == null) {
+                throw new ProfileNotFoundException();
+            }
+            
+            return new AccessToken(
+                            UUID.randomUUID().toString(),
+                            credentialUsername,
+                            signon.getSessionId(),
+                            signon.getTmnId(),
+                            profile.getMobile(),
+                            profile.getEmail(),
+                            channelID);
         }
 
 		public TmnProfile getProfile(Integer channelID, String sessionID, String truemoneyID) {
-
-                GetBasicProfileResponse profile = this.tmnProfileProxy.getBasicProfile(createAccessRequest(channelID, sessionID, truemoneyID));
-
-                TmnProfile tmnProfile = new TmnProfile(profile.getFullName(), profile.getEwalletBalance());
-
-                tmnProfile.setMobileNumber(profile.getMobile());
-                tmnProfile.setEmail(profile.getEmail());
-                tmnProfile.setType(profile.getProfileType());
-                tmnProfile.setStatus(profile.getStatusId());
-                tmnProfile.setHasPassword(Boolean.TRUE);
-                tmnProfile.setHasPin(Boolean.FALSE);
-                tmnProfile.setImageFileName("");
-
-                return tmnProfile;
+            GetProfileResponse profile = this.tmnProfileProxyClient.getProfile(createGetProfileRequest(channelID, sessionID, truemoneyID));
+            if (profile == null) {
+                throw new ProfileNotFoundException();
+            }
+            TmnProfile tmnProfile = new TmnProfile(profile.getFullName(), profile.getEwalletBalance());
+            tmnProfile.setMobileNumber(profile.getMobile());
+            tmnProfile.setEmail(profile.getEmail());
+            tmnProfile.setHasPassword(profile.getHasPassword());
+            tmnProfile.setHasPin(profile.getHasPin());
+            String imageFileName = getProfileValue(profile.getProfileKey(), profile.getProfileValue(), ProfileKey.profilepic200x200);
+            tmnProfile.setImageFileName(imageFileName);
+            return tmnProfile;
         }
 
-        public List<Favorite> getListFavorite(Integer channelID, String sessionID,
+		public List<Favorite> getListFavorite(Integer channelID, String sessionID,
                         String tmnID, String serviceType) {
                 SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
 
@@ -211,9 +196,9 @@ public class UserProfileHandler {
 			UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
 			updateProfileRequest.setChannelId(channelID);
 			updateProfileRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
-			String[] profileKey = new String[2];
+			String[] profileKey = new String[1];
 			profileKey[0] = ProfileKey.fullname; 
-			String[] profileValue = new String[2];
+			String[] profileValue = new String[1];
 			profileValue[0] = fullname;
 			updateProfileRequest.setProfileKey(profileKey);
 			updateProfileRequest.setProfileValue(profileValue);
@@ -224,9 +209,9 @@ public class UserProfileHandler {
 			UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
 			updateProfileRequest.setChannelId(channelID);
 			updateProfileRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
-			String[] profileKey = new String[2];
+			String[] profileKey = new String[1];
 			profileKey[0] = ProfileKey.profilepic200x200; 
-			String[] profileValue = new String[2];
+			String[] profileValue = new String[1];
 			profileValue[0] = profileImage;
 			updateProfileRequest.setProfileKey(profileKey);
 			updateProfileRequest.setProfileValue(profileValue);
@@ -276,16 +261,6 @@ public class UserProfileHandler {
                 return favoritedRequest;
         }
 
-        private StandardBizRequest createAccessRequest(Integer channelID, String sessionID, String truemoneyID) {
-                SecurityContext securityContext = new SecurityContext(sessionID, truemoneyID);
-
-                StandardBizRequest standardBizRequest = new StandardBizRequest();
-                standardBizRequest.setSecurityContext(securityContext);
-                standardBizRequest.setChannelId(channelID);
-
-                return standardBizRequest;
-        }
-        
         private com.tmn.core.api.message.StandardBizRequest createNewAccessRequest(Integer channelID, String sessionID, String truemoneyID) {
         	com.tmn.core.api.message.StandardBizRequest standardBizRequest = new com.tmn.core.api.message.StandardBizRequest();
             standardBizRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
@@ -376,6 +351,17 @@ public class UserProfileHandler {
 			changePasswordRequest.setNewPassword(password);
 			changePasswordRequest.setLoginId(loginID);
 			return changePasswordRequest;
+		}
+		
+		private String getProfileValue(String[] profileKeys, String[] profileValues, String profileKey) {
+			String profileValue = "";
+            for (int i=0; i<profileKeys.length; i++) {
+            	String tempProfileKey = profileKeys[i];
+            	if (tempProfileKey != null && tempProfileKey.equals(profileKey)) {
+            		profileValue = profileValues[i];
+            	}
+            }
+			return profileValue;
 		}
 
         public static class ProfileNotFoundException extends ServiceInventoryException {
