@@ -22,7 +22,7 @@ import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.persona.LocalBillsPersona;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalEwalletSoapProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalProfileAdminProxy;
-import th.co.truemoney.serviceinventory.persona.proxies.LocalSecurityProxy;
+import th.co.truemoney.serviceinventory.persona.proxies.LocalSecurityProxyClient;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalSmsProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalTmnProfileProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalTmnProfileProxyClient;
@@ -34,7 +34,8 @@ import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 @Profile("local")
 public class LocalEnvironmentConfig {
 
-    @Bean @Qualifier("endpoint.host") @Primary
+    @Bean @Qualifier("endpoint.host") 
+    @Primary
     public String host() {
         return "http://127.0.0.1:8787";
     }
@@ -48,7 +49,7 @@ public class LocalEnvironmentConfig {
     @Bean
     @Primary
     public TmnSecurityProxyClient stubTmnSecurityProxy() {
-        return new LocalSecurityProxy();
+        return new LocalSecurityProxyClient();
     }
     
     @Bean

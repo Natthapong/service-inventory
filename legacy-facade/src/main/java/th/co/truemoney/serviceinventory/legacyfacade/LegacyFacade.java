@@ -323,7 +323,7 @@ public class LegacyFacade {
             Validate.notNull(password, "data missing. password ?");
             Validate.notNull(loginID, "data missing. loginID ?");
             
-            profileFacade.changePassword(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin, this.loginID);
+            profileFacade.changePassword(this.channelID, this.sessionID, this.tmnID, this.oldPassword, this.password, this.loginID);
         }
 
 		public void changeFullName() {

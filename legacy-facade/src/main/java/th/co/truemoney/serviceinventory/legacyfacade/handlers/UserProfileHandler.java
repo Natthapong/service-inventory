@@ -25,6 +25,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListFavoriteRespon
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.util.HashPasswordUtil;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
 import com.tmn.core.api.message.ChangePasswordRequest;
@@ -88,7 +89,7 @@ public class UserProfileHandler {
             tmnProfile.setEmail(profile.getEmail());
             tmnProfile.setHasPassword(profile.getHasPassword());
             tmnProfile.setHasPin(profile.getHasPin());
-            String imageFileName = getProfileValue(profile.getProfileKey(), profile.getProfileValue(), ProfileKey.profilepic200x200);
+            String imageFileName = getProfileValue(profile, ProfileKey.profilepic200x200);
             tmnProfile.setImageFileName(imageFileName);
             return tmnProfile;
         }
@@ -196,12 +197,8 @@ public class UserProfileHandler {
 			UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
 			updateProfileRequest.setChannelId(channelID);
 			updateProfileRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
-			String[] profileKey = new String[1];
-			profileKey[0] = ProfileKey.fullname; 
-			String[] profileValue = new String[1];
-			profileValue[0] = fullname;
-			updateProfileRequest.setProfileKey(profileKey);
-			updateProfileRequest.setProfileValue(profileValue);
+			updateProfileRequest.setProfileKey(new String[] { ProfileKey.fullname });
+			updateProfileRequest.setProfileValue(new String[] { fullname });
 			return updateProfileRequest;
 		}
 		
@@ -209,12 +206,8 @@ public class UserProfileHandler {
 			UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
 			updateProfileRequest.setChannelId(channelID);
 			updateProfileRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
-			String[] profileKey = new String[1];
-			profileKey[0] = ProfileKey.profilepic200x200; 
-			String[] profileValue = new String[1];
-			profileValue[0] = profileImage;
-			updateProfileRequest.setProfileKey(profileKey);
-			updateProfileRequest.setProfileValue(profileValue);
+			updateProfileRequest.setProfileKey(new String[] { ProfileKey.profilepic200x200 });
+			updateProfileRequest.setProfileValue(new String[] { profileImage });
 			return updateProfileRequest;
 		}
 		
@@ -335,7 +328,7 @@ public class UserProfileHandler {
 			ChangePinRequest changePinRequest = new ChangePinRequest();
 			changePinRequest.setChannelId(channelID);
 			changePinRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
-			changePinRequest.setOldPin(oldPin);
+			changePinRequest.setOldPin(encryptSHA1(oldPin, sessionID)); 
 			changePinRequest.setNewPin(pin);
 			changePinRequest.setLoginId(loginID);
 			return changePinRequest;
@@ -347,20 +340,28 @@ public class UserProfileHandler {
 			ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
 			changePasswordRequest.setChannelId(channelID);
 			changePasswordRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
-			changePasswordRequest.setOldPassword(oldPassword);
+			changePasswordRequest.setOldPassword(encryptSHA1(oldPassword, sessionID)); 
 			changePasswordRequest.setNewPassword(password);
 			changePasswordRequest.setLoginId(loginID);
 			return changePasswordRequest;
 		}
 		
-		private String getProfileValue(String[] profileKeys, String[] profileValues, String profileKey) {
+		private String encryptSHA1(String oldValue, String sessionID) {
+			return HashPasswordUtil.encryptSHA1(sessionID + oldValue.toLowerCase()).toUpperCase();
+		}
+		
+		private String getProfileValue(GetProfileResponse profile, String profileKey) {
 			String profileValue = "";
-            for (int i=0; i<profileKeys.length; i++) {
-            	String tempProfileKey = profileKeys[i];
-            	if (tempProfileKey != null && tempProfileKey.equals(profileKey)) {
-            		profileValue = profileValues[i];
-            	}
-            }
+			String[] profileKeys = profile.getProfileKey();
+			String[] profileValues = profile.getProfileValue();
+			if (profileKeys != null && profileKeys.length > 0) {
+	            for (int i=0; i<profileKeys.length; i++) {
+	            	String tempProfileKey = profileKeys[i];
+	            	if (tempProfileKey != null && tempProfileKey.equals(profileKey)) {
+	            		profileValue = profileValues[i];
+	            	}
+	            }
+			}
 			return profileValue;
 		}
 

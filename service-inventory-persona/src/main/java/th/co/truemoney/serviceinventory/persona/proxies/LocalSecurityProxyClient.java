@@ -12,7 +12,7 @@ import com.tmn.core.api.message.SignonResponse;
 import com.tmn.core.api.message.StandardBizRequest;
 import com.tmn.core.api.message.StandardBizResponse;
 
-public class LocalSecurityProxy implements TmnSecurityProxyClient {
+public class LocalSecurityProxyClient implements TmnSecurityProxyClient {
 
     private Adam adam = new Adam();
     private Eve eve = new Eve();
