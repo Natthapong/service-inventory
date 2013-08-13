@@ -29,10 +29,14 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRespons
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
+import com.tmn.core.api.message.ChangePasswordRequest;
+import com.tmn.core.api.message.ChangePinRequest;
 import com.tmn.core.api.message.GetProfileRequest;
 import com.tmn.core.api.message.GetProfileResponse;
+import com.tmn.core.api.message.ProfileKey;
 import com.tmn.core.api.message.SignonRequest;
 import com.tmn.core.api.message.SignonResponse;
+import com.tmn.core.api.message.UpdateProfileRequest;
 
 public class UserProfileHandler {
 
@@ -183,22 +187,55 @@ public class UserProfileHandler {
         	this.tmnSecurityProxyClient.terminateSession(createNewAccessRequest(channelID, sessionID, truemoneyID));
         }
 
-		public void changePin(Integer channelID, String sessionID, String tmnID, String oldPin, String pin) {
+		public void changePin(Integer channelID, String sessionID, String truemoneyID, String oldPin, String pin, String loginID) {
+			ChangePinRequest changePinRequest = createChangePinRequest(channelID, sessionID, truemoneyID, oldPin, pin, loginID);
+			this.tmnProfileProxyClient.changePin(changePinRequest);
+		}
+
+		public void changePassword(Integer channelID, String sessionID, String truemoneyID, String oldPassword, String password, String loginID) {
+			ChangePasswordRequest changePasswordRequest = createChangePasswordRequest(channelID, sessionID, truemoneyID, oldPassword, password, loginID);
+			this.tmnProfileProxyClient.changePassword(changePasswordRequest);
 		}
 		
-		public void changePassword(Integer channelID, String sessionID, String tmnID, String oldPassword, String password) {
-		}
-        
-		public void changeFullname(Integer channelID, String sessionID, String tmnID, String fullname) {
+		public void changeFullname(Integer channelID, String sessionID, String truemoneyID, String fullname) {
+			UpdateProfileRequest updateProfileRequest = createUpdateFullnameRequest(channelID, sessionID, truemoneyID, fullname);
+			this.tmnProfileProxyClient.updateProfile(updateProfileRequest);
 		}
 		
-		public void changeProfileImage(Integer channelID, String sessionID, String tmnID, String profileImage) {
+		public void changeProfileImage(Integer channelID, String sessionID, String truemoneyID, String profileImage) {
+			UpdateProfileRequest updateProfileRequest = createUpdateProfileImageRequest(channelID, sessionID, truemoneyID, profileImage);
+			this.tmnProfileProxyClient.updateProfile(updateProfileRequest);
+		}
+		
+		private UpdateProfileRequest createUpdateFullnameRequest(Integer channelID, String sessionID, String truemoneyID, String fullname) {
+			UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
+			updateProfileRequest.setChannelId(channelID);
+			updateProfileRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
+			String[] profileKey = new String[2];
+			profileKey[0] = ProfileKey.fullname; 
+			String[] profileValue = new String[2];
+			profileValue[0] = fullname;
+			updateProfileRequest.setProfileKey(profileKey);
+			updateProfileRequest.setProfileValue(profileValue);
+			return updateProfileRequest;
+		}
+		
+		private UpdateProfileRequest createUpdateProfileImageRequest(Integer channelID, String sessionID, String truemoneyID, String profileImage) {
+			UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
+			updateProfileRequest.setChannelId(channelID);
+			updateProfileRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
+			String[] profileKey = new String[2];
+			profileKey[0] = ProfileKey.profilepic200x200; 
+			String[] profileValue = new String[2];
+			profileValue[0] = profileImage;
+			updateProfileRequest.setProfileKey(profileKey);
+			updateProfileRequest.setProfileValue(profileValue);
+			return updateProfileRequest;
 		}
 		
         private AddFavoriteRequest createAddFavoriteRequest(Integer channelID,
                 String sessionID, String tmnID, Favorite favorite) {
             SecurityContext securityContext = new SecurityContext(sessionID, tmnID);
-
             AddFavoriteRequest addFavoriteRequest = new AddFavoriteRequest();
             addFavoriteRequest.setAmount(favorite.getAmount());
             addFavoriteRequest.setChannelId(channelID);
@@ -317,6 +354,29 @@ public class UserProfileHandler {
 
                 return list;
         }
+        
+		private ChangePinRequest createChangePinRequest(Integer channelID,
+				String sessionID, String truemoneyID, String oldPin, String pin, String loginID) {
+			ChangePinRequest changePinRequest = new ChangePinRequest();
+			changePinRequest.setChannelId(channelID);
+			changePinRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
+			changePinRequest.setOldPin(oldPin);
+			changePinRequest.setNewPin(pin);
+			changePinRequest.setLoginId(loginID);
+			return changePinRequest;
+		}
+		
+		private ChangePasswordRequest createChangePasswordRequest(Integer channelID,
+				String sessionID, String truemoneyID, String oldPassword,
+				String password, String loginID) {
+			ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+			changePasswordRequest.setChannelId(channelID);
+			changePasswordRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
+			changePasswordRequest.setOldPassword(oldPassword);
+			changePasswordRequest.setNewPassword(password);
+			changePasswordRequest.setLoginId(loginID);
+			return changePasswordRequest;
+		}
 
         public static class ProfileNotFoundException extends ServiceInventoryException {
                 private static final long serialVersionUID = 7328535407875381185L;

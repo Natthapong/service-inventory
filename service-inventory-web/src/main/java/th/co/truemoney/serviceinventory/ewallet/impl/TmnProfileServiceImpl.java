@@ -159,6 +159,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 				.fromChannel(accessToken.getChannelID())
 				.withPin(oldPin, newPin)
+				.withLoginID(accessToken.getLoginID())
 				.changePin();
 		
 		return accessToken.getMobileNumber();
@@ -174,6 +175,7 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 			.fromChannel(accessToken.getChannelID())
 			.withPassword(oldPassword, newPassword)
+			.withLoginID(accessToken.getLoginID())
 			.changePassword();
 		
 		return accessToken.getEmail();

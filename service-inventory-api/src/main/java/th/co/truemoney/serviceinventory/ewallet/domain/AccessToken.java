@@ -42,6 +42,7 @@ public class AccessToken implements Serializable {
 			Integer channelID) {
 
 		this.accessTokenID = token;
+		this.loginID = loginID;
 		this.sessionID = sessionID;
 		this.truemoneyID = truemoneyID;
 		this.mobileNumber = mobileNumber;

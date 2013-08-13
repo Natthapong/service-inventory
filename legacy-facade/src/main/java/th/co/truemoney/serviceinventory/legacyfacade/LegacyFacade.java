@@ -156,6 +156,7 @@ public class LegacyFacade {
         
         private String fullname;
         private String profileImage;
+        private String loginID;
         
         @Autowired(required = false)
         public UserProfileBuilder(EwalletBalanceHandler balanceFacade, UserProfileHandler profileFacade, TopUpSourceOfFundHandler sourceOfFundFacade) {
@@ -217,6 +218,11 @@ public class LegacyFacade {
 		
 		public UserProfileBuilder withImageName(String imageFileName) {
 			this.profileImage = imageFileName;
+			return this;
+		}
+		
+		public UserProfileBuilder withLoginID(String loginID) {
+			this.loginID = loginID;
 			return this;
 		}
 		
@@ -304,8 +310,9 @@ public class LegacyFacade {
             Validate.notNull(channelID, "data missing. change PIN from which channel?");
             Validate.notNull(oldPin, "data missing. old PIN ?");
             Validate.notNull(pin, "data missing. pin ?");
+            Validate.notNull(loginID, "data missing. loginID ?");
 
-            profileFacade.changePin(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin);
+            profileFacade.changePin(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin, this.loginID);
         }
         
         public void changePassword() {
@@ -314,8 +321,9 @@ public class LegacyFacade {
             Validate.notNull(channelID, "data missing. change password from which channel?");
             Validate.notNull(oldPassword, "data missing. old password ?");
             Validate.notNull(password, "data missing. password ?");
-
-            profileFacade.changePassword(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin);
+            Validate.notNull(loginID, "data missing. loginID ?");
+            
+            profileFacade.changePassword(this.channelID, this.sessionID, this.tmnID, this.oldPin, this.pin, this.loginID);
         }
 
 		public void changeFullName() {

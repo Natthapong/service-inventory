@@ -56,7 +56,7 @@ public class ChangePinServiceImplTest {
 		accessToken.setMobileNumber("08xxxxxxxx");
 		
         //given
-		doNothing().when(mockUserProfileFacade).changePin(anyInt(), anyString(), anyString(), anyString(), anyString());
+		doNothing().when(mockUserProfileFacade).changePin(anyInt(), anyString(), anyString(), anyString(), anyString(), anyString());
         when(mockAccessTokenRepo.findAccessToken(anyString())).thenReturn(accessToken);
         
         //when
@@ -74,7 +74,7 @@ public class ChangePinServiceImplTest {
 		accessToken.setEmail("success@change.password");
 		
         //given
-		doNothing().when(mockUserProfileFacade).changePassword(anyInt(), anyString(), anyString(), anyString(), anyString());
+		doNothing().when(mockUserProfileFacade).changePassword(anyInt(), anyString(), anyString(), anyString(), anyString(), anyString());
         when(mockAccessTokenRepo.findAccessToken(anyString())).thenReturn(accessToken);
         
         //when
