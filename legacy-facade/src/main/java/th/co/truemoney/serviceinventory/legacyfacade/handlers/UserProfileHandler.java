@@ -275,6 +275,7 @@ public class UserProfileHandler {
         	GetProfileRequest profileRequest = new GetProfileRequest();
         	profileRequest.setChannelId(channelID);
         	profileRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
+        	profileRequest.setProfileKey(new String[] {ProfileKey.profilepic200x200});
         	return profileRequest;
 		}
 
