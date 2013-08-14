@@ -10,10 +10,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import com.tmn.core.api.config.CoreServiceClientConfig;
 
 import th.co.truemoney.serviceinventory.authen.TransactionAuthenService;
 import th.co.truemoney.serviceinventory.authen.impl.TransactionAuthenServiceImpl;
@@ -57,7 +60,7 @@ import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 @EnableAsync(proxyTargetClass = true)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop","th.co.truemoney.serviceinventory.log"})
-@Import({EwalletConfig.class, SmsConfig.class, TmnProfileConfig.class, SIEngineConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, ProdEnvironmentConfig.class, DevEnvironmentConfig.class })
+@Import({EwalletConfig.class, SmsConfig.class, TmnProfileConfig.class, SIEngineConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, ProdEnvironmentConfig.class, DevEnvironmentConfig.class, CoreServiceClientConfig.class })
 public class ServiceInventoryConfig {
 	
     @Bean
@@ -176,12 +179,13 @@ public class ServiceInventoryConfig {
     }
 
     @Bean
-    public EndPoints endPoints() {
+    public EndPoints coreReportWebEndPoints() {
         return new EndPoints();
     }
 
     @Bean
     @Qualifier("jsonHttpHeader")
+    @Primary
     public HttpHeaders defaultHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
 
