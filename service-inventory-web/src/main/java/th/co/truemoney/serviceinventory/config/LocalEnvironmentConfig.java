@@ -15,6 +15,7 @@ import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
+import th.co.truemoney.serviceinventory.ewallet.proxy.WalletProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
@@ -26,6 +27,7 @@ import th.co.truemoney.serviceinventory.persona.proxies.LocalSecurityProxyClient
 import th.co.truemoney.serviceinventory.persona.proxies.LocalSmsProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalTmnProfileProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalTmnProfileProxyClient;
+import th.co.truemoney.serviceinventory.persona.proxies.LocalWalletProxyClient;
 import th.co.truemoney.serviceinventory.persona.proxies.TopUpTruemoneyProxy;
 import th.co.truemoney.serviceinventory.sms.OTPGenerator;
 import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
@@ -58,6 +60,12 @@ public class LocalEnvironmentConfig {
         return new LocalTmnProfileProxyClient();
     }
 
+    @Bean
+    @Primary
+    public WalletProxyClient stubWalletProxyClient() {
+        return new LocalWalletProxyClient();
+    }
+    
     @Bean
     @Primary
     public EwalletSoapProxy stubEWalletSoapProxy() {

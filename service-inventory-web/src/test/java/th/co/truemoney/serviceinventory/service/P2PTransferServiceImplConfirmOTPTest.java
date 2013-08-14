@@ -78,7 +78,7 @@ public class P2PTransferServiceImplConfirmOTPTest {
             goodOTP = new OTP(accessToken.getMobileNumber(), "refCode", "OTPpin");
             otpRepo.save(goodOTP);
 
-            transferDraft =  P2PTransferStubbed.createP2PDraft(new BigDecimal(100), "0987654321", "target name", accessToken.getAccessTokenID());
+            transferDraft =  P2PTransferStubbed.createP2PDraft(new BigDecimal(100), "0987654321", "target name", "target filename", accessToken.getAccessTokenID());
             transferDraft.setStatus(P2PTransferDraft.Status.OTP_SENT);
 
             transactionRepo.setExpirableMap(new MemoryExpirableMap());

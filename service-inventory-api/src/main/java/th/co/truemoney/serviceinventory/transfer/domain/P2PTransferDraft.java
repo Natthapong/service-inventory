@@ -26,6 +26,8 @@ public class P2PTransferDraft extends DraftTransaction {
 
 	private String fullname;
 	
+	private String imageFileName;
+	
 	private String message;
 
 	public P2PTransferDraft() {
@@ -95,6 +97,14 @@ public class P2PTransferDraft extends DraftTransaction {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public String getImageFileName() {
+		return imageFileName;
+	}
+
+	public void setImageFileName(String imageFileName) {
+		this.imageFileName = imageFileName;
 	}
 
 	@JsonIgnore

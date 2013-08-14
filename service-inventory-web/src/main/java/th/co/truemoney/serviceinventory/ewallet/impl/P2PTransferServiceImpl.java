@@ -16,6 +16,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.C
 import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransfer;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 import th.co.truemoney.serviceinventory.util.MaskingUtil;
@@ -41,15 +42,16 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 
 		//--- Send to verify amount ---//
-		String targetName = legacyFacade.transfer(amount)
+		P2PTransfer p2pTransfer = legacyFacade.transfer(amount)
 						.fromChannelID(accessToken.getChannelID())
 						.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
 						.toTargetUser(targetMobileNumber)
 						.verify();
 
-		String targetMarkedFullName = MaskingUtil.maskFullName(targetName);
+		String targetMarkedFullName = MaskingUtil.maskFullName(p2pTransfer.getRecipientName());
 
 		P2PTransferDraft draft = createP2PDraft(amount, targetMobileNumber, targetMarkedFullName, accessTokenID);
+		draft.setImageFileName(p2pTransfer.getRecipientImageFileName());
 		transactionRepo.saveDraftTransaction(draft, accessToken.getAccessTokenID());
 
 		return draft;
@@ -156,8 +158,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 		this.transactionRepo = transactionRepo;
 	}
 
-	public void setAsyncP2PTransferProcessor(
-			AsyncP2PTransferProcessor asyncP2PTransferProcessor) {
+	public void setAsyncP2PTransferProcessor(AsyncP2PTransferProcessor asyncP2PTransferProcessor) {
 		this.asyncP2PTransferProcessor = asyncP2PTransferProcessor;
 	}
 

@@ -66,7 +66,6 @@ public class MobileTopUpHandler {
 			confirmationInfo.setTransactionDate(df.format(new Date()));
 			return confirmationInfo;
 		} catch (FailResultCodeException ex) {
-			// TODO map exception to corresponding throw
 			throw new UnknownSystemTransactionFailException(ex);
 		}
 	}

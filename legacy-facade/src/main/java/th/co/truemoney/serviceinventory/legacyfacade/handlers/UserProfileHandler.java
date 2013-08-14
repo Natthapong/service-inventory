@@ -376,22 +376,6 @@ public class UserProfileHandler {
                 }
         }
 
-        public static class InvalidProfileTypeSignonException extends ServiceInventoryException {
-                private static final long serialVersionUID = 7328535407875381185L;
-
-                public InvalidProfileTypeSignonException() {
-                        super(400, "10000", "Invalid profile type, is not a customer.", "TMN-SERVICE-INVENTORY");
-                }
-        }
-
-        public static class InvalidProfileStatusSignonException extends ServiceInventoryException {
-                private static final long serialVersionUID = 7328535407875381185L;
-
-                public InvalidProfileStatusSignonException(int status) {
-                        super(400, "10002", "Invalid profile status: " + status, "TMN-SERVICE-INVENTORY");
-                }
-        }
-
         public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
                 this.tmnProfileProxy = tmnProfileProxy;
         }
