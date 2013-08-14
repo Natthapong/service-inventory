@@ -84,7 +84,9 @@ public class UserProfileHandler {
             if (profile == null) {
                 throw new ProfileNotFoundException();
             }
-            TmnProfile tmnProfile = new TmnProfile(profile.getFullName(), profile.getEwalletBalance());
+            TmnProfile tmnProfile = new TmnProfile();
+            tmnProfile.setFullname(profile.getFullName() != null ? profile.getFullName() : "");
+            tmnProfile.setBalance(profile.getEwalletBalance());
             tmnProfile.setMobileNumber(profile.getMobile());
             tmnProfile.setEmail(profile.getEmail());
             tmnProfile.setHasPassword(profile.getHasPassword());
