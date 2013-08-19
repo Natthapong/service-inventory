@@ -79,7 +79,7 @@ public class EndPoints {
     }
 
     public String getP2PPerformTransferURL() {
-	return host + "/service-inventory-web/v1/transfer/transaction/{transferDraftID}?accessTokenID={accessTokenID}";
+    	return host + "/service-inventory-web/v1/transfer/transaction/{transferDraftID}?accessTokenID={accessTokenID}";
     }
 
     public String getP2PTransactionStatusURL() {
@@ -208,6 +208,27 @@ public class EndPoints {
 
 	public String getChangeProfileImageURL() {
 		return host + "/service-inventory-web/v1/ewallet/profile/change-image/{accessTokenID}?imageFileName={imageFileName}";
+	}
+
+	public String getCreateBuyEPINDraftURL() {
+		return host + "/service-inventory-web/v1/buy/e-pin/draft?accessTokenID={accessTokenID}";
+	}
+	
+	public String getBuyEPINDraftDetailsURL() {
+        return host + "/service-inventory-web/v1/buy/e-pin/draft/{buyEPINDraftID}?accessTokenID={accessTokenID}";
+	}
+
+	public String getPerformBuyEPINURL() {
+    	return host + "/service-inventory-web/v1/buy/e-pin/transaction/{buyEPINDraftID}?accessTokenID={accessTokenID}";
+	}
+
+	public String getBuyEPINStatusURL() {
+        return host + "/service-inventory-web/v1/buy/e-pin/transaction/{transactionID}/status?accessTokenID={accessTokenID}";
+
+	}
+
+	public String getBuyEPINResultURL() {
+        return host + "/service-inventory-web/v1/buy/e-pin/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
 	
 }
