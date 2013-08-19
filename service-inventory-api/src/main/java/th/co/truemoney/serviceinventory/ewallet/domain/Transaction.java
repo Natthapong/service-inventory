@@ -6,6 +6,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentTransaction;
+import th.co.truemoney.serviceinventory.buy.domain.BuyEPINTransaction;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 
@@ -22,7 +23,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@Type(value = TopUpOrder.class, name = "topUpOrder"),
 		@Type(value = P2PTransferTransaction.class, name = "p2pTransferTransaction"),
 		@Type(value = BillPaymentTransaction.class, name = "billPayment"),
-		@Type(value = TopUpMobileTransaction.class, name = "topUpMobileTransaction")
+		@Type(value = TopUpMobileTransaction.class, name = "topUpMobileTransaction"),
+		@Type(value = BuyEPINTransaction.class, name = "buyEPINTransaction")
 		})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
