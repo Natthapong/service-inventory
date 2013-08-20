@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.buy.BuyProductService;
+import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductDraft;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductTransaction;
 import th.co.truemoney.serviceinventory.ewallet.client.config.EndPoints;
@@ -32,7 +33,13 @@ public class TmnBuyProductServiceClient implements BuyProductService {
 	@Override
 	public BuyProductDraft createAndVerifyBuyProductDraft(String target, String recipientMobileNumber, BigDecimal amount, String accessTokenID)
 			throws ServiceInventoryException {
-		BuyProductDraft draft = new BuyProductDraft(target, recipientMobileNumber, amount);
+		BuyProduct buyProduct = new BuyProduct();
+		buyProduct.setAmount(amount);
+		buyProduct.setTarget(target);
+		
+		BuyProductDraft draft = new BuyProductDraft();
+		draft.setBuyProductInfo(buyProduct);
+		draft.setRecipientMobileNumber(recipientMobileNumber);
 
 		HttpEntity<BuyProductDraft> requestEntity = new HttpEntity<BuyProductDraft>(draft, headers);
 

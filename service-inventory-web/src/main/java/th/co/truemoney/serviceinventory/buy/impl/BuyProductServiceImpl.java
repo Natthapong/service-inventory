@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.buy.BuyProductService;
+import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductDraft;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -13,6 +14,8 @@ import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
+import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
@@ -35,16 +38,17 @@ public class BuyProductServiceImpl implements BuyProductService {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		ClientCredential appData = accessToken.getClientCredential();
 		
-		legacyFacade.buyProduct()
+		BuyProduct buyProduct = legacyFacade.buyProduct()
 			.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
 			.fromChannel(appData.getChannel(), appData.getChannelDetail())
 			.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
-			.toMobileNumber(accessToken.getMobileNumber())
+			.withTargetProduct(target)
+			.toRecipientMobileNumber(recipientMobileNumber)
 			.usingSourceOfFund("EW")
 			.withAmount(amount)
 			.verifyBuyProduct();
 		
-		BuyProductDraft buyProductDraft = createBuyProductDraft(amount, recipientMobileNumber, accessTokenID);
+		BuyProductDraft buyProductDraft = createBuyProductDraft(target, recipientMobileNumber, accessTokenID, buyProduct);
 		transactionRepo.saveDraftTransaction(buyProductDraft, accessToken.getAccessTokenID());
 		return buyProductDraft;
 	}
@@ -77,16 +81,21 @@ public class BuyProductServiceImpl implements BuyProductService {
 		return null;
 	}
 
-	private BuyProductDraft createBuyProductDraft(BigDecimal amount, String recipientMobileNumber, String accessTokenID) {
-		String draftID = UUID.randomUUID().toString();
-		BuyProductDraft draft = new BuyProductDraft();
-		draft.setID(draftID);
-		draft.setAccessTokenID(accessTokenID);
-		draft.setAmount(amount);
-		draft.setRecipientMobileNumber(recipientMobileNumber);
-		draft.setStatus(P2PTransferDraft.Status.CREATED);
+	public void setAccessTokenRepo(AccessTokenMemoryRepository accessTokenRepo) {
+		this.accessTokenRepo = accessTokenRepo;
+	}
 
-		return draft;
+	public void setTransactionRepo(TransactionRepositoryImpl transactionRepo) {
+		this.transactionRepo = transactionRepo;
+	}
+	
+	private BuyProductDraft createBuyProductDraft(String target, String recipientMobileNumber, String accessTokenID, BuyProduct buyProduct) {
+		String draftID = UUID.randomUUID().toString();
+		BuyProductDraft buyProductDraft = new BuyProductDraft(draftID, buyProduct, buyProduct.getAmount(), buyProduct.getID(), target, recipientMobileNumber);
+		buyProductDraft.setAccessTokenID(accessTokenID);
+		buyProductDraft.setStatus(P2PTransferDraft.Status.CREATED);
+
+		return buyProductDraft;
 	}
 	
 }

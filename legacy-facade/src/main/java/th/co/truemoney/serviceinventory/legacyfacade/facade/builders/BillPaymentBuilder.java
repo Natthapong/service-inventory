@@ -136,7 +136,7 @@ public class BillPaymentBuilder {
 		verifyRequest.setPaypointCode(payPointCode);
 
 		verifyRequest.setAmount(convertMoney(amount));
-		verifyRequest.setSource("EW");
+		verifyRequest.setSource(sourceOfFundSourceType);
 		verifyRequest.setSourceFeeType("THB");
 		verifyRequest.setTotalSourceFee(convertMoney(sourceOfFundFee));
 		verifyRequest.setServiceFeeType("THB");
@@ -192,7 +192,6 @@ public class BillPaymentBuilder {
 		confirmRequest.setPaypointName(payPointName);
 		confirmRequest.setPaypointCode(payPointCode);
 
-		confirmRequest.setAmount(convertMoney(amount));
 		confirmRequest.setAmount(convertMoney(amount));
 		confirmRequest.setSource(sourceOfFundSourceType);
 		confirmRequest.setSourceFeeType("THB");

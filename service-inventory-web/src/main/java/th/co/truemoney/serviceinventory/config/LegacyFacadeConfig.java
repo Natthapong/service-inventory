@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.BuyProductHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.ForgotPasswordHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.MobileTopUpHandler;
@@ -59,4 +60,10 @@ public class LegacyFacadeConfig {
 	public ForgotPasswordHandler forgotPasswordFacade() {
 		return new ForgotPasswordHandler();
 	}
+	
+	@Bean
+	public BuyProductHandler buyProductFacade() {
+		return new BuyProductHandler();
+	}
+	
 }

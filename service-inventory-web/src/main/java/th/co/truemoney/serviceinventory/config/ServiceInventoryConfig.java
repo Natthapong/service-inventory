@@ -16,8 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import com.tmn.core.api.config.CoreServiceClientConfig;
-
 import th.co.truemoney.serviceinventory.authen.TransactionAuthenService;
 import th.co.truemoney.serviceinventory.authen.impl.TransactionAuthenServiceImpl;
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
@@ -27,6 +25,8 @@ import th.co.truemoney.serviceinventory.bill.impl.BillPaymentServiceImpl;
 import th.co.truemoney.serviceinventory.bill.impl.BillPaymentValidationConfig;
 import th.co.truemoney.serviceinventory.bill.impl.BillRetrieverImpl;
 import th.co.truemoney.serviceinventory.bill.validation.BillValidator;
+import th.co.truemoney.serviceinventory.buy.BuyProductService;
+import th.co.truemoney.serviceinventory.buy.impl.BuyProductServiceImpl;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.engine.client.config.SIEngineConfig;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
@@ -55,6 +55,8 @@ import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
+
+import com.tmn.core.api.config.CoreServiceClientConfig;
 
 @Configuration
 @EnableAsync(proxyTargetClass = true)
@@ -183,6 +185,11 @@ public class ServiceInventoryConfig {
         return new EndPoints();
     }
 
+    @Bean
+    public BuyProductService buyProductService() {
+    	return new BuyProductServiceImpl();
+    }
+    
     @Bean
     @Qualifier("jsonHttpHeader")
     @Primary

@@ -12,6 +12,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
+import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BuyProxy;
+import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BuyProxyImpl;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
@@ -96,6 +98,11 @@ public class LocalEnvironmentConfig {
     @Bean
     public TopUpMobileProxy topUpMobileProxy() {
         return new TopUpTruemoneyProxy();
+    }
+    
+    @Bean
+    public BuyProxy buyProxy() {
+        return new BuyProxyImpl();
     }
 
     @Bean
