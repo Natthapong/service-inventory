@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.BillPaymentOptionsBuilder;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.BuyProductBuilder;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.ForgotPasswordBuilder;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.P2PTransferBuilder;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.ProfileRegisteringBuilder;
@@ -13,6 +14,7 @@ import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.TopUpBuilde
 import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.TopUpMobileBuilder;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.UserProfileBuilder;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.BuyProductHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.ForgotPasswordHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.MobileTopUpHandler;
@@ -44,6 +46,9 @@ public class LegacyFacade {
 
 	@Autowired(required = false)
 	private ForgotPasswordHandler forgotPasswordFacade;
+	
+	@Autowired(required = false)
+	private BuyProductHandler buyProductFacade;
 
 	public LegacyFacade fromChannel(Integer channelID) {
 		this.channelID = channelID;
@@ -87,6 +92,10 @@ public class LegacyFacade {
 	public TopUpMobileBuilder topUpMobile() {
 		return new TopUpMobileBuilder(topUpMobileFacade);
 	}
+	
+	public BuyProductBuilder buyProduct() {
+		return new BuyProductBuilder(buyProductFacade);
+	}
 
 	public LegacyFacade setBalanceFacade(EwalletBalanceHandler balanceFacade) {
 		this.balanceFacade = balanceFacade;
@@ -120,6 +129,11 @@ public class LegacyFacade {
 
 	public LegacyFacade setForgotPasswordFacade(ForgotPasswordHandler forgotPasswordFacade) {
 		this.forgotPasswordFacade = forgotPasswordFacade;
+		return this;
+	}
+	
+	public LegacyFacade setBuyProductFacade(BuyProductHandler buyProductFacade) {
+		this.buyProductFacade = buyProductFacade;
 		return this;
 	}
 
