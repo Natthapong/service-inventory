@@ -210,25 +210,24 @@ public class EndPoints {
 		return host + "/service-inventory-web/v1/ewallet/profile/change-image/{accessTokenID}?imageFileName={imageFileName}";
 	}
 
-	public String getCreateBuyEPINDraftURL() {
-		return host + "/service-inventory-web/v1/buy/e-pin/draft?accessTokenID={accessTokenID}";
+	public String getCreateBuyProductURL() {
+		return host + "/service-inventory-web/v1/buy/product/draft?accessTokenID={accessTokenID}";
 	}
 	
-	public String getBuyEPINDraftDetailsURL() {
-        return host + "/service-inventory-web/v1/buy/e-pin/draft/{buyEPINDraftID}?accessTokenID={accessTokenID}";
+	public String getBuyProductDraftDetailsURL() {
+        return host + "/service-inventory-web/v1/buy/product/draft/{buyProductDraftID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getPerformBuyEPINURL() {
-    	return host + "/service-inventory-web/v1/buy/e-pin/transaction/{buyEPINDraftID}?accessTokenID={accessTokenID}";
+	public String getPerformBuyProductURL() {
+    	return host + "/service-inventory-web/v1/buy/product/transaction/{buyProductDraftID}?accessTokenID={accessTokenID}";
 	}
 
-	public String getBuyEPINStatusURL() {
-        return host + "/service-inventory-web/v1/buy/e-pin/transaction/{transactionID}/status?accessTokenID={accessTokenID}";
-
+	public String getBuyProductStatusURL() {
+        return host + "/service-inventory-web/v1/buy/product/transaction/{transactionID}/status?accessTokenID={accessTokenID}";
 	}
 
-	public String getBuyEPINResultURL() {
-        return host + "/service-inventory-web/v1/buy/e-pin/transaction/{transactionID}?accessTokenID={accessTokenID}";
+	public String getBuyProductResultURL() {
+        return host + "/service-inventory-web/v1/buy/product/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
 	
 }

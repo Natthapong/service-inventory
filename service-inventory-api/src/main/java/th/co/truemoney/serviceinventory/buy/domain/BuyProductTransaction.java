@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class BuyEPINTransaction extends Transaction {
+public class BuyProductTransaction extends Transaction {
 
 	private static final long serialVersionUID = -3546197537668299129L;
 
@@ -21,18 +21,18 @@ public class BuyEPINTransaction extends Transaction {
 	
 	private ServiceInventoryException failCause;
 	
-	private BuyEPINConfirmationInfo confirmationInfo;
+	private BuyProductConfirmationInfo confirmationInfo;
 
 	public static enum FailStatus {
 		UMARKET_FAILED, UNKNOWN_FAILED;
 	}
 
-	public BuyEPINTransaction() {
+	public BuyProductTransaction() {
 		super();
 	}
 
-	public BuyEPINTransaction(BuyEPINDraft buyEPINDraft) {
-		if (buyEPINDraft == null || buyEPINDraft.getStatus() != BuyEPINDraft.Status.OTP_CONFIRMED) {
+	public BuyProductTransaction(BuyProductDraft buyEPINDraft) {
+		if (buyEPINDraft == null || buyEPINDraft.getStatus() != BuyProductDraft.Status.OTP_CONFIRMED) {
 			throw new IllegalArgumentException("passing in bad draft data");
 		}
 		this.ID = buyEPINDraft.getID();
@@ -48,11 +48,11 @@ public class BuyEPINTransaction extends Transaction {
 		this.ID = ID;
 	}
 
-	public BuyEPINDraft getDraftTransaction() {
-		return (BuyEPINDraft) super.getDraftTransaction();
+	public BuyProductDraft getDraftTransaction() {
+		return (BuyProductDraft) super.getDraftTransaction();
 	}
 
-	public void setDraftTransaction(BuyEPINDraft buyEPINDraft) {
+	public void setDraftTransaction(BuyProductDraft buyEPINDraft) {
 		super.setDraftTransaction(buyEPINDraft);
 	}
 
@@ -65,11 +65,11 @@ public class BuyEPINTransaction extends Transaction {
 		this.failStatus = failStatus;
 	}
 
-	public BuyEPINConfirmationInfo getConfirmationInfo() {
+	public BuyProductConfirmationInfo getConfirmationInfo() {
 		return confirmationInfo;
 	}
 
-	public void setConfirmationInfo(BuyEPINConfirmationInfo confirmationInfo) {
+	public void setConfirmationInfo(BuyProductConfirmationInfo confirmationInfo) {
 		this.confirmationInfo = confirmationInfo;
 	}
 	

@@ -6,6 +6,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 import th.co.truemoney.serviceinventory.bill.domain.BillPaymentDraft;
+import th.co.truemoney.serviceinventory.buy.domain.BuyProductDraft;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 
@@ -22,7 +23,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 	@Type(value = TopUpQuote.class, name = "topUpQuote"),
 	@Type(value = P2PTransferDraft.class, name = "p2pTransferDraft"),
 	@Type(value = BillPaymentDraft.class, name = "billInvoice"),
-	@Type(value = TopUpMobileDraft.class, name = "topUpMobileDraft")
+	@Type(value = TopUpMobileDraft.class, name = "topUpMobileDraft"),
+	@Type(value = BuyProductDraft.class, name = "buyProductDraft")
 	})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)

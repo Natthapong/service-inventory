@@ -7,7 +7,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class BuyEPINConfirmationInfo implements Serializable {
+public class BuyProductConfirmationInfo implements Serializable {
 
 	private static final long serialVersionUID = 4321188114858681616L;
 	private String transactionID;

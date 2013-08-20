@@ -10,32 +10,43 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class BuyEPINDraft extends DraftTransaction {
+public class BuyProductDraft extends DraftTransaction {
 
-	private static final String DRAFT_TYPE = "buyEPINDraft";
+	private static final String DRAFT_TYPE = "buyProductDraft";
 	
 	private static final long serialVersionUID = 9001829071748468624L;
 	
-	private String mobileNumber;
+	private String target;
+	
+	private String recipientMobileNumber;
 
 	private BigDecimal amount;
 	
-	public BuyEPINDraft() {
+	public BuyProductDraft() {
 		type = DRAFT_TYPE;
 	}
 
-	public BuyEPINDraft(String mobileNumber, BigDecimal amount) {
-		this.mobileNumber = mobileNumber;
+	public BuyProductDraft(String target, String recipientMobileNumber, BigDecimal amount) {
+		this.target = target;
+		this.recipientMobileNumber = recipientMobileNumber;
 		this.amount = amount;
 		type = DRAFT_TYPE;
 	}
 
-	public String getMobileNumber() {
-		return mobileNumber;
+	public String getTarget() {
+		return target;
 	}
 
-	public void setMobileNumber(String mobileNumber) {
-		this.mobileNumber = mobileNumber;
+	public void setTarget(String target) {
+		this.target = target;
+	}
+
+	public String getRecipientMobileNumber() {
+		return recipientMobileNumber;
+	}
+
+	public void setRecipientMobileNumber(String recipientMobileNumber) {
+		this.recipientMobileNumber = recipientMobileNumber;
 	}
 
 	public BigDecimal getAmount() {
