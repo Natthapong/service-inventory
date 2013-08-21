@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import com.jayway.jsonpath.Criteria;
+
 import th.co.truemoney.serviceinventory.buy.BuyProductService;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductDraft;
@@ -70,6 +72,23 @@ public class BuyProductServiceImpl implements BuyProductService {
 	@Override
 	public Status performBuyProduct(String buyProductDraftID,
 			String accessTokenID) throws ServiceInventoryException {
+		
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		
+		ClientCredential credential =  accessToken.getClientCredential();
+		
+		BuyProductDraft draft = transactionRepo.findDraftTransaction(buyProductDraftID, accessTokenID, BuyProductDraft.class);
+		
+		legacyFacade.buyProduct().fromApp(credential.getAppUser(), credential.getAppPassword(), credential.getAppKey())
+				.fromChannel(credential.getChannel(), credential.getChannelDetail())
+				.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				.withTargetProduct(draft.getBuyProductInfo().getTarget())
+				.toRecipientMobileNumber(draft.getRecipientMobileNumber())
+				.usingSourceOfFund("EW")
+				.withAmount(draft.getBuyProductInfo().getAmount())
+				.andFee(BigDecimal.ZERO, BigDecimal.ZERO)
+				.confirmBuyProduct(draft.getTransactionID());
+		
 		return null;
 	}
 

@@ -8,6 +8,8 @@ import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
+import th.co.truemoney.serviceinventory.buy.domain.BuyProductConfirmationInfo;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBuyRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBuyRequest;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -144,5 +146,60 @@ public class BuyProductBuilder {
             super(500,ex.getCode(),"Verify Buy product fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
         }
     }
+
+    public static class ConfirmBuyProductFailException extends ServiceInventoryException{
+		private static final long serialVersionUID = -192970131921639753L;
+
+		public ConfirmBuyProductFailException(SIEngineException ex) {
+            super(500,ex.getCode(),"Confirm Buy product fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
+        }
+    }
+    
+	public BuyProductConfirmationInfo confirmBuyProduct(String transactionID) {
+		
+		Validate.notNull(amount, "data missing. how much to buy ?");
+		Validate.notNull(serviceFee, "data missing. missing service fee value");
+		Validate.notNull(sourceOfFundFee, "data missing. missing source of fund fee value");
+		Validate.notNull(targetProduct, "data missing. target missing?");
+
+		Validate.notNull(tmnID, "data missing. missing ewallet source of fund user detail?");
+		Validate.notNull(sessionID, "data missing. missing ewallet source of fund user detail?");
+
+		Validate.notNull(appUser, "data missing.verify topping from which source?");
+		Validate.notNull(appPassword, "data missing. verify topping from which source?");
+		Validate.notNull(appKey, "data missing. verify topping from which source?");
+		Validate.notNull(channel, "data missing. verify topping from which channel?");
+		Validate.notNull(channelDetail, "data missing. verify topping from which channel detail.");
+		Validate.notNull(commandAction, "data missing. verify topping from which command action.");
+		
+		Validate.notNull(recipientMobileNumber, "data missing. no mobile number");
+		Validate.notNull(transactionID, "data missing. no Verify Trans. ID");
+		
+		ConfirmBuyRequest confirmBuyRequest = new ConfirmBuyRequest();
+		
+		confirmBuyRequest.setAppUser(appUser);
+		confirmBuyRequest.setAppPassword(appPassword);
+		confirmBuyRequest.setAppKey(appKey);
+		
+		confirmBuyRequest.setChannel(channel);
+		confirmBuyRequest.setChannelDetail(channelDetail);
+		confirmBuyRequest.setCommandAction(commandAction);
+		
+		confirmBuyRequest.setTmnID(tmnID);
+		confirmBuyRequest.setSession(sessionID);
+
+		confirmBuyRequest.setAmount(convertMoney(amount));
+		confirmBuyRequest.setSource(sourceOfFundSourceType);
+		confirmBuyRequest.setSourceFeeType("THB");
+		confirmBuyRequest.setTotalSourceFee(convertMoney(sourceOfFundFee));
+		confirmBuyRequest.setServiceFeeType("THB");
+		confirmBuyRequest.setTotalServiceFee(convertMoney(serviceFee));
+		confirmBuyRequest.setTarget(targetProduct);
+		
+		confirmBuyRequest.setMsisdn(recipientMobileNumber);
+		confirmBuyRequest.setTransRef(transactionID);
+		
+		return buyProductFacade.confirmBuyProduct(confirmBuyRequest);
+	}
 	
 }

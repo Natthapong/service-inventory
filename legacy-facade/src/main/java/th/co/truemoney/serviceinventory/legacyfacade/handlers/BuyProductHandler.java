@@ -1,12 +1,19 @@
 package th.co.truemoney.serviceinventory.legacyfacade.handlers;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
+import th.co.truemoney.serviceinventory.buy.domain.BuyProductConfirmationInfo;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBuyRequest;
+import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBuyResponse;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBuyRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBuyResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BuyProxy;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.BuyProductBuilder.ConfirmBuyProductFailException;
 import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.BuyProductBuilder.VerifyBuyProductFailException;
 
 public class BuyProductHandler {
@@ -25,5 +32,22 @@ public class BuyProductHandler {
             throw new VerifyBuyProductFailException(ex);
         }
     }
+
+	public BuyProductConfirmationInfo confirmBuyProduct(ConfirmBuyRequest confirmBuyRequest) {
+
+		 try {
+			 SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	         ConfirmBuyResponse confirmResponse = buyProxy.confirmBuyProduct(confirmBuyRequest);
+	         
+	         BuyProductConfirmationInfo buyProductConfirmationInfo = new BuyProductConfirmationInfo();
+	         
+	         buyProductConfirmationInfo.setTransactionID(confirmResponse.getApproveCode());
+	         buyProductConfirmationInfo.setTransactionDate(date.format(new Date()));
+			 
+			 return buyProductConfirmationInfo;
+	        } catch(FailResultCodeException ex) {
+	            throw new ConfirmBuyProductFailException(ex);
+	        }
+	}
 
 }
