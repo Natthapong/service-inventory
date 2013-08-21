@@ -31,7 +31,6 @@ public class BuyProductBuilder {
 	private String commandAction;
 	
 	private String recipientMobileNumber;
-	private String ref1;
 	private BigDecimal amount;
 	private String targetProduct;
 	private BigDecimal serviceFee;
@@ -64,15 +63,12 @@ public class BuyProductBuilder {
 	
 	public BuyProductBuilder toRecipientMobileNumber(String recipientMobileNumber) {
 		this.recipientMobileNumber = recipientMobileNumber;
-		this.ref1 = recipientMobileNumber;
 		return this;
 	}
 	
 	public BuyProductBuilder usingSourceOfFund(String sourceOfFundSourceType) {
 		this.commandAction = sourceOfFundSourceType;
 		this.sourceOfFundSourceType = sourceOfFundSourceType;
-		this.sourceOfFundFee = BigDecimal.ZERO;
-		this.serviceFee = BigDecimal.ZERO;
 		return this;
 	}
 
@@ -101,12 +97,12 @@ public class BuyProductBuilder {
 		Validate.notNull(tmnID, "data missing. missing ewallet source of fund user detail?");
 		Validate.notNull(sessionID, "data missing. missing ewallet source of fund user detail?");
 
-		Validate.notNull(appUser, "data missing.verify topping from which source?");
-		Validate.notNull(appPassword, "data missing. verify topping from which source?");
-		Validate.notNull(appKey, "data missing. verify topping from which source?");
-		Validate.notNull(channel, "data missing. verify topping from which channel?");
-		Validate.notNull(channelDetail, "data missing. verify topping from which channel detail.");
-		Validate.notNull(commandAction, "data missing. verify topping from which command action.");
+		Validate.notNull(appUser, "data missing.verify buy from which source?");
+		Validate.notNull(appPassword, "data missing. verify buy from which source?");
+		Validate.notNull(appKey, "data missing. verify buy from which source?");
+		Validate.notNull(channel, "data missing. verify buy from which channel?");
+		Validate.notNull(channelDetail, "data missing. verify buy from which channel detail.");
+		Validate.notNull(commandAction, "data missing. verify buy from which command action.");
 		
 		VerifyBuyRequest verifyRequest = new VerifyBuyRequest();
 
@@ -131,30 +127,7 @@ public class BuyProductBuilder {
 		
 		return buyProductFacade.verifyBuyProduct(verifyRequest);
 	}
-
-	private String convertMoney(BigDecimal value) {
-		BigDecimal scaled = value.setScale(2, RoundingMode.HALF_UP);
-		String formatedString = new DecimalFormat("#0.00").format(scaled);
-		int lastIndex = formatedString.lastIndexOf('.');
-		return formatedString.substring(0, lastIndex) + formatedString.substring(lastIndex + 1);
-	}
 	
-    public static class VerifyBuyProductFailException extends ServiceInventoryException{
-		private static final long serialVersionUID = 2783748973750123315L;
-
-		public VerifyBuyProductFailException(SIEngineException ex) {
-            super(500,ex.getCode(),"Verify Buy product fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
-        }
-    }
-
-    public static class ConfirmBuyProductFailException extends ServiceInventoryException{
-		private static final long serialVersionUID = -192970131921639753L;
-
-		public ConfirmBuyProductFailException(SIEngineException ex) {
-            super(500,ex.getCode(),"Confirm Buy product fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
-        }
-    }
-    
 	public BuyProductConfirmationInfo confirmBuyProduct(String transactionID) {
 		
 		Validate.notNull(amount, "data missing. how much to buy ?");
@@ -165,15 +138,15 @@ public class BuyProductBuilder {
 		Validate.notNull(tmnID, "data missing. missing ewallet source of fund user detail?");
 		Validate.notNull(sessionID, "data missing. missing ewallet source of fund user detail?");
 
-		Validate.notNull(appUser, "data missing.verify topping from which source?");
-		Validate.notNull(appPassword, "data missing. verify topping from which source?");
-		Validate.notNull(appKey, "data missing. verify topping from which source?");
-		Validate.notNull(channel, "data missing. verify topping from which channel?");
-		Validate.notNull(channelDetail, "data missing. verify topping from which channel detail.");
-		Validate.notNull(commandAction, "data missing. verify topping from which command action.");
+		Validate.notNull(appUser, "data missing.verify buy from which source?");
+		Validate.notNull(appPassword, "data missing. verify buy from which source?");
+		Validate.notNull(appKey, "data missing. verify buy from which source?");
+		Validate.notNull(channel, "data missing. verify buy from which channel?");
+		Validate.notNull(channelDetail, "data missing. verify buy from which channel detail.");
+		Validate.notNull(commandAction, "data missing. verify buy from which command action.");
 		
 		Validate.notNull(recipientMobileNumber, "data missing. no mobile number");
-		Validate.notNull(transactionID, "data missing. no Verify Trans. ID");
+		Validate.notNull(transactionID, "data missing. no verify transaction ID");
 		
 		ConfirmBuyRequest confirmBuyRequest = new ConfirmBuyRequest();
 		
@@ -201,5 +174,28 @@ public class BuyProductBuilder {
 		
 		return buyProductFacade.confirmBuyProduct(confirmBuyRequest);
 	}
+
+	private String convertMoney(BigDecimal value) {
+		BigDecimal scaled = value.setScale(2, RoundingMode.HALF_UP);
+		String formatedString = new DecimalFormat("#0.00").format(scaled);
+		int lastIndex = formatedString.lastIndexOf('.');
+		return formatedString.substring(0, lastIndex) + formatedString.substring(lastIndex + 1);
+	}
+	
+    public static class VerifyBuyProductFailException extends ServiceInventoryException{
+		private static final long serialVersionUID = 2783748973750123315L;
+
+		public VerifyBuyProductFailException(SIEngineException ex) {
+            super(500,ex.getCode(),"Verify Buy product fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
+        }
+    }
+
+    public static class ConfirmBuyProductFailException extends ServiceInventoryException{
+		private static final long serialVersionUID = -192970131921639753L;
+
+		public ConfirmBuyProductFailException(SIEngineException ex) {
+            super(500,ex.getCode(),"Confirm Buy product fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
+        }
+    }
 	
 }

@@ -26,6 +26,7 @@ import th.co.truemoney.serviceinventory.bill.impl.BillPaymentValidationConfig;
 import th.co.truemoney.serviceinventory.bill.impl.BillRetrieverImpl;
 import th.co.truemoney.serviceinventory.bill.validation.BillValidator;
 import th.co.truemoney.serviceinventory.buy.BuyProductService;
+import th.co.truemoney.serviceinventory.buy.impl.AsyncBuyProductProcessor;
 import th.co.truemoney.serviceinventory.buy.impl.BuyProductServiceImpl;
 import th.co.truemoney.serviceinventory.email.EmailService;
 import th.co.truemoney.serviceinventory.engine.client.config.SIEngineConfig;
@@ -188,6 +189,11 @@ public class ServiceInventoryConfig {
     @Bean
     public BuyProductService buyProductService() {
     	return new BuyProductServiceImpl();
+    }
+    
+    @Bean
+    public AsyncBuyProductProcessor getAsyncBuyProductProcessor() {
+        return new AsyncBuyProductProcessor();
     }
     
     @Bean

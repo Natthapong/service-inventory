@@ -6,8 +6,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import com.jayway.jsonpath.Criteria;
-
 import th.co.truemoney.serviceinventory.buy.BuyProductService;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductDraft;
@@ -23,6 +21,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRep
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 
@@ -36,6 +35,9 @@ public class BuyProductServiceImpl implements BuyProductService {
 
 	@Autowired
 	private LegacyFacade legacyFacade;
+	
+    @Autowired
+    private AsyncBuyProductProcessor asyncBuyProductProcessor;
 	
 	@Override
 	public BuyProductDraft createAndVerifyBuyProductDraft(String target,
@@ -54,8 +56,9 @@ public class BuyProductServiceImpl implements BuyProductService {
 			.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
 			.withTargetProduct(target)
 			.toRecipientMobileNumber(recipientMobileNumber)
-			.usingSourceOfFund("EW")
+			.usingSourceOfFund("EW")	
 			.withAmount(amount)
+			.andFee(BigDecimal.ZERO, BigDecimal.ZERO)			
 			.verifyBuyProduct();
 		
 		BuyProductDraft buyProductDraft = createBuyProductDraft(target, recipientMobileNumber, accessTokenID, buyProduct);
@@ -74,22 +77,24 @@ public class BuyProductServiceImpl implements BuyProductService {
 			String accessTokenID) throws ServiceInventoryException {
 		
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-		
-		ClientCredential credential =  accessToken.getClientCredential();
-		
-		BuyProductDraft draft = transactionRepo.findDraftTransaction(buyProductDraftID, accessTokenID, BuyProductDraft.class);
-		
-		legacyFacade.buyProduct().fromApp(credential.getAppUser(), credential.getAppPassword(), credential.getAppKey())
-				.fromChannel(credential.getChannel(), credential.getChannelDetail())
-				.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
-				.withTargetProduct(draft.getBuyProductInfo().getTarget())
-				.toRecipientMobileNumber(draft.getRecipientMobileNumber())
-				.usingSourceOfFund("EW")
-				.withAmount(draft.getBuyProductInfo().getAmount())
-				.andFee(BigDecimal.ZERO, BigDecimal.ZERO)
-				.confirmBuyProduct(draft.getTransactionID());
-		
-		return null;
+		BuyProductDraft buyProductDraft = getBuyProductDraftDetails(buyProductDraftID, accessTokenID);
+
+		if (BuyProductDraft.Status.OTP_CONFIRMED != buyProductDraft.getStatus()) {
+			throw new UnVerifiedOwnerTransactionException();
+		}
+
+		BuyProductTransaction buyProductTransaction = new BuyProductTransaction(buyProductDraft);
+		buyProductTransaction.setStatus(BuyProductTransaction.Status.VERIFIED);
+		transactionRepo.saveTransaction(buyProductTransaction, accessTokenID);
+
+		performBuyProduct(buyProductTransaction, accessToken);
+
+		return buyProductTransaction.getStatus();		
+	}
+
+	private void performBuyProduct(BuyProductTransaction buyProductTransaction,
+			AccessToken accessToken) {
+		asyncBuyProductProcessor.buyProduct(buyProductTransaction, accessToken);
 	}
 
 	@Override
