@@ -21,11 +21,19 @@ public class LocalSecurityProxyClient implements TmnSecurityProxyClient {
     @Override
     public StandardBizResponse terminateSession(StandardBizRequest standardBizRequest)
             throws EwalletException {
-    	StandardBizResponse standardBizResponse = new StandardBizResponse();
-    	standardBizResponse.setTransactionId("11111111");
-    	standardBizResponse.setResultCode("0");
-    	standardBizResponse.setResultNamespace("namespace");
-        return standardBizResponse;
+        if ("adam@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())) {
+            return adam.getTmnSecurity().terminateSession(standardBizRequest);
+        } else if("eve@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())){
+            return eve.getTmnSecurity().terminateSession(standardBizRequest);
+        } else if("simpson@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())){
+            return simpsons.getTmnSecurity().terminateSession(standardBizRequest);
+        } else {
+	    	StandardBizResponse standardBizResponse = new StandardBizResponse();
+	    	standardBizResponse.setTransactionId("11111111");
+	    	standardBizResponse.setResultCode("0");
+	    	standardBizResponse.setResultNamespace("namespace");
+	        return standardBizResponse;
+        }
     }
 
     @Override
@@ -49,11 +57,19 @@ public class LocalSecurityProxyClient implements TmnSecurityProxyClient {
 
     @Override
     public StandardBizResponse extendSession(StandardBizRequest standardBizRequest) throws EwalletException {
-    	StandardBizResponse standardBizResponse = new StandardBizResponse();
-    	standardBizResponse.setTransactionId("11111111");
-    	standardBizResponse.setResultCode("0");
-    	standardBizResponse.setResultNamespace("namespace");
-        return standardBizResponse;
+        if ("adam@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())) {
+            return adam.getTmnSecurity().extendSession(standardBizRequest);
+        } else if("eve@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())){
+            return eve.getTmnSecurity().extendSession(standardBizRequest);
+        } else if("simpson@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())){
+            return simpsons.getTmnSecurity().extendSession(standardBizRequest);
+        } else {
+	    	StandardBizResponse standardBizResponse = new StandardBizResponse();
+	    	standardBizResponse.setTransactionId("11111111");
+	    	standardBizResponse.setResultCode("0");
+	    	standardBizResponse.setResultNamespace("namespace");
+	        return standardBizResponse;
+        }
     }
 
 }

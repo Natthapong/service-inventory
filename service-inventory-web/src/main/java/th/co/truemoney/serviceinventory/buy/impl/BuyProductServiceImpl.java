@@ -38,6 +38,10 @@ public class BuyProductServiceImpl implements BuyProductService {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		ClientCredential appData = accessToken.getClientCredential();
 		
+		if (recipientMobileNumber == null || recipientMobileNumber.trim().isEmpty()) {
+			recipientMobileNumber = accessToken.getMobileNumber();
+		}
+		
 		BuyProduct buyProduct = legacyFacade.buyProduct()
 			.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
 			.fromChannel(appData.getChannel(), appData.getChannelDetail())

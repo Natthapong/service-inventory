@@ -6,6 +6,7 @@ import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
+import th.co.truemoney.serviceinventory.ewallet.proxy.WalletProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteRequest;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.AddFavoriteResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
@@ -28,7 +29,11 @@ import com.tmn.core.api.message.ChangePasswordRequest;
 import com.tmn.core.api.message.ChangePinRequest;
 import com.tmn.core.api.message.GetProfileRequest;
 import com.tmn.core.api.message.GetProfileResponse;
+import com.tmn.core.api.message.StandardMoneyResponse;
+import com.tmn.core.api.message.TransferRequest;
 import com.tmn.core.api.message.UpdateProfileRequest;
+import com.tmn.core.api.message.VerifyTransferRequest;
+import com.tmn.core.api.message.VerifyTransferResponse;
 
 public class Simpsons  implements Persona {
 
@@ -122,8 +127,10 @@ public class Simpsons  implements Persona {
 			public com.tmn.core.api.message.StandardBizResponse terminateSession(
 					com.tmn.core.api.message.StandardBizRequest standardBizRequest)
 					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
+				com.tmn.core.api.message.StandardBizResponse standardBizResponse = new com.tmn.core.api.message.StandardBizResponse();
+				standardBizResponse.setResultCode("0");	
+				standardBizResponse.setResultNamespace("core");	
+				return standardBizResponse;
 			}
 			
 			@Override
@@ -150,8 +157,10 @@ public class Simpsons  implements Persona {
 			public com.tmn.core.api.message.StandardBizResponse extendSession(
 					com.tmn.core.api.message.StandardBizRequest standardBizRequest)
 					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
+				com.tmn.core.api.message.StandardBizResponse standardBizResponse = new com.tmn.core.api.message.StandardBizResponse();
+				standardBizResponse.setResultCode("0");	
+				standardBizResponse.setResultNamespace("core");	
+				return standardBizResponse;
 			}
 
         };
@@ -174,8 +183,10 @@ public class Simpsons  implements Persona {
 			@Override
 			public com.tmn.core.api.message.StandardBizResponse updateProfile(
 					UpdateProfileRequest updateProfileRequest) throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
+				com.tmn.core.api.message.StandardBizResponse standardBizResponse = new com.tmn.core.api.message.StandardBizResponse();
+				standardBizResponse.setResultCode("0");	
+				standardBizResponse.setResultNamespace("core");	
+				return standardBizResponse;
 			}
 			
 			@Override
@@ -194,17 +205,53 @@ public class Simpsons  implements Persona {
 			@Override
 			public com.tmn.core.api.message.StandardBizResponse changePin(
 					ChangePinRequest changePinRequest) throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
+				com.tmn.core.api.message.StandardBizResponse standardBizResponse = new com.tmn.core.api.message.StandardBizResponse();
+				standardBizResponse.setResultCode("0");	
+				standardBizResponse.setResultNamespace("core");	
+				return standardBizResponse;
 			}
 			
 			@Override
 			public com.tmn.core.api.message.StandardBizResponse changePassword(
 					ChangePasswordRequest changePasswordRequest)
 					throws EwalletException {
-				// TODO Auto-generated method stub
-				return null;
+				com.tmn.core.api.message.StandardBizResponse standardBizResponse = new com.tmn.core.api.message.StandardBizResponse();
+				standardBizResponse.setResultCode("0");	
+				standardBizResponse.setResultNamespace("core");	
+				return standardBizResponse;
 			}
 		};
 	}
+	
+	@Override
+	public WalletProxyClient getWalletProxyClient() {
+		return new WalletProxyClient() {
+			
+			@Override
+			public VerifyTransferResponse verifyTransfer(
+					VerifyTransferRequest verifyTransferRequest)
+					throws EwalletException {
+		        VerifyTransferResponse verifyTransferResponse = new VerifyTransferResponse();
+		        verifyTransferResponse.setTransactionId("100000001");
+		        verifyTransferResponse.setResultCode("0");
+		        verifyTransferResponse.setResultNamespace("core");
+		        verifyTransferResponse.setLoginId("stub@local.com");
+		        verifyTransferResponse.setRemainingBalance(new BigDecimal("100.00"));
+		        verifyTransferResponse.setTargetFullname("Target Fullname");
+		        verifyTransferResponse.setTargetProfilePicture("Target Profile Picture");
+		        return verifyTransferResponse;
+			}
+			
+			@Override
+			public StandardMoneyResponse transfer(TransferRequest transferRequest)
+					throws EwalletException {
+		        StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
+		        moneyResponse.setTransactionId("123456789");
+		        moneyResponse.setResultCode("0");
+		        moneyResponse.setResultNamespace("core");
+		        return moneyResponse;
+			}
+		};
+	}
+	
 }

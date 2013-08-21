@@ -13,7 +13,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BuyProxy;
-import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BuyProxyImpl;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
@@ -23,6 +22,7 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.persona.LocalBillsPersona;
+import th.co.truemoney.serviceinventory.persona.proxies.LocalBuyProductProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalEwalletSoapProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalProfileAdminProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalSecurityProxyClient;
@@ -102,7 +102,7 @@ public class LocalEnvironmentConfig {
     
     @Bean
     public BuyProxy buyProxy() {
-        return new BuyProxyImpl();
+        return new LocalBuyProductProxy();
     }
 
     @Bean
