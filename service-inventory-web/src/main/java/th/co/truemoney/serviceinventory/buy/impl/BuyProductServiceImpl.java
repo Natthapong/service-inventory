@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import th.co.truemoney.serviceinventory.buy.BuyProductService;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
@@ -11,12 +12,15 @@ import th.co.truemoney.serviceinventory.buy.domain.BuyProductDraft;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductTransaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
+import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.TransactionRepositoryImpl;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 
@@ -58,31 +62,38 @@ public class BuyProductServiceImpl implements BuyProductService {
 	}
 
 	@Override
-	public BuyProductDraft getBuyProductDraftDetails(String buyProductDraftID,
+	public BuyProductDraft getBuyProductDraftDetails(String buyProductDraftID, 
 			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		return transactionRepo.findDraftTransaction(buyProductDraftID, accessTokenID, BuyProductDraft.class);
 	}
 
 	@Override
 	public Status performBuyProduct(String buyProductDraftID,
 			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Status getBuyProductStatus(String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+		BuyProductTransaction buyProduct = getBuyProductResult(transactionID, accessTokenID);
+	  if (Transaction.Status.FAILED == buyProduct.getStatus()) {
+            ServiceInventoryException failCause = buyProduct.getFailCause();
+            if (failCause != null) {
+            	throw new ServiceInventoryException(
+            			HttpStatus.BAD_REQUEST.value(), 
+            			failCause.getErrorCode(), 
+            			failCause.getDeveloperMessage(), 
+            			failCause.getErrorNamespace());
+            }
+            throw new ServiceInventoryWebException(Code.CONFIRM_FAILED, "confirmation processing fail.");
+        }
+        return buyProduct.getStatus();
 	}
 
 	@Override
-	public BuyProductTransaction getBuyProductResult(String transactionID,
-			String accessTokenID) throws ServiceInventoryException {
-		// TODO Auto-generated method stub
-		return null;
+	public BuyProductTransaction getBuyProductResult(String transactionID, String accessTokenID) throws ServiceInventoryException {
+        return transactionRepo.findTransaction(transactionID, accessTokenID, BuyProductTransaction.class);
 	}
 
 	public void setAccessTokenRepo(AccessTokenMemoryRepository accessTokenRepo) {

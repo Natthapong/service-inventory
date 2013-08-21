@@ -52,25 +52,25 @@ public class TmnBuyProductServiceClient implements BuyProductService {
 	}
 
 	@Override
-	public BuyProductDraft getBuyProductDraftDetails(String buyEPINDraftID, String accessTokenID) throws ServiceInventoryException {
+	public BuyProductDraft getBuyProductDraftDetails(String buyProductDraftID, String accessTokenID) throws ServiceInventoryException {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<BuyProductDraft> responseEntity = restTemplate.exchange(
 				endPoints.getBuyProductDraftDetailsURL(), HttpMethod.GET,
 				requestEntity, BuyProductDraft.class,
-				buyEPINDraftID, accessTokenID);
+				buyProductDraftID, accessTokenID);
 
 		return responseEntity.getBody();
 	}
 
 	@Override
-	public Status performBuyProduct(String buyEPINDraftID, String accessTokenID) throws ServiceInventoryException {
+	public Status performBuyProduct(String buyProductDraftID, String accessTokenID) throws ServiceInventoryException {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
 
 		ResponseEntity<BuyProductTransaction.Status> responseEntity = restTemplate.exchange(
 				endPoints.getPerformBuyProductURL(), HttpMethod.PUT,
 				requestEntity, BuyProductTransaction.Status.class,
-				buyEPINDraftID,  accessTokenID);
+				buyProductDraftID,  accessTokenID);
 
 		return responseEntity.getBody();
 	}
