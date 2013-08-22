@@ -50,4 +50,8 @@ public class BuyProductHandler {
 	        }
 	}
 
+	public void setBuyProxy(BuyProxy buyProxy) {
+		this.buyProxy = buyProxy;
+	}
+
 }
