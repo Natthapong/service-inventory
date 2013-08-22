@@ -1,15 +1,23 @@
 package th.co.truemoney.serviceinventory.service;
 
-import static org.junit.Assert.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
@@ -31,6 +39,8 @@ import th.co.truemoney.serviceinventory.ewallet.impl.ActivityServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.AccessTokenMemoryRepository;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
+import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.UserProfileBuilder;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,26 +49,73 @@ import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 @Category(IntegrationTest.class)
 public class ActivityServiceImplTest {
 
-    @Autowired
+	static final int CHANNEL_ID = 40;
+
+	@Autowired
     ActivityServiceImpl service;
+    
+    MockRestServiceServer mockServer;
+    
+    RestTemplate restTemplate;
+    
+    LegacyFacade legacyFacade;
+    
+    UserProfileBuilder userProfileBuilder;
+    
+    AccessTokenRepository accessTokenRepo;
+
+    @Before
+    public void setup() {
+    	restTemplate = new RestTemplate();
+    	accessTokenRepo  = new AccessTokenMemoryRepository();
+    	
+    	accessTokenRepo.save(new AccessToken("accessToken", "loginID", "sessionID", "54321", 40));
+    	
+    	userProfileBuilder = Mockito.mock(UserProfileBuilder.class);
+    	when(userProfileBuilder.fromChannel(anyInt())).thenReturn(userProfileBuilder);
+    	when(userProfileBuilder.withServiceCode(anyString())).thenReturn(userProfileBuilder);
+    	when(userProfileBuilder.withRefernce1(anyString())).thenReturn(userProfileBuilder);
+    	
+    	legacyFacade = Mockito.mock(LegacyFacade.class);
+    	when(legacyFacade.userProfile(anyString(), anyString())).thenReturn(userProfileBuilder);
+    	
+    	service.setRestTemplate(restTemplate);
+    	service.setAccessTokenRepository(accessTokenRepo);
+    	service.setLegacyFacade(legacyFacade);
+    	
+    	mockServer = MockRestServiceServer.createServer(restTemplate);
+    }
+    
+    @Test
+    public void getMobileAcitivityList() {
+    	mockServer.expect(
+            	requestTo("http://127.0.0.1:8787/core-report-web/transaction/history/54321")
+            ).andExpect(method(HttpMethod.GET)
+            ).andRespond(
+            	withSuccess(new ClassPathResource("json/stub_all_activities.json"), MediaType.APPLICATION_JSON)
+            );
+    	
+    	List<Activity> activityList = service.getActivities("accessToken");
+    	
+    	mockServer.verify();
+    	assertNotNull(activityList);
+    	assertEquals(1, activityList.size());
+    }
 
     @Test
-    public void correctURLGetDetailCalled(){
+    public void getMobileActivityDetailSuccess(){
+    	String truemoneyID = "54321";
+    	String reportID = "9999";
 
-        RestTemplate restTemplate = new RestTemplate();
-        service.setRestTemplate(restTemplate);
-
-        AccessTokenRepository accessTokenRepo = new AccessTokenMemoryRepository();
-        accessTokenRepo.save(new AccessToken("accessToken", "loginID", "sessionID", "54321", 40));
-
-        service.setAccessTokenRepository(accessTokenRepo);
-
-        MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
-
-        mockServer.expect(requestTo("http://127.0.0.1:8787/core-report-web/transaction/history/54321/detail/9999"))
-          .andExpect(method(HttpMethod.GET))
-         .andRespond(withSuccess(new ClassPathResource("json/stub_specific_activities.json"), MediaType.APPLICATION_JSON));
-
+    	when(userProfileBuilder.isFavoritable()).thenReturn(Boolean.TRUE);
+    	
+    	mockServer.expect(
+            	requestTo(String.format("http://127.0.0.1:8787/core-report-web/transaction/history/%s/detail/%s", truemoneyID, reportID))
+            ).andExpect(method(HttpMethod.GET)
+            ).andRespond(
+            	withSuccess(new ClassPathResource("json/stub_specific_activities.json"), MediaType.APPLICATION_JSON)
+            );
+    	
         ActivityDetail activity = service.getActivityDetail(9999L, "accessToken");
 
         mockServer.verify();
@@ -68,53 +125,14 @@ public class ActivityServiceImplTest {
         assertEquals(new BigDecimal(2000), activity.getAmount());
         assertEquals("billpay", activity.getType());
         assertEquals("085-382-8482", activity.getRef1());
-
+        assertEquals(Boolean.TRUE, activity.isFavoritable());
     }
 
     @Test
-    public void correctURLGetCalled() {
-
-        RestTemplate restTemplate = new RestTemplate();
-        service.setRestTemplate(restTemplate);
-
-        AccessTokenRepository accessTokenRepo = new AccessTokenMemoryRepository();
-        accessTokenRepo.save(new AccessToken("accessToken", "loginID", "sessionID", "54321", 40));
-
-        service.setAccessTokenRepository(accessTokenRepo);
-
-        MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
-
-        mockServer.expect(requestTo("http://127.0.0.1:8787/core-report-web/transaction/history/54321"))
-          .andExpect(method(HttpMethod.GET))
-         .andRespond(withSuccess(new ClassPathResource("json/stub_all_activities.json"), MediaType.APPLICATION_JSON));
-
-        List<Activity> activities = service.getActivities("accessToken");
-
-        mockServer.verify();
-        assertNotNull(activities);
-
-        Activity activity = activities.get(0);
-        assertNotNull(activity);
-        assertEquals("Truemove H+", activity.getAction());
-        assertEquals(new BigDecimal(2000), activity.getAmount());
-        assertEquals("billpay", activity.getType());
-        assertEquals("085-382-8482", activity.getRef1());
-        assertNotNull(activity.getTransactionDate());
-    }
-
-    @Test
-    public void badAccessToken() {
-
-        RestTemplate restTemplate = new RestTemplate();
-        service.setRestTemplate(restTemplate);
-
-        AccessTokenRepository accessTokenRepo = new AccessTokenMemoryRepository();
-        accessTokenRepo.save(new AccessToken("accessToken", "loginID", "sessionID", "54321", 40));
-
-        service.setAccessTokenRepository(accessTokenRepo);
+    public void badAccessTokenError() {
         try {
             service.getActivities("bad access token");
-            fail();
+            fail("invalid access token");
         } catch (ResourceNotFoundException ex) {
 
         }

@@ -18,6 +18,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
 import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
+import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.util.MaskingUtil;
 
 public class ActivityServiceImpl implements ActivityService {
@@ -27,6 +28,9 @@ public class ActivityServiceImpl implements ActivityService {
 	
 	@Autowired
 	private AccessTokenRepository accessTokenRepository;
+	
+	@Autowired
+	private LegacyFacade legacyFacade;
 	
 	@Autowired @Qualifier("jsonHttpHeader")
 	private HttpHeaders headers;
@@ -62,9 +66,19 @@ public class ActivityServiceImpl implements ActivityService {
 			}
 		}
 		
+		activityDetail.setFavoritable(isFavoritable(accessToken, activityDetail));
+
 		return activityDetail;
 	}
-
+	
+	private Boolean isFavoritable(AccessToken accessToken, ActivityDetail activityDetail) {
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+							.fromChannel(accessToken.getChannelID())
+							.withServiceCode(activityDetail.getAction())
+							.withRefernce1(activityDetail.getRef1())
+							.isFavoritable();
+	}
+	
 	public void setRestTemplate(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}
@@ -73,4 +87,8 @@ public class ActivityServiceImpl implements ActivityService {
 		this.accessTokenRepository = accessTokenRepo;
 	}
 
+	public void setLegacyFacade(LegacyFacade legacyFacade) {
+		this.legacyFacade = legacyFacade;
+	}
+	
 }

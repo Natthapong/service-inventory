@@ -17,6 +17,7 @@ public class ActivityDetail extends Activity {
 	protected String transactionID;
 	protected String ref2;
 	protected String personalMessage;
+	protected Boolean favoritable = Boolean.FALSE;
 	
 	public ActivityDetail() {
 		super();
@@ -45,6 +46,14 @@ public class ActivityDetail extends Activity {
 		this.personalMessage = personalMessage;
 	}
 	
+	public Boolean isFavoritable() {
+		return favoritable;
+	}
+
+	public void setFavoritable(Boolean favoritable) {
+		this.favoritable = favoritable;
+	}
+
 	@JsonIgnore
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -53,5 +62,4 @@ public class ActivityDetail extends Activity {
 			.append("ref2: ", this.getRef2())
 			.toString();
 	}
-	
 }
