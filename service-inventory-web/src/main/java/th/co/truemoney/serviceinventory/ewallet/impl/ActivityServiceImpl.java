@@ -44,8 +44,8 @@ public class ActivityServiceImpl implements ActivityService {
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		
 		ResponseEntity<Activity[]> response = restTemplate.exchange(endPoints.getListAllReport(), 
-				HttpMethod.GET, new HttpEntity<String>(headers), Activity[].class, accessToken.getTruemoneyID());
-		
+															HttpMethod.GET, new HttpEntity<String>(headers), 
+															Activity[].class, accessToken.getTruemoneyID());
 		return Arrays.asList(response.getBody());
 	}
 
@@ -55,19 +55,23 @@ public class ActivityServiceImpl implements ActivityService {
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		
 		ResponseEntity<ActivityDetail> response = restTemplate.exchange(endPoints.getReportDetail(), 
-				HttpMethod.GET, new HttpEntity<String>(headers), ActivityDetail.class, accessToken.getTruemoneyID(), reportID );
-		
+															HttpMethod.GET, new HttpEntity<String>(headers), 
+															ActivityDetail.class, accessToken.getTruemoneyID(), reportID );
 		ActivityDetail activityDetail = response.getBody();
-		
-		if (activityDetail != null && activityDetail.getType().equals("transfer")) {
-			String targetName = activityDetail.getRef2();
-			if (targetName != null) {
-				activityDetail.setRef2(MaskingUtil.maskFullName(targetName));
+		activityDetail = censorSensitiveData(activityDetail);
+		activityDetail.setFavoritable(isFavoritable(accessToken, activityDetail));
+		activityDetail.setFavorited(IsFavorited(accessToken, activityDetail));
+
+		return activityDetail;
+	}
+
+	private ActivityDetail censorSensitiveData(ActivityDetail activityDetail) {
+		if (activityDetail != null) {
+			if ("transfer".equalsIgnoreCase(activityDetail.getType())) {
+				String maskedFullname = MaskingUtil.maskFullName(activityDetail.getRef2());
+				activityDetail.setRef2(maskedFullname);
 			}
 		}
-		
-		activityDetail.setFavoritable(isFavoritable(accessToken, activityDetail));
-
 		return activityDetail;
 	}
 	
@@ -79,6 +83,14 @@ public class ActivityServiceImpl implements ActivityService {
 							.isFavoritable();
 	}
 	
+	private Boolean IsFavorited(AccessToken accessToken, ActivityDetail activityDetail) {
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+		        			.fromChannel(accessToken.getChannelID())
+		        			.withServiceCode(activityDetail.getAction())
+		        			.withRefernce1(activityDetail.getRef1())
+		        			.isFavorited();
+	}
+
 	public void setRestTemplate(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}

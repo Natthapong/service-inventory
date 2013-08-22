@@ -67,10 +67,15 @@ public class ActivityServiceImplTest {
     @Before
     public void setup() {
     	restTemplate = new RestTemplate();
-    	accessTokenRepo  = new AccessTokenMemoryRepository();
-    	
+    	accessTokenRepo = new AccessTokenMemoryRepository();
+    	service.setRestTemplate(restTemplate);
+    	service.setAccessTokenRepository(accessTokenRepo);
+    	mockServer = MockRestServiceServer.createServer(restTemplate);
     	accessTokenRepo.save(new AccessToken("accessToken", "loginID", "sessionID", "54321", 40));
-    	
+    }
+    
+    @Before
+    public void setupLegacyFacade() {
     	userProfileBuilder = Mockito.mock(UserProfileBuilder.class);
     	when(userProfileBuilder.fromChannel(anyInt())).thenReturn(userProfileBuilder);
     	when(userProfileBuilder.withServiceCode(anyString())).thenReturn(userProfileBuilder);
@@ -78,12 +83,7 @@ public class ActivityServiceImplTest {
     	
     	legacyFacade = Mockito.mock(LegacyFacade.class);
     	when(legacyFacade.userProfile(anyString(), anyString())).thenReturn(userProfileBuilder);
-    	
-    	service.setRestTemplate(restTemplate);
-    	service.setAccessTokenRepository(accessTokenRepo);
     	service.setLegacyFacade(legacyFacade);
-    	
-    	mockServer = MockRestServiceServer.createServer(restTemplate);
     }
     
     @Test
@@ -108,6 +108,7 @@ public class ActivityServiceImplTest {
     	String reportID = "9999";
 
     	when(userProfileBuilder.isFavoritable()).thenReturn(Boolean.TRUE);
+    	when(userProfileBuilder.isFavorited()).thenReturn(Boolean.TRUE);
     	
     	mockServer.expect(
             	requestTo(String.format("http://127.0.0.1:8787/core-report-web/transaction/history/%s/detail/%s", truemoneyID, reportID))
@@ -126,6 +127,7 @@ public class ActivityServiceImplTest {
         assertEquals("billpay", activity.getType());
         assertEquals("085-382-8482", activity.getRef1());
         assertEquals(Boolean.TRUE, activity.isFavoritable());
+        assertEquals(Boolean.TRUE, activity.isFavorited());
     }
 
     @Test
