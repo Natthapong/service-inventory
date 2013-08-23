@@ -19,6 +19,7 @@ public class ActivityDetail extends Activity {
 	protected String personalMessage;
 	protected Boolean favoritable = Boolean.FALSE;
 	protected Boolean favorited = Boolean.FALSE;
+	protected String additionalData;
 	
 	public ActivityDetail() {
 		super();
@@ -61,6 +62,14 @@ public class ActivityDetail extends Activity {
 
 	public void setFavorited(Boolean favorited) {
 		this.favorited = favorited;
+	}
+
+	public String getAdditionalData() {
+		return additionalData;
+	}
+
+	public void setAdditionalData(String additionalData) {
+		this.additionalData = additionalData;
 	}
 
 	@JsonIgnore
