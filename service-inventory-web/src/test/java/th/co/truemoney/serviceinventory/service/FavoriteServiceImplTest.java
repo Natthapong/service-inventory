@@ -72,7 +72,7 @@ public class FavoriteServiceImplTest {
     @Test
     public void addFavoriteFailWithWrongTmnIDUser(){
         try{
-            Favorite favoriteResult = favoriteServiceImpl.addFavorite(favorite, "0001");
+            favoriteServiceImpl.addFavorite(favorite, "0001");
             fail("Add Favorite Fail with wrong tmnID user");
         }catch(FailResultCodeException e){
             assertEquals("500", e.getCode());
@@ -83,7 +83,7 @@ public class FavoriteServiceImplTest {
     public void addFavoriteFailWithWrongFavoriteServiceCode(){
         try{
             Favorite wrongFavorite = new Favorite(2000L,"billpay","tx","0811234567", "", new BigDecimal(2000));
-            Favorite favoriteResult = favoriteServiceImpl.addFavorite(wrongFavorite, "12345");
+            favoriteServiceImpl.addFavorite(wrongFavorite, "12345");
             fail("Add Favorite Fail with wrong service code");
         } catch(ServiceInventoryException se) {
             assertEquals("1018", se.getErrorCode());

@@ -1,9 +1,17 @@
 [
- 		{
- 			"action": "Truemove H+",
- 			"type": "billpay",
- 			"amount": 2000,
- 			"ref1": "085-382-8482",
- 			"transactionDate": "1367207620395"
- 		}
+	{
+		"action": "Truemove H+",
+		"type": "billpay",
+		"amount": 2000,
+		"ref1": "085-382-8482",
+		"transactionDate": "1367207620395"
+	},
+	{
+		"type": "buy_cashcard",
+		"action": "ecash_c",
+		"amount": 100,
+		"ref1": "0897665655",
+		"ref2": "123456789012345678",
+		"additionalData": "12345678901234"
+	}
 ]

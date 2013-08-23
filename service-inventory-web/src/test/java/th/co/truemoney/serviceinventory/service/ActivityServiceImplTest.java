@@ -71,7 +71,7 @@ public class ActivityServiceImplTest {
     	service.setRestTemplate(restTemplate);
     	service.setAccessTokenRepository(accessTokenRepo);
     	mockServer = MockRestServiceServer.createServer(restTemplate);
-    	accessTokenRepo.save(new AccessToken("accessToken", "loginID", "sessionID", "54321", 40));
+    	accessTokenRepo.save(new AccessToken("9898989898989898989", "loginID", "sessionID", "54321", 40));
     }
     
     @Before
@@ -88,6 +88,7 @@ public class ActivityServiceImplTest {
     
     @Test
     public void getMobileAcitivityList() {
+    	String accessToken = "9898989898989898989";
     	mockServer.expect(
             	requestTo("http://127.0.0.1:8787/core-report-web/transaction/history/54321")
             ).andExpect(method(HttpMethod.GET)
@@ -95,29 +96,27 @@ public class ActivityServiceImplTest {
             	withSuccess(new ClassPathResource("json/stub_all_activities.json"), MediaType.APPLICATION_JSON)
             );
     	
-    	List<Activity> activityList = service.getActivities("accessToken");
+    	List<Activity> activityList = service.getActivities(accessToken);
     	
     	mockServer.verify();
     	assertNotNull(activityList);
-    	assertEquals(1, activityList.size());
+    	assertEquals(2, activityList.size());
     }
 
     @Test
     public void getMobileActivityDetailSuccess(){
+    	String accessToken = "9898989898989898989";
     	String truemoneyID = "54321";
-    	String reportID = "9999";
+    	Long reportID = 9999L;
 
-    	when(userProfileBuilder.isFavoritable()).thenReturn(Boolean.TRUE);
-    	when(userProfileBuilder.isFavorited()).thenReturn(Boolean.TRUE);
-    	
     	mockServer.expect(
-            	requestTo(String.format("http://127.0.0.1:8787/core-report-web/transaction/history/%s/detail/%s", truemoneyID, reportID))
+            	requestTo(String.format("http://127.0.0.1:8787/core-report-web/transaction/history/%s/detail/%d", truemoneyID, reportID))
             ).andExpect(method(HttpMethod.GET)
             ).andRespond(
             	withSuccess(new ClassPathResource("json/stub_specific_activities.json"), MediaType.APPLICATION_JSON)
             );
     	
-        ActivityDetail activity = service.getActivityDetail(9999L, "accessToken");
+        ActivityDetail activity = service.getActivityDetail(reportID, accessToken);
 
         mockServer.verify();
         assertNotNull(activity);
@@ -126,10 +125,38 @@ public class ActivityServiceImplTest {
         assertEquals(new BigDecimal(2000), activity.getAmount());
         assertEquals("billpay", activity.getType());
         assertEquals("085-382-8482", activity.getRef1());
+    }
+    
+    @Test
+    public void getBuyEPinActivityDetail(){
+    	String accessToken = "9898989898989898989";
+    	String truemoneyID = "54321";
+    	Long reportID = 9910L;
+
+    	when(userProfileBuilder.isFavoritable()).thenReturn(Boolean.TRUE);
+    	when(userProfileBuilder.isFavorited()).thenReturn(Boolean.TRUE);
+    	
+    	mockServer.expect(
+            	requestTo(String.format("http://127.0.0.1:8787/core-report-web/transaction/history/%s/detail/%d", truemoneyID, reportID))
+            ).andExpect(method(HttpMethod.GET)
+            ).andRespond(
+            	withSuccess(new ClassPathResource("json/stub_buyepin_activity.json"), MediaType.APPLICATION_JSON)
+            );
+    	
+        ActivityDetail activity = service.getActivityDetail(reportID, accessToken);
+
+        mockServer.verify();
+        assertNotNull(activity);
+
+        assertEquals("buy_cashcard", activity.getType());
+        assertEquals("ecash_c", activity.getAction());
+        assertEquals(new BigDecimal(100), activity.getAmount());
+        assertEquals("0897665655", activity.getRef1());
+        assertEquals("123456789012345678", activity.getRef2());
+        assertEquals("12345678901234", activity.getAdditionalData());
         assertEquals(Boolean.TRUE, activity.isFavoritable());
         assertEquals(Boolean.TRUE, activity.isFavorited());
     }
-
     @Test
     public void badAccessTokenError() {
         try {
