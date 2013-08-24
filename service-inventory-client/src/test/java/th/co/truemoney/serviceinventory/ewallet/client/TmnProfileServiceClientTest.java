@@ -2,7 +2,6 @@ package th.co.truemoney.serviceinventory.ewallet.client;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
@@ -18,7 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import th.co.truemoney.serviceinventory.ewallet.client.config.ServiceInventoryClientConfig;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest;
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
-import th.co.truemoney.serviceinventory.ewallet.domain.EWalletOwnerCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
@@ -107,7 +105,7 @@ public class TmnProfileServiceClientTest {
                 TestData.createSuccessClientLogin());
 
         BigDecimal balance = client.getEwalletBalance(accessToken);
-        assertEquals(new BigDecimal("2000.00"), balance);
+        assertEquals(new BigDecimal("10"), balance);
     }
 
     @Test
