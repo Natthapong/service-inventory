@@ -14,12 +14,12 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpConfirmationInfo;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
+import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler.BankSystemTransactionFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler.UMarketSystemTransactionFailException;
 
 @Service
 public class AsyncTopUpEwalletProcessor {
@@ -55,15 +55,14 @@ public class AsyncTopUpEwalletProcessor {
 
 			logger.info("AsyncService.topUpUtibaEwallet.resultTransactionID: " + confirmationInfo.getTransactionID());
 
-		} catch (BankSystemTransactionFailException e) {
-				topUpOrder.setFailStatus(TopUpOrder.FailStatus.BANK_FAILED);
-		} catch (UMarketSystemTransactionFailException e) {
-				topUpOrder.setFailStatus(TopUpOrder.FailStatus.UMARKET_FAILED);
+		} catch (ServiceInventoryException e) {
+			topUpOrder.setStatus(Transaction.Status.FAILED);
+			topUpOrder.setFailStatus(FailStatus.UNKNOWN_FAILED);
+			topUpOrder.setFailCause(e);
 		} catch (Exception ex) {
 			logger.error("unexpect top up fail: ", ex);
-			topUpOrder.setFailStatus(TopUpOrder.FailStatus.UNKNOWN_FAILED);
+			topUpOrder.setFailStatus(FailStatus.UNKNOWN_FAILED);
 		}
-
 		transactionRepo.saveTransaction(topUpOrder, accessToken.getAccessTokenID());
 
 		return new AsyncResult<TopUpOrder> (topUpOrder);

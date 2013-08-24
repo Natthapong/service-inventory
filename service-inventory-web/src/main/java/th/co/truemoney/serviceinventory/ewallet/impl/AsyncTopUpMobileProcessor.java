@@ -14,13 +14,13 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.handlers.MobileTopUpHandler.SIEngineTransactionFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.handlers.MobileTopUpHandler.UMarketSystemTransactionFailException;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileConfirmationInfo;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction;
+import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileTransaction.FailStatus;
 
 @Service
 public class AsyncTopUpMobileProcessor {
@@ -63,12 +63,13 @@ public class AsyncTopUpMobileProcessor {
 			topUpMobileTransaction.setStatus(Transaction.Status.SUCCESS);
 
 			logger.info("AsyncService.topUpMobile.resultTransactionID: " + confirmationInfo.getTransactionID());
-		} catch (UMarketSystemTransactionFailException ex) {
-			topUpMobileTransaction.setFailStatus(TopUpMobileTransaction.FailStatus.UMARKET_FAILED);
-		} catch (SIEngineTransactionFailException ex) {
-			topUpMobileTransaction.setFailStatus(TopUpMobileTransaction.FailStatus.TPP_FAILED);
+		} catch (ServiceInventoryException e) {
+			topUpMobileTransaction.setStatus(Transaction.Status.FAILED);
+			topUpMobileTransaction.setFailStatus(FailStatus.UNKNOWN_FAILED);
+			topUpMobileTransaction.setFailCause(e);
 		} catch (Exception ex) {
-			topUpMobileTransaction.setFailStatus(TopUpMobileTransaction.FailStatus.UNKNOWN_FAILED);
+			logger.error("unexpect top up fail: ", ex);
+			topUpMobileTransaction.setFailStatus(FailStatus.UNKNOWN_FAILED);
 		}
 
 		transactionRepo.saveTransaction(topUpMobileTransaction, accessToken.getAccessTokenID());

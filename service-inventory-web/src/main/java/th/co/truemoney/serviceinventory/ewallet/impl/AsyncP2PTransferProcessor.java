@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.handlers.EwalletBalanceHandler.UMarketSystemTransactionFailException;
+import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
-import th.co.truemoney.serviceinventory.transfer.domain.P2PTransactionConfirmationInfo;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction.FailStatus;
 
 @Service
@@ -69,9 +69,9 @@ public class AsyncP2PTransferProcessor {
 			p2pTransaction.setStatus(Transaction.Status.SUCCESS);
 			logger.info("AsyncService.transferEwallet.resultTransactionID: " + confirmationInfo.getTransactionID());
 
-		} catch (UMarketSystemTransactionFailException e) {
+		} catch (ServiceInventoryException e) {
 			p2pTransaction.setStatus(Transaction.Status.FAILED);
-			p2pTransaction.setFailStatus(FailStatus.UMARKET_FAILED);
+			p2pTransaction.setFailStatus(FailStatus.UNKNOWN_FAILED);
 			p2pTransaction.setFailCause(e);
 		} catch (Exception ex) {
 			logger.error("unexpect p2p transfer fail: ", ex);

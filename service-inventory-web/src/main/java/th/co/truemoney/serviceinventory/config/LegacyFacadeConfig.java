@@ -1,10 +1,8 @@
 package th.co.truemoney.serviceinventory.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.BillPaymentHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.BuyProductHandler;
@@ -18,12 +16,9 @@ import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler
 @Configuration
 public class LegacyFacadeConfig {
 
-	@Autowired
-	private EwalletSoapProxy ewalletProxy;
-
 	@Bean
 	public EwalletBalanceHandler balanceFacade() {
-		return new EwalletBalanceHandler(ewalletProxy);
+		return new EwalletBalanceHandler();
 	}
 
 	@Bean
