@@ -9,8 +9,12 @@ import th.co.truemoney.serviceinventory.persona.Adam;
 import th.co.truemoney.serviceinventory.persona.Eve;
 import th.co.truemoney.serviceinventory.persona.Simpsons;
 
+import com.tmn.core.api.message.AddMoneyRequest;
+import com.tmn.core.api.message.GetBalanceResponse;
+import com.tmn.core.api.message.StandardBizRequest;
 import com.tmn.core.api.message.StandardMoneyResponse;
 import com.tmn.core.api.message.TransferRequest;
+import com.tmn.core.api.message.VerifyAddMoneyRequest;
 import com.tmn.core.api.message.VerifyTransferRequest;
 import com.tmn.core.api.message.VerifyTransferResponse;
 
@@ -65,6 +69,63 @@ public class LocalWalletProxyClient implements WalletProxyClient {
 	        } catch (InterruptedException e) {
 	            e.printStackTrace();
 	        }
+	        moneyResponse.setTransactionId("123456789");
+	        moneyResponse.setResultCode("0");
+	        moneyResponse.setResultNamespace("core");
+	        return moneyResponse;
+        }
+	}
+
+	@Override
+	public GetBalanceResponse getBalance(StandardBizRequest standardBizRequest)
+			throws EwalletException {
+        if (standardBizRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)) {
+            return adam.getWalletProxyClient().getBalance(standardBizRequest);
+        } else if (standardBizRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)) {
+            return eve.getWalletProxyClient().getBalance(standardBizRequest);
+        } else if (standardBizRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)) {
+            return simpsons.getWalletProxyClient().getBalance(standardBizRequest);
+        } else {
+			GetBalanceResponse balanceResponse = new GetBalanceResponse();
+			balanceResponse.setTransactionId("123456789");
+			balanceResponse.setResultCode("0");
+			balanceResponse.setResultNamespace("core");
+			balanceResponse.setAvailableBalance(BigDecimal.TEN);
+			balanceResponse.setCurrentBalance(BigDecimal.TEN);
+	        return balanceResponse;
+        }
+	}
+
+	@Override
+	public StandardMoneyResponse verifyAddMoney(
+			VerifyAddMoneyRequest verifyAddMoneyRequest)
+			throws EwalletException {
+        if (verifyAddMoneyRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)) {
+            return adam.getWalletProxyClient().verifyAddMoney(verifyAddMoneyRequest);
+        } else if (verifyAddMoneyRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)) {
+            return eve.getWalletProxyClient().verifyAddMoney(verifyAddMoneyRequest);
+        } else if (verifyAddMoneyRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)) {
+            return simpsons.getWalletProxyClient().verifyAddMoney(verifyAddMoneyRequest);
+        } else {
+	        StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
+	        moneyResponse.setTransactionId("123456789");
+	        moneyResponse.setResultCode("0");
+	        moneyResponse.setResultNamespace("core");
+	        return moneyResponse;
+        }
+	}
+
+	@Override
+	public StandardMoneyResponse addMoney(AddMoneyRequest addMoneyRequest)
+			throws EwalletException {
+        if (addMoneyRequest.getSecurityContext().getTmnId().equals(AdamTmnMoneyID)) {
+            return adam.getWalletProxyClient().addMoney(addMoneyRequest);
+        } else if (addMoneyRequest.getSecurityContext().getTmnId().equals(EveTmnMoneyID)) {
+            return eve.getWalletProxyClient().addMoney(addMoneyRequest);
+        } else if (addMoneyRequest.getSecurityContext().getTmnId().equals(SimpsonsTmnMoneyID)) {
+            return simpsons.getWalletProxyClient().addMoney(addMoneyRequest);
+        } else {
+	        StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
 	        moneyResponse.setTransactionId("123456789");
 	        moneyResponse.setResultCode("0");
 	        moneyResponse.setResultNamespace("core");

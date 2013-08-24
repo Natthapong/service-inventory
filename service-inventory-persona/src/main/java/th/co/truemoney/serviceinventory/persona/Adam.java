@@ -25,13 +25,16 @@ import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizRequest
 import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 
+import com.tmn.core.api.message.AddMoneyRequest;
 import com.tmn.core.api.message.ChangePasswordRequest;
 import com.tmn.core.api.message.ChangePinRequest;
+import com.tmn.core.api.message.GetBalanceResponse;
 import com.tmn.core.api.message.GetProfileRequest;
 import com.tmn.core.api.message.GetProfileResponse;
 import com.tmn.core.api.message.StandardMoneyResponse;
 import com.tmn.core.api.message.TransferRequest;
 import com.tmn.core.api.message.UpdateProfileRequest;
+import com.tmn.core.api.message.VerifyAddMoneyRequest;
 import com.tmn.core.api.message.VerifyTransferRequest;
 import com.tmn.core.api.message.VerifyTransferResponse;
 
@@ -250,6 +253,41 @@ public class Adam implements Persona {
 		        moneyResponse.setResultNamespace("core");
 		        return moneyResponse;
 			}
+
+			@Override
+			public GetBalanceResponse getBalance(
+					com.tmn.core.api.message.StandardBizRequest standardBizRequest)
+					throws EwalletException {
+				GetBalanceResponse balanceResponse = new GetBalanceResponse();
+				balanceResponse.setTransactionId("123456789");
+				balanceResponse.setResultCode("0");
+				balanceResponse.setResultNamespace("core");
+				balanceResponse.setAvailableBalance(BigDecimal.TEN);
+				balanceResponse.setCurrentBalance(BigDecimal.TEN);
+		        return balanceResponse;
+			}
+
+			@Override
+			public StandardMoneyResponse verifyAddMoney(
+					VerifyAddMoneyRequest verifyAddMoneyRequest)
+					throws EwalletException {
+		        StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
+		        moneyResponse.setTransactionId("123456789");
+		        moneyResponse.setResultCode("0");
+		        moneyResponse.setResultNamespace("core");
+		        return moneyResponse;
+			}
+
+			@Override
+			public StandardMoneyResponse addMoney(
+					AddMoneyRequest addMoneyRequest) throws EwalletException {
+		        StandardMoneyResponse moneyResponse = new StandardMoneyResponse();
+		        moneyResponse.setTransactionId("123456789");
+		        moneyResponse.setResultCode("0");
+		        moneyResponse.setResultNamespace("core");
+		        return moneyResponse;
+			}
+			
 		};
 	}
 
