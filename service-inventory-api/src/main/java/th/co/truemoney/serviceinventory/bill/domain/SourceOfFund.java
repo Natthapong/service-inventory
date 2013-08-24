@@ -29,6 +29,12 @@ public class SourceOfFund implements Serializable {
 		super();
 	}
 
+	public SourceOfFund(String sourceType, String feeRateType, BigDecimal feeRate) {
+		this.sourceType = sourceType;
+		this.feeRate = feeRate;
+		this.feeRateType = feeRateType;
+	}
+	
 	public String getSourceType() {
 		return sourceType;
 	}
