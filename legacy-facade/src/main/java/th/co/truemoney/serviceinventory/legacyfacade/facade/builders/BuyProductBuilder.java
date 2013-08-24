@@ -11,8 +11,6 @@ import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductConfirmationInfo;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBuyRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBuyRequest;
-import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
-import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.BuyProductHandler;
 
 public class BuyProductBuilder {
@@ -181,21 +179,5 @@ public class BuyProductBuilder {
 		int lastIndex = formatedString.lastIndexOf('.');
 		return formatedString.substring(0, lastIndex) + formatedString.substring(lastIndex + 1);
 	}
-	
-    public static class VerifyBuyProductFailException extends ServiceInventoryException{
-		private static final long serialVersionUID = 2783748973750123315L;
-
-		public VerifyBuyProductFailException(SIEngineException ex) {
-            super(500,ex.getCode(),"Verify Buy product fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
-        }
-    }
-
-    public static class ConfirmBuyProductFailException extends ServiceInventoryException{
-		private static final long serialVersionUID = -192970131921639753L;
-
-		public ConfirmBuyProductFailException(SIEngineException ex) {
-            super(500,ex.getCode(),"Confirm Buy product fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
-        }
-    }
 	
 }

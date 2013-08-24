@@ -60,7 +60,7 @@ public class TopUpBuilder {
 		Validate.notNull(sourceOfFundID, "data missing. using which source of fund to top up?");
 		Validate.notNull(sourceOfFundType, "data missing. using which source of fund to top up?");
 
-		balanceFacade.verifyToppingUpCapability(amount, sourceOfFundID, sourceOfFundType, channelID, sessionID, tmnID);
+		balanceFacade.verifyTopupToMyWallet(amount, sourceOfFundID, sourceOfFundType, channelID, sessionID, tmnID);
 	}
 
 	public TopUpConfirmationInfo performTopUp() {
@@ -72,6 +72,6 @@ public class TopUpBuilder {
 		Validate.notNull(sourceOfFundID, "data missing. using withc source of fund to top up?");
 		Validate.notNull(sourceOfFundType, "data missing. using withc source of fund to top up?");
 
-		return balanceFacade.topUpMoney(amount, sourceOfFundID, sourceOfFundType, channelID, sessionID, tmnID);
+		return balanceFacade.topupToMyWallet(amount, sourceOfFundID, sourceOfFundType, channelID, sessionID, tmnID);
 	}
 }

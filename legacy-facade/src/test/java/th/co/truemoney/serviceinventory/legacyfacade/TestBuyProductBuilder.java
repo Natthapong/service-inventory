@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.web.client.RestClientException;
 
 import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductConfirmationInfo;
@@ -21,13 +22,13 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.ConfirmBuy
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBuyRequest;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBuyResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
+import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineUnExpectedException;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BuyProxy;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
-import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.BuyProductBuilder.ConfirmBuyProductFailException;
-import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.BuyProductBuilder.VerifyBuyProductFailException;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.BuyProductHandler;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.BuyProductHandler.ConfirmBuyProductFailException;
+import th.co.truemoney.serviceinventory.legacyfacade.handlers.BuyProductHandler.VerifyBuyProductFailException;
 
 public class TestBuyProductBuilder {
 
@@ -77,10 +78,32 @@ public class TestBuyProductBuilder {
 	}
 
 	@Test(expected=VerifyBuyProductFailException.class)
-	public void verifyBuyProductFail() {
+	public void verifyBuyProductFailWithResultCode() {
 		//given 
 		when(buyProxyMock.verifyBuyProduct(any(VerifyBuyRequest.class)))
 			.thenThrow(new FailResultCodeException("19xxxx","namespace"));
+		
+		//when
+		legacyFacade.buyProduct()
+				.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+				.fromChannel(appData.getChannel(), appData.getChannelDetail())
+				.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				.withTargetProduct("ecash_c")
+				.toRecipientMobileNumber("08xxxxxxxx")
+				.usingSourceOfFund("EW")	
+				.withAmount(BigDecimal.TEN)
+				.andFee(BigDecimal.ZERO, BigDecimal.ZERO)			
+				.verifyBuyProduct();
+		
+		//then 
+		verify(buyProxyMock).verifyBuyProduct(any(VerifyBuyRequest.class));
+	}
+	
+	@Test(expected=SIEngineUnExpectedException.class)
+	public void verifyBuyProductFailWithUnExpectedCode() {
+		//given 
+		when(buyProxyMock.verifyBuyProduct(any(VerifyBuyRequest.class)))
+			.thenThrow(new RestClientException("Connection timed out"));
 		
 		//when
 		legacyFacade.buyProduct()
@@ -122,7 +145,7 @@ public class TestBuyProductBuilder {
 	}
 	
 	@Test(expected=ConfirmBuyProductFailException.class)
-	public void confirmBuyProductFail() {
+	public void confirmBuyProductFailWithResultCode() {
 		//given 
 		when(buyProxyMock.confirmBuyProduct(any(ConfirmBuyRequest.class)))
 			.thenThrow(new FailResultCodeException("19xxxx","namespace"));
@@ -143,6 +166,27 @@ public class TestBuyProductBuilder {
 		verify(buyProxyMock).confirmBuyProduct(any(ConfirmBuyRequest.class));
 	}
 	
+	@Test(expected=SIEngineUnExpectedException.class)
+	public void confirmBuyProductFailWithUnExpectedCode() {
+		//given 
+		when(buyProxyMock.confirmBuyProduct(any(ConfirmBuyRequest.class)))
+			.thenThrow(new RestClientException("Connection timed out"));
+		
+		//when
+		legacyFacade.buyProduct()
+			.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+			.fromChannel(appData.getChannel(), appData.getChannelDetail())
+			.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+			.withTargetProduct("ecash_c")
+			.toRecipientMobileNumber("08xxxxxxxx")
+			.usingSourceOfFund("EW")	
+			.withAmount(BigDecimal.TEN)
+			.andFee(BigDecimal.ZERO, BigDecimal.ZERO)			
+			.confirmBuyProduct("transactionID");
+		
+		//then 
+		verify(buyProxyMock).confirmBuyProduct(any(ConfirmBuyRequest.class));
+	}
 	
 	private VerifyBuyResponse createStubbedVerifyBuyProductResponse() {
 		VerifyBuyResponse verifyBuyResponse = new VerifyBuyResponse(new SIEngineResponse());

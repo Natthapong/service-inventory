@@ -68,7 +68,7 @@ public class P2PTransferBuilder {
         Validate.notNull(amount, "data missing. how much to transfer?");
         Validate.notNull(targetMobileNumber, "data missing. whom to transfer money to?");
 
-        return balanceFacade.verifyP2PTransfer(amount, targetMobileNumber, channelID, sessionID, tmnID);
+        return balanceFacade.verifyTransferFromPersonToPerson(amount, targetMobileNumber, channelID, sessionID, tmnID);
     }
 
     public P2PTransactionConfirmationInfo performTransfer() {
@@ -79,7 +79,7 @@ public class P2PTransferBuilder {
         Validate.notNull(amount, "data missing. how much to transfer?");
         Validate.notNull(targetMobileNumber, "data missing. whom to transfer money to?");
 
-        return balanceFacade.transferEwallet(amount, targetMobileNumber, channelID, sessionID, tmnID, personalMessage);
+        return balanceFacade.transferFromPersonToPerson(amount, targetMobileNumber, channelID, sessionID, tmnID, personalMessage);
     }
     
 }

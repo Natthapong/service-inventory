@@ -28,6 +28,7 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBill
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBillPayResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
+import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineUnExpectedException;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 
@@ -42,7 +43,9 @@ public class BillPaymentHandler {
             return verifyResponse.getTransactionID();
         } catch(FailResultCodeException ex) {
             throw new VerifyBillPayFailException(ex);
-        }
+        } catch (Exception e) {
+	        throw new SIEngineUnExpectedException(e);
+	    }
     }
 
     public BillPaymentConfirmationInfo payBill(ConfirmBillPayRequest billRequest) {
@@ -54,9 +57,10 @@ public class BillPaymentHandler {
             confirmationInfo.setTransactionDate(df.format(new Date()));
             return confirmationInfo;
         } catch (FailResultCodeException ex) {
-            // TODO map exception to corresponding throw
-            throw new UnknownSystemTransactionFailException(ex);
-        }
+            throw new ConfirmBillPayFailException(ex);
+        } catch (Exception e) {
+	        throw new SIEngineUnExpectedException(e);
+	    }
     }
 
     public Bill getBarcodeInformation(GetBarcodeRequest request) {
@@ -93,17 +97,11 @@ public class BillPaymentHandler {
             billInfo.setDebtStatus(DebtStatus.valueFromCode(barcodeResponse.getDebtStatus()));
 
             return billInfo;
-
         } catch (FailResultCodeException ex) {
-            String errorNamespace = ex.getNamespace();
-            if ("SIENGINE".equals(errorNamespace)) {
-                throw new SIEngineTransactionFailException(ex);
-            } else if ("UMARKET".equalsIgnoreCase(errorNamespace)) {
-                throw new UMarketSystemTransactionFailException(ex);
-            } else {
-                throw new UnknownSystemTransactionFailException(ex);
-            }
-        }
+            throw new GetBillInformationFailException(ex);
+        } catch (Exception e) {
+	        throw new SIEngineUnExpectedException(e);
+	    }
     }
 
     public Bill getBillCodeInformation(GetBillRequest request) {
@@ -141,15 +139,10 @@ public class BillPaymentHandler {
             return billInfo;
 
         } catch (FailResultCodeException ex) {
-            String errorNamespace = ex.getNamespace();
-            if ("SIENGINE".equals(errorNamespace)) {
-                throw new SIEngineTransactionFailException(ex);
-            } else if ("UMARKET".equalsIgnoreCase(errorNamespace)) {
-                throw new UMarketSystemTransactionFailException(ex);
-            } else {
-                throw new UnknownSystemTransactionFailException(ex);
-            }
-        }
+            throw new GetBillInformationFailException(ex);
+        } catch (Exception e) {
+	        throw new SIEngineUnExpectedException(e);
+	    }
     }
 
     public OutStandingBill getBillOutStandingOnline(InquiryOutstandingBillRequest inquiryOutstandingBillRequest) {
@@ -167,15 +160,10 @@ public class BillPaymentHandler {
             return outStandingBill;
 
         } catch (FailResultCodeException ex) {
-            String errorNamespace = ex.getNamespace();
-            if ("SIENGINE".equals(errorNamespace)) {
-                throw new SIEngineTransactionFailException(ex);
-            } else if ("UMARKET".equalsIgnoreCase(errorNamespace)) {
-                throw new UMarketSystemTransactionFailException(ex);
-            } else {
-                throw new UnknownSystemTransactionFailException(ex);
-            }
-        }
+            throw new GetBillInformationFailException(ex);
+        } catch (Exception e) {
+	        throw new SIEngineUnExpectedException(e);
+	    }
     }
 
     private List<SourceOfFund> createSourceOfFundFeeList(GetBarcodeResponse barcodeResponse) {
@@ -267,27 +255,19 @@ public class BillPaymentHandler {
         return decimal.divide(new BigDecimal("100"));
     }
 
-    public static class SIEngineTransactionFailException extends ServiceInventoryException {
-        private static final long serialVersionUID = 5955708376116171195L;
-
-        public SIEngineTransactionFailException(SIEngineException ex) {
-            super(500, ex.getCode(), "bill system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
-        }
-    }
-
-    public static class UMarketSystemTransactionFailException extends ServiceInventoryException {
+    public static class GetBillInformationFailException extends ServiceInventoryException {
         private static final long serialVersionUID = 3748885497125818864L;
 
-        public UMarketSystemTransactionFailException(SIEngineException ex) {
-            super(500, ex.getCode(), "umarket system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
+        public GetBillInformationFailException(SIEngineException ex) {
+            super(500, ex.getCode(), "Get bill information fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
         }
     }
 
-    public static class UnknownSystemTransactionFailException extends ServiceInventoryException {
+    public static class ConfirmBillPayFailException extends ServiceInventoryException {
         private static final long serialVersionUID = 5899038317339162588L;
 
-        public UnknownSystemTransactionFailException(SIEngineException ex) {
-            super(500, ex.getCode(),  "unknown system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
+        public ConfirmBillPayFailException(SIEngineException ex) {
+            super(500, ex.getCode(),  "Confirm bill payment fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
         }
     }
 
@@ -295,17 +275,7 @@ public class BillPaymentHandler {
         private static final long serialVersionUID = 3029606083785530229L;
 
         public VerifyBillPayFailException(SIEngineException ex) {
-            super(500,ex.getCode(),"Verify Bill Pay fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
-        }
-    }
-
-    public static class UnknownServiceFeeType extends ServiceInventoryException {
-
-        private static final long serialVersionUID = 5313680069554085972L;
-        private static final String UNKNOWN_SERVICE_FEE_TYPE = "20004";
-
-        public UnknownServiceFeeType(String feeType) {
-            super(500, UNKNOWN_SERVICE_FEE_TYPE,  "unknown fee type code: " + feeType, "BILL-PROXY", null);
+            super(500,ex.getCode(),"Verify bill payment fail with code: " + ex.getCode(),ex.getNamespace(),ex.getMessage());
         }
     }
 

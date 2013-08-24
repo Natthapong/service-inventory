@@ -18,6 +18,7 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopU
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyTopUpAirtimeResponse;
 import th.co.truemoney.serviceinventory.engine.client.exception.FailResultCodeException;
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
+import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineUnExpectedException;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.topup.domain.TopUpMobile;
@@ -54,7 +55,9 @@ public class MobileTopUpHandler {
 			return topUpMobile;
 		} catch(FailResultCodeException ex) {
 			throw new VerifyTopUpAirtimeFailException(ex);
-		}
+		} catch (Exception e) {
+            throw new SIEngineUnExpectedException(e);
+        }
 	}
 	
 	public TopUpMobileConfirmationInfo topUpMobile(ConfirmTopUpAirtimeRequest confirmRequest) {
@@ -66,8 +69,10 @@ public class MobileTopUpHandler {
 			confirmationInfo.setTransactionDate(df.format(new Date()));
 			return confirmationInfo;
 		} catch (FailResultCodeException ex) {
-			throw new UnknownSystemTransactionFailException(ex);
-		}
+			throw new ConfirmTopupAirtimeFailException(ex);
+		} catch (Exception e) {
+            throw new SIEngineUnExpectedException(e);
+        }
 	}
 	
 	private List<SourceOfFund> createSourceOfFundFeeList(VerifyTopUpAirtimeResponse verifyTopUpAirtimeResponse) {
@@ -124,26 +129,10 @@ public class MobileTopUpHandler {
 		return decimal.divide(new BigDecimal("100"));
 	}
 
-	public static class SIEngineTransactionFailException extends ServiceInventoryException {
-		private static final long serialVersionUID = 420345162856639797L;
-
-		public SIEngineTransactionFailException(SIEngineException ex) {
-			super(500, ex.getCode(), "topUp airtime system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
-		}
-	}
-
-	public static class UMarketSystemTransactionFailException extends ServiceInventoryException {
-		private static final long serialVersionUID = -4144730969193929228L;
-
-		public UMarketSystemTransactionFailException(SIEngineException ex) {
-			super(500, ex.getCode(), "umarket system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
-		}
-	}
-
-	public static class UnknownSystemTransactionFailException extends ServiceInventoryException {
+	public static class ConfirmTopupAirtimeFailException extends ServiceInventoryException {
 		private static final long serialVersionUID = 7714167636585614404L;
 
-		public UnknownSystemTransactionFailException(SIEngineException ex) {
+		public ConfirmTopupAirtimeFailException(SIEngineException ex) {
 			super(500, ex.getCode(),  "unknown system fail with code: " + ex.getCode(), ex.getNamespace(), ex.getMessage());
 		}
 	}
@@ -156,13 +145,8 @@ public class MobileTopUpHandler {
 		}
 	}
 
-	public static class UnknownServiceFeeType extends ServiceInventoryException {
-		private static final long serialVersionUID = 5313680069554085972L;
-		private static final String UNKNOWN_SERVICE_FEE_TYPE = "xxxx";
-
-		public UnknownServiceFeeType(String feeType) {
-			super(500, UNKNOWN_SERVICE_FEE_TYPE,  "unknown fee type code: " + feeType, "BILL-PROXY", null);
-		}
+	public void setTopupMobileProxy(TopUpMobileProxy topupMobileProxy) {
+		this.topUpMobileProxy = topupMobileProxy;
 	}
 	
 }
