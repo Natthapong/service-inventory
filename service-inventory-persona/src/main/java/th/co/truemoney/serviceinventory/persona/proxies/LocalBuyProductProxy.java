@@ -32,8 +32,16 @@ public class LocalBuyProductProxy implements BuyProxy {
 	@Override
 	public ConfirmBuyResponse confirmBuyProduct(ConfirmBuyRequest request)
 			throws SIEngineException {
-		// TODO Auto-generated method stub
-		return null;
+        SIEngineResponse buyResponse = new SIEngineResponse();
+
+        buyResponse.setResultCode("0");
+        buyResponse.setResultNamespace("ENGINE");
+        buyResponse.setResultDesc("This Transaction is completed");
+        buyResponse.setReqTransactionID("4410A0334");
+        buyResponse.setTransactionID("20130401125936048554");
+        buyResponse.setResponseMessage("Success");
+
+        return new ConfirmBuyResponse(buyResponse);
 	}
 
 }
