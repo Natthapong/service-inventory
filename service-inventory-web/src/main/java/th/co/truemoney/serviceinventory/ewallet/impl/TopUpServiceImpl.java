@@ -12,7 +12,6 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
 import th.co.truemoney.serviceinventory.ewallet.domain.SourceOfFund;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder;
-import th.co.truemoney.serviceinventory.ewallet.domain.TopUpOrder.FailStatus;
 import th.co.truemoney.serviceinventory.ewallet.domain.TopUpQuote;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction.Status;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
@@ -126,19 +125,18 @@ public class TopUpServiceImpl implements TopUpService {
 	public TopUpOrder.Status getTopUpProcessingStatus(String orderID, String accessTokenID) throws ServiceInventoryWebException {
 		TopUpOrder topUpOrder = getTopUpOrderResults(orderID, accessTokenID);
 		TopUpOrder.Status topUpStatus = topUpOrder.getStatus();
-		FailStatus failStatus = topUpOrder.getFailStatus();
 
 		if(topUpStatus == TopUpOrder.Status.FAILED) {
-			if (failStatus == FailStatus.BANK_FAILED) {
-				throw new ServiceInventoryWebException(Code.CONFIRM_BANK_FAILED,
-						"bank confirmation processing fail.");
-			} else if (failStatus == FailStatus.UMARKET_FAILED) {
-				throw new ServiceInventoryWebException(Code.CONFIRM_UMARKET_FAILED,
-						"u-market confirmation processing fail.");
-			} else {
-				throw new ServiceInventoryWebException(Code.CONFIRM_FAILED,
-						"confirmation processing fail.");
+			ServiceInventoryException failCause = topUpOrder.getFailCause();
+			if (failCause != null) {
+				ServiceInventoryException e = new ServiceInventoryException();
+				e.setErrorCode(failCause.getErrorCode());
+				e.setErrorNamespace(failCause.getErrorNamespace());
+				e.setErrorDescription(failCause.getErrorDescription());
+				throw e;
 			}
+			throw new ServiceInventoryWebException(Code.CONFIRM_FAILED,	
+					"confirmation processing fail.");
 		}
 
 		return topUpStatus;

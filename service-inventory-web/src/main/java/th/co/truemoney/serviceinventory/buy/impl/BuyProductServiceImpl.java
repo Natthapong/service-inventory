@@ -101,23 +101,27 @@ public class BuyProductServiceImpl implements BuyProductService {
 	public Status getBuyProductStatus(String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
 		BuyProductTransaction buyProduct = getBuyProductResult(transactionID, accessTokenID);
-	  if (Transaction.Status.FAILED == buyProduct.getStatus()) {
-            ServiceInventoryException failCause = buyProduct.getFailCause();
-            if (failCause != null) {
-            	throw new ServiceInventoryException(
-            			HttpStatus.BAD_REQUEST.value(), 
-            			failCause.getErrorCode(), 
-            			failCause.getDeveloperMessage(), 
-            			failCause.getErrorNamespace());
-            }
-            throw new ServiceInventoryWebException(Code.CONFIRM_FAILED, "confirmation processing fail.");
-        }
-        return buyProduct.getStatus();
+		BuyProductTransaction.Status buyProductStatus = buyProduct.getStatus();
+		
+		if (buyProductStatus == Transaction.Status.FAILED) {
+			ServiceInventoryException failCause = buyProduct.getFailCause();
+			if (failCause != null) {
+				throw new ServiceInventoryException(
+						HttpStatus.BAD_REQUEST.value(),
+						failCause.getErrorCode(),
+						failCause.getDeveloperMessage(),
+						failCause.getErrorNamespace());
+			}
+			throw new ServiceInventoryWebException(Code.CONFIRM_FAILED,
+					"confirmation processing fail.");
+		}
+		return buyProductStatus;
 	}
 
 	@Override
 	public BuyProductTransaction getBuyProductResult(String transactionID, String accessTokenID) throws ServiceInventoryException {
-        return transactionRepo.findTransaction(transactionID, accessTokenID, BuyProductTransaction.class);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+        return transactionRepo.findTransaction(transactionID, accessToken.getAccessTokenID(), BuyProductTransaction.class);
 	}
 
 	public void setAccessTokenRepo(AccessTokenMemoryRepository accessTokenRepo) {
@@ -135,6 +139,10 @@ public class BuyProductServiceImpl implements BuyProductService {
 		buyProductDraft.setStatus(P2PTransferDraft.Status.CREATED);
 
 		return buyProductDraft;
+	}
+
+	public void setAsyncBuyProductProcessor(AsyncBuyProductProcessor asyncBuyProductProcessor) {
+		this.asyncBuyProductProcessor = asyncBuyProductProcessor;
 	}
 	
 }

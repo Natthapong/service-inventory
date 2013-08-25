@@ -134,10 +134,10 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             throws ServiceInventoryException {
     	
         BillPaymentTransaction billPayment = getBillPaymentResult(billPaymentID, accessTokenID);
-
-        if (Transaction.Status.FAILED == billPayment.getStatus()) {
+        BillPaymentTransaction.Status billPaymentStatus = billPayment.getStatus();
+        
+        if (billPaymentStatus == Transaction.Status.FAILED) {
             ServiceInventoryException failCause = billPayment.getFailCause();
-            
             if (failCause != null) {
             	throw new ServiceInventoryException(
             			HttpStatus.BAD_REQUEST.value(), 
@@ -145,9 +145,10 @@ public class BillPaymentServiceImpl implements  BillPaymentService {
             			failCause.getDeveloperMessage(), 
             			failCause.getErrorNamespace());
             }
-            throw new ServiceInventoryWebException(Code.CONFIRM_FAILED, "confirmation processing fail.");
+            throw new ServiceInventoryWebException(Code.CONFIRM_FAILED, 
+            		"confirmation processing fail.");
         }
-        return billPayment.getStatus();
+        return billPaymentStatus;
     }
 
     @Override

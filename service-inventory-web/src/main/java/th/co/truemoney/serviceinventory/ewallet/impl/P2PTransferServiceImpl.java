@@ -115,7 +115,7 @@ public class P2PTransferServiceImpl implements P2PTransferService {
 				throw e;
 			}
 			throw new ServiceInventoryWebException(Code.CONFIRM_FAILED,
-					"u-market confirmation processing fail.");
+					"confirmation processing fail.");
 		}
 
 		return p2pTransactionStatus;
