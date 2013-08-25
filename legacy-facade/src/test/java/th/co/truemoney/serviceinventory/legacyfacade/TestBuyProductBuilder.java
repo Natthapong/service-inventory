@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.client.RestClientException;
@@ -50,6 +51,7 @@ public class TestBuyProductBuilder {
 		this.buyProductFacade.setBuyProxy(this.buyProxyMock);
 	}
 	
+	@After
 	public void after() {
 		reset(buyProxyMock);
 	}

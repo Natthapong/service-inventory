@@ -87,4 +87,8 @@ public class ForgotPasswordHandler {
         return new AdminSecurityContext(tmnProfileInitiator, encryptedPin);
 	}
 
+	public void setTmnProfileAdminProxy(TmnProfileAdminProxy tmnProfileAdminProxy) {
+		this.tmnProfileAdminProxy = tmnProfileAdminProxy;
+	}
+
 }

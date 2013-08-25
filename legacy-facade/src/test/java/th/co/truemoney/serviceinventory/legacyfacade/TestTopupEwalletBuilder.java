@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,6 +43,7 @@ public class TestTopupEwalletBuilder {
 		this.legacyFacade.setBalanceFacade(ewalletBalanceFacade);
 	}
 	
+	@After
 	public void after() {
 		reset(walletProxyClientMock);
 	}

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.client.RestClientException;
@@ -55,6 +56,7 @@ public class TestTopupMobileBuilder {
 		this.legacyFacade.setTopUpMobileFacade(mobileTopupFacade);
 	}
 	
+	@After
 	public void after() {
 		reset(topupMobileProxyMock);
 	}
