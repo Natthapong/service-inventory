@@ -230,4 +230,7 @@ public class EndPoints {
         return host + "/service-inventory-web/v1/buy/product/transaction/{transactionID}?accessTokenID={accessTokenID}";
 	}
 	
+    public String getActivityDetailResendEpinURL() {
+        return host + "/service-inventory-web/v1/ewallet/activities/{accessTokenID}/resend/e-pin/{reportID}";
+    }
 }
