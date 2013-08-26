@@ -3,7 +3,7 @@ package th.co.truemoney.serviceinventory.sms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import th.co.truemoney.serviceinventory.buy.domain.BuyEpinSms;
+import th.co.truemoney.serviceinventory.buy.domain.SendEpinSms;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
@@ -25,7 +25,7 @@ public class SendEpinService {
 	@Autowired
 	private SmsProxy smsProxyImpl;
 	
-	public void send(BuyEpinSms buyEpinSms) throws ServiceInventoryWebException {
+	public void send(SendEpinSms buyEpinSms) throws ServiceInventoryWebException {
 		
 		boolean result = sendSMS(buyEpinSms);
 		
@@ -34,7 +34,7 @@ public class SendEpinService {
 		}
 	}
 	
-	private boolean sendSMS(BuyEpinSms buyEpinSms) {
+	private boolean sendSMS(SendEpinSms buyEpinSms) {
 		String msg = String.format(SMS_EPIN_TEMPLATE, 
 				buyEpinSms.getAmount(), 
 				buyEpinSms.getAccount(),

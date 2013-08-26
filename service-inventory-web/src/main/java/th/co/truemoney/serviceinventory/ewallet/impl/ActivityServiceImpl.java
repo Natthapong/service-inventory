@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import th.co.truemoney.serviceinventory.buy.domain.SendEpinSms;
 import th.co.truemoney.serviceinventory.config.EndPoints;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -19,6 +20,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.ActivityDetail;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.sms.SendEpinService;
 import th.co.truemoney.serviceinventory.util.MaskingUtil;
 
 public class ActivityServiceImpl implements ActivityService {
@@ -37,6 +39,9 @@ public class ActivityServiceImpl implements ActivityService {
 	
 	@Autowired
 	private EndPoints endPoints;
+	
+	@Autowired
+	private SendEpinService sendEpinService;
 	
 	@Override
 	public List<Activity> getActivities(String accessTokenID) throws ServiceInventoryException {
@@ -63,6 +68,32 @@ public class ActivityServiceImpl implements ActivityService {
 		activityDetail.setFavorited(IsFavorited(accessToken, activityDetail));
 
 		return activityDetail;
+	}
+	
+	@Override
+	public Boolean resendEPIN(Long reportID, String accessTokenID) throws ServiceInventoryException {
+		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
+		ResponseEntity<ActivityDetail> response = restTemplate.exchange(endPoints.getReportDetail(), 
+															HttpMethod.GET, new HttpEntity<String>(headers), 
+															ActivityDetail.class, accessToken.getTruemoneyID(), reportID );
+		ActivityDetail activityDetail = response.getBody();
+		
+		SendEpinSms buyEpinSms = createSendEpinSms(accessToken, activityDetail);
+		
+		sendEpinService.send(buyEpinSms);
+		
+		return Boolean.TRUE;
+	}
+
+	private SendEpinSms createSendEpinSms(AccessToken accessToken, ActivityDetail activityDetail) {
+		SendEpinSms buyEpinSms = new SendEpinSms();
+		buyEpinSms.setAmount(activityDetail.getAmount().toString());
+		buyEpinSms.setRecipientMobileNumber(activityDetail.getRef1());
+		buyEpinSms.setAccount(accessToken.getMobileNumber());
+		buyEpinSms.setPin(activityDetail.getAdditionalData());
+		buyEpinSms.setSerial(activityDetail.getRef2());
+		buyEpinSms.setTxnID(activityDetail.getTransactionID());
+		return buyEpinSms;
 	}
 
 	private ActivityDetail censorSensitiveData(ActivityDetail activityDetail) {

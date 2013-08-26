@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
-import th.co.truemoney.serviceinventory.buy.domain.BuyEpinSms;
+import th.co.truemoney.serviceinventory.buy.domain.SendEpinSms;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductConfirmationInfo;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductDraft;
@@ -78,17 +78,14 @@ public class AsyncBuyProductProcessor {
 		transactionRepo.saveTransaction(buyProductTransaction, accessToken.getAccessTokenID());
 		
 		if(buyProductTransaction.getStatus().equals(Transaction.Status.SUCCESS)) {
-
-			BuyEpinSms buyEpinSms = new BuyEpinSms();
+			SendEpinSms buyEpinSms = new SendEpinSms();
 			buyEpinSms.setRecipientMobileNumber(buyProductTransaction.getDraftTransaction().getRecipientMobileNumber());
 			buyEpinSms.setAmount(buyProductTransaction.getDraftTransaction().getBuyProductInfo().getAmount().toString());
 			buyEpinSms.setPin(buyProductTransaction.getConfirmationInfo().getPin());
 			buyEpinSms.setSerial(buyProductTransaction.getConfirmationInfo().getSerial());
 			buyEpinSms.setTxnID(buyProductTransaction.getID());
-			buyEpinSms.setAccount(accessToken.getMobileNumber());
-			
-			sendEpinService.send(buyEpinSms);
-			
+			buyEpinSms.setAccount(accessToken.getMobileNumber());			
+			sendEpinService.send(buyEpinSms);			
 		}
 		
 		return new AsyncResult<BuyProductTransaction> (buyProductTransaction);
