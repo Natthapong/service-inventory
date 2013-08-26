@@ -2,7 +2,7 @@ package th.co.truemoney.serviceinventory.buy.domain;
 
 import java.io.Serializable;
 
-public class BuyEpinSms  implements Serializable {
+public class SendEpinSms  implements Serializable {
 	
 	private static final long serialVersionUID = 6583010530257817543L;
 	
@@ -12,6 +12,7 @@ public class BuyEpinSms  implements Serializable {
 	private String pin;
 	private String serial;
 	private String txnID;
+	
 	public String getAccount() {
 		return account;
 	}
@@ -48,4 +49,5 @@ public class BuyEpinSms  implements Serializable {
 	public void setTxnID(String txnID) {
 		this.txnID = txnID;
 	}
+	
 }
