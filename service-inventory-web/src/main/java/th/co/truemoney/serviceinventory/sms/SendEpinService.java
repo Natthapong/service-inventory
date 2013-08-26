@@ -9,6 +9,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.C
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
+import th.co.truemoney.serviceinventory.util.SecurityManager;
 
 public class SendEpinService {
 
@@ -25,6 +26,9 @@ public class SendEpinService {
 	@Autowired
 	private SmsProxy smsProxyImpl;
 	
+	@Autowired
+	private SecurityManager securityManager;
+	
 	public void send(SendEpinSms buyEpinSms) throws ServiceInventoryWebException {
 		
 		boolean result = sendSMS(buyEpinSms);
@@ -38,7 +42,7 @@ public class SendEpinService {
 		String msg = String.format(SMS_EPIN_TEMPLATE, 
 				buyEpinSms.getAmount(), 
 				buyEpinSms.getAccount(),
-				buyEpinSms.getPin(),
+				securityManager.decryptRSA(buyEpinSms.getPin()),
 				buyEpinSms.getSerial(),
 				buyEpinSms.getTxnID());
 		SmsResponse smsResponse = smsProxyImpl.send(new SmsRequest(smsSender, buyEpinSms.getRecipientMobileNumber(), msg));

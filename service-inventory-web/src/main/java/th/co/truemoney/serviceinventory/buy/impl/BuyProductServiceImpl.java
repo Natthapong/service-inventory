@@ -24,6 +24,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.C
 import th.co.truemoney.serviceinventory.exception.UnVerifiedOwnerTransactionException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
+import th.co.truemoney.serviceinventory.util.SecurityManager;
 
 public class BuyProductServiceImpl implements BuyProductService {
 	
@@ -38,6 +39,9 @@ public class BuyProductServiceImpl implements BuyProductService {
 	
     @Autowired
     private AsyncBuyProductProcessor asyncBuyProductProcessor;
+    
+    @Autowired
+    private SecurityManager securityManager;
 	
 	@Override
 	public BuyProductDraft createAndVerifyBuyProductDraft(String target,
@@ -121,7 +125,11 @@ public class BuyProductServiceImpl implements BuyProductService {
 	@Override
 	public BuyProductTransaction getBuyProductResult(String transactionID, String accessTokenID) throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
-        return transactionRepo.findTransaction(transactionID, accessToken.getAccessTokenID(), BuyProductTransaction.class);
+		BuyProductTransaction buyProductTransaction = transactionRepo.findTransaction(transactionID, 
+				accessToken.getAccessTokenID(), BuyProductTransaction.class);
+		String encryptedTxt = buyProductTransaction.getConfirmationInfo().getPin();
+		buyProductTransaction.getConfirmationInfo().setPin(securityManager.decryptRSA(encryptedTxt));
+		return buyProductTransaction;
 	}
 
 	public void setAccessTokenRepo(AccessTokenMemoryRepository accessTokenRepo) {

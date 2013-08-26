@@ -22,6 +22,7 @@ import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.sms.SendEpinService;
 import th.co.truemoney.serviceinventory.util.MaskingUtil;
+import th.co.truemoney.serviceinventory.util.SecurityManager;
 
 public class ActivityServiceImpl implements ActivityService {
 
@@ -42,6 +43,9 @@ public class ActivityServiceImpl implements ActivityService {
 	
 	@Autowired
 	private SendEpinService sendEpinService;
+	
+	@Autowired
+	private SecurityManager securityManager;
 	
 	@Override
 	public List<Activity> getActivities(String accessTokenID) throws ServiceInventoryException {
@@ -101,6 +105,9 @@ public class ActivityServiceImpl implements ActivityService {
 			if ("transfer".equalsIgnoreCase(activityDetail.getType())) {
 				String maskedFullname = MaskingUtil.maskFullName(activityDetail.getRef2());
 				activityDetail.setRef2(maskedFullname);
+			} else if ("buy_cashcard".equalsIgnoreCase(activityDetail.getType())) {
+				String encryptedTxt = activityDetail.getAdditionalData();
+				activityDetail.setAdditionalData(securityManager.decryptRSA(encryptedTxt));
 			}
 		}
 		return activityDetail;
