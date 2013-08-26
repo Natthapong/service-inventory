@@ -37,20 +37,27 @@ public class BuyProductHandler {
     }
 
 	public BuyProductConfirmationInfo confirmBuyProduct(ConfirmBuyRequest confirmBuyRequest) {
-		try {
-			SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			ConfirmBuyResponse confirmResponse = buyProxy.confirmBuyProduct(confirmBuyRequest);
- 
-			BuyProductConfirmationInfo buyProductConfirmationInfo = new BuyProductConfirmationInfo();
-			buyProductConfirmationInfo.setTransactionID(confirmResponse.getApproveCode());
-			buyProductConfirmationInfo.setTransactionDate(date.format(new Date()));
- 
-			return buyProductConfirmationInfo;
-		} catch(FailResultCodeException ex) {
-		    throw new ConfirmBuyProductFailException(ex);
-		} catch (Exception e) {
-		    throw new SIEngineUnExpectedException(e);
-		}
+
+		 try {
+			 SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	         ConfirmBuyResponse confirmResponse = buyProxy.confirmBuyProduct(confirmBuyRequest);
+	         
+	         String pin = confirmResponse.getParameterValue("pin");
+	         String serial = confirmResponse.getParameterValue("serial_no");
+	         
+	         BuyProductConfirmationInfo buyProductConfirmationInfo = new BuyProductConfirmationInfo();
+	         
+	         buyProductConfirmationInfo.setTransactionID(confirmResponse.getApproveCode());
+	         buyProductConfirmationInfo.setTransactionDate(date.format(new Date()));
+	         buyProductConfirmationInfo.setPin(pin);
+	         buyProductConfirmationInfo.setSerial(serial);
+			 
+			 return buyProductConfirmationInfo;
+	        } catch(FailResultCodeException ex) {
+	            throw new ConfirmBuyProductFailException(ex);
+	        } catch (Exception e) {
+			    throw new SIEngineUnExpectedException(e);
+			}
 	}
 
 	public void setBuyProxy(BuyProxy buyProxy) {

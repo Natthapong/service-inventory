@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
+import th.co.truemoney.serviceinventory.buy.domain.BuyEpinSms;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductConfirmationInfo;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductDraft;
@@ -20,6 +21,7 @@ import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.repositories.TransactionRepository;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.sms.SendEpinService;
 
 @Service
 public class AsyncBuyProductProcessor {
@@ -31,6 +33,9 @@ public class AsyncBuyProductProcessor {
 
 	@Autowired
 	private LegacyFacade legacyFacade;
+	
+	@Autowired
+	private SendEpinService sendEpinService;
 	
 	@Async
 	public Future<BuyProductTransaction> buyProduct(BuyProductTransaction buyProductTransaction,
@@ -71,7 +76,21 @@ public class AsyncBuyProductProcessor {
 			buyProductTransaction.setFailStatus(BuyProductTransaction.FailStatus.UNKNOWN_FAILED);
 		}		
 		transactionRepo.saveTransaction(buyProductTransaction, accessToken.getAccessTokenID());
+		
+		if(buyProductTransaction.getStatus().equals(Transaction.Status.SUCCESS)) {
+
+			BuyEpinSms buyEpinSms = new BuyEpinSms();
+			buyEpinSms.setRecipientMobileNumber(buyProductTransaction.getDraftTransaction().getRecipientMobileNumber());
+			buyEpinSms.setAmount(buyProductTransaction.getDraftTransaction().getBuyProductInfo().getAmount().toString());
+			buyEpinSms.setPin(buyProductTransaction.getConfirmationInfo().getPin());
+			buyEpinSms.setSerial(buyProductTransaction.getConfirmationInfo().getSerial());
+			buyEpinSms.setTxnID(buyProductTransaction.getID());
+			buyEpinSms.setAccount(accessToken.getMobileNumber());
+			
+			sendEpinService.send(buyEpinSms);
+			
+		}
+		
 		return new AsyncResult<BuyProductTransaction> (buyProductTransaction);
 	}
-
 }

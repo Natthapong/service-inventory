@@ -54,6 +54,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.impl.SourceOfFundPr
 import th.co.truemoney.serviceinventory.ewallet.repositories.impl.SourceOfFundPreferenceImpl;
 import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
 import th.co.truemoney.serviceinventory.sms.OTPService;
+import th.co.truemoney.serviceinventory.sms.SendEpinService;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 
@@ -84,6 +85,11 @@ public class ServiceInventoryConfig {
     @Bean
     public OTPService getOtpService() {
         return new OTPService();
+    }
+    
+    @Bean
+    public SendEpinService getSendEpinServiceService() {
+        return new SendEpinService();
     }
 
     @Bean

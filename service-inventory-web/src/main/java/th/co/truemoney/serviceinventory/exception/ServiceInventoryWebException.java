@@ -67,13 +67,16 @@ public class ServiceInventoryWebException extends ServiceInventoryException {
         public static final String UNKNOWN_SERVICE_FEE_TYPE = "20004";
         public static final String UNKNOWN_BILL_READER_TYPE = "20005";
 
+        //buy EPIN
+        public static final String SEND_EPIN_FAIL = "20006";
+        
         //transfer
         public static final String INVALID_TARGET_MOBILE_NUMBER = "30000";
 
         //core report
         public static final String GET_ACTIVITY_FAILED = "40000";
         public static final String GET_ACTIVITY_DETAIL_FAILED = "40001";
-
+        
     }
 
     @SuppressWarnings("unchecked")

@@ -1,0 +1,48 @@
+package th.co.truemoney.serviceinventory.sms;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import th.co.truemoney.serviceinventory.buy.domain.BuyEpinSms;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException.Code;
+import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
+import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
+import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
+
+public class SendEpinService {
+
+	private static final String SMS_EPIN_TEMPLATE = "คุณได้รับบัตรเงินสด %s บาท จาก TrueMoney "+
+													"Wallet หมายเลข %s รหัสเติมเงิน "+ 
+													"(Pin) คือ %s เลขที่บัตรเงินสด "+ 
+													"(SerialNo) คือ %s "+
+													"(transaction %s)";
+	
+	@Autowired 
+	@Qualifier("smsSender")
+	private String smsSender;
+
+	@Autowired
+	private SmsProxy smsProxyImpl;
+	
+	public void send(BuyEpinSms buyEpinSms) throws ServiceInventoryWebException {
+		
+		boolean result = sendSMS(buyEpinSms);
+		
+		if (!result) {
+			throw new ServiceInventoryWebException(Code.SEND_EPIN_FAIL, "send EPIN failed.");
+		}
+	}
+	
+	private boolean sendSMS(BuyEpinSms buyEpinSms) {
+		String msg = String.format(SMS_EPIN_TEMPLATE, 
+				buyEpinSms.getAmount(), 
+				buyEpinSms.getAccount(),
+				buyEpinSms.getPin(),
+				buyEpinSms.getSerial(),
+				buyEpinSms.getTxnID());
+		SmsResponse smsResponse = smsProxyImpl.send(new SmsRequest(smsSender, buyEpinSms.getRecipientMobileNumber(), msg));
+		return smsResponse.isSuccess();
+	}
+
+}
