@@ -41,14 +41,14 @@ public class SecurityManagerTest {
 
 	@Test
 	public void testDecryptRSA() {
-		String cipherText = "ETVqWRx0DJX4FfyVrvoH2kuCpA8T7xVsnbdQ6GARQ+xDwX2g9x0CgCbYCnXXfW5H4hcOIVb8I0dhccPzGfagqwPQsq5Me2Y63B9sluj14WyoMebhZSX5rnEUZssZRCs7xPRjmpmztIB4msphf6U1R5XqWaZopr4G5Wq27nthvbg=";
+		String cipherText = "Q+uMdAwX3Fg44RslIBAn4z9GjxJrQXUmRr45Wuwdd9ss/UXUa6gReHrLJwBhemWaliQEUh4ukCr8SXeFQ+0MDJdom5XHU84J0nihk6XolEaWFL6JPYFzmI7wRuJWYMjOlathY+Woq1uuNN1wYAtPgsTkuBPNJcxWY2WmNV1w9UU=";
 		String normalText = manager.decryptRSA(cipherText);
-		assertEquals("thisisapassword", normalText);
+		assertEquals("12345678901234", normalText);
 	}
 
 	@Test
 	public void testEncryptRSA() {
-		String cipherText = manager.encryptRSA("thisisapassword");
+		String cipherText = manager.encryptRSA("12345678901234");
 		assertTrue(StringUtils.hasLength(cipherText));
 	}
 

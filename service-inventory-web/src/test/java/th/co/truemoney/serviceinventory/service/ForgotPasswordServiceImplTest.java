@@ -20,6 +20,7 @@ import th.co.truemoney.serviceinventory.config.LocalAppleUserConfig;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
+import th.co.truemoney.serviceinventory.config.TestEnvConfig;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.ResetPassword;
 import th.co.truemoney.serviceinventory.ewallet.domain.VerifyResetPassword;
@@ -30,7 +31,7 @@ import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.ForgotPasswordHandler;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class })
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class, TestEnvConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
 public class ForgotPasswordServiceImplTest {
 

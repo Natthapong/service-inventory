@@ -16,6 +16,7 @@ import th.co.truemoney.serviceinventory.config.LocalAppleUserConfig;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
+import th.co.truemoney.serviceinventory.config.TestEnvConfig;
 import th.co.truemoney.serviceinventory.config.TestJdbcConfig;
 import th.co.truemoney.serviceinventory.log.domain.ActivityLog;
 
@@ -23,7 +24,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class, TestJdbcConfig.class, LocalAppleUserConfig.class })
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class, TestJdbcConfig.class, LocalAppleUserConfig.class, TestEnvConfig.class })
 @ActiveProfiles(profiles = {"local", "mem"})
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })

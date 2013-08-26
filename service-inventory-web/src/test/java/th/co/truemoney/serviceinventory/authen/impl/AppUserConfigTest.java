@@ -14,9 +14,10 @@ import th.co.truemoney.serviceinventory.config.LocalAppleUserConfig;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
+import th.co.truemoney.serviceinventory.config.TestEnvConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class, LocalAppleUserConfig.class })
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class, LocalAppleUserConfig.class,  TestEnvConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
 public class AppUserConfigTest {
     

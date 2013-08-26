@@ -20,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
+import th.co.truemoney.serviceinventory.buy.domain.BuyProductConfirmationInfo;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductDraft;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductTransaction;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductTransaction.FailStatus;
@@ -29,6 +30,7 @@ import th.co.truemoney.serviceinventory.config.LocalAppleUserConfig;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
+import th.co.truemoney.serviceinventory.config.TestEnvConfig;
 import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBuyRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -44,7 +46,7 @@ import th.co.truemoney.serviceinventory.legacyfacade.handlers.BuyProductHandler;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class })
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class, TestEnvConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
 @Category(IntegrationTest.class)
 public class BuyProductServiceImplTest {
@@ -123,6 +125,11 @@ public class BuyProductServiceImplTest {
         //given
     	buyProductDraft.setStatus(BuyProductDraft.Status.OTP_CONFIRMED);
     	BuyProductTransaction buyProductTransaction = new BuyProductTransaction(buyProductDraft);
+    	BuyProductConfirmationInfo buyProductConfirmationInfo = new BuyProductConfirmationInfo();
+    	buyProductConfirmationInfo.setTransactionID("TransID");
+    	buyProductConfirmationInfo.setTransactionDate("TransDate");
+    	buyProductConfirmationInfo.setPin("Q+uMdAwX3Fg44RslIBAn4z9GjxJrQXUmRr45Wuwdd9ss/UXUa6gReHrLJwBhemWaliQEUh4ukCr8SXeFQ+0MDJdom5XHU84J0nihk6XolEaWFL6JPYFzmI7wRuJWYMjOlathY+Woq1uuNN1wYAtPgsTkuBPNJcxWY2WmNV1w9UU=");
+    	buyProductTransaction.setConfirmationInfo(buyProductConfirmationInfo);
         transactionRepo.saveTransaction(buyProductTransaction, accessToken.getAccessTokenID());
 
         //given status is verified
@@ -156,6 +163,11 @@ public class BuyProductServiceImplTest {
         //given
     	buyProductDraft.setStatus(BuyProductDraft.Status.OTP_CONFIRMED);
     	BuyProductTransaction buyProductTransaction = new BuyProductTransaction(buyProductDraft);
+    	BuyProductConfirmationInfo buyProductConfirmationInfo = new BuyProductConfirmationInfo();
+    	buyProductConfirmationInfo.setTransactionID("TransID");
+    	buyProductConfirmationInfo.setTransactionDate("TransDate");
+    	buyProductConfirmationInfo.setPin("Q+uMdAwX3Fg44RslIBAn4z9GjxJrQXUmRr45Wuwdd9ss/UXUa6gReHrLJwBhemWaliQEUh4ukCr8SXeFQ+0MDJdom5XHU84J0nihk6XolEaWFL6JPYFzmI7wRuJWYMjOlathY+Woq1uuNN1wYAtPgsTkuBPNJcxWY2WmNV1w9UU=");
+    	buyProductTransaction.setConfirmationInfo(buyProductConfirmationInfo);
         transactionRepo.saveTransaction(buyProductTransaction, accessToken.getAccessTokenID());
 
         //given status has failed because umarket

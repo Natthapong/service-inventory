@@ -18,6 +18,10 @@ public class SecurityManager {
 	@Autowired
 	private Environment env;
 	
+	static {
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+	}
+	
 	public String getPublicKey() {
 		return env.getProperty("publicKey");
 	}
@@ -25,7 +29,7 @@ public class SecurityManager {
 	public String getPrivateKey() {
 		return env.getProperty("privateKey");
 	}
-
+	
 	public String decryptRSA(String encryptedTxt) {
 		try {
 			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(Base64.decode(getPublicKey()));
@@ -46,7 +50,6 @@ public class SecurityManager {
 	}
 	
 	public String encryptRSA(String password) {
-			Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 		try {
 			byte[] input = password.getBytes("UTF-8");
 
