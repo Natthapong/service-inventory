@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -41,12 +42,8 @@ public class UserProfileHandler {
 
     private static final String SUCCESS_CODE = "0";
 
-    private static final String ALREADY_ADD_FAVORITE = "2012";
-
-    private static final String ADD_FAVORITE_DENIED  = "2013";
-
-    private static final String FAVORITE_NOT_FOUND = "2014";
-
+    private Logger logger = Logger.getLogger(UserProfileHandler.class);
+    
     @Autowired
     private TmnSecurityProxyClient tmnSecurityProxyClient;
 
@@ -116,16 +113,13 @@ public class UserProfileHandler {
     public Boolean isFavoritable(Integer channelID, String sessionID,
                     String tmnID, String serviceType, String serviceCode,
                     String reference1) {
-
             try {
-                    StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavoritable(createIsFavoritableRequest(
-                                    channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
-                    return SUCCESS_CODE.equals(standardBizResponse.getResultCode());
+            	IsFavoritableRequest favRequest = createIsFavoritableRequest(channelID,sessionID,tmnID,serviceType,serviceCode,reference1);
+                StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavoritable(favRequest);
+                return SUCCESS_CODE.equals(standardBizResponse.getResultCode());
             } catch (FailResultCodeException e) {
-                    if (ALREADY_ADD_FAVORITE.equals(e.getCode()) || ADD_FAVORITE_DENIED .equals(e.getCode())) {
-                            return false;
-                    }
-                    throw e;
+            	logger.error(e.getMessage());
+            	return false;
             }
     }
 
@@ -134,14 +128,12 @@ public class UserProfileHandler {
                     String reference1) {
 
             try {
-                    StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavorited(createIsFavoritedRequest(
-                            channelID,sessionID,tmnID,serviceType,serviceCode,reference1));
-                    return SUCCESS_CODE.equals(standardBizResponse.getResultCode());
+            	IsFavoritedRequest favRequest = createIsFavoritedRequest(channelID,sessionID,tmnID,serviceType,serviceCode,reference1);
+            	StandardBizResponse  standardBizResponse =  this.tmnProfileProxy.isFavorited(favRequest);
+                return SUCCESS_CODE.equals(standardBizResponse.getResultCode());
             } catch (FailResultCodeException e) {
-                    if (FAVORITE_NOT_FOUND.equals(e.getCode())) {
-                            return false;
-                    }
-                    throw e;
+            	logger.error(e.getMessage());
+            	return false;
             }
     }
 
@@ -164,11 +156,7 @@ public class UserProfileHandler {
 
         StandardBizResponse standardBizResponse = this.tmnProfileProxy.removeFavorite(deleteFavoriteRequest);
 
-        if(standardBizResponse.isSuccess()) {
-            return Boolean.TRUE;
-        } else {
-            return Boolean.FALSE;
-        }
+        return standardBizResponse.isSuccess();
     }
 
     public void logout(Integer channelID, String sessionID, String truemoneyID) {
