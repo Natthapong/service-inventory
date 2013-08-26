@@ -41,6 +41,10 @@ public class LocalBuyProductProxy implements BuyProxy {
         buyResponse.setTransactionID("20130401125936048554");
         buyResponse.setResponseMessage("Success");
 
+        buyResponse.addParameterElement("pin", "Q+uMdAwX3Fg44RslIBAn4z9GjxJrQXUmRr45Wuwdd9ss/UXUa6gReHrLJwBhemWaliQEUh4ukCr8SXeFQ+0MDJdom5XHU84J0nihk6XolEaWFL6JPYFzmI7wRuJWYMjOlathY+Woq1uuNN1wYAtPgsTkuBPNJcxWY2WmNV1w9UU=");
+        buyResponse.addParameterElement("serial_no", "123456789012345678");
+        buyResponse.addParameterElement("expiry_date", "20130603");
+                
         return new ConfirmBuyResponse(buyResponse);
 	}
 
