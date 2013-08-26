@@ -14,6 +14,7 @@ public class BuyProductConfirmationInfo implements Serializable {
 	private String transactionDate;
 	private String pin;
 	private String serial;
+	private String expireDate;
 	
 	public String getTransactionID() {
 		return transactionID;
@@ -39,7 +40,12 @@ public class BuyProductConfirmationInfo implements Serializable {
 	public void setSerial(String serial) {
 		this.serial = serial;
 	}
-
+	public String getExpireDate() {
+		return expireDate;
+	}
+	public void setExpireDate(String expireDate) {
+		this.expireDate = expireDate;
+	}
 	
 	@JsonIgnore
 	public String toString() {
@@ -48,5 +54,5 @@ public class BuyProductConfirmationInfo implements Serializable {
 				.append("transactionDate: ", this.getTransactionDate())
 				.toString();
 	}
-	
+
 }

@@ -52,6 +52,17 @@ public class ActivityServicesClient implements ActivityService{
 		
 		return responseEntity.getBody();
 	}
+	
+	@Override
+	public Boolean resendEPIN(Long reportID, String accessTokenID) throws ServiceInventoryException {
+		
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		ResponseEntity<Boolean> responseEntity = restTemplate.exchange(
+				endPoints.getActivityDetailResendEpinURL(), HttpMethod.GET,
+				requestEntity, Boolean.class, accessTokenID , reportID);
+		
+		return responseEntity.getBody();
+	}
 
 	public void setEndPoints(EndPoints endPoints) {
 		this.endPoints = endPoints;

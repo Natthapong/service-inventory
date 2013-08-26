@@ -14,4 +14,7 @@ public interface ActivityService {
 	public ActivityDetail getActivityDetail(Long reportID, String accessTokenID)
 		throws ServiceInventoryException;
 	
+	public Boolean resendEPIN(Long reportID, String accessTokenID)
+		throws ServiceInventoryException;
+	
 }

@@ -49,6 +49,16 @@ public class TransactionActivityController {
 		}
 	}
 	
+	@RequestMapping(value = "/activities/{accessTokenID}/resend/e-pin/{reportID}", method = RequestMethod.GET)
+	public @ResponseBody Boolean resendEPIN(@PathVariable String accessTokenID, @PathVariable Long reportID) {
+		extendExpireAccessToken(accessTokenID);
+		try {	
+			return activityService.resendEPIN(reportID, accessTokenID);
+		} catch (ServiceInventoryException e) {
+			throw new ServiceInventoryWebException(Code.GET_ACTIVITY_DETAIL_FAILED, e.getErrorDescription());
+		}
+	}
+	
 	private void extendExpireAccessToken(String accessTokenID) {
 		extendAccessTokenAsynService.setExpire(accessTokenID);
 	}
