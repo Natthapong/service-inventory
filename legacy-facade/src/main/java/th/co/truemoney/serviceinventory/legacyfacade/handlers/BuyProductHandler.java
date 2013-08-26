@@ -44,6 +44,7 @@ public class BuyProductHandler {
 	         
 	         String pin = confirmResponse.getParameterValue("pin");
 	         String serial = confirmResponse.getParameterValue("serial_no");
+	         String expireDate = confirmResponse.getParameterValue("expiry_date");
 	         
 	         BuyProductConfirmationInfo buyProductConfirmationInfo = new BuyProductConfirmationInfo();
 	         
@@ -51,6 +52,7 @@ public class BuyProductHandler {
 	         buyProductConfirmationInfo.setTransactionDate(date.format(new Date()));
 	         buyProductConfirmationInfo.setPin(pin);
 	         buyProductConfirmationInfo.setSerial(serial);
+	         buyProductConfirmationInfo.setExpireDate(expireDate);
 			 
 			 return buyProductConfirmationInfo;
 	        } catch(FailResultCodeException ex) {
