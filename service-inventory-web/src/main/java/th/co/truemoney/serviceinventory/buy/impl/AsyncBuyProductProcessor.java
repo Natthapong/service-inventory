@@ -10,11 +10,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
-import th.co.truemoney.serviceinventory.buy.domain.SendEpinSms;
-import th.co.truemoney.serviceinventory.buy.domain.BuyProduct;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductConfirmationInfo;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductDraft;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductTransaction;
+import th.co.truemoney.serviceinventory.buy.domain.SendEpinSms;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ClientCredential;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
@@ -40,30 +39,12 @@ public class AsyncBuyProductProcessor {
 	@Async
 	public Future<BuyProductTransaction> buyProduct(BuyProductTransaction buyProductTransaction,
 			AccessToken accessToken) {
+		
+		saveProcessing(buyProductTransaction, accessToken);
+
+		BuyProductDraft draftTransaction = buyProductTransaction.getDraftTransaction();
 		try {
-			BuyProductDraft draftTransaction = buyProductTransaction.getDraftTransaction();
-			BuyProduct buyProduct = draftTransaction.getBuyProductInfo();
-
-			BigDecimal amount = buyProduct.getAmount();
-
-			buyProductTransaction.setStatus(Transaction.Status.PROCESSING);
-			transactionRepo.saveTransaction(buyProductTransaction, accessToken.getAccessTokenID());
-
-			ClientCredential appData = accessToken.getClientCredential();
-
-			String verificationID = draftTransaction.getTransactionID();
-
-			BuyProductConfirmationInfo confirmationInfo = legacyFacade.buyProduct()
-				.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
-	            .fromChannel(appData.getChannel(), appData.getChannelDetail())
-	            .fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
-	            .withTargetProduct(draftTransaction.getBuyProductInfo().getTarget())
-	            .toRecipientMobileNumber(draftTransaction.getRecipientMobileNumber())
-	            .usingSourceOfFund("EW")
-	            .withAmount(amount)
-	            .andFee(BigDecimal.ZERO, BigDecimal.ZERO)
-	            .confirmBuyProduct(verificationID);
-
+			BuyProductConfirmationInfo confirmationInfo = confirmBuying(accessToken, draftTransaction);
 			buyProductTransaction.setConfirmationInfo(confirmationInfo);
 			buyProductTransaction.setStatus(Transaction.Status.SUCCESS);
 			logger.info("AsyncService.buy-product.resultTransactionID: " + confirmationInfo.getTransactionID());
@@ -77,17 +58,47 @@ public class AsyncBuyProductProcessor {
 		}		
 		transactionRepo.saveTransaction(buyProductTransaction, accessToken.getAccessTokenID());
 		
-		if(buyProductTransaction.getStatus().equals(Transaction.Status.SUCCESS)) {
-			SendEpinSms buyEpinSms = new SendEpinSms();
-			buyEpinSms.setRecipientMobileNumber(buyProductTransaction.getDraftTransaction().getRecipientMobileNumber());
-			buyEpinSms.setAmount(buyProductTransaction.getDraftTransaction().getBuyProductInfo().getAmount().toString());
-			buyEpinSms.setPin(buyProductTransaction.getConfirmationInfo().getPin());
-			buyEpinSms.setSerial(buyProductTransaction.getConfirmationInfo().getSerial());
-			buyEpinSms.setTxnID(buyProductTransaction.getID());
-			buyEpinSms.setAccount(accessToken.getMobileNumber());			
-			sendEpinService.send(buyEpinSms);			
+		if(isBuySuccess(buyProductTransaction)) {
+			sendEPinBySMS(buyProductTransaction, accessToken);			
 		}
 		
 		return new AsyncResult<BuyProductTransaction> (buyProductTransaction);
+	}
+
+	private boolean isBuySuccess(BuyProductTransaction buyProductTransaction) {
+		return Transaction.Status.SUCCESS.equals(buyProductTransaction.getStatus());
+	}
+
+	private void sendEPinBySMS(BuyProductTransaction buyProductTransaction,
+			AccessToken accessToken) {
+		SendEpinSms buyEpinSms = new SendEpinSms();
+		buyEpinSms.setRecipientMobileNumber(buyProductTransaction.getDraftTransaction().getRecipientMobileNumber());
+		buyEpinSms.setAmount(buyProductTransaction.getDraftTransaction().getBuyProductInfo().getAmount().toString());
+		buyEpinSms.setPin(buyProductTransaction.getConfirmationInfo().getPin());
+		buyEpinSms.setSerial(buyProductTransaction.getConfirmationInfo().getSerial());
+		buyEpinSms.setTxnID(buyProductTransaction.getID());
+		buyEpinSms.setAccount(accessToken.getMobileNumber());			
+		sendEpinService.send(buyEpinSms);
+	}
+
+	private BuyProductConfirmationInfo confirmBuying(AccessToken accessToken,
+			BuyProductDraft draftTransaction) {
+		ClientCredential appData = accessToken.getClientCredential();
+		return legacyFacade.buyProduct()
+			.fromApp(appData.getAppUser(), appData.getAppPassword(), appData.getAppKey())
+		    .fromChannel(appData.getChannel(), appData.getChannelDetail())
+		    .fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+		    .withTargetProduct(draftTransaction.getBuyProductInfo().getTarget())
+		    .toRecipientMobileNumber(draftTransaction.getRecipientMobileNumber())
+		    .usingSourceOfFund("EW")
+		    .withAmount(draftTransaction.getBuyProductInfo().getAmount())
+		    .andFee(BigDecimal.ZERO, BigDecimal.ZERO)
+		    .confirmBuyProduct(draftTransaction.getTransactionID());
+	}
+
+	private void saveProcessing(BuyProductTransaction transaction,
+			AccessToken accessToken) {
+		transaction.setStatus(Transaction.Status.PROCESSING);
+		transactionRepo.saveTransaction(transaction, accessToken.getAccessTokenID());
 	}
 }
