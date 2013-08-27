@@ -101,6 +101,9 @@ public class BuyProductServiceClientWorkflowTest {
 		assertNotNull(buyProductTransaction);
 		assertNotNull(buyProductTransaction.getDraftTransaction());
 		assertNotNull(buyProductTransaction.getConfirmationInfo());
+		assertEquals("12345678901234", buyProductTransaction.getConfirmationInfo().getPin());
+		assertEquals("123456789012345678", buyProductTransaction.getConfirmationInfo().getSerial());
+		assertEquals("20130603", buyProductTransaction.getConfirmationInfo().getExpireDate());
 		assertEquals(Transaction.Status.SUCCESS, buyProductTransaction.getStatus());
 		
 	}
