@@ -76,7 +76,7 @@ public class AsyncBuyProductProcessor {
 		buyEpinSms.setAmount(buyProductTransaction.getDraftTransaction().getBuyProductInfo().getAmount().toString());
 		buyEpinSms.setPin(buyProductTransaction.getConfirmationInfo().getPin());
 		buyEpinSms.setSerial(buyProductTransaction.getConfirmationInfo().getSerial());
-		buyEpinSms.setTxnID(buyProductTransaction.getID());
+		buyEpinSms.setTxnID(buyProductTransaction.getConfirmationInfo().getTransactionID());
 		buyEpinSms.setAccount(accessToken.getMobileNumber());			
 		sendEpinService.send(buyEpinSms);
 	}
