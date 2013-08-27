@@ -70,6 +70,7 @@ public class ActivityServiceImpl implements ActivityService {
 		activityDetail = censorSensitiveData(activityDetail);
 		activityDetail.setFavoritable(isFavoritable(accessToken, activityDetail));
 		activityDetail.setFavorited(IsFavorited(accessToken, activityDetail));
+		activityDetail.setAction(activityDetail.getAction().replaceAll("_c", ""));
 
 		return activityDetail;
 	}
@@ -116,7 +117,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private Boolean isFavoritable(AccessToken accessToken, ActivityDetail activityDetail) {
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 							.fromChannel(accessToken.getChannelID())
-							.withServiceCode(activityDetail.getAction().replaceAll("_c", ""))
+							.withServiceCode(activityDetail.getAction())
 							.withRefernce1(activityDetail.getRef1())
 							.isFavoritable();
 	}
@@ -124,7 +125,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private Boolean IsFavorited(AccessToken accessToken, ActivityDetail activityDetail) {
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 		        			.fromChannel(accessToken.getChannelID())
-		        			.withServiceCode(activityDetail.getAction().replaceAll("_c", ""))
+		        			.withServiceCode(activityDetail.getAction())
 		        			.withRefernce1(activityDetail.getRef1())
 		        			.isFavorited();
 	}
