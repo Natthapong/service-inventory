@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.sms;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -40,13 +42,22 @@ public class SendEpinService {
 	
 	private boolean sendSMS(SendEpinSms buyEpinSms) {
 		String msg = String.format(SMS_EPIN_TEMPLATE, 
-				buyEpinSms.getAmount(), 
+				convertToAbsoluteValue(buyEpinSms.getAmount()), 
 				buyEpinSms.getAccount(),
 				securityManager.decryptRSA(buyEpinSms.getPin()),
 				buyEpinSms.getSerial(),
 				buyEpinSms.getTxnID());
 		SmsResponse smsResponse = smsProxyImpl.send(new SmsRequest(smsSender, buyEpinSms.getRecipientMobileNumber(), msg));
 		return smsResponse.isSuccess();
+	}
+	
+	private String convertToAbsoluteValue(String amount) {
+		try {
+			return new BigDecimal(amount).abs().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
