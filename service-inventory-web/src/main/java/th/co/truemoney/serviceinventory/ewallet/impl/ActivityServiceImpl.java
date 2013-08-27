@@ -116,7 +116,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private Boolean isFavoritable(AccessToken accessToken, ActivityDetail activityDetail) {
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 							.fromChannel(accessToken.getChannelID())
-							.withServiceCode(activityDetail.getAction())
+							.withServiceCode(activityDetail.getAction().replaceAll("_c", ""))
 							.withRefernce1(activityDetail.getRef1())
 							.isFavoritable();
 	}
@@ -124,7 +124,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private Boolean IsFavorited(AccessToken accessToken, ActivityDetail activityDetail) {
 		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
 		        			.fromChannel(accessToken.getChannelID())
-		        			.withServiceCode(activityDetail.getAction())
+		        			.withServiceCode(activityDetail.getAction().replaceAll("_c", ""))
 		        			.withRefernce1(activityDetail.getRef1())
 		        			.isFavorited();
 	}
