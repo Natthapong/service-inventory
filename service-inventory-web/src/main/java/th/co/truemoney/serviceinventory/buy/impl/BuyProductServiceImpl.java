@@ -104,7 +104,8 @@ public class BuyProductServiceImpl implements BuyProductService {
 	@Override
 	public Status getBuyProductStatus(String transactionID, String accessTokenID)
 			throws ServiceInventoryException {
-		BuyProductTransaction buyProduct = getBuyProductResult(transactionID, accessTokenID);
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		BuyProductTransaction buyProduct = transactionRepo.findTransaction(transactionID, accessToken.getAccessTokenID(), BuyProductTransaction.class);
 		BuyProductTransaction.Status buyProductStatus = buyProduct.getStatus();
 		
 		if (buyProductStatus == Transaction.Status.FAILED) {
