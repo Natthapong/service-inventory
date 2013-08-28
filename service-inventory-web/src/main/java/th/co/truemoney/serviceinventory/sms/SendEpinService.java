@@ -53,7 +53,7 @@ public class SendEpinService {
 	
 	private String convertToAbsoluteValue(String amount) {
 		try {
-			return new BigDecimal(amount).abs().toString();
+			return new BigDecimal(amount).setScale(0).abs().toString();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

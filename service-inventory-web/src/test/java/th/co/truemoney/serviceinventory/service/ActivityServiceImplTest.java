@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -150,7 +151,7 @@ public class ActivityServiceImplTest {
         assertNotNull(activity);
 
         assertEquals("buy_cashcard", activity.getType());
-        assertEquals("ecash_c", activity.getAction());
+        assertEquals("ecash", activity.getAction());
         assertEquals(new BigDecimal(100), activity.getAmount());
         assertEquals("0897665655", activity.getRef1());
         assertEquals("123456789012345678", activity.getRef2());
@@ -167,5 +168,44 @@ public class ActivityServiceImplTest {
 
         }
     }
+    
+    @Test
+    public void testValidateRequest() {
+    	UserProfileBuilder builder1 = Mockito.mock(UserProfileBuilder.class);
+    	when(builder1.fromChannel(anyInt())).thenReturn(builder1);
+    	when(builder1.withServiceCode(anyString())).thenReturn(builder1);
+    	when(builder1.withRefernce1(anyString())).thenReturn(builder1);
+    	when(builder1.isFavoritable()).thenReturn(Boolean.TRUE);
+    	when(builder1.isFavorited()).thenReturn(Boolean.TRUE);
+    	
+    	when(userProfileBuilder.withServiceCode(eq("ecash"))).thenReturn(builder1);
+    	String accessToken = "9898989898989898989";
+    	String truemoneyID = "54321";
+    	Long reportID = 9910L;
+
+    	
+    	mockServer.expect(
+            	requestTo(String.format("http://127.0.0.1:8787/core-report-web/transaction/history/%s/detail/%d", truemoneyID, reportID))
+            ).andExpect(method(HttpMethod.GET)
+            ).andRespond(
+            	withSuccess(new ClassPathResource("json/stub_buyepin_activity.json"), MediaType.APPLICATION_JSON)
+            );
+    	
+        ActivityDetail activity = service.getActivityDetail(reportID, accessToken);
+
+        mockServer.verify();
+        assertNotNull(activity);
+        
+        assertEquals("buy_cashcard", activity.getType());
+        assertEquals("ecash", activity.getAction());
+        assertEquals(new BigDecimal(100), activity.getAmount());
+        assertEquals("0897665655", activity.getRef1());
+        assertEquals("123456789012345678", activity.getRef2());
+        assertEquals("12345678901234", activity.getAdditionalData());
+        assertEquals(Boolean.TRUE, activity.isFavoritable());
+        assertEquals(Boolean.TRUE, activity.isFavorited());
+    	
+    }
+    
 
 }

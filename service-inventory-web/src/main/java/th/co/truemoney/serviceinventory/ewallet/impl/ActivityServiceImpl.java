@@ -68,9 +68,9 @@ public class ActivityServiceImpl implements ActivityService {
 															ActivityDetail.class, accessToken.getTruemoneyID(), reportID );
 		ActivityDetail activityDetail = response.getBody();
 		activityDetail = censorSensitiveData(activityDetail);
+		activityDetail.setAction(activityDetail.getAction().replaceAll("_c", ""));
 		activityDetail.setFavoritable(isFavoritable(accessToken, activityDetail));
 		activityDetail.setFavorited(IsFavorited(accessToken, activityDetail));
-		activityDetail.setAction(activityDetail.getAction().replaceAll("_c", ""));
 
 		return activityDetail;
 	}
