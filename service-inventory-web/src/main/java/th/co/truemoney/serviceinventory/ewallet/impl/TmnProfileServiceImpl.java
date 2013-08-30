@@ -197,6 +197,19 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 	}
 	
 	@Override
+	public TmnProfile changeProfileImageStatus(String accessTokenID,
+			Boolean status) throws ServiceInventoryException {
+		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
+		
+		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				.fromChannel(accessToken.getChannelID()).changeProfileImageStatus(status);
+		
+		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				   .fromChannel(accessToken.getChannelID())
+				   .getProfile();
+	}
+
+	@Override
 	public String verifyAccessToken(String accessTokenID)
 			throws ServiceInventoryException {
 

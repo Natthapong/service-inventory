@@ -31,6 +31,7 @@ import com.tmn.core.api.message.ChangePinRequest;
 import com.tmn.core.api.message.GetBalanceResponse;
 import com.tmn.core.api.message.GetProfileRequest;
 import com.tmn.core.api.message.GetProfileResponse;
+import com.tmn.core.api.message.ProfileKey;
 import com.tmn.core.api.message.StandardMoneyResponse;
 import com.tmn.core.api.message.TransferRequest;
 import com.tmn.core.api.message.UpdateProfileRequest;
@@ -201,6 +202,8 @@ public class Adam implements Persona {
 	        	profileResponse.setFullName("adam");
 	        	profileResponse.setMobile("0891111111");
 	        	profileResponse.setEmail("adam@tmn.com");
+	        	profileResponse.setProfileKey(new String[]{ProfileKey.profilepicflag});
+	        	profileResponse.setProfileValue(new String[]{"1"});
 				return profileResponse;
 			}
 			

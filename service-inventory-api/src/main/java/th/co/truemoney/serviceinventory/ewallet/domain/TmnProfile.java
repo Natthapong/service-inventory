@@ -22,8 +22,7 @@ public class TmnProfile implements Serializable {
 	private String imageFileName;
 	private Boolean hasPassword;
 	private Boolean hasPin;
-	private String type;
-	private Integer status;
+	private Boolean profileImageStatus;
 	
 	public TmnProfile() {
 		super();
@@ -44,8 +43,6 @@ public class TmnProfile implements Serializable {
 		this.thaiID = thaiID;
 		this.mobileNumber = mobileNumber;
 		this.balance = balance;
-		this.type = type;
-		this.status = status;
 	}
 
 	public String getEmail() {
@@ -95,22 +92,6 @@ public class TmnProfile implements Serializable {
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
 		
 	public String getImageFileName() {
 		return imageFileName;
@@ -135,6 +116,14 @@ public class TmnProfile implements Serializable {
 	public void setHasPin(Boolean hasPin) {
 		this.hasPin = hasPin;
 	}
+	
+	public Boolean getProfileImageStatus() {
+		return profileImageStatus;
+	}
+
+	public void setProfileImageStatus(Boolean profileImageStatus) {
+		this.profileImageStatus = profileImageStatus;
+	}
 
 	@JsonIgnore
 	public String toString() {
@@ -142,8 +131,6 @@ public class TmnProfile implements Serializable {
 				.append("email: ", this.getEmail())
 				.append("mobileNumber: ", this.getMobileNumber())
 				.append("balance: ", this.getBalance())
-				.append("type: ", this.getType())
-				.append("status: ", this.getStatus())
 				.toString();
 	}
 	

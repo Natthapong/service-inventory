@@ -1,9 +1,11 @@
 package th.co.truemoney.serviceinventory.controller;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,7 +36,12 @@ import th.co.truemoney.serviceinventory.firsthop.config.SmsConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { WebConfig.class, MemRepositoriesConfig.class, TestServiceInventoryConfig.class, TestRedisConfig.class, SmsConfig.class })
+@ContextConfiguration(classes = { 
+							WebConfig.class, 
+							MemRepositoriesConfig.class, 
+							TestServiceInventoryConfig.class, 
+							TestRedisConfig.class, 
+							SmsConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
 public class UpdateProfileControllerTest {
 
@@ -158,4 +165,14 @@ public class UpdateProfileControllerTest {
 			.andExpect(jsonPath("$.errorNamespace").value("Error Namespace"));
 	}
 	
+	@Test
+	public void shouldChangeProfileImageStatusSuccess() throws Exception {
+		//given
+		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
+		when(this.tmnProfileServiceMock.changeProfileImageStatus(anyString(), any(Boolean.class))).thenReturn(new TmnProfile());
+		
+		//perform
+		this.mockMvc.perform(post("/ewallet/profile/change-image-status/{accessTokenID}", "12345").param("status", "true")
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+	}
 }

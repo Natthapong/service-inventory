@@ -147,6 +147,14 @@ public class TmnProfileServiceClient implements TmnProfileService {
 	}
 	
 	@Override
+	public TmnProfile changeProfileImageStatus(String accessTokenID, Boolean status) 
+			throws ServiceInventoryException {
+		HttpEntity<Boolean> requestEntity = new HttpEntity<Boolean>(status, headers);
+		ResponseEntity<TmnProfile> responseEntity = restTemplate.exchange(endPoints.getChangeProfileImageStatusURL(), HttpMethod.POST, requestEntity, TmnProfile.class, accessTokenID);
+		return responseEntity.getBody();
+	}
+	
+	@Override
 	public String verifyAccessToken(String accessTokenID) throws ServiceInventoryException {
 
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);

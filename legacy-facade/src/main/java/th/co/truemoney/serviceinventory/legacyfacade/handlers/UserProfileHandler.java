@@ -89,7 +89,9 @@ public class UserProfileHandler {
         tmnProfile.setHasPassword(profile.getHasPassword());
         tmnProfile.setHasPin(profile.getHasPin());
         String imageFileName = getProfileValue(profile, ProfileKey.profilepic200x200);
+        String imageFileNameStatus = getProfileValue(profile, ProfileKey.profilepicflag);
         tmnProfile.setImageFileName(imageFileName);
+        tmnProfile.setProfileImageStatus("1".equals(imageFileNameStatus));
         return tmnProfile;
     }
 
@@ -183,6 +185,12 @@ public class UserProfileHandler {
 		this.tmnProfileProxyClient.updateProfile(updateProfileRequest);
 	}
 	
+	public void changeProfileImageStatus(Integer channelID, String sessionID,
+			String truemoneyID, Boolean status) {
+		UpdateProfileRequest updateProfileRequest = createUpdateProfileImageStatusRequest(channelID, sessionID, truemoneyID, status);
+		this.tmnProfileProxyClient.updateProfile(updateProfileRequest);
+	}
+
 	private UpdateProfileRequest createUpdateFullnameRequest(Integer channelID, String sessionID, String truemoneyID, String fullname) {
 		UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
 		updateProfileRequest.setChannelId(channelID);
@@ -198,6 +206,17 @@ public class UserProfileHandler {
 		updateProfileRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
 		updateProfileRequest.setProfileKey(new String[] { ProfileKey.profilepic200x200 });
 		updateProfileRequest.setProfileValue(new String[] { profileImage });
+		return updateProfileRequest;
+	}
+	
+	private UpdateProfileRequest createUpdateProfileImageStatusRequest(
+			Integer channelID, String sessionID, String truemoneyID,
+			Boolean status) {
+		UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
+		updateProfileRequest.setChannelId(channelID);
+		updateProfileRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
+		updateProfileRequest.setProfileKey(new String[] { ProfileKey.profilepicflag });
+		updateProfileRequest.setProfileValue(new String[] { status ? "1" : "0" });
 		return updateProfileRequest;
 	}
 	

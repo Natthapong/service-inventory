@@ -145,6 +145,16 @@ public class TmnProfileController {
 		return tmnProfileService.changeProfileImage(accessTokenID, imageFileName);
 	}
 	
+	@RequestMapping(value = "/profile/change-image-status/{accessTokenID}", method = RequestMethod.POST)
+	public @ResponseBody TmnProfile changeProfileImageStatus(
+		   @PathVariable String accessTokenID,
+		   @RequestParam Boolean status) {
+
+		extendExpireAccessToken(accessTokenID);
+		
+		return tmnProfileService.changeProfileImageStatus(accessTokenID, status);
+	}
+
 	private void extendExpireAccessToken(String accessTokenID) {
 		extendAccessTokenAsynService.setExpire(accessTokenID);
 	}

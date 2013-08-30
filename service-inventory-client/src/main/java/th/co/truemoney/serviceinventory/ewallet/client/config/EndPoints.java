@@ -209,7 +209,11 @@ public class EndPoints {
 	public String getChangeProfileImageURL() {
 		return host + "/service-inventory-web/v1/ewallet/profile/change-image/{accessTokenID}?imageFileName={imageFileName}";
 	}
-
+	
+	public String getChangeProfileImageStatusURL() {
+		return host + "/service-inventory-web/v1/ewallet/profile/change-image-status/{accessTokenID}";
+	}
+	
 	public String getCreateBuyProductURL() {
 		return host + "/service-inventory-web/v1/buy/product/draft?accessTokenID={accessTokenID}";
 	}

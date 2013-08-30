@@ -220,5 +220,14 @@ public class UserProfileBuilder {
 		
         profileFacade.changeProfileImage(this.channelID, this.sessionID, this.tmnID, this.profileImage);
 	}
+	
+	public void changeProfileImageStatus(Boolean status) {
+		Validate.notNull(tmnID, "data missing. change PIN of whom?");
+        Validate.notNull(sessionID, "data missing. change PIN of whom?");
+        Validate.notNull(channelID, "data missing. change PIN from which channel?");
+		
+        profileFacade.changeProfileImageStatus(this.channelID, this.sessionID, this.tmnID, status);
+
+	}
     
 }

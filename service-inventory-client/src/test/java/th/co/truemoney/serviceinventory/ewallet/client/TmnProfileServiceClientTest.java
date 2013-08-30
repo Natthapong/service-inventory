@@ -1,8 +1,6 @@
 package th.co.truemoney.serviceinventory.ewallet.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 
@@ -96,6 +94,7 @@ public class TmnProfileServiceClientTest {
         TmnProfile tmnProfile = client.getTruemoneyProfile(accessToken);
         assertNotNull(tmnProfile);
         assertEquals("adam", tmnProfile.getFullname());
+        assertTrue(tmnProfile.getProfileImageStatus());
     }
 
     @Test
