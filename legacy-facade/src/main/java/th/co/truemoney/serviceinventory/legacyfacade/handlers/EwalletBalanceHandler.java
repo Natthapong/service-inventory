@@ -70,11 +70,16 @@ public class EwalletBalanceHandler {
 
 		VerifyTransferResponse verifyResponse = this.walletProxyClient.verifyTransfer(verifyRequest);
 		
-		P2PTransfer p2pTransfer = new P2PTransfer(verifyResponse.getTargetFullname(), verifyResponse.getTargetProfilePicture());
-		
-		return p2pTransfer;
+		if (isShowProfileImage(verifyResponse.getTargetProfilePictureFlag())) {
+			return new P2PTransfer(verifyResponse.getTargetFullname(), verifyResponse.getTargetProfilePicture());
+		} else {
+			return new P2PTransfer(verifyResponse.getTargetFullname(), "");
+		}
 	}
-
+	
+	private boolean isShowProfileImage(String flag) {
+		return "1".equals(flag);
+	}
 
 	public P2PTransactionConfirmationInfo transferFromPersonToPerson(BigDecimal amount,
 			String targetMobileNumber, Integer channelID, String sessionID,

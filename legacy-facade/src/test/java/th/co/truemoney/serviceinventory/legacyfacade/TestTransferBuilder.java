@@ -1,7 +1,6 @@
 package th.co.truemoney.serviceinventory.legacyfacade;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -69,7 +68,29 @@ public class TestTransferBuilder {
 		assertEquals("recipientImageFileName", p2pTransfer.getRecipientImageFileName());
 		verify(walletProxyClientMock).verifyTransfer(any(VerifyTransferRequest.class));
 	}
+	
+	@Test
+	public void verifyTransferMoneySuccessWithHideRecipientProfileImage() {
+		VerifyTransferResponse resp = createStubbedVerifyTransferResponse();
+		resp.setTargetProfilePictureFlag("0");
+		
+		//given 
+		when(walletProxyClientMock.verifyTransfer(any(VerifyTransferRequest.class)))
+			.thenReturn(resp);
+		
+		//when
+		P2PTransfer p2pTransfer = legacyFacade.transfer(BigDecimal.TEN)
+				.fromChannelID(accessToken.getChannelID())
+				.fromUser(accessToken.getSessionID(), accessToken.getTruemoneyID())
+				.toTargetUser("08xxxxxxx")
+				.verify();
+		
+		//then
+		assertEquals("", p2pTransfer.getRecipientImageFileName());
 
+		verify(walletProxyClientMock).verifyTransfer(any(VerifyTransferRequest.class));
+	}
+	
 	@Test(expected=FailResultCodeException.class)
 	public void verifyTransferMoneyFailWithResultCode() {
 		//given 
@@ -168,6 +189,7 @@ public class TestTransferBuilder {
 		verifyResponse.setResultNamespace("core");
 		verifyResponse.setTargetFullname("recipientName");
 		verifyResponse.setTargetProfilePicture("recipientImageFileName");
+		verifyResponse.setTargetProfilePictureFlag("1");
 		return verifyResponse;
 	}
 	
