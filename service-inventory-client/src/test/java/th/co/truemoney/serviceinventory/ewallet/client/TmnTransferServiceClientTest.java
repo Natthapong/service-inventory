@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
 
@@ -15,8 +12,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,7 +21,6 @@ import th.co.truemoney.serviceinventory.ewallet.client.testutils.IntegrationTest
 import th.co.truemoney.serviceinventory.ewallet.client.testutils.TestData;
 import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
-import th.co.truemoney.serviceinventory.topup.domain.TopUpMobileDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferDraft;
 import th.co.truemoney.serviceinventory.transfer.domain.P2PTransferTransaction;
 

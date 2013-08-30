@@ -89,12 +89,10 @@ public class UserProfileHandler {
         tmnProfile.setHasPassword(profile.getHasPassword());
         tmnProfile.setHasPin(profile.getHasPin());
         String imageFileName = getProfileValue(profile, ProfileKey.profilepic200x200);
-        String imageFileNameStatus = getProfileValue(profile, ProfileKey.profilepicflag);
         tmnProfile.setImageFileName(imageFileName);
-        tmnProfile.setProfileImageStatus("1".equals(imageFileNameStatus));
         return tmnProfile;
     }
-
+	
 	public List<Favorite> getListFavorite(Integer channelID, String sessionID,
                     String tmnID, String serviceType) {
             SecurityContext securityContext = new SecurityContext(sessionID, tmnID);

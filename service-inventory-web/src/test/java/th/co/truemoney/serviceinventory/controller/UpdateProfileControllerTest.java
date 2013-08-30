@@ -169,7 +169,7 @@ public class UpdateProfileControllerTest {
 	public void shouldChangeProfileImageStatusSuccess() throws Exception {
 		//given
 		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
-		when(this.tmnProfileServiceMock.changeProfileImageStatus(anyString(), any(Boolean.class))).thenReturn(new TmnProfile());
+		when(this.tmnProfileServiceMock.changeProfileImageStatus(anyString(), any(Boolean.class))).thenReturn("done");
 		
 		//perform
 		this.mockMvc.perform(post("/ewallet/profile/change-image-status/{accessTokenID}", "12345").param("status", "true")

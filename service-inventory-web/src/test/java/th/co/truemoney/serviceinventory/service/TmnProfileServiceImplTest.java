@@ -1,9 +1,7 @@
 package th.co.truemoney.serviceinventory.service;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -132,11 +130,10 @@ public class TmnProfileServiceImplTest {
     	Mockito.doNothing().when(mockProfileFacade).changeProfileImageStatus(eq(CHANNEL_ID), eq("sessionID"), eq("tmnID"), eq(imageStatus));
     	when(mockProfileFacade.getProfile(eq(CHANNEL_ID), eq("sessionID"), eq("tmnID"))).thenReturn(returnedProfile);
     	
-    	TmnProfile profile = this.profileService.changeProfileImageStatus("tokenID", imageStatus);
-    	assertThat(profile, equalTo(returnedProfile));
+    	String resp = this.profileService.changeProfileImageStatus("tokenID", imageStatus);
+    	assertEquals("done", resp);
 
     	Mockito.verify(mockProfileFacade).changeProfileImageStatus(eq(CHANNEL_ID), eq("sessionID"), eq("tmnID"), eq(imageStatus));
-    	Mockito.verify(mockProfileFacade).getProfile(eq(CHANNEL_ID), eq("sessionID"), eq("tmnID"));
     }
     
 }

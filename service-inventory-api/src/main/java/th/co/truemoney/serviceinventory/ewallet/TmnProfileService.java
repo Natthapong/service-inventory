@@ -34,6 +34,6 @@ public interface TmnProfileService {
 	
 	public TmnProfile changeProfileImage(String accessTokenID, String imageFileName) throws ServiceInventoryException;
 	
-	public TmnProfile changeProfileImageStatus(String accessTokenID, Boolean status) throws ServiceInventoryException;
+	public String changeProfileImageStatus(String accessTokenID, Boolean status) throws ServiceInventoryException;
 }
 

@@ -22,7 +22,7 @@ public class TmnProfile implements Serializable {
 	private String imageFileName;
 	private Boolean hasPassword;
 	private Boolean hasPin;
-	private Boolean profileImageStatus;
+	//private Boolean profileImageStatus;
 	
 	public TmnProfile() {
 		super();
@@ -116,7 +116,7 @@ public class TmnProfile implements Serializable {
 	public void setHasPin(Boolean hasPin) {
 		this.hasPin = hasPin;
 	}
-	
+	/*
 	public Boolean getProfileImageStatus() {
 		if (profileImageStatus != null) {
 			return profileImageStatus;
@@ -128,7 +128,7 @@ public class TmnProfile implements Serializable {
 	public void setProfileImageStatus(Boolean profileImageStatus) {
 		this.profileImageStatus = profileImageStatus;
 	}
-
+	*/
 	@JsonIgnore
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
