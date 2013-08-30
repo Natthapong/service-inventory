@@ -118,7 +118,11 @@ public class TmnProfile implements Serializable {
 	}
 	
 	public Boolean getProfileImageStatus() {
-		return profileImageStatus;
+		if (profileImageStatus != null) {
+			return profileImageStatus;
+		} else {
+			return Boolean.FALSE;
+		}
 	}
 
 	public void setProfileImageStatus(Boolean profileImageStatus) {
