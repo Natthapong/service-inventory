@@ -19,13 +19,14 @@ import th.co.truemoney.serviceinventory.ewallet.domain.OTP;
 import th.co.truemoney.serviceinventory.ewallet.domain.Transaction;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.EwalletRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.EwalletResponse;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
 import th.co.truemoney.serviceinventory.log.dao.ActivityDAO;
 import th.co.truemoney.serviceinventory.log.domain.ActivityLog;
+
+import com.tmn.core.api.message.StandardBizRequest;
+import com.tmn.core.api.message.StandardBizResponse;
 
 @Component
 public class AsyncJdbcLoggingProcessor {
@@ -226,7 +227,7 @@ public class AsyncJdbcLoggingProcessor {
 
     @Async
     public void writeLogEwalletProxies(String workerName, String activityName,
-            EwalletRequest ewalletRequest, EwalletResponse ewalletResponse,
+            StandardBizRequest ewalletRequest, StandardBizResponse ewalletResponse,
             EwalletException errorException, Long startTime, Long stopTime) {
         try {
             String trackingID = MDC.get(MDC_TRACKING_ID);

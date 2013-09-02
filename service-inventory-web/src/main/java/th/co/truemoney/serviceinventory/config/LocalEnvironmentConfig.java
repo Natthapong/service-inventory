@@ -14,20 +14,16 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BillProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.BuyProxy;
 import th.co.truemoney.serviceinventory.engine.client.proxy.impl.TopUpMobileProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileAdminProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.WalletProxyClient;
-import th.co.truemoney.serviceinventory.ewallet.proxy.ewalletsoap.EwalletSoapProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
 import th.co.truemoney.serviceinventory.firsthop.proxy.SmsProxy;
 import th.co.truemoney.serviceinventory.persona.LocalBillsPersona;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalBuyProductProxy;
-import th.co.truemoney.serviceinventory.persona.proxies.LocalEwalletSoapProxy;
-import th.co.truemoney.serviceinventory.persona.proxies.LocalProfileAdminProxy;
+import th.co.truemoney.serviceinventory.persona.proxies.LocalProfileAdminProxyClient;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalSecurityProxyClient;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalSmsProxy;
-import th.co.truemoney.serviceinventory.persona.proxies.LocalTmnProfileProxy;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalTmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.persona.proxies.LocalWalletProxyClient;
 import th.co.truemoney.serviceinventory.persona.proxies.TopUpTruemoneyProxy;
@@ -46,22 +42,21 @@ public class LocalEnvironmentConfig {
 
     @Bean
     @Primary
-    public TmnProfileProxy stubTmnProfileProxy() {
-        return new LocalTmnProfileProxy();
-    }
-
-    @Bean
-    @Primary
-    public TmnSecurityProxyClient stubTmnSecurityProxy() {
-        return new LocalSecurityProxyClient();
-    }
-    
-    @Bean
-    @Primary
     public TmnProfileProxyClient stubTmnProfileProxyClient() {
         return new LocalTmnProfileProxyClient();
     }
 
+    @Bean
+    @Primary
+    public TmnSecurityProxyClient stubTmnSecurityProxyClient() {
+        return new LocalSecurityProxyClient();
+    }
+    
+    @Bean
+    public TmnProfileAdminProxyClient stubTmnProfileAdminProxyClient() {
+        return new LocalProfileAdminProxyClient();
+    }
+    
     @Bean
     @Primary
     public WalletProxyClient stubWalletProxyClient() {
@@ -70,19 +65,8 @@ public class LocalEnvironmentConfig {
     
     @Bean
     @Primary
-    public EwalletSoapProxy stubEWalletSoapProxy() {
-        return new LocalEwalletSoapProxy();
-    }
-
-    @Bean
-    @Primary
     public SmsProxy stubSmsProxy() {
         return new LocalSmsProxy();
-    }
-
-    @Bean
-    public TmnProfileAdminProxy stubTmnProfileAdminProxy() {
-        return new LocalProfileAdminProxy();
     }
 
     @Bean

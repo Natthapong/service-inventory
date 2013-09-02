@@ -22,11 +22,11 @@ public class LocalSecurityProxyClient implements TmnSecurityProxyClient {
     public StandardBizResponse terminateSession(StandardBizRequest standardBizRequest)
             throws EwalletException {
         if ("adam@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())) {
-            return adam.getTmnSecurity().terminateSession(standardBizRequest);
+            return adam.getTmnSecurityClient().terminateSession(standardBizRequest);
         } else if("eve@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())){
-            return eve.getTmnSecurity().terminateSession(standardBizRequest);
+            return eve.getTmnSecurityClient().terminateSession(standardBizRequest);
         } else if("simpson@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())){
-            return simpsons.getTmnSecurity().terminateSession(standardBizRequest);
+            return simpsons.getTmnSecurityClient().terminateSession(standardBizRequest);
         } else {
 	    	StandardBizResponse standardBizResponse = new StandardBizResponse();
 	    	standardBizResponse.setTransactionId("11111111");
@@ -43,13 +43,13 @@ public class LocalSecurityProxyClient implements TmnSecurityProxyClient {
         String initiator = signOnRequest.getInitiator();
 
         if ("adam@tmn.com".equals(initiator)) {
-            return adam.getTmnSecurity().signon(signOnRequest);
+            return adam.getTmnSecurityClient().signon(signOnRequest);
 
         }else if("eve@tmn.com".equals(initiator)){
-            return eve.getTmnSecurity().signon(signOnRequest);
+            return eve.getTmnSecurityClient().signon(signOnRequest);
 
         }else if("simpson@tmn.com".equals(initiator)){
-            return simpsons.getTmnSecurity().signon(signOnRequest);
+            return simpsons.getTmnSecurityClient().signon(signOnRequest);
         }
 
         throw new ServiceInventoryException(400, "4", "", "TMN-SERVICE-INVENTORY");
@@ -58,11 +58,11 @@ public class LocalSecurityProxyClient implements TmnSecurityProxyClient {
     @Override
     public StandardBizResponse extendSession(StandardBizRequest standardBizRequest) throws EwalletException {
         if ("adam@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())) {
-            return adam.getTmnSecurity().extendSession(standardBizRequest);
+            return adam.getTmnSecurityClient().extendSession(standardBizRequest);
         } else if("eve@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())){
-            return eve.getTmnSecurity().extendSession(standardBizRequest);
+            return eve.getTmnSecurityClient().extendSession(standardBizRequest);
         } else if("simpson@tmn.com".equals(standardBizRequest.getSecurityContext().getTmnId())){
-            return simpsons.getTmnSecurity().extendSession(standardBizRequest);
+            return simpsons.getTmnSecurityClient().extendSession(standardBizRequest);
         } else {
 	    	StandardBizResponse standardBizResponse = new StandardBizResponse();
 	    	standardBizResponse.setTransactionId("11111111");
