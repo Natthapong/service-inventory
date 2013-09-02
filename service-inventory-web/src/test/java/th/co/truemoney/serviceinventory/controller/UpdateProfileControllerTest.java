@@ -165,14 +165,4 @@ public class UpdateProfileControllerTest {
 			.andExpect(jsonPath("$.errorNamespace").value("Error Namespace"));
 	}
 	
-	@Test
-	public void shouldChangeProfileImageStatusSuccess() throws Exception {
-		//given
-		when(extendAccessTokenAsynServiceMock.setExpire(anyString())).thenReturn(new AsyncResult<Boolean>(true));
-		when(this.tmnProfileServiceMock.changeProfileImageStatus(anyString(), any(Boolean.class))).thenReturn("done");
-		
-		//perform
-		this.mockMvc.perform(post("/ewallet/profile/change-image-status/{accessTokenID}", "12345").param("status", "true")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
-	}
 }
