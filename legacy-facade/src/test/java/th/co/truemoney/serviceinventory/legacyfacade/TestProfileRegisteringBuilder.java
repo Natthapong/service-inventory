@@ -15,26 +15,27 @@ import org.junit.Test;
 import th.co.truemoney.serviceinventory.ewallet.domain.TmnProfile;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateTmnProfileResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.IsCreatableRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileAdminProxyClient;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.ProfileRegisteringHandler;
+
+import com.tmn.core.api.message.CreateTmnProfileRequest;
+import com.tmn.core.api.message.CreateTmnProfileResponse;
+import com.tmn.core.api.message.IsCreatableRequest;
+import com.tmn.core.api.message.StandardBizResponse;
 
 public class TestProfileRegisteringBuilder {
 	
 	private LegacyFacade legacyFacade;
 	private ProfileRegisteringHandler profileRegisteringFacade;
-	private TmnProfileAdminProxy tmnProfileAdminProxyMock;
-	private TmnProfileProxy tmnProfileProxyMock;
+	private TmnProfileAdminProxyClient tmnProfileAdminProxyMock;
+	private TmnProfileProxyClient tmnProfileProxyMock;
 	
 	@Before
 	public void before() {
-		this.tmnProfileAdminProxyMock = mock(TmnProfileAdminProxy.class);
-		this.tmnProfileProxyMock = mock(TmnProfileProxy.class);
+		this.tmnProfileAdminProxyMock = mock(TmnProfileAdminProxyClient.class);
+		this.tmnProfileProxyMock = mock(TmnProfileProxyClient.class);
 		
 		this.legacyFacade = new LegacyFacade();
 		this.profileRegisteringFacade = new ProfileRegisteringHandler();

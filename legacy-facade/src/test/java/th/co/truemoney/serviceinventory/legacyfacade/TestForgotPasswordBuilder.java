@@ -16,26 +16,27 @@ import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.ResetPassword;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletUnExpectedException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.ConfirmForgotPasswordRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateForgotPasswordRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateForgotPasswordResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.VerifyForgotPasswordResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.admin.TmnProfileAdminProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileAdminProxyClient;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.ForgotPasswordHandler;
+
+import com.tmn.core.api.message.ConfirmForgotPasswordRequest;
+import com.tmn.core.api.message.CreateForgotPasswordRequest;
+import com.tmn.core.api.message.CreateForgotPasswordResponse;
+import com.tmn.core.api.message.StandardBizResponse;
+import com.tmn.core.api.message.VerifyForgotPasswordRequest;
+import com.tmn.core.api.message.VerifyForgotPasswordResponse;
 
 public class TestForgotPasswordBuilder {
 
 	private LegacyFacade legacyFacade;
 	private ForgotPasswordHandler forgotPasswordFacade;
 	private AccessToken accessToken;
-	private TmnProfileAdminProxy tmnProfileAdminProxyMock;
+	private TmnProfileAdminProxyClient tmnProfileAdminProxyMock;
 	
 	@Before
 	public void before() {
         this.accessToken = new AccessToken("1234567890", "1111111111", "0987654321", "1111111111", "0866012345", "local@tmn.com", 41);
-		this.tmnProfileAdminProxyMock = mock(TmnProfileAdminProxy.class);
+		this.tmnProfileAdminProxyMock = mock(TmnProfileAdminProxyClient.class);
 		
 		this.legacyFacade = new LegacyFacade();
 		this.forgotPasswordFacade = new ForgotPasswordHandler();

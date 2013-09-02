@@ -17,7 +17,6 @@ import org.junit.Test;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
 import th.co.truemoney.serviceinventory.ewallet.proxy.TmnSecurityProxyClient;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler.ProfileNotFoundException;
 
@@ -32,19 +31,16 @@ public class TestUserProfileBuilder {
 	private UserProfileHandler userProfileFacade;
     private TmnSecurityProxyClient tmnSecurityProxyClientMock;
     private TmnProfileProxyClient tmnProfileProxyClientMock;
-    private TmnProfileProxy tmnProfileProxyMock;
 	
 	@Before
 	public void before() {
 		this.tmnSecurityProxyClientMock = mock(TmnSecurityProxyClient.class);
 		this.tmnProfileProxyClientMock = mock(TmnProfileProxyClient.class);
-		this.tmnProfileProxyMock = mock(TmnProfileProxy.class);
 		
 		this.legacyFacade = new LegacyFacade();
 		this.userProfileFacade = new UserProfileHandler();
 		this.userProfileFacade.setTmnSecurityProxy(tmnSecurityProxyClientMock);
-		this.userProfileFacade.setTmnProfileProxyClient(tmnProfileProxyClientMock);
-		this.userProfileFacade.setTmnProfileProxy(tmnProfileProxyMock);
+		this.userProfileFacade.setTmnProfileProxy(tmnProfileProxyClientMock);
 		this.legacyFacade.setProfileFacade(userProfileFacade);
 	}
 	
@@ -52,7 +48,6 @@ public class TestUserProfileBuilder {
 	public void after() {
 		reset(tmnSecurityProxyClientMock);
 		reset(tmnProfileProxyClientMock);
-		reset(tmnProfileProxyMock);
 	}
 	
 	@Test

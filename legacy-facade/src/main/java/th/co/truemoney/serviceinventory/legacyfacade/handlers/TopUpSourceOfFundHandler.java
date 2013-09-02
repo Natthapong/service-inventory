@@ -6,25 +6,26 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import th.co.truemoney.serviceinventory.ewallet.domain.DirectDebit;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.ListSourceResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SecurityContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SourceContext;
-import th.co.truemoney.serviceinventory.ewallet.proxy.tmnprofile.TmnProfileProxy;
+import th.co.truemoney.serviceinventory.ewallet.proxy.TmnProfileProxyClient;
+
+import com.tmn.core.api.message.ListSourceRequest;
+import com.tmn.core.api.message.ListSourceResponse;
+import com.tmn.core.api.message.SecurityContext;
+import com.tmn.core.api.message.SourceContext;
 
 public class TopUpSourceOfFundHandler {
 
 	private static final String DIRECT_DEBIT_SOURCE_TYPE = "debit";
 
 	@Autowired
-	private TmnProfileProxy tmnProfileProxy;
+	private TmnProfileProxyClient tmnProfileProxyClient;
 
 	public List<DirectDebit> getAllDirectDebitSourceOfFunds(Integer channelID, String sessionID, String truemoneyID) {
 
 		List<DirectDebit> directDebitList = new ArrayList<DirectDebit>();
 
 		ListSourceRequest sourceRequest = createListSourceRequest(channelID, sessionID, truemoneyID, DIRECT_DEBIT_SOURCE_TYPE);
-		ListSourceResponse listSourceResponse = this.tmnProfileProxy.listSource(sourceRequest);
+		ListSourceResponse listSourceResponse = this.tmnProfileProxyClient.listSource(sourceRequest);
 		SourceContext[] sourceContexts = listSourceResponse.getSourceList();
 
 		if (sourceContexts != null && sourceContexts.length > 0) {
@@ -65,19 +66,22 @@ public class TopUpSourceOfFundHandler {
 	}
 
 	private ListSourceRequest createListSourceRequest(Integer channelID, String sessionID, String truemoneyID, String sourceOfFundType) {
-
-		SecurityContext securityContext = new SecurityContext(sessionID, truemoneyID);
-
 		ListSourceRequest listSourceRequest = new ListSourceRequest();
-		listSourceRequest.setSecurityContext(securityContext);
+		listSourceRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
 		listSourceRequest.setChannelId(channelID);
 		listSourceRequest.setSourceType(sourceOfFundType);
-
 		return listSourceRequest;
 	}
 
-	public void setTmnProfileProxy(TmnProfileProxy tmnProfileProxy) {
-		this.tmnProfileProxy = tmnProfileProxy;
+	private SecurityContext createSecurityContext(String sessionID,	String truemoneyID) {
+		SecurityContext securityContext = new SecurityContext();
+		securityContext.setSessionId(sessionID);
+		securityContext.setTmnId(truemoneyID);
+		return securityContext;
+	}
+
+	public void setTmnProfileProxy(TmnProfileProxyClient tmnProfileProxyClient) {
+		this.tmnProfileProxyClient = tmnProfileProxyClient;
 	}
 
 }
