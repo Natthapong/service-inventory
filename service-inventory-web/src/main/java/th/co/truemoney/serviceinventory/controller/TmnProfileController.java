@@ -148,7 +148,7 @@ public class TmnProfileController {
 	@RequestMapping(value = "/profile/change-image-status/{accessTokenID}", method = RequestMethod.POST)
 	public @ResponseBody String changeProfileImageStatus(
 		   @PathVariable String accessTokenID,
-		   @RequestParam Boolean status) {
+		   @RequestBody Boolean status) {
 
 		extendExpireAccessToken(accessTokenID);
 		
