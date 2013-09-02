@@ -19,13 +19,14 @@ import th.co.truemoney.serviceinventory.engine.client.domain.services.SIEngineRe
 import th.co.truemoney.serviceinventory.engine.client.exception.SIEngineException;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.EwalletRequest;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.EwalletResponse;
 import th.co.truemoney.serviceinventory.ewallet.repositories.AccessTokenRepository;
 import th.co.truemoney.serviceinventory.exception.ResourceNotFoundException;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsRequest;
 import th.co.truemoney.serviceinventory.firsthop.message.SmsResponse;
+
+import com.tmn.core.api.message.StandardBizRequest;
+import com.tmn.core.api.message.StandardBizResponse;
 
 @Aspect
 @Component
@@ -144,13 +145,13 @@ public class LoggingAspect {
         Long startTime = System.currentTimeMillis();
         Object[] args = joinPoint.getArgs();
 
-        if (args.length > 0 && args[0] instanceof EwalletRequest) {
+        if (args.length > 0 && args[0] instanceof StandardBizRequest) {
 
-            EwalletRequest ewalletRequest = (EwalletRequest) args[0];
+        	StandardBizRequest ewalletRequest = (StandardBizRequest) args[0];
             EwalletException errorException = null;
-            EwalletResponse ewalletResponse = null;
+            StandardBizResponse ewalletResponse = null;
             try {
-                ewalletResponse = (EwalletResponse) joinPoint.proceed();
+                ewalletResponse = (StandardBizResponse) joinPoint.proceed();
                 return ewalletResponse;
             } catch (EwalletException ex) {
                 errorException = ex;
@@ -173,7 +174,7 @@ public class LoggingAspect {
         Long startTime = System.currentTimeMillis();
         Object[] args = joinPoint.getArgs();
 
-        if (args.length > 0 && args[0] instanceof EwalletRequest) {
+        if (args.length > 0 && args[0] instanceof StandardBizRequest) {
 
             SmsRequest smsRequest = (SmsRequest) args[0];
             Exception errorException = null;

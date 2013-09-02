@@ -91,8 +91,6 @@ public class FavoriteServiceImplTest {
         }
     }
 
-
-
     @Test
     public void isFavoritable(){
         Boolean isFavorite = favoriteServiceImpl.isFavoritable("serviceType", "trmv", "ref1","12345");

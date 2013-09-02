@@ -36,7 +36,6 @@ import th.co.truemoney.serviceinventory.ewallet.FavoriteService;
 import th.co.truemoney.serviceinventory.ewallet.ForgotPasswordService;
 import th.co.truemoney.serviceinventory.ewallet.TmnProfileService;
 import th.co.truemoney.serviceinventory.ewallet.TopUpService;
-import th.co.truemoney.serviceinventory.ewallet.config.EwalletConfig;
 import th.co.truemoney.serviceinventory.ewallet.config.TmnProfileConfig;
 import th.co.truemoney.serviceinventory.ewallet.impl.ActivityServiceImpl;
 import th.co.truemoney.serviceinventory.ewallet.impl.AsyncP2PTransferProcessor;
@@ -64,7 +63,7 @@ import com.tmn.core.api.config.CoreServiceClientConfig;
 @EnableAsync(proxyTargetClass = true)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @ComponentScan({"th.co.truemoney.serviceinventory.dao", "th.co.truemoney.serviceinventory.aop","th.co.truemoney.serviceinventory.log"})
-@Import({EwalletConfig.class, SmsConfig.class, TmnProfileConfig.class, SIEngineConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, ProdEnvironmentConfig.class, DevEnvironmentConfig.class, CoreServiceClientConfig.class })
+@Import({SmsConfig.class, TmnProfileConfig.class, SIEngineConfig.class, EmailConfig.class, LegacyFacadeConfig.class, RedisRepositoriesConfig.class, ProdEnvironmentConfig.class, DevEnvironmentConfig.class, CoreServiceClientConfig.class })
 public class ServiceInventoryConfig {
 	
     @Bean

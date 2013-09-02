@@ -6,12 +6,13 @@ import java.rmi.RemoteException;
 
 import th.co.truemoney.serviceinventory.ewallet.exception.EwalletException;
 import th.co.truemoney.serviceinventory.ewallet.exception.FailResultCodeException;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.AuthenticateResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.CreateSessionResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.GetBasicProfileResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.SignonResponse;
-import th.co.truemoney.serviceinventory.ewallet.proxy.message.StandardBizResponse;
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryWebException;
+
+import com.tmn.core.api.message.AuthenticateResponse;
+import com.tmn.core.api.message.CreateSessionResponse;
+import com.tmn.core.api.message.GetBasicProfileResponse;
+import com.tmn.core.api.message.SignonResponse;
+import com.tmn.core.api.message.StandardBizResponse;
 
 public class TmnProfileStubbed {
 
