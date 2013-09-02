@@ -90,6 +90,8 @@ public class UserProfileHandler {
         tmnProfile.setHasPin(profile.getHasPin());
         String imageFileName = getProfileValue(profile, ProfileKey.profilepic200x200);
         tmnProfile.setImageFileName(imageFileName);
+        String imageFileStatus = getProfileValue(profile, ProfileKey.profilepicflag);
+        tmnProfile.setProfileImageStatus("1".equals(imageFileStatus));
         return tmnProfile;
     }
 	
