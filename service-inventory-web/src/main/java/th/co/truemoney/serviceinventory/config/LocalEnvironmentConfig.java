@@ -39,12 +39,7 @@ public class LocalEnvironmentConfig {
     public String host() {
         return "http://127.0.0.1:8787";
     }
-    
-    @Bean @Qualifier("appleUsersConfig")
-    public String appleUsersConfig() {
-    	return "apple/user.json";
-    }
-    
+
     @Bean
     @Primary
     public TmnProfileProxyClient stubTmnProfileProxyClient() {
@@ -102,5 +97,5 @@ public class LocalEnvironmentConfig {
                 .build();
         return database;
     }
-    
+
 }

@@ -1,12 +1,9 @@
 package th.co.truemoney.serviceinventory.config;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,15 +11,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import th.co.truemoney.serviceinventory.authen.TransactionAuthenService;
-import th.co.truemoney.serviceinventory.authen.impl.AppleUser;
-import th.co.truemoney.serviceinventory.authen.impl.AppleUserMap;
 import th.co.truemoney.serviceinventory.authen.impl.TransactionAuthenServiceImpl;
 import th.co.truemoney.serviceinventory.bill.BillPaymentService;
 import th.co.truemoney.serviceinventory.bill.BillRetriever;
@@ -63,9 +57,6 @@ import th.co.truemoney.serviceinventory.sms.SendEpinService;
 import th.co.truemoney.serviceinventory.topup.TopUpMobileService;
 import th.co.truemoney.serviceinventory.transfer.P2PTransferService;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmn.core.api.config.CoreServiceClientConfig;
 
 @Configuration
@@ -223,28 +214,5 @@ public class ServiceInventoryConfig {
 
         return headers;
     }
-    
-    @Autowired
-    @Qualifier("appleUsersConfig")
-    private String appleUsersConfig;
-    
-    @Bean
-	public AppleUserMap appleUsers() {
-		AppleUserMap appleUserMap = new AppleUserMap();
-		ObjectMapper m = new ObjectMapper(new JsonFactory());
-
-		TypeReference<HashMap<String, AppleUser>> typeRef;
-			typeRef = new TypeReference<HashMap<String, AppleUser>>() {
-		};
-
-		ClassPathResource resource = new ClassPathResource(appleUsersConfig);
-		try {
-			Map<String, AppleUser> appleUsers = m.readValue(resource.getFile(), typeRef);
-			appleUserMap.setAppleUsers(appleUsers); 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return appleUserMap;
-	}
 
 }
