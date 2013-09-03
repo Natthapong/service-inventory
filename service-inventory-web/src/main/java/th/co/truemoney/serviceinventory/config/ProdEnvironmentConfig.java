@@ -18,7 +18,12 @@ public class ProdEnvironmentConfig {
 	public String host() {
 		return "https://TRPRPTVIP";
 	}
-
+	
+	@Bean @Qualifier("appleUsersConfig")
+    public String appleUsersConfig() {
+    	return "apple/user_prod.json";
+    }
+	
 	@Bean
 	public OTPGenerator otpGenerator() {
 		return new RandomOTPGeneraor();

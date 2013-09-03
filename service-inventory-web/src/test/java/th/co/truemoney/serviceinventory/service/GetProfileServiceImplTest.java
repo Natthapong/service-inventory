@@ -16,7 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import th.co.truemoney.serviceinventory.config.EnvConfig;
-import th.co.truemoney.serviceinventory.config.LocalAppleUserConfig;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
@@ -28,7 +27,7 @@ import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
 import th.co.truemoney.serviceinventory.legacyfacade.handlers.UserProfileHandler;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class, EnvConfig.class })
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, EnvConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
 public class GetProfileServiceImplTest {
 

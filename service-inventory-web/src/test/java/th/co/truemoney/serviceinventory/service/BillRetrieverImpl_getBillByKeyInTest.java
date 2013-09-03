@@ -23,7 +23,6 @@ import th.co.truemoney.serviceinventory.bill.domain.OutStandingBill;
 import th.co.truemoney.serviceinventory.bill.impl.BillRetrieverImpl;
 import th.co.truemoney.serviceinventory.bill.validation.BillValidator;
 import th.co.truemoney.serviceinventory.config.EnvConfig;
-import th.co.truemoney.serviceinventory.config.LocalAppleUserConfig;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
@@ -39,7 +38,7 @@ import th.co.truemoney.serviceinventory.stub.BillPaymentStubbed;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class, EnvConfig.class })
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, EnvConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
 @Category(IntegrationTest.class)
 public class BillRetrieverImpl_getBillByKeyInTest {

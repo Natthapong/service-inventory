@@ -18,7 +18,12 @@ public class DevEnvironmentConfig {
 	public String host() {
 		return "https://127.0.0.1:9443";
 	}
-
+	
+	@Bean @Qualifier("appleUsersConfig")
+    public String appleUsersConfig() {
+    	return "apple/user.json";
+    }
+	
 	@Bean
 	public OTPGenerator otpGenerator() {
 		return new RandomOTPGeneraor();
