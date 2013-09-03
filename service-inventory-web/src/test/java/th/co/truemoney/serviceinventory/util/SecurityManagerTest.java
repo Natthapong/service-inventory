@@ -14,11 +14,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.util.StringUtils;
 
-import th.co.truemoney.serviceinventory.config.TestEnvConfig;
+import th.co.truemoney.serviceinventory.config.EnvConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { TestEnvConfig.class })
+@ContextConfiguration(classes = { EnvConfig.class })
 public class SecurityManagerTest {
 	
 	@Autowired

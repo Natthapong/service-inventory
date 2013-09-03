@@ -2,9 +2,16 @@ package th.co.truemoney.serviceinventory.log.dao;
 
 import java.sql.Timestamp;
 
+import javax.sql.DataSource;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -12,19 +19,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import th.co.truemoney.serviceinventory.config.EnvConfig;
 import th.co.truemoney.serviceinventory.config.LocalAppleUserConfig;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
-import th.co.truemoney.serviceinventory.config.TestEnvConfig;
-import th.co.truemoney.serviceinventory.config.TestJdbcConfig;
 import th.co.truemoney.serviceinventory.log.domain.ActivityLog;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class, TestJdbcConfig.class, LocalAppleUserConfig.class, TestEnvConfig.class })
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, LocalEnvironmentConfig.class, MemRepositoriesConfig.class, LocalAppleUserConfig.class, EnvConfig.class })
 @ActiveProfiles(profiles = {"local", "mem"})
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
@@ -84,3 +90,17 @@ public class ActivityDAOTest {
 		activityDAO.createActivityLog(activityLog);
 	}
 }
+
+@Configuration
+class Config {
+
+	@Bean
+	public DataSource dataSource() {
+		EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+		EmbeddedDatabase database = (EmbeddedDatabase)builder.setType(EmbeddedDatabaseType.H2)
+				.addScript("dataset/schema.sql")
+				.build();
+		return database;
+	}
+}
+

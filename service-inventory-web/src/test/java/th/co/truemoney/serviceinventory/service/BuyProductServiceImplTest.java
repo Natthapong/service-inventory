@@ -26,11 +26,11 @@ import th.co.truemoney.serviceinventory.buy.domain.BuyProductTransaction;
 import th.co.truemoney.serviceinventory.buy.domain.BuyProductTransaction.FailStatus;
 import th.co.truemoney.serviceinventory.buy.impl.AsyncBuyProductProcessor;
 import th.co.truemoney.serviceinventory.buy.impl.BuyProductServiceImpl;
+import th.co.truemoney.serviceinventory.config.EnvConfig;
 import th.co.truemoney.serviceinventory.config.LocalAppleUserConfig;
 import th.co.truemoney.serviceinventory.config.LocalEnvironmentConfig;
 import th.co.truemoney.serviceinventory.config.MemRepositoriesConfig;
 import th.co.truemoney.serviceinventory.config.ServiceInventoryConfig;
-import th.co.truemoney.serviceinventory.config.TestEnvConfig;
 import th.co.truemoney.serviceinventory.dao.impl.MemoryExpirableMap;
 import th.co.truemoney.serviceinventory.engine.client.domain.services.VerifyBuyRequest;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
@@ -46,7 +46,7 @@ import th.co.truemoney.serviceinventory.legacyfacade.handlers.BuyProductHandler;
 import th.co.truemoney.serviceinventory.testutils.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class, TestEnvConfig.class })
+@ContextConfiguration(classes = { ServiceInventoryConfig.class, MemRepositoriesConfig.class, LocalEnvironmentConfig.class, LocalAppleUserConfig.class, EnvConfig.class })
 @ActiveProfiles(profiles={"local", "mem"})
 @Category(IntegrationTest.class)
 public class BuyProductServiceImplTest {
