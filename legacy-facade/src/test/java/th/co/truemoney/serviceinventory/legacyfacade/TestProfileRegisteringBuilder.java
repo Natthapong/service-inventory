@@ -118,7 +118,7 @@ public class TestProfileRegisteringBuilder {
 		
 		//when
 		TmnProfile tmnProfile = new TmnProfile("tmn@gmail.com", "password5555", "Fullname",
-				"thaiID", "08xxxxxxxx", BigDecimal.ZERO, null, null);
+				"thaiID", "08xxxxxxxx", BigDecimal.ZERO);
 		legacyFacade.fromChannel(41)
 			.registering()
 			.register(tmnProfile);
@@ -135,7 +135,7 @@ public class TestProfileRegisteringBuilder {
 		
 		//when
 		TmnProfile tmnProfile = new TmnProfile("tmn@gmail.com", "password5555", "Fullname",
-				"thaiID", "08xxxxxxxx", BigDecimal.ZERO, null, null);
+				"thaiID", "08xxxxxxxx", BigDecimal.ZERO);
 		legacyFacade.fromChannel(41)
 			.registering()
 			.register(tmnProfile);
@@ -152,7 +152,7 @@ public class TestProfileRegisteringBuilder {
 		
 		//when
 		TmnProfile tmnProfile = new TmnProfile("tmn@gmail.com", "password5555", "Fullname",
-				"thaiID", "08xxxxxxxx", BigDecimal.ZERO, null, null);
+				"thaiID", "08xxxxxxxx", BigDecimal.ZERO);
 		legacyFacade.fromChannel(41)
 			.registering()
 			.register(tmnProfile);

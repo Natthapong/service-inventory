@@ -43,7 +43,7 @@ public class TmnProfileRegisterWorkflowTest {
 		// pre-register and create otp
 		OTP otp = profileService.createProfile(41, new TmnProfile(
 				"user1@test.com", "12345", "Tanathip V", "9999", "0868185055",
-				new BigDecimal(100), "SA", 0));
+				new BigDecimal(100)));
 		assertNotNull(otp);
 		assertEquals("0868185055", otp.getMobileNumber());
 		otp.setOtpString("111111");

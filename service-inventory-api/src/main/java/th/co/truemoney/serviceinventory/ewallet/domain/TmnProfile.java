@@ -34,8 +34,7 @@ public class TmnProfile implements Serializable {
 	}
 
 	public TmnProfile(String email, String password, String fullname,
-			String thaiID, String mobileNumber, BigDecimal balance,
-			String type, Integer status) {
+			String thaiID, String mobileNumber, BigDecimal balance) {
 		super();
 		this.email = email;
 		this.password = password;
