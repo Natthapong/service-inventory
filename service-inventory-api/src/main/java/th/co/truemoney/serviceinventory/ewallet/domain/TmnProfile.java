@@ -3,6 +3,7 @@ package th.co.truemoney.serviceinventory.ewallet.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -123,11 +124,15 @@ public class TmnProfile implements Serializable {
 			return Boolean.FALSE;
 		}
 	}
-
+	
 	public void setProfileImageStatus(Boolean profileImageStatus) {
 		this.profileImageStatus = profileImageStatus;
 	}
 	
+	public boolean hasProfileImage() {
+		return StringUtils.isNotBlank(this.imageFileName);
+	}
+
 	@JsonIgnore
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)

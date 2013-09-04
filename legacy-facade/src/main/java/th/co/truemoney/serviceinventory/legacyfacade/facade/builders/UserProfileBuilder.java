@@ -29,6 +29,7 @@ public class UserProfileBuilder {
     private String profileImage;
     private String loginID;
     private Favorite favorite;
+    private Boolean profileImageStatus;
     
     private EwalletBalanceHandler balanceFacade;    
     private UserProfileHandler profileFacade;    
@@ -100,6 +101,11 @@ public class UserProfileBuilder {
 	
 	public UserProfileBuilder withLoginID(String loginID) {
 		this.loginID = loginID;
+		return this;
+	}
+	
+	public UserProfileBuilder withImageStatus(Boolean status) {
+		this.profileImageStatus = status;
 		return this;
 	}
 	
@@ -218,7 +224,7 @@ public class UserProfileBuilder {
         Validate.notNull(channelID, "data missing. change PIN from which channel?");
         Validate.notNull(profileImage, "data missing. profile image path ?");
 		
-        profileFacade.changeProfileImage(this.channelID, this.sessionID, this.tmnID, this.profileImage);
+        profileFacade.changeProfileImage(this.channelID, this.sessionID, this.tmnID, this.profileImage, this.profileImageStatus);
 	}
 	
 	public void changeProfileImageStatus(Boolean status) {

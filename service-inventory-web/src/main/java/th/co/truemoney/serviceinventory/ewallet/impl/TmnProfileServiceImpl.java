@@ -19,6 +19,7 @@ import th.co.truemoney.serviceinventory.ewallet.repositories.RegisteringProfileR
 import th.co.truemoney.serviceinventory.exception.ServiceInventoryException;
 import th.co.truemoney.serviceinventory.exception.SignonServiceException;
 import th.co.truemoney.serviceinventory.legacyfacade.LegacyFacade;
+import th.co.truemoney.serviceinventory.legacyfacade.facade.builders.UserProfileBuilder;
 import th.co.truemoney.serviceinventory.sms.OTPService;
 
 @Service
@@ -186,14 +187,17 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 			throws ServiceInventoryException {
 		AccessToken accessToken = accessTokenRepo.findAccessToken(accessTokenID);
 		
-		legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
-				.fromChannel(accessToken.getChannelID())
-				.withImageName(imageFileName)
-				.changeProfileImage();
+		UserProfileBuilder profileBuilder = legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID());
+		profileBuilder = profileBuilder.fromChannel(accessToken.getChannelID());
+		profileBuilder = profileBuilder.withImageName(imageFileName);
 		
-		return legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID())
-				   .fromChannel(accessToken.getChannelID())
-				   .getProfile();
+		TmnProfile profile = getTruemoneyProfile(accessTokenID);
+		if (! profile.hasProfileImage()) {
+			profileBuilder = profileBuilder.withImageStatus(Boolean.TRUE);
+		}
+		profileBuilder.changeProfileImage();
+		
+		return getTruemoneyProfile(accessTokenID);
 	}
 	
 	@Override

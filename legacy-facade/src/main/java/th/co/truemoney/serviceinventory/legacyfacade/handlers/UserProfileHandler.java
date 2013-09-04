@@ -162,8 +162,8 @@ public class UserProfileHandler {
 		this.tmnProfileProxyClient.updateProfile(updateProfileRequest);
 	}
 	
-	public void changeProfileImage(Integer channelID, String sessionID, String truemoneyID, String profileImage) {
-		UpdateProfileRequest updateProfileRequest = createUpdateProfileImageRequest(channelID, sessionID, truemoneyID, profileImage);
+	public void changeProfileImage(Integer channelID, String sessionID, String truemoneyID, String profileImage, Boolean profileImageStatus) {
+		UpdateProfileRequest updateProfileRequest = createUpdateProfileImageRequest(channelID, sessionID, truemoneyID, profileImage, profileImageStatus);
 		this.tmnProfileProxyClient.updateProfile(updateProfileRequest);
 	}
 	
@@ -182,12 +182,18 @@ public class UserProfileHandler {
 		return updateProfileRequest;
 	}
 	
-	private UpdateProfileRequest createUpdateProfileImageRequest(Integer channelID, String sessionID, String truemoneyID, String profileImage) {
+	private UpdateProfileRequest createUpdateProfileImageRequest(Integer channelID, String sessionID, String truemoneyID, String profileImage, Boolean profileImageStatus) {
 		UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
 		updateProfileRequest.setChannelId(channelID);
 		updateProfileRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
-		updateProfileRequest.setProfileKey(new String[] { ProfileKey.profilepic200x200 });
-		updateProfileRequest.setProfileValue(new String[] { profileImage });
+		
+		if (profileImageStatus != null) {
+			updateProfileRequest.setProfileKey(new String[] { ProfileKey.profilepic200x200, ProfileKey.profilepicflag });
+			updateProfileRequest.setProfileValue(new String[] { profileImage, profileImageStatus ? "1" : "0" });
+		} else {
+			updateProfileRequest.setProfileKey(new String[] { ProfileKey.profilepic200x200 });
+			updateProfileRequest.setProfileValue(new String[] { profileImage });
+		}
 		return updateProfileRequest;
 	}
 	
