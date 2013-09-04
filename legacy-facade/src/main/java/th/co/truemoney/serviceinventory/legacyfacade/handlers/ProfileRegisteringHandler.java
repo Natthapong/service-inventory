@@ -76,7 +76,7 @@ public class ProfileRegisteringHandler {
 		String encryptedPin = encryptSHA1(requestTransactionID);
 		AdminSecurityContext adminSecurityContext = new AdminSecurityContext();
 		adminSecurityContext.setInitiator(tmnProfileInitiator);
-		adminSecurityContext.setInitiator(encryptedPin);
+		adminSecurityContext.setPin(encryptedPin);
 		return adminSecurityContext;
 	}
 	
