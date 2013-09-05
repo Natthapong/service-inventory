@@ -190,11 +190,6 @@ public class TmnProfileServiceImpl implements TmnProfileService {
 		UserProfileBuilder profileBuilder = legacyFacade.userProfile(accessToken.getSessionID(), accessToken.getTruemoneyID());
 		profileBuilder = profileBuilder.fromChannel(accessToken.getChannelID());
 		profileBuilder = profileBuilder.withImageName(imageFileName);
-		
-		TmnProfile profile = getTruemoneyProfile(accessTokenID);
-		if (! profile.hasProfileImage()) {
-			profileBuilder = profileBuilder.withImageStatus(Boolean.TRUE);
-		}
 		profileBuilder.changeProfileImage();
 		
 		return getTruemoneyProfile(accessTokenID);
