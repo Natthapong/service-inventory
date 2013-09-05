@@ -15,11 +15,11 @@ import th.co.truemoney.serviceinventory.util.SecurityManager;
 
 public class SendEpinService {
 
-	private static final String SMS_EPIN_TEMPLATE = "คุณได้รับบัตรเงินสด %s บาท "+
+	private static final String SMS_EPIN_TEMPLATE = "คุณได้รับบัตรเงินสด %s บ. "+
 													"รหัสเติมเงิน คือ %s "+
 													"จากหมายเลข %s "+ 
 													"(transaction %s, "+
-													"(serial %s)";
+													"serial %s)";
 	
 	@Autowired 
 	@Qualifier("smsSender")
