@@ -83,7 +83,7 @@ public class ProfileRegisteringHandler {
 	
 	private AdminSecurityContext createSecurityContext(String requestTransactionID) {
 		String encryptedPin = encryptSHA1(requestTransactionID);
-		logger.debug("encryptedPin : "+encryptedPin);
+		logger.debug("encryptedPin = HashPasswordUtil.encryptSHA1(requestTransactionID + tempEncrypted).toUpperCase() "+encryptedPin);
 		logger.debug("==============================================================");
 		AdminSecurityContext adminSecurityContext = new AdminSecurityContext();
 		adminSecurityContext.setInitiator(tmnProfileInitiator);
@@ -99,7 +99,8 @@ public class ProfileRegisteringHandler {
 		tmnProfileRequest.setMobile(tmnProfile.getMobileNumber());
 		tmnProfileRequest.setPassword(tmnProfile.getPassword());
 		tmnProfileRequest.setThaiId(tmnProfile.getThaiID());
-
+		tmnProfileRequest.setEmailStatus(0);
+		tmnProfileRequest.setMobileStatus(1);
 		return tmnProfileRequest;
 	}
 

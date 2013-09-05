@@ -34,6 +34,7 @@ import com.tmn.core.api.message.ProfileKey;
 import com.tmn.core.api.message.SecurityContext;
 import com.tmn.core.api.message.SignonRequest;
 import com.tmn.core.api.message.SignonResponse;
+import com.tmn.core.api.message.StandardBizRequest;
 import com.tmn.core.api.message.StandardBizResponse;
 import com.tmn.core.api.message.UpdateProfileRequest;
 
@@ -144,7 +145,8 @@ public class UserProfileHandler {
     }
 
 	public void logout(Integer channelID, String sessionID, String truemoneyID) {
-    	this.tmnSecurityProxyClient.terminateSession(createNewAccessRequest(channelID, sessionID, truemoneyID));
+		StandardBizRequest standardBizRequest = createLogoutRequest(channelID, sessionID, truemoneyID);
+    	this.tmnSecurityProxyClient.terminateSession(standardBizRequest);
     }
 
 	public void changePin(Integer channelID, String sessionID, String truemoneyID, String oldPin, String pin, String loginID) {
@@ -244,8 +246,8 @@ public class UserProfileHandler {
         return favoritedRequest;
     }
 
-    private com.tmn.core.api.message.StandardBizRequest createNewAccessRequest(Integer channelID, String sessionID, String truemoneyID) {
-    	com.tmn.core.api.message.StandardBizRequest standardBizRequest = new com.tmn.core.api.message.StandardBizRequest();
+    private StandardBizRequest createLogoutRequest(Integer channelID, String sessionID, String truemoneyID) {
+    	StandardBizRequest standardBizRequest = new StandardBizRequest();
         standardBizRequest.setSecurityContext(createSecurityContext(sessionID, truemoneyID));
         standardBizRequest.setChannelId(channelID);
         return standardBizRequest;

@@ -15,11 +15,11 @@ import th.co.truemoney.serviceinventory.util.SecurityManager;
 
 public class SendEpinService {
 
-	private static final String SMS_EPIN_TEMPLATE = "คุณได้รับบัตรเงินสด %s บาท จาก TrueMoney "+
-													"Wallet หมายเลข %s รหัสเติมเงิน "+ 
-													"(Pin) คือ %s เลขที่บัตรเงินสด "+ 
-													"(SerialNo) คือ %s "+
-													"(transaction %s)";
+	private static final String SMS_EPIN_TEMPLATE = "คุณได้รับบัตรเงินสด %s บาท "+
+													"รหัสเติมเงิน คือ %s "+
+													"จากหมายเลข %s "+ 
+													"(transaction %s, "+
+													"(serial %s)";
 	
 	@Autowired 
 	@Qualifier("smsSender")
@@ -43,10 +43,10 @@ public class SendEpinService {
 	private boolean sendSMS(SendEpinSms buyEpinSms) {
 		String msg = String.format(SMS_EPIN_TEMPLATE, 
 				convertToAbsoluteValue(buyEpinSms.getAmount()), 
-				buyEpinSms.getAccount(),
 				securityManager.decryptRSA(buyEpinSms.getPin()),
-				buyEpinSms.getSerial(),
-				buyEpinSms.getTxnID());
+				buyEpinSms.getAccount(),
+				buyEpinSms.getTxnID(),
+				buyEpinSms.getSerial());
 		SmsResponse smsResponse = smsProxyImpl.send(new SmsRequest(smsSender, buyEpinSms.getRecipientMobileNumber(), msg));
 		return smsResponse.isSuccess();
 	}
