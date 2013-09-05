@@ -1,5 +1,7 @@
 package th.co.truemoney.serviceinventory.legacyfacade.handlers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -15,6 +17,8 @@ import com.tmn.core.api.message.IsCreatableRequest;
 
 public class ProfileRegisteringHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProfileRegisteringHandler.class);
+    
 	@Autowired
 	private TmnProfileAdminProxyClient tmnProfileAdminProxyClient;
 
@@ -68,12 +72,19 @@ public class ProfileRegisteringHandler {
 
 	private String encryptSHA1(String requestTransactionID) {
 		String initiator = tmnProfileInitiator != null ? tmnProfileInitiator.toLowerCase() : "";
+		logger.debug("==============================================================");
+		logger.debug("initiator : "+initiator);
+		logger.debug("tmnProfilePin : "+tmnProfilePin);
+		logger.debug("requestTransactionID : "+requestTransactionID);
 		String tempEncrypted = HashPasswordUtil.encryptSHA1(initiator + tmnProfilePin).toLowerCase();
+		logger.debug("tempEncrypted = HashPasswordUtil.encryptSHA1(initiator + tmnProfilePin).toLowerCase() "+tempEncrypted);
 		return HashPasswordUtil.encryptSHA1(requestTransactionID + tempEncrypted).toUpperCase();
 	}
 	
 	private AdminSecurityContext createSecurityContext(String requestTransactionID) {
 		String encryptedPin = encryptSHA1(requestTransactionID);
+		logger.debug("encryptedPin : "+encryptedPin);
+		logger.debug("==============================================================");
 		AdminSecurityContext adminSecurityContext = new AdminSecurityContext();
 		adminSecurityContext.setInitiator(tmnProfileInitiator);
 		adminSecurityContext.setPin(encryptedPin);
