@@ -29,7 +29,8 @@ public class ClientCredential implements Serializable {
 
 	@NotNull
 	private String channelDetail;
-
+	
+	
 	public ClientCredential() {
 	}
 
@@ -85,7 +86,7 @@ public class ClientCredential implements Serializable {
 	public void setChannelDetail(String channelDetail) {
 		this.channelDetail = channelDetail;
 	}
-	
+
 	@JsonIgnore
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
