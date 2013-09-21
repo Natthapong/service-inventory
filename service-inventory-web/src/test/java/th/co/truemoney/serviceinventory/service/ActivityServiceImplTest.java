@@ -92,7 +92,7 @@ public class ActivityServiceImplTest {
     public void getMobileAcitivityList() {
     	String accessToken = "9898989898989898989";
     	mockServer.expect(
-            	requestTo("http://127.0.0.1:8787/core-report-web/transaction/history/54321")
+            	requestTo("http://localhost:8787/core-report-web/transaction/history/54321")
             ).andExpect(method(HttpMethod.GET)
             ).andRespond(
             	withSuccess(new ClassPathResource("json/stub_all_activities.json"), MediaType.APPLICATION_JSON)
@@ -112,7 +112,7 @@ public class ActivityServiceImplTest {
     	Long reportID = 9999L;
 
     	mockServer.expect(
-            	requestTo(String.format("http://127.0.0.1:8787/core-report-web/transaction/history/%s/detail/%d", truemoneyID, reportID))
+            	requestTo(String.format("http://localhost:8787/core-report-web/transaction/history/%s/detail/%d", truemoneyID, reportID))
             ).andExpect(method(HttpMethod.GET)
             ).andRespond(
             	withSuccess(new ClassPathResource("json/stub_specific_activities.json"), MediaType.APPLICATION_JSON)
@@ -139,7 +139,7 @@ public class ActivityServiceImplTest {
     	when(userProfileBuilder.isFavorited()).thenReturn(Boolean.TRUE);
     	
     	mockServer.expect(
-            	requestTo(String.format("http://127.0.0.1:8787/core-report-web/transaction/history/%s/detail/%d", truemoneyID, reportID))
+            	requestTo(String.format("http://localhost:8787/core-report-web/transaction/history/%s/detail/%d", truemoneyID, reportID))
             ).andExpect(method(HttpMethod.GET)
             ).andRespond(
             	withSuccess(new ClassPathResource("json/stub_buyepin_activity.json"), MediaType.APPLICATION_JSON)
@@ -185,7 +185,7 @@ public class ActivityServiceImplTest {
 
     	
     	mockServer.expect(
-            	requestTo(String.format("http://127.0.0.1:8787/core-report-web/transaction/history/%s/detail/%d", truemoneyID, reportID))
+            	requestTo(String.format("http://localhost:8787/core-report-web/transaction/history/%s/detail/%d", truemoneyID, reportID))
             ).andExpect(method(HttpMethod.GET)
             ).andRespond(
             	withSuccess(new ClassPathResource("json/stub_buyepin_activity.json"), MediaType.APPLICATION_JSON)

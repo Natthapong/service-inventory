@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 import th.co.truemoney.serviceinventory.sms.OTPGenerator;
@@ -14,10 +15,16 @@ import th.co.truemoney.serviceinventory.sms.RandomOTPGeneraor;
 @Profile("prod")
 public class ProdEnvironmentConfig {
 	
-	@Bean @Qualifier("endpoint.host")
-	public String host() {
+	@Bean @Qualifier("core.report.endpoint.host")
+	public String coreReportWebHost() {
 		return "https://TRPRPTVIP";
 	}
+	
+    @Bean @Qualifier("endpoint.host") 
+    @Primary
+    public String coreServiceWebHost() {
+        return "https://PBINXTAPP_VIP";
+    }
 
 	@Bean
 	public OTPGenerator otpGenerator() {

@@ -187,8 +187,8 @@ public class ServiceInventoryConfig {
     }
 
     @Bean
-    public EndPoints coreReportWebEndPoints() {
-        return new EndPoints();
+    public CoreReportWebEndPoints coreReportWebEndPoints() {
+        return new CoreReportWebEndPoints();
     }
 
     @Bean

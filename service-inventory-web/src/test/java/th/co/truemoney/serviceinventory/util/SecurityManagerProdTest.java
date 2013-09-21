@@ -19,9 +19,9 @@ import th.co.truemoney.serviceinventory.config.EnvConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ActiveProfiles(profiles={"local", "mem"})
+@ActiveProfiles(profiles={"prod", "mem"})
 @ContextConfiguration(classes = { EnvConfig.class })
-public class SecurityManagerTest {
+public class SecurityManagerProdTest {
 	
 	@Autowired
 	private SecurityManager manager;
@@ -43,7 +43,7 @@ public class SecurityManagerTest {
 
 	@Test
 	public void testDecryptRSA() {
-		String cipherText = "Q+uMdAwX3Fg44RslIBAn4z9GjxJrQXUmRr45Wuwdd9ss/UXUa6gReHrLJwBhemWaliQEUh4ukCr8SXeFQ+0MDJdom5XHU84J0nihk6XolEaWFL6JPYFzmI7wRuJWYMjOlathY+Woq1uuNN1wYAtPgsTkuBPNJcxWY2WmNV1w9UU=";
+		String cipherText = "PptD236GI44pvxz2srbblT0UfMIuzmghjzj0IdydG4VajTwWsi1P87ku2Ev9pvc8lfvRIg1sydodC6xlR9bO7Kqvn7DDUB1Ko9YS7RMBz4ZYHAajkrowPH8MdEUqZaQ4JBye5OixwfS7jPID29vWqtVSagimYnf3wI5LSKax0lg=";
 		String normalText = manager.decryptRSA(cipherText);
 		assertEquals("12345678901234", normalText);
 	}

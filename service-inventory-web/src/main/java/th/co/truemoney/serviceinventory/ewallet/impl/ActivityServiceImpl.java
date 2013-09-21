@@ -3,6 +3,8 @@ package th.co.truemoney.serviceinventory.ewallet.impl;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -12,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import th.co.truemoney.serviceinventory.buy.domain.SendEpinSms;
-import th.co.truemoney.serviceinventory.config.EndPoints;
+import th.co.truemoney.serviceinventory.config.CoreReportWebEndPoints;
 import th.co.truemoney.serviceinventory.ewallet.ActivityService;
 import th.co.truemoney.serviceinventory.ewallet.domain.AccessToken;
 import th.co.truemoney.serviceinventory.ewallet.domain.Activity;
@@ -25,6 +27,9 @@ import th.co.truemoney.serviceinventory.util.MaskingUtil;
 import th.co.truemoney.serviceinventory.util.SecurityManager;
 
 public class ActivityServiceImpl implements ActivityService {
+	
+	private Logger logger = LoggerFactory.getLogger(ActivityServiceImpl.class);
+
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -39,7 +44,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private HttpHeaders headers;
 	
 	@Autowired
-	private EndPoints endPoints;
+	private CoreReportWebEndPoints endPoints;
 	
 	@Autowired
 	private SendEpinService sendEpinService;
@@ -49,6 +54,8 @@ public class ActivityServiceImpl implements ActivityService {
 	
 	@Override
 	public List<Activity> getActivities(String accessTokenID) throws ServiceInventoryException {
+		
+		logger.debug("core-report-endpoint: "+endPoints);
 		
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		
@@ -61,6 +68,8 @@ public class ActivityServiceImpl implements ActivityService {
 	@Override
 	public ActivityDetail getActivityDetail(Long reportID, String accessTokenID) throws ServiceInventoryException {
 
+		logger.debug("core-report-endpoint: "+endPoints);
+		
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		
 		ResponseEntity<ActivityDetail> response = restTemplate.exchange(endPoints.getReportDetail(), 

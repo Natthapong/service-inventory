@@ -34,10 +34,16 @@ import th.co.truemoney.serviceinventory.sms.UnSecureOTPGenerator;
 @Profile("local")
 public class LocalEnvironmentConfig {
 
+    @Bean @Qualifier("core.report.endpoint.host") 
+    @Primary
+    public String coreReportWebHost() {
+        return "http://localhost:8787";
+    }
+    
     @Bean @Qualifier("endpoint.host") 
     @Primary
-    public String host() {
-        return "http://127.0.0.1:8787";
+    public String coreServiceWebHost() {
+        return "http://127.0.0.1:8585";
     }
 
     @Bean
