@@ -55,7 +55,7 @@ public class ActivityServiceImpl implements ActivityService {
 	@Override
 	public List<Activity> getActivities(String accessTokenID) throws ServiceInventoryException {
 		
-		logger.debug("core-report-endpoint: "+endPoints);
+		logger.debug("core-report-endpoint: "+endPoints.getListAllReport());
 		
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		
@@ -68,7 +68,7 @@ public class ActivityServiceImpl implements ActivityService {
 	@Override
 	public ActivityDetail getActivityDetail(Long reportID, String accessTokenID) throws ServiceInventoryException {
 
-		logger.debug("core-report-endpoint: "+endPoints);
+		logger.debug("core-report-endpoint: "+endPoints.getReportDetail());
 		
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		
@@ -86,6 +86,9 @@ public class ActivityServiceImpl implements ActivityService {
 	
 	@Override
 	public Boolean resendEPIN(Long reportID, String accessTokenID) throws ServiceInventoryException {
+		
+		logger.debug("core-report-endpoint: "+endPoints.getReportDetail());
+		
 		AccessToken accessToken = accessTokenRepository.findAccessToken(accessTokenID);
 		ResponseEntity<ActivityDetail> response = restTemplate.exchange(endPoints.getReportDetail(), 
 															HttpMethod.GET, new HttpEntity<String>(headers), 
